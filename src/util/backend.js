@@ -68,6 +68,7 @@ export const backend = {
 
     },
     banks: {
+        createBankUrl           : `${bottomUrl}/createBank`,
         getAllByCountryUrl          : `${bottomUrl}/getAllBanksInCountry`,
         getAllUrl                   : `${bottomUrl}/getAllBanks`,
         getByIdUrl                  : `${bottomUrl}/getBankById`,
