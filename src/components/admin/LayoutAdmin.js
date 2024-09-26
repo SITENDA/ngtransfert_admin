@@ -1,10 +1,6 @@
 import {Outlet} from 'react-router-dom'
 import ScrollToTopButton from '../ScrollToTopButton'
 import LogoutModal from '../LogoutModal';
-import '../../assets/css/Nunito.css';
-import '../../assets/css/fontawesome-free/css/all.min.css';
-import '../../assets/css/sb-admin-2.min.css';
-import '../../assets/css/antd-new.css';
 import {Layout} from 'antd'
 import {useSelector} from 'react-redux'
 import {selectIsDarkTheme, selectDarkColor, selectLightColor, selectCurrentUser} from '../../features/auth/authSlice'

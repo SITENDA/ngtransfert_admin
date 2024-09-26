@@ -36,7 +36,7 @@ export const alipayAccountsApiSlice = apiSlice.injectEndpoints({
                     ]
                     : [{type: 'AlipayAccount', id: 'LIST'}],
         }),
-        getAlipayAccountsForClient: builder.query({
+        getAlipayAccountsByClientId: builder.query({
             query: (alipayAccountId) => ({
                 url: `${backend.alipayAccounts.getAllByClientIdUrl }?alipayAccountId=${alipayAccountId}`,
                 method: 'GET',
@@ -99,7 +99,7 @@ export const alipayAccountsApiSlice = apiSlice.injectEndpoints({
 export const {
     useCreateAlipayAccountMutation,
     useGetAllAlipayAccountsQuery,
-    useGetAlipayAccountsForClientQuery,
+    useGetAlipayAccountsByClientIdQuery,
     useGetAlipayAccountByAlipayAccountIdQuery,
     useDeleteAlipayAccountMutation,
 } = alipayAccountsApiSlice

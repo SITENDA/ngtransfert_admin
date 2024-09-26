@@ -1,31 +1,32 @@
 // backend.js
-const env               = "development";
-const BACKEND_HOST      = env === "production" ? "back.ngtransfert.org" : "localhost";
-const BACKEND_API_NAME  = env === "production" ? "ngtransfert_backend" : "";
-const VERSION           = "v5";
-const PROTOCOL          = env === "production" ? "https" : "http";
+const env = "development";
+const BACKEND_HOST = env === "production" ? "back.ngtransfert.org" : "localhost";
+const BACKEND_API_NAME = env === "production" ? "ngtransfert_backend" : "";
+const VERSION = "v5";
+const PROTOCOL = env === "production" ? "https" : "http";
 
 const baseUrl = env === "production" ? `${PROTOCOL}://${BACKEND_HOST}/${BACKEND_API_NAME}/${VERSION}`
-: "http://localhost:8080";
+    : "http://localhost:8080";
 
-const bottomUrl                 = "/nnyinimu";
-const free_access               = "/auth";
-const registerUrl               = `${free_access}/register`;
-const loginUrl                  = `${free_access}/signin`;
-const contactUrl                = `${free_access}/contact`;
-const logoutUrl                 = `${free_access}/signout`;
-const refreshUrl                = `${free_access}/refresh`;
-const imagesUrl                 = env === "production" ? 'https://admin.ngtransfert.org/images/' : 'http://localhost:8080/auth/images?relativePath=';
-const avatarUrl                 = `${free_access}/avatars`;
-const checkAccountStatusUrl     = `${free_access}/checkVerificationStatus`;
-const resendVerificationUrl     = `${free_access}/resendVerificationLink`;
-const usersBaseUrl                  = `${bottomUrl}/users`;
-const rolesBaseUrl                  = `${bottomUrl}/roles`;
-const alipayAccountsBaseUrl         = `${bottomUrl}/alipayAccounts`;
-const wechatAccountsBaseUrl         = `${bottomUrl}/wechatAccounts`;
-const bankAccountsBaseUrl           = `${bottomUrl}/bankAccounts`;
-const banksBaseUrl                  = `${bottomUrl}/banks`;
-
+const bottomUrl = "/nnyinimu";
+const free_access = "/auth";
+const registerUrl = `${free_access}/register`;
+const loginUrl = `${free_access}/signin`;
+const contactUrl = `${free_access}/contact`;
+const logoutUrl = `${free_access}/signout`;
+const refreshUrl = `${free_access}/refresh`;
+const imagesUrl = env === "production" ? 'https://admin.ngtransfert.org/images/' : 'http://localhost:8080/auth/images?relativePath=';
+const avatarUrl = `${free_access}/avatars`;
+const checkAccountStatusUrl = `${free_access}/checkVerificationStatus`;
+const resendVerificationUrl = `${free_access}/resendVerificationLink`;
+const usersBaseUrl = `${bottomUrl}/users`;
+const rolesBaseUrl = `${bottomUrl}/roles`;
+const alipayAccountsBaseUrl = `${bottomUrl}/alipayAccounts`;
+const wechatAccountsBaseUrl = `${bottomUrl}/wechatAccounts`;
+const bankAccountsBaseUrl = `${bottomUrl}/bankAccounts`;
+const banksBaseUrl = `${bottomUrl}/banks`;
+const transferRequestsBaseUrl = `${bottomUrl}/transferRequests`;
+const countriesBaseUrl              = `${bottomUrl}/countries`;
 
 export const backend = {
     baseUrl,
@@ -76,5 +77,15 @@ export const backend = {
         getAllByCountryUrl          : `${banksBaseUrl}/getAllBanksInCountry`,
         getAllUrl                   : `${banksBaseUrl}/getAllBanks`,
         getByIdUrl                  : `${banksBaseUrl}/getBankById`,
-    }
+    },
+    transferRequests: {
+        createRequestUrl            : `${transferRequestsBaseUrl}/createTransferRequest`,
+        getAllUrl                   : `${transferRequestsBaseUrl}/getAllTransferRequests`,
+        getAllByClientIdUrl         : `${transferRequestsBaseUrl}/getTransferRequestsForClient`,
+        getByIdUrl                  : `${transferRequestsBaseUrl}/getTransferRequestByTransferRequestId`,
+        deleteUrl                   : `${transferRequestsBaseUrl}/deleteTransferRequest`,
+    },
+    countries: {
+        getAllUrl                   : `${countriesBaseUrl}/getAllCountries`,
+    },
 };

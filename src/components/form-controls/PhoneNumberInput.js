@@ -6,8 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faCircle, faTimes } from "@fortawesome/free-solid-svg-icons";
 import PhoneInput from "react-phone-input-2";
 // import 'react-phone-input-2/lib/style.css'; // Ensure you have the necessary CSS for the phone input
-import '../css/new-phone-input.css'
-import '../css/PhoneNumberInput.css'
+import '../../assets/css/new-phone-input.css'
+import '../../assets/css/PhoneNumberInput.css'
 
 const PhoneNumberInput = forwardRef(({ changeHandler, validPhoneNumber, value, focus }, ref) => {
     const dispatch = useDispatch();

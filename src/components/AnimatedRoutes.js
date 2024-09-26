@@ -8,26 +8,22 @@ import {adminPaths, publicPaths} from '../util/frontend';
 import LayoutAdmin from './admin/LayoutAdmin';
 import Dashboard from './admin/Dashboard';
 import {AnimatePresence} from 'framer-motion';
-// import SettledLoans from '../features/loans/SettledLoans';
-// import LoanRequestsList from '../features/loanRequests/LoanRequestsList';
-// import LoanRequestDetails from '../features/loanRequests/LoanRequestDetails';
-// import LoanDetailsAdmin from '../features/loans/LoanDetailsAdmin';
-// import LoansListAdmin from '../features/loans/LoansListAdmin';
-// import MakePayment from '../features/payments/MakePayment';
-// import PaymentsListAdmin from '../features/payments/PaymentsListAdmin';
-// import PaymentDetailsAdmin from '../features/payments/PaymentDetailsAdmin';
-// import PaymentsListByLoanAdmin from '../features/payments/PaymentsListByLoanAdmin';
-// import ClientDetails from '../features/users/ClientDetails';
-// import MoreInputs from './MoreInputs';
-//
-// import RequestLoanAdmin from '../features/loans/RequestLoanAdmin';
-// import RegisterAdmin from './public/RegisterAdmin';
-// import ApproveLoanRequest from './ApproveLoanRequest';
-// import ClientsList from '../features/users/ClientsList';
-// import LoansListByClient from "../features/loans/LoansListByClient";
-// import MakePaymentForLoan from "../features/payments/MakePaymentForLoan";
-// import RequestLoanForClient from "../features/loans/RequestLoanForClient";
-// import EditLoan from "../features/loans/EditLoan";
+import AlipayAccountsListAdmin from "../features/alipayAccounts/AlipayAccountsListAdmin";
+import AlipayAccountDetails from "../features/alipayAccounts/AlipayAccountDetails";
+import AlipayAccountsByClientList from "../features/alipayAccounts/AlipayAccountsByClientList";
+import AddAlipayAccount from "../features/alipayAccounts/AddAlipayAccount";
+import WechatAccountsByClientList from "../features/wechatAccounts/WechatAccountsByClientList";
+import WechatAccountsListAdmin from "../features/wechatAccounts/WechatAccountsListAdmin";
+import AddWechatAccount from "../features/wechatAccounts/AddWechatAccount";
+import WechatAccountDetails from "../features/wechatAccounts/WechatAccountDetails";
+import ApplyForTransfer from "../features/transferRequests/ApplyForTransfer";
+import TransferRequestsListAdmin from "../features/transferRequests/TransferRequestsListAdmin";
+import TransferRequestsByClientList from "../features/transferRequests/TransferRequestsByClientList";
+import TransferRequestDetails from "../features/transferRequests/TransferRequestDetails";
+import BankAccountsListAdmin from "../features/bankAccounts/BankAccountsListAdmin";
+import BankAccountsByClientList from "../features/bankAccounts/BankAccountsByClientList";
+import AddBankAccount from "../features/bankAccounts/AddBankAccount";
+import BankAccountDetails from "../features/bankAccounts/BankAccountDetails";
 
 export const pageTransitionStyles = {
     initial: {opacity: 0},
@@ -50,32 +46,34 @@ const AnimatedRoutes = () => {
                         <Route path={publicPaths.unauthorizedPath} element={<Unauthorized/>}/>
                     </Route>
 
-                    {/* Private client routes */}
+                    {/* Private admin routes */}
                     <Route element={<RequireAuth allowedRoles={["ADMIN"]}/>}>
                         <Route path={adminPaths.homePath} element={<LayoutAdmin/>}>
                             <Route index element={<Dashboard/>}/>
-                            {/*<Route path={adminPaths.loanRequestsPath} element={<LoanRequestsList/>}/>*/}
-                            {/*<Route path={adminPaths.currentLoansListPath} element={<LoansListAdmin/>}/>*/}
-                            {/*<Route path={adminPaths.settledLoansListPath} element={<SettledLoans/>}/>*/}
-                            {/*<Route path={`${adminPaths.loansByClientPath}/:clientId`} element={<LoansListByClient/>}/>*/}
-                            {/*<Route path={adminPaths.ClientsListPath} element={<ClientsList/>}/>*/}
-                            {/*<Route path={`${adminPaths.clientDetailsPath}/:clientId`} element={<ClientDetails/>}/>*/}
-                            {/*<Route path={adminPaths.requestLoanPath} element={<RequestLoanAdmin/>}/>*/}
-                            {/*<Route path={adminPaths.requestLoanForClientPath} element={<RequestLoanForClient/>}/>*/}
-                            {/*<Route path={adminPaths.makePaymentPath} element={<MakePayment/>}/>*/}
-                            {/*<Route path={adminPaths.makePaymentForLoanPath} element={<MakePaymentForLoan/>}/>*/}
-                            {/*<Route path={adminPaths.moreInputsPath} element={<MoreInputs/>}/>*/}
-                            {/*<Route path={adminPaths.registerPath} element={<RegisterAdmin/>}/>*/}
-                            {/*<Route path={adminPaths.paymentsListPath} element={<PaymentsListAdmin/>}/>*/}
-                            {/*<Route path={adminPaths.paymentsByLoanPath} element={<PaymentsListByLoanAdmin/>}/>*/}
-                            {/*<Route path={`${adminPaths.loanDetailsPath}/:loanId`} element={<LoanDetailsAdmin/>}/>*/}
-                            {/*<Route path={`${adminPaths.editLoanPath}/:loanId`} element={<EditLoan/>}/>*/}
-                            {/*<Route path={`${adminPaths.paymentDetailsPath}/:paymentId`}*/}
-                            {/*       element={<PaymentDetailsAdmin/>}/>*/}
-                            {/*<Route path={`${adminPaths.loanRequestDetailsPath}/:loanRequestId`}*/}
-                            {/*       element={<LoanRequestDetails/>}/>*/}
-                            {/*<Route path={`${adminPaths.approveLoanRequestPath}/:loanRequestId`}*/}
-                            {/*       element={<ApproveLoanRequest/>}/>*/}
+                            {/*Alipay Accounts*/}
+                            <Route path={adminPaths.alipayAccountsPath} element={<AlipayAccountsListAdmin/>}/>
+                            <Route path={adminPaths.alipayAccountsByClientPath}
+                                   element={<AlipayAccountsByClientList/>}/>
+                            <Route path={adminPaths.alipayAccountDetailsPath} element={<AlipayAccountDetails/>}/>
+                            <Route path={adminPaths.addAlipayAccountPath} element={<AddAlipayAccount/>}/>
+                            {/*Wechat Accounts*/}
+                            <Route path={adminPaths.wechatAccountsPath} element={<WechatAccountsListAdmin/>}/>
+                            <Route path={adminPaths.wechatAccountsByClientPath}
+                                   element={<WechatAccountsByClientList/>}/>
+                            <Route path={adminPaths.wechatAccountDetailsPath} element={<WechatAccountDetails/>}/>
+                            <Route path={adminPaths.addWechatAccountPath} element={<AddWechatAccount/>}/>
+                            {/*Bank Accounts*/}
+                            <Route path={adminPaths.bankAccountsPath} element={<BankAccountsListAdmin/>}/>
+                            <Route path={adminPaths.bankAccountsByClientPath}
+                                   element={<BankAccountsByClientList/>}/>
+                            <Route path={adminPaths.bankAccountDetailsPath} element={<BankAccountDetails/>}/>
+                            <Route path={adminPaths.addBankAccountPath} element={<AddBankAccount/>}/>
+                            {/*Transfer Requests*/}
+                            <Route path={adminPaths.transferRequestsPath} element={<TransferRequestsListAdmin/>}/>
+                            <Route path={adminPaths.transferRequestsByClientPath}
+                                   element={<TransferRequestsByClientList/>}/>
+                            <Route path={adminPaths.transferRequestDetailsPath} element={<TransferRequestDetails/>}/>
+                            <Route path={adminPaths.applyForTransferPath} element={<ApplyForTransfer/>}/>
                         </Route>
                     </Route>
                 </Route>

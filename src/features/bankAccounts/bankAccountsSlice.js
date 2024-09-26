@@ -36,7 +36,7 @@ export const bankAccountsApiSlice = apiSlice.injectEndpoints({
                     ]
                     : [{type: 'BankAccount', id: 'LIST'}],
         }),
-        getBankAccountsForClient: builder.query({
+        getBankAccountsByClientId: builder.query({
             query: (bankAccountId) => ({
                 url: `${backend.bankAccounts.getAllByClientIdUrl }?bankAccountId=${bankAccountId}`,
                 method: 'GET',
@@ -99,7 +99,7 @@ export const bankAccountsApiSlice = apiSlice.injectEndpoints({
 export const {
     useCreateBankAccountMutation,
     useGetAllBankAccountsQuery,
-    useGetBankAccountsForClientQuery,
+    useGetBankAccountsByClientIdQuery,
     useGetBankAccountByBankAccountIdQuery,
     useDeleteBankAccountMutation,
 } = bankAccountsApiSlice
@@ -109,7 +109,7 @@ export const {
 //---- returning the query result objects-------------------------------------------------------------------------
 
 export const selectAllBankAccountsResult = bankAccountsApiSlice.endpoints.getAllBankAccounts.select()
-export const selectBankAccountsForClientResult = (clientId) => bankAccountsApiSlice.endpoints.getBankAccountsForClient.select(clientId)
+export const selectBankAccountsByClientIdResult = (clientId) => bankAccountsApiSlice.endpoints.getBankAccountsForClient.select(clientId)
 export const selectBankAccountByBankAccountIdResult = (clientId) => bankAccountsApiSlice.endpoints.getBankAccountByBankAccountId(clientId)
 
 //----------------------------------------------------------------------------------------------------------------
@@ -121,9 +121,9 @@ export const selectAllBankAccountsData = createSelector(
     (allBankAccountsResult) => allBankAccountsResult.data
 )
 
-export const selectBankAccountsForClientData = (clientId) => createSelector(
-    selectBankAccountsForClientResult(clientId),
-    (bankAccountsForClientResult) => bankAccountsForClientResult.data
+export const selectBankAccountsByClientIdData = (clientId) => createSelector(
+    selectBankAccountsByClientIdResult(clientId),
+    (bankAccountsByClientIdResult) => bankAccountsByClientIdResult.data
 )
 
 export const selectBankAccountByBankAccountIdData = (bankAccountId) => createSelector(
@@ -145,7 +145,7 @@ export const {
     selectAll: selectAllIndividualBankAccounts,
     selectById: selectIndividualBankAccountById,
     selectIds: selectAllIndividualBankAccountIds,
-} = bankAccountsAdapter.getSelectors((state, clientId) => selectBankAccountsForClientData(clientId)(state) ?? initialState);
+} = bankAccountsAdapter.getSelectors((state, clientId) => selectBankAccountsByClientIdData(clientId)(state) ?? initialState);
 
 export const {
     selectAll: selectSingleLoanArray
