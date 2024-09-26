@@ -36,22 +36,18 @@ export const wechatAccountsApiSlice = apiSlice.injectEndpoints({
                     ]
                     : [{type: 'WechatAccount', id: 'LIST'}],
         }),
-        getWechatAccountsForClient: builder.query({
-            query: (wechatAccountId) => ({
-                url: `${backend.wechatAccounts.getAllByClientIdUrl }?wechatAccountId=${wechatAccountId}`,
-                method: 'GET',
-            }),
-            transformResponse: (responseData) => {
-                let wechatAccounts = responseData?.data?.wechatAccounts || [];
-                return wechatAccountsAdapter.setAll(initialState, wechatAccounts);
+        getWechatAccountsByClientId: builder.query({
+            query: (clientId) => `${backend.wechatAccounts.getAllByClientIdUrl}?clientId=${clientId}`,
+            transformResponse: responseData => {
+                if (responseData?.data?.wechatAccounts) {
+                    const wechatAccounts = responseData?.data?.wechatAccounts || [];
+                    return wechatAccountsAdapter.setAll(initialState, wechatAccounts)
+                }
             },
-            providesTags: (result, error, arg) =>
-                result
-                    ? [
-                        { type: 'WechatAccount', id: arg },
-                        ...result.ids.map((id) => ({ type: 'WechatAccount', id })),
-                    ]
-                    : [{ type: 'WechatAccount', id: arg }],
+            providesTags: (result, error, arg) => [
+                {type: 'WechatAccount', id: "LIST"},
+                ...result?.ids.map(id => ({type: 'WechatAccount', id}))
+            ]
         }),
 
         getWechatAccountByWechatAccountId: builder.query({
@@ -99,7 +95,7 @@ export const wechatAccountsApiSlice = apiSlice.injectEndpoints({
 export const {
     useCreateWechatAccountMutation,
     useGetAllWechatAccountsQuery,
-    useGetWechatAccountsForClientQuery,
+    useGetWechatAccountsByClientIdQuery,
     useGetWechatAccountByWechatAccountIdQuery,
     useDeleteWechatAccountMutation,
 } = wechatAccountsApiSlice
@@ -109,7 +105,7 @@ export const {
 //---- returning the query result objects-------------------------------------------------------------------------
 
 export const selectAllWechatAccountsResult = wechatAccountsApiSlice.endpoints.getAllWechatAccounts.select()
-export const selectWechatAccountsForClientResult = (clientId) => wechatAccountsApiSlice.endpoints.getWechatAccountsForClient.select(clientId)
+export const selectWechatAccountsForClientResult = (clientId) => wechatAccountsApiSlice.endpoints.useGetWechatAccountsByClientIdQuery.select(clientId)
 export const selectWechatAccountByWechatAccountIdResult = (clientId) => wechatAccountsApiSlice.endpoints.getWechatAccountByWechatAccountId(clientId)
 
 //----------------------------------------------------------------------------------------------------------------

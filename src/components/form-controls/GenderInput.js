@@ -1,36 +1,20 @@
-import InputField from './InputField'
+import {useState, useEffect, useRef, forwardRef} from 'react';
 import { useSelector } from 'react-redux';
-import { selectCurrentValids } from '../../features/auth/authSlice';
-import { forwardRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { setObjectItem } from '../../features/auth/authSlice';
-import { regex } from '../../util/regex';
+import { selectIsDarkTheme } from '../../features/auth/authSlice';
+import isEqual from 'lodash.isequal';
+import {Select, MenuItem, FormControl, InputLabel, ThemeProvider, Typography} from '@mui/material';
+import {darkColor, lightColor} from '../../util/initials';
+import {useTendaTheme} from "../useTendaTheme";
 
-const GenderInput = forwardRef(({}, ref) => {
-    const valids = useSelector(selectCurrentValids)
-    const dispatch = useDispatch();
-    const handleChange = (value) => {
-        dispatch(setObjectItem({ key: 'registrationInputs', innerKey: "gender", value: value }));
-        const result = regex.GENDER_REGEX.test(value)
-        dispatch(setObjectItem({ key: 'registrationValids', innerKey: "validGender", value: result }));
-    };
+const GenderInput = forwardRef(({changeHandler, validGender, value, isFocused, handleFocus, handleBlur}, ref) => {
+    const [options, setOptions] = useState([]);
+    const [open, setOpen] = useState(false); // State to track whether the dropdown is open
+    const valuesRef = useRef([]);
+    const isDarkTheme = useSelector(selectIsDarkTheme);
+    const theme = useTendaTheme();
 
-  return (
-    <InputField
-            label="Gender"
-            id="gender"
-            type="select"
-            name="gender"
-            ref={ref}
-            required
-            onChange={handleChange}
-            validation={{
-                isValid: valids.validGender,
-                message: <>Enter your gender (Male, Female, Other).</>
-            }}
-            ariaDescribedBy="gendernote"
-            placeholder="Select gender"
-            options={[
+    useEffect(() => {
+            const values=[
                 {
                     value: 'Male',
                     label: 'Male',
@@ -43,9 +27,57 @@ const GenderInput = forwardRef(({}, ref) => {
                     value: 'Other',
                     label: 'Prefer not to say',
                 }
-            ]}
-        />
-  )
+            ];
+            if (!isEqual(values, valuesRef.current)) {
+                valuesRef.current = values;
+                const optionsData = values.map((gender) => ({
+                    moreData: gender,
+                    value: gender.value,
+                    label: (<Typography variant="body1" component="span">{gender.label}</Typography>),
+                }));
+                setOptions(optionsData);
+            }
+    }, []);
+
+    return (
+        <ThemeProvider theme={theme}>
+            <FormControl fullWidth variant="outlined" margin="normal">
+                <InputLabel htmlFor="genderSelector" style={{color: isDarkTheme ? lightColor : darkColor}}>
+                    Gender
+                </InputLabel>
+                <Select
+                    id="genderSelector"
+                    ref={ref}
+                    value={value}
+                    onChange={(e) => changeHandler(e)}
+                    onOpen={() => setOpen(true)}  // Open the dropdown
+                    onClose={() => setOpen(false)} // Close the dropdown
+                    open={open}                    // Control the dropdown open state
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    required
+                    label="Gender"
+                    inputRef={ref}
+                    sx={{width: '90%'}}
+                    MenuProps={{
+                        PaperProps: {
+                            style: {
+                                backgroundColor: isDarkTheme ? darkColor : lightColor,
+                                color: isDarkTheme ? lightColor : darkColor,
+                            },
+                        },
+                    }}
+                    variant="outlined"
+                >
+                    {options.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </ThemeProvider>
+    );
 });
 
-export default GenderInput
+export default GenderInput;

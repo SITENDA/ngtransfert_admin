@@ -20,7 +20,6 @@ import GenderInput from '../form-controls/GenderInput';
 import TitleInput from '../form-controls/TitleInput';
 import initials from '../../util/initials';
 import TickAnimation from '../TickAnimation';
-import '../../assets/css/form-styles.css'
 import { adminPaths } from '../../util/frontend';
 import TendaButton from '../form-controls/TendaButton';
 import MainPageWrapper from "../MainPageWrapper";

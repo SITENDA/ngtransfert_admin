@@ -30,7 +30,7 @@ const FooterAdmin = ({ transparent }) => {
             <div className="container my-auto">
                 <div className="copyright text-center my-auto">
                     <div className= {isDarkTheme ? "text-white" : "text-muted"}>
-                        <div className="small text-center mb-3 pb-2" style={{ marginBottom: '0.5rem' }}>Copyright &copy; 2023 - Novic Financial Services</div>
+                        <div className="small text-center mb-3 pb-2" style={{ marginBottom: '0.5rem' }}>Copyright &copy; 2023 - NG Transfert</div>
                     </div>
                 </div>
             </div>

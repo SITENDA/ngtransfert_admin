@@ -11,8 +11,8 @@ const eventProperties = useSelector(selectEventProperties);
       className={eventProperties.isError  && eventProperties.errorMessage? "alert alert-danger" : "offscreen"}
       role="alert"
       aria-live='assertive'
-      tabIndex={-1}
       style={{width: '90%'}}
+      tabIndex={-1}
     >
       {eventProperties.errorMessage}
     </div>

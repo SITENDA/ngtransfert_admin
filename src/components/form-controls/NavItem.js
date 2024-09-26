@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Menu } from 'antd';
-import { adminPaths } from '../../util/frontend';
+import { publicPaths } from '../../util/frontend';
 
 const NavItem = ({ params }) => {
     const { links, icon, title, key } = params;

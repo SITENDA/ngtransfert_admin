@@ -3,28 +3,64 @@ export const initialToken      = '';
 export const persistItem = localStorage.getItem("persist");
 export const initialPersist    = typeof(persistItem) === "string" ? JSON.parse(persistItem) : false;
 export const initialTitle      = 'NG Transfert';
-export const initialSidebarCollapsed = false;
+export const initialSidebarCollapsed = window.innerWidth < 630;
 export const initialNavbarShown = false;
 export const initialIsDarkTheme = true;
 export const darkColor = 'rgb(0, 21, 41)';
 export const lightColor = 'rgb(255, 255, 255)';
-export const initialCurrentLoans = [];
+export const initialIntroPage = "LandingPage"
+
 export const initialRegistrationInputs = {
     fullName            : '',
     email               : '',
     phoneNumber         : '',
-    recommender         : '',
-    gender              : '',
-    title               : '',
     password            : '',
     confirmPassword     : ''
 };
 
-export const initialLoanRequestInputs = {
+export const initialLoginInputs = {
+    email               : '',
+    phoneNumber         : '',
+    password            : '',
+    identifier          : ''
+};
+
+export const initialAlipayAccountInputs = {
+    alipayAccountId: 0,
+    alipayAccountName: '',
     clientId: 0,
-    principal: 0,
-    collateral: '',
-    reasonForLoan: '',
+    email: '',
+    phoneNumber: '',
+    alipayQrCodeImage: {file: null, url: null} // This will hold the file object for the image
+};
+
+export const initialTransferRequestInputs = {
+    amount                  : 0,
+    rate                    : 0,
+    remark                  : '',
+    receiverAccountType     : '',
+    receiverAccountId       : 0,
+    clientId                : 0,
+    countryOfDepositId      : 0
+}
+
+export const initialWechatAccountInputs = {
+    wechatAccountId: 0,
+    wechatAccountName: '',
+    clientId: 0,
+    email: '',
+    phoneNumber: '',
+    wechatQrCodeImage: {file: null, url: null} // This will hold the file object for the image
+};
+
+export const initialBankAccountInputs = {
+    countryId: 0,
+    bankAccountId: 0,
+    bankAccountNumber: 0,
+    bankId : 0,
+    clientId: 0,
+    cardHolderName: '',
+    bankName: ''
 }
 
 export const initialMakePaymentInputs = {
@@ -33,10 +69,44 @@ export const initialMakePaymentInputs = {
     loanId: 0,
 }
 
-export const initialMakePaymentValids = {
+export const initialValidBankAccount = {
+    validCountryId              : false,
+    validBankAccountId          : false,
+    validBankAccountNumber      : false,
+    validBankId                 : false,
+    validClientId               : false,
+    validCardHolderName         : false,
+    validBankName               : false
+}
+
+export const initialValidTransferRequest = {
+    validAmount                  : false,
+    validRate                    : false,
+    validRemark                  : false,
+    validReceiverAccountType     : false,
+    validReceiverAccountId       : false,
+    validClientId                : false,
+    validCountryOfDepositId      : false
+}
+
+export const initialValidAlipayAccount = {
+    validAlipayAccountId: false,
+    validAlipayAccountName : false,
+    validEmail: false,
+    validPhoneNumber: false,
     validClientId: false,
-    validAmount: false,
-    validLoanId: false,
+    validAlipayAccountIdentifier: false,
+    validAlipayQrCodeImage: false
+}
+
+export const initialValidWechatAccount = {
+    validWechatAccountId: false,
+    validWechatAccountName : false,
+    validEmail: false,
+    validPhoneNumber: false,
+    validClientId: false,
+    validWechatAccountIdentifier: false,
+    validWechatQrCodeImage: false
 }
 
 export const initialEventProperties = {
@@ -53,71 +123,93 @@ export const initialLoginSpecifics = {
     showPhone           : false
 }
 
-export const initialRegistrationValids = {
+export const initialAlipayAccountSpecifics = {
+    identifier          : 'qrCodeImage',
+    showBeginnerPrompt  : false,
+    showPhone           : false,
+    showEmail           : false,
+    showQrCodeImage : false
+}
+
+export const initialWechatAccountSpecifics = {
+    identifier          : 'qrCodeImage',
+    showBeginnerPrompt  : false,
+    showPhone           : false,
+    showEmail           : false,
+    showQrCodeImage : false
+}
+
+export const initialValidRegistration = {
     validFullName           : false,
     validEmail              : false,
     validPhoneNumber        : false,
-    validRecommender        : false,
-    validGender             : false,
-    validTitle              : false,
     validPassword           : false,
     validConfirmPassword    : false
 }
 
-export const initialLoanRequestValids = {
-    validClientId: false,
-    validPrincipal: false,
-    validCollateral: false,
-    validReasonForLoan: false
+export const initialValidLogin = {
+    validEmail              : false,
+    validPhoneNumber        : false,
+    validPassword           : false,
+    validIdentifier         : false
 }
 
-export const initialLoanRequestFocus = {
-    clientIdFocus: false,
-    principalFocus: false,
-    collateralFocus: false,
-    reasonForLoanFocus: false
+export const initialBankAccountFocus = {
+    countryIdFocus          : false,
+    bankAccountNumberFocus  : false,
+    bankFocus               : false,
+    cardHolderNameFocus     : false,
+    errorFocus              : false,
+    bankNameFocus           : false,
 }
 
-export const initialMoreInputs = {
-    bankAccountNumber    : 0,
-    occupation           : '',
-    nationalId           : '',
-    passportNumber       : ''
-}
-
-export const initialMoreInputValids = {
-    validBankAccountNumber    : false,
-    validOccupation           : false,
-    validNationalId           : false,
-    validPassportNumber       : false
+export const initialTransferRequestFocus = {
+    amountFocus                  : false,
+    rateFocus                    : false,
+    remarkFocus                  : false,
+    receiverAccountTypeFocus     : false,
+    receiverAccountIdFocus       : false,
+    clientIdFocus                : false,
+    countryOfDepositIdFocus      : false
 }
 
 export const initialRegistrationFocus = {
-    fullNamec           : false,
+    fullNameFocus           : false,
     emailFocus              : false,
     phoneNumberFocus        : false,
-    recommenderFocus        : false,
-    genderFocus             : false,
-    titleFocus              : false,
     passwordFocus           : false,
-    confirmPasswordFocus    : false
+    confirmPasswordFocus    : false,
+    errorFocus              : false
 }
 
-export const initialPayments = {
-    currentPayment          : {},
-    paymentList             : []
+export const initialLoginFocus = {
+    emailFocus              : false,
+    phoneNumberFocus        : false,
+    passwordFocus           : false,
+    errorFocus              : false
 }
 
-export const initialToggles = {
-    sidebarCollapsed: false,
+export const initialAlipayAccountFocus = {
+    alipayAccountIdFocus           : false,
+    alipayAccountNameFocus         : false,
+    clientIdFocus                   : false,
+    emailFocus                      : false,
+    phoneNumberFocus                : false,
+    passwordFocus                   : false,
+    alipayQrCodeImageFocus          : false,
+    alipayAccountIdentifierFocus    : false
 }
 
-export const initialOpens = {
-    loansOpen           : false,
-    paymentsOpen        : false,
-    pagesOpen           : false,
-    clientsOpen         : false,
-};
+export const initialWechatAccountFocus = {
+    wechatAccountIdFocus            : false,
+    wechatAccountNameFocus          : false,
+    clientIdFocus                   : false,
+    emailFocus                      : false,
+    phoneNumberFocus                : false,
+    passwordFocus                   : false,
+    wechatQrCodeImageFocus          : false,
+    wechatAccountIdentifierFocus    : false
+}
 
 export const initials = {
     initialUser,
@@ -128,46 +220,47 @@ export const initials = {
     initialLoginSpecifics,
     initialEventProperties,
     initialRegistrationInputs,
-    initialLoanRequestInputs,
-    initialRegistrationValids,
-    initialLoanRequestValids,
-    initialLoanRequestFocus,
     initialRegistrationFocus,
-    initialMakePaymentInputs,
-    initialMakePaymentValids,
-    initialPayments,
-    initialToggles,
-    initialOpens,
-    initialMoreInputs,
-    initialMoreInputValids,
     initialIsDarkTheme,
+    initialAlipayAccountFocus,
+    initialLoginInputs,
+    initialValidRegistration
 }
 
 export const initialState =  {
-    user                : initialUser,
-    token               : initialToken,
-    persist             : initialPersist,
-    title               : initialTitle,
-    sidebarCollapsed      : initialSidebarCollapsed,
-    navbarShown         : initialNavbarShown,
-    loginSpecifics      : initialLoginSpecifics,
-    eventProperties     : initialEventProperties,
-    registrationInputs  : initialRegistrationInputs,
-    registrationValids  : initialRegistrationValids,
-    registrationFocus   : initialRegistrationFocus,
-    loanRequestInputs   : initialLoanRequestInputs,
-    loanRequestValids   : initialLoanRequestValids,
-    loanRequestFocus    : initialLoanRequestFocus,
-    makePaymentInputs   : initialMakePaymentInputs,
-    makePaymentValids   : initialMakePaymentValids,
-    payments            : initialPayments,
-    opens               : initialOpens,
-    moreInputs          : initialMoreInputs,
-    moreInputsValids    : initialMoreInputValids,
-    isDarkTheme         : initialIsDarkTheme,
+    user                    : initialUser,
+    token                   : initialToken,
+    persist                 : initialPersist,
+    title                   : initialTitle,
+    sidebarCollapsed          : initialSidebarCollapsed,
+    navbarShown             : initialNavbarShown,
+    loginSpecifics          : initialLoginSpecifics,
+    eventProperties         : initialEventProperties,
+    registrationInputs      : initialRegistrationInputs,
+    alipayAccountInputs     : initialAlipayAccountInputs,
+    wechatAccountInputs     : initialWechatAccountInputs,
+    bankAccountInputs       : initialBankAccountInputs,
+    makePaymentInputs       : initialMakePaymentInputs,
+    transferRequestInputs   : initialTransferRequestInputs,
+    loginInputs             : initialLoginInputs,
+    registrationFocus       : initialRegistrationFocus,
+    isDarkTheme             : initialIsDarkTheme,
     darkColor,
     lightColor,
-    currentLoans        : initialCurrentLoans
+    introPage               : initialIntroPage,
+    validAlipayAccount     : initialValidAlipayAccount,
+    validWechatAccount     : initialValidWechatAccount,
+    validBankAccount       : initialValidBankAccount,
+    alipayAccountFocus      : initialAlipayAccountFocus,
+    wechatAccountFocus      : initialWechatAccountFocus,
+    bankAccountFocus        : initialBankAccountFocus,
+    alipayAccountSpecifics  : initialAlipayAccountSpecifics,
+    wechatAccountSpecifics  : initialWechatAccountSpecifics,
+    validRegistration       : initialValidRegistration,
+    validLogin              : initialValidLogin,
+    validTransferRequest    : initialValidTransferRequest,
+    loginFocus              : initialLoginFocus,
+    transferRequestFocus    : initialTransferRequestFocus
 }
 
 export default initials

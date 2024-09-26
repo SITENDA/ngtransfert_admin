@@ -1,0 +1,282 @@
+@keyframes slideBackground {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.background {
+    height: 100%;
+    width: 100%;
+    float: left;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: none;
+    position: fixed;
+    object-fit: cover;
+    z-index: 100000;
+    transition: opacity 1s ease-in-out;
+    opacity: 1;
+    transition: 1s;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    margin: 40px 120px;
+    color: white;
+  }
+  
+  .nav-menu {
+    display: flex;
+    align-items: flex-start;
+    list-style: none;
+    font-size: 18px;
+    gap: 90px;
+  }
+  
+  .nav-menu-item {
+    margin-top: 10px; /* Adjust this value as needed */
+    width: 100px;
+  }
+  
+  .nav-contact {
+    border-radius: 50px;
+    padding: 10px 38px;
+    background: #fff;
+    color: #262626;
+  }
+  
+  .nav-left {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .heading h1 {
+    font-family: Poppins;
+    font-size: 2.5rem;
+  }
+  
+
+.hero {
+    margin: 0px 120px;
+    margin-top: 270px;
+}
+
+.hero-text {
+    color: #fff;
+    font-size: 110px;
+    font-weight: 500;
+    line-height: 130px;
+}
+
+.hero-explore {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    width: fit-content;
+    margin-top: 70px;
+    padding: 5px 8px;
+    padding-left: 30px;
+    border-radius: 60px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.hero-explore p {
+    color: #292929;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.hero-dot-play {
+    margin-top: 120px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.hero-dots {
+    display: flex;
+    align-items: center;
+    gap: 23px;
+    list-style: none;
+}
+
+.hero-dot {
+    width: 15px;
+    height: 15px;
+    background: #fff;
+    border-radius: 7.5px;
+    cursor: pointer;
+}
+
+.hero-dot.orange {
+    background: orangered;
+}
+
+.hero-play {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.hero-play p {
+    color: #fff;
+    font-size: 19px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 500ms ease-in-out;
+    opacity: 1;
+}
+
+.img1 {
+    z-index: -1;
+}
+
+.img2 {
+    z-index: -2;
+}
+
+.img3 {
+    z-index: -3;
+}
+
+.vid1 {
+    z-index: -4;
+}
+
+.site-layout-content {
+    align-self: center;
+    justify-self: center;
+}
+
+.carousel-control-prev {
+    left: 5%;
+    transform: translateX(-5%);
+  }
+  
+  .carousel-control-next {
+    right: 5%;
+    transform: translateX(5%);
+  }
+
+  .site-layout-content {
+    height: 100%;
+  }
+
+  .container .px-4 .px-lg-5 {
+    height: 100%;
+  }
+  .paragraph-background {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .text-white-75 {
+    color: #fff;
+  }
+  
+
+  @media (max-width: 800px) {
+    .ant-layout-header {
+        box-sizing: border-box;
+        margin-top: 30px;
+        height: 100%;
+        line-height: 100%;
+        text-align: center;
+        justify-items: center;
+        z-index: 9999;
+    }
+    .heading h1 {
+      font-size: 1.5rem;
+      line-height: 2rem;
+      padding-bottom: 2%;
+    }
+    .nav {
+        min-width: 100%;
+        width: 100%;
+        min-height: 100%;
+        padding: 10%;
+        justify-content: center;
+        align-content: center;
+        z-index: 9999;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .logo {
+        min-width: 50px;
+        min-height: 50px;
+        height: 50px;
+        width:50px;
+        margin: 5px;
+        margin-right: 20px;
+    } 
+    ul {
+        padding-bottom: 5px;
+    }
+    .nav-menu-item {
+        margin-top: 10px; /* Adjust this value as needed */
+        width: 100px;
+        text-align: center;
+        align-content: center;
+      }
+  }
+  
+  @media (max-width: 550px) {
+    body, #root, .ant-layout-content {
+        box-sizing: border-box;
+    }
+    .heading h1 {
+      font-size: 1.5rem;
+      line-height: 1.5rem;
+      padding-bottom: 50px;
+    }
+    .logo {
+        margin-right: 0;
+    }
+    
+      
+    .ant-layout {
+        width: 100vw;
+        height: 100vh;
+    }
+  
+    .nav {
+      display: flex;
+      flex-direction: column;
+      margin-left: 0;
+      align-items: center;
+      min-width: 100vw;
+      width: 100vw;
+      column-width: 100%;
+      justify-content: center;
+    }
+    .ant-layout-content .container {
+        height: 60%;
+    } 
+    .nav-menu {
+        display: none;
+    }
+  }
+  

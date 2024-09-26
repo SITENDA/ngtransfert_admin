@@ -1,21 +1,19 @@
-import React, { useState, useEffect, forwardRef } from 'react';
-import { Autocomplete, TextField, Box, createTheme, ThemeProvider } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAllUsers, useGetAllUsersQuery } from '../../features/users/usersSlice';
 import { selectCurrentUser, setObjectItem } from '../../features/auth/authSlice';
-import { selectIsDarkTheme } from '../../features/auth/authSlice';
-import { darkColor, lightColor } from "../../util/initials";
+import { forwardRef } from 'react';
 
-const UserSelector = forwardRef(({ onSelectUser, params }, ref) => {
+const UserSelector = forwardRef(({ onSelectUser, params}, ref) => {
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
   const orderedUsers = useSelector(selectAllUsers);
-  const isDarkTheme = useSelector(selectIsDarkTheme);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [options, setOptions] = useState([]);
-
   // Fetch all users from the backend
-  useGetAllUsersQuery();
-  const { key, innerKey, nextRef } = params;
+  const { isSuccess } = useGetAllUsersQuery();
+  const {key, innerKey, nextRef } = params
 
   useEffect(() => {
     if (orderedUsers) {
@@ -28,57 +26,34 @@ const UserSelector = forwardRef(({ onSelectUser, params }, ref) => {
       }));
       setOptions(optionsData);
     }
-  }, [orderedUsers, currentUser]);
+  }, [orderedUsers, currentUser])
 
-  const handleChange = (event, value) => {
-    const selectedUserDetails = orderedUsers.find((user) => user.userId === value?.value);
-    dispatch(setObjectItem({ key: key, innerKey: innerKey, value: selectedUserDetails?.userId }));
+  const handleUserChange = (selectedOption) => {
+    const selectedUserDetails = orderedUsers.find((user) => user.userId === selectedOption.value);
+    console.log("key", key)
+    console.log("innerKey", innerKey)
+    console.log("userId", selectedUserDetails.userId )
+    dispatch(setObjectItem({ key: key, innerKey: innerKey, value: selectedUserDetails.userId }));
+    setSelectedUser(selectedOption);
     onSelectUser(selectedUserDetails);
-    nextRef?.current.focus();
-  };
-
-  const theme = createTheme({
-    palette: {
-      mode: isDarkTheme ? 'dark' : 'light',
-      background: {
-        default: isDarkTheme ? darkColor : lightColor,
-        paper: isDarkTheme ? darkColor : lightColor,
-      },
-      text: {
-        primary: isDarkTheme ? lightColor : darkColor,
-      },
-    },
-  });
+    nextRef?.current.focus()
+  }
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box sx={{ mb: 3 }}>
-        <label htmlFor="userSelector" className="form-label" style={{color: isDarkTheme ? lightColor : darkColor}}>
-          Select User
-        </label>
-        <Autocomplete
-          defaultValue={{
-            value: currentUser?.userId,
-            label: `${currentUser?.fullName} (${currentUser?.email})`
-          }}
-          options={options}
-          getOptionLabel={(option) => option.label}
-          style={{ width: '90%' }}
-          onChange={handleChange}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              placeholder="Search for a user..."
-              variant="outlined"
-              ref={ref}
-              id="userSelector"
-              sx={{ backgroundColor: isDarkTheme ? darkColor : lightColor, color: isDarkTheme ? lightColor : darkColor }}
-            />
-          )}
-          isOptionEqualToValue={(option, value) => option.value === value.value}
-        />
-      </Box>
-    </ThemeProvider>
+    <div className="mb-3">
+      <label htmlFor="userSelector" className="form-label">
+        Select User
+      </label>
+      <Select
+        id="userSelector"
+        ref={ref}
+        options={options}
+        value={selectedUser}
+        onChange={handleUserChange}
+        isSearchable
+        placeholder="Search for a user..."
+      />
+    </div>
   );
 });
 

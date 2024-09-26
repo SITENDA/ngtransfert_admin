@@ -8,7 +8,7 @@ const PROTOCOL          = env === "production" ? "https" : "http";
 const baseUrl = env === "production" ? `${PROTOCOL}://${BACKEND_HOST}/${BACKEND_API_NAME}/${VERSION}`
 : "http://localhost:8080";
 
-const bottomUrl                 = "/kaasitoma";
+const bottomUrl                 = "/nnyinimu";
 const free_access               = "/auth";
 const registerUrl               = `${free_access}/register`;
 const loginUrl                  = `${free_access}/signin`;
@@ -19,8 +19,12 @@ const imagesUrl                 = env === "production" ? 'https://admin.ngtransf
 const avatarUrl                 = `${free_access}/avatars`;
 const checkAccountStatusUrl     = `${free_access}/checkVerificationStatus`;
 const resendVerificationUrl     = `${free_access}/resendVerificationLink`;
-const usersBaseUrl              = `${bottomUrl}/users`;
-const rolesBaseUrl              = `${bottomUrl}/roles`;
+const usersBaseUrl                  = `${bottomUrl}/users`;
+const rolesBaseUrl                  = `${bottomUrl}/roles`;
+const alipayAccountsBaseUrl         = `${bottomUrl}/alipayAccounts`;
+const wechatAccountsBaseUrl         = `${bottomUrl}/wechatAccounts`;
+const bankAccountsBaseUrl           = `${bottomUrl}/bankAccounts`;
+const banksBaseUrl                  = `${bottomUrl}/banks`;
 
 
 export const backend = {
@@ -39,38 +43,38 @@ export const backend = {
     checkAccountStatusUrl,
     resendVerificationUrl,
     users: {
-        getAllUrl                  : `${usersBaseUrl}/getAllUsers`,
-        getAllClientsUrl           : `${usersBaseUrl}/getAllClients`,
-        getByIdUrl                 : `${usersBaseUrl}/getUserById`,
-        getByUserIdUrl             : `${usersBaseUrl}/getByUserId`,
-        deleteUrl              : `${usersBaseUrl}/deleteUser`,
+        getAllUrl                   : `${usersBaseUrl}/getAllUsers`,
+        getAllClientsUrl            : `${usersBaseUrl}/getAllClients`,
+        getByIdUrl                  : `${usersBaseUrl}/getUserById`,
+        getByUserIdUrl              : `${usersBaseUrl}/getByUserId`,
+        deleteUrl                   : `${usersBaseUrl}/deleteUser`,
     },
     alipayAccounts: {
-        createAccountUrl           : `${bottomUrl}/createAlipayAccount`,
-        getAllUrl                  : `${bottomUrl}/getAllAlipayAccounts`,
-        getAllByClientIdUrl        : `${bottomUrl}/getAlipayAccountsForClient`,
-        getByIdUrl                 : `${bottomUrl}/getAlipayAccountByAlipayAccountId`,
-        deleteUrl                 : `${bottomUrl}/deleteAlipayAccount`,
+        createAccountUrl            : `${alipayAccountsBaseUrl}/createAlipayAccount`,
+        getAllUrl                   : `${alipayAccountsBaseUrl}/getAllAlipayAccounts`,
+        getAllByClientIdUrl         : `${alipayAccountsBaseUrl}/getAlipayAccountsForClient`,
+        getByIdUrl                  : `${alipayAccountsBaseUrl}/getAlipayAccountByAlipayAccountId`,
+        deleteUrl                   : `${alipayAccountsBaseUrl}/deleteAlipayAccount`,
     },
     wechatAccounts: {
-        createAccountUrl           : `${bottomUrl}/createWechatAccount`,
-        getAllUrl                  : `${bottomUrl}/getAllWechatAccounts`,
-        getAllByClientIdUrl        : `${bottomUrl}/getWechatAccountsForClient`,
-        getByIdUrl                 : `${bottomUrl}/getWechatAccountByWechatAccountId`,
-        deleteUrl                 : `${bottomUrl}/deleteWechatAccount`,
+        createAccountUrl            : `${wechatAccountsBaseUrl}/createWechatAccount`,
+        getAllUrl                   : `${wechatAccountsBaseUrl}/getAllWechatAccounts`,
+        getAllByClientIdUrl         : `${wechatAccountsBaseUrl}/getWechatAccountsForClient`,
+        getByIdUrl                  : `${wechatAccountsBaseUrl}/getWechatAccountByWechatAccountId`,
+        deleteUrl                   : `${wechatAccountsBaseUrl}/deleteWechatAccount`,
     },
     bankAccounts: {
-        createAccountUrl           : `${bottomUrl}/createBankAccount`,
-        getAllUrl                 : `${bottomUrl}/getAllBankAccounts`,
-        getAllByClientIdUrl        : `${bottomUrl}/getBankAccountsForClient`,
-        getByIdUrl                 : `${bottomUrl}/getBankAccountByBankAccountId`,
-        deleteUrl                 : `${bottomUrl}/deleteBankAccount`,
+        createAccountUrl            : `${bankAccountsBaseUrl}/createBankAccount`,
+        getAllUrl                   : `${bankAccountsBaseUrl}/getAllBankAccounts`,
+        getAllByClientIdUrl         : `${bankAccountsBaseUrl}/getBankAccountsForClient`,
+        getByIdUrl                  : `${bankAccountsBaseUrl}/getBankAccountByBankAccountId`,
+        deleteUrl                   : `${bankAccountsBaseUrl}/deleteBankAccount`,
 
     },
     banks: {
-        createBankUrl           : `${bottomUrl}/createBank`,
-        getAllByCountryUrl          : `${bottomUrl}/getAllBanksInCountry`,
-        getAllUrl                   : `${bottomUrl}/getAllBanks`,
-        getByIdUrl                  : `${bottomUrl}/getBankById`,
+        createBankUrl               : `${banksBaseUrl}/createBank`,
+        getAllByCountryUrl          : `${banksBaseUrl}/getAllBanksInCountry`,
+        getAllUrl                   : `${banksBaseUrl}/getAllBanks`,
+        getByIdUrl                  : `${banksBaseUrl}/getBankById`,
     }
 };

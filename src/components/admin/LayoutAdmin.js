@@ -1,13 +1,18 @@
 import {Outlet} from 'react-router-dom'
 import ScrollToTopButton from '../ScrollToTopButton'
 import LogoutModal from '../LogoutModal';
-import FooterAdmin from "./FooterAdmin";
+import '../../assets/css/Nunito.css';
+import '../../assets/css/fontawesome-free/css/all.min.css';
+import '../../assets/css/sb-admin-2.min.css';
+import '../../assets/css/antd-new.css';
 import {Layout} from 'antd'
 import {useSelector} from 'react-redux'
 import {selectIsDarkTheme, selectDarkColor, selectLightColor, selectCurrentUser} from '../../features/auth/authSlice'
 import PageHeading from '../PageHeading';
-import Sidebar from "../Sidebar";
 import Topbar from "../Topbar";
+import {useEffect} from "react";
+import FooterAdmin from "./FooterAdmin";
+import SidebarAdmin from "./SidebarAdmin";
 
 const {Content} = Layout;
 
@@ -25,7 +30,7 @@ const LayoutAdmin = () => {
             boxSizing: 'border-box',
             background: isDarkTheme ? darkColor : lightColor
         }}>
-            {(user?.fullName && !Boolean(user?.isNewClient)) && <Sidebar/>}
+            {(user?.fullName && !Boolean(user?.isNewClient)) && <SidebarAdmin/>}
             <Layout theme={isDarkTheme ? 'dark' : 'light'}
                     style={{background: isDarkTheme ? darkColor : lightColor, maxHeight: '100vh', height: '100vh'}}>
                 <Content theme='dark' style={{

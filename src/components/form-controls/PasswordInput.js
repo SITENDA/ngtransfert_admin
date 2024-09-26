@@ -1,19 +1,8 @@
 import React from 'react'
-
 import InputField from './InputField'
-import { useSelector } from 'react-redux';
-import { selectCurrentValids } from '../../features/auth/authSlice';
 import { forwardRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { setObjectItem } from '../../features/auth/authSlice';
 
-const PasswordInput = forwardRef(({}, ref) => {
-    const valids = useSelector(selectCurrentValids)
-    const dispatch = useDispatch();
-    const handleChange = (event) => {
-        dispatch(setObjectItem({ key: 'registrationInputs', innerKey: 'password', value: event.target.value }));
-    };
-
+const PasswordInput = forwardRef(({changeHandler, validPassword, value, isFocused, handleFocus, handleBlur}, ref) => {
   return (
     <InputField
             label="Password"
@@ -22,9 +11,13 @@ const PasswordInput = forwardRef(({}, ref) => {
             name="password"
             ref={ref}
             required
-            onChange={handleChange}
+            handleChange={changeHandler}
+            handleFocus={handleFocus}
+            handleBlur={handleBlur}
+            isFocused={isFocused}
+            value={value || ""}
             validation={{
-                isValid: valids.validPassword,
+                isValid: validPassword,
                 message: <>Password Requirements: <br />
                     - 4 to 24 characters long <br />
                     - Contains at least one uppercase letter <br />
@@ -59,7 +52,7 @@ const PasswordInput = forwardRef(({}, ref) => {
                     <br /></>
             }}
             ariaDescribedBy="passwordnote"
-            placeholder="Enter password"
+            placeholder="Enter your password"
         />
   )
 });

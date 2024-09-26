@@ -1,14 +1,16 @@
-@import url(Nunito\ display.css);
+@import url('./nunito-display.css');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
 html, body {
     width: 100%;
     margin: 0;
     padding: 0;
-  }
+}
 
 html {
     font-family: 'Nunito', sans-serif;
@@ -23,39 +25,39 @@ body {
 }
 
 .App {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 80vh; 
-  overflow:auto;
-  z-index: 9998;
-  width: 100%;
-  padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    overflow: auto;
+    z-index: 9998;
+    width: 100%;
+    padding: 1rem;
 }
 
 section {
     width: 100%;
-    height: 96vh;
+    /*height: 96vh;*/
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    background-color: rgba(0,0,0,0.4);
+    /*background-color: rgba(0,0,0,0.4);*/
     overflow: hidden;
     z-index: 9999;
     border-radius: 8px;
     padding: 1rem;
-  }
-  
-
-form {
-    display: flex;
-    flex-direction: column;
-    justify-content:flex-start;
-    align-items: flex-start; /* Align items to the start */
-    flex-grow: 1;
-    padding-bottom: 1rem;
 }
+
+
+/*form {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    justify-content:flex-start;*/
+/*    align-items: flex-start; !* Align items to the start *!*/
+/*    flex-grow: 1;*/
+/*    padding-bottom: 1rem;*/
+/*}*/
 
 a, a:visited {
     color: #fff;
@@ -65,21 +67,28 @@ input[type="text"],
 input[type="password"],
 input[type="email"],
 select,
-button,
 textarea {
-  font-family: 'Nunito', sans-serif;
-  font-size: 22px;
-  padding: 0.25rem;
-  border-radius: 0.5rem;
-  width: 75%;
-}
-label,
-button {
-  margin-top: 1rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 22px;
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+    width: 90%;
 }
 
 button {
-  padding: 0.5rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 22px;
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+}
+
+label,
+button {
+    margin-top: 1rem;
+}
+
+button {
+    padding: 0.5rem;
 }
 
 .instructions {
@@ -90,6 +99,7 @@ button {
     padding: 0.25rem;
     position: relative;
     bottom: -10px;
+    width: 90%;
 }
 
 .instructions > svg {
@@ -131,14 +141,14 @@ button {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
-  }
-  
-  .button-wrapper button {
-    flex: 1;
-    margin: 0 0.5rem;  /* Adds margin to the left and right of each button */
-  }
+}
 
-  .button-like-link {
+.button-wrapper button {
+    flex: 1;
+    margin: 0 0.5rem; /* Adds margin to the left and right of each button */
+}
+
+.button-like-link {
     display: inline-block;
     padding: 0.5rem; /* Matched the padding of the button */
     margin: 1rem; /* Adjusted to match the margin-top of the button */
@@ -165,6 +175,7 @@ button {
     outline: none; /* Removes the outline */
     background-color: #004a9f; /* Even darker color on active/focus */
 }
+
 .avatar {
     position: absolute; /* Position it relative to the nearest positioned ancestor or to the body */
     top: 1rem; /* Space from the top */
@@ -194,17 +205,17 @@ button {
     margin: 0 5px 2px 2px;
 }
 
-  
+
 /* Media Query for Small Screens */
 @media screen and (max-width: 768px) {
     html {
         font-size: 14px; /* Smaller base font-size */
     }
-  
+
     section {
         max-width: 100%; /* Use full width */
         min-height: 300px; /* Smaller min-height */
-        padding: 0.5rem;  /* Reduced padding */
+        padding: 0.5rem; /* Reduced padding */
     }
 
     form {
@@ -231,6 +242,7 @@ button {
     .instructions {
         font-size: 0.6rem; /* Smaller font size */
         padding: 0.2rem; /* Reduced padding */
+        width: 90%;
     }
 
     .errmsg {

@@ -3,136 +3,73 @@ import {useNavigate, Link, useLocation} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import ErrorBoundary from '../ErrorBoundary';
 import {
-    selectCurrentInputs,
     selectCurrentUser,
-    selectCurrentValids,
-    selectEventProperties,
+    selectValidLogin,
     selectLoginSpecifics,
     setItem,
-    selectIsDarkTheme
+    handleValidation, selectLoginInputs, selectLoginFocus, handleFocus, handleBlur, selectCurrentToken
 } from '../../features/auth/authSlice';
-import '../../assets/css/form-styles.css'
 import {useLoginMutation} from '../../features/auth/authApiSlice';
 import {regex} from '../../util/regex';
 import EmailInput from '../form-controls/EmailInput';
 import PhoneNumberInput from '../form-controls/PhoneNumberInput';
 import PasswordInput from '../form-controls/PasswordInput';
 import {setObjectItem} from '../../features/auth/authSlice';
-import initials from '../../util/initials';
+import {
+    initialLoginInputs,
+    initialValidLogin,
+    initialEventProperties,
+    initialLoginFocus,
+    initialLoginSpecifics
+} from '../../util/initials';
 import {selectPersist} from '../../features/auth/authSlice';
 import ErrorMessageComponent from '../form-controls/ErrorMessageComponent';
 import TendaButton from '../form-controls/TendaButton';
-import {darkColor, lightColor} from '../../util/initials';
 import {adminPaths} from "../../util/frontend";
-
-export const ResponseHandler = async (response, refs) => {
-    const dispatch = useDispatch();
-    if (response?.statusCode === 404 && response?.message === "User with these credentials does not exist") {
-        await dispatch(setObjectItem({
-            key: 'eventProperties', innerKey: "errorMessage",
-            value: <>A user with these credentials does not exist. <br/>
-                Please try again or register for a new account in case it is your first time at Novic.</>
-        }));
-        await dispatch(setObjectItem({key: 'eventProperties', innerKey: "isError", value: true}));
-        refs.errorRef.current.focus();
-    } else if (response?.statusCode !== 200 && response?.message) {
-        await dispatch(setObjectItem({
-            key: 'eventProperties', innerKey: "errorMessage",
-            value: <>{response.message}</>
-        }));
-        await dispatch(setObjectItem({key: 'eventProperties', innerKey: "isError", value: true}));
-        refs.errorRef.current.focus();
-    } else if (response?.details) {
-        await dispatch(setObjectItem({
-            key: 'eventProperties', innerKey: "errorMessage",
-            value: response.details
-        }));
-        await dispatch(setObjectItem({key: 'eventProperties', innerKey: "isError", value: true}));
-    } else {
-        await dispatch(setObjectItem({
-            key: 'eventProperties', innerKey: "errorMessage",
-            value: "An unknown error occurred."
-        }));
-        await dispatch(setObjectItem({key: 'eventProperties', innerKey: "isError", value: true}));
-    }
-}
+import {ResponseHandler} from "../ResponseHandler";
 
 const NewLogin = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [loading] = useState(false);
-    const {
-        initialRegistrationInputs,
-        initialRegistrationValids,
-        initialRegistrationFocus,
-        initialLoginSpecifics,
-        initialEventProperties
-    } = initials
     const [login, {isSuccess}] = useLoginMutation();
     const persist = useSelector(selectPersist)
     const location = useLocation();
     const refs = {
         passwordRef: useRef(null),
-        persistRef: useRef(null),
         emailRef: useRef(null),
         phoneNumberRef: useRef(null),
-        errorRef: useRef()
+        errorRef: useRef(null)
     }
-    const inputs = useSelector(selectCurrentInputs)
-    const valids = useSelector(selectCurrentValids)
+    const loginInputs = useSelector(selectLoginInputs)
+    const validLogin = useSelector(selectValidLogin)
+    const loginFocus = useSelector(selectLoginFocus)
     const loginSpecifics = useSelector(selectLoginSpecifics)
-    const eventProperties = useSelector(selectEventProperties)
     const user = useSelector(selectCurrentUser)
-    const isDarkTheme = useSelector(selectIsDarkTheme);
+    const allowedRoles = ["ADMIN"];
+    const hasRole = user?.roles?.find(role => allowedRoles?.includes(role.roleName));
+    const token = useSelector(selectCurrentToken);
 
     useEffect(() => {
-        if (Boolean(user?.fullName)) {
+        if (Boolean(user?.fullName) && hasRole && token?.length > 0 && token !== "nothing") {
             navigate(adminPaths.homePath, {replace: true})
         } else {
-            dispatch(setItem({key: 'title', value: 'Login to Novic!'}));
+            dispatch(setItem({key: 'title', value: 'Login to NGTransfert!'}));
+            dispatch(setItem({key: 'sidebarCollapsed', value: window.innerWidth < 900}));
         }
-        //refs.emailRef.current.focus();
-    }, [dispatch, refs.emailRef, navigate, user?.fullName, user.ekiddako])
+        refs.emailRef.current.focus();
+    }, [dispatch, refs.emailRef, navigate, user?.fullName, hasRole, token])
 
     useEffect(() => {
         const prevPath = location.state?.prevPath || "none";
         dispatch(setObjectItem({
             key: 'loginSpecifics',
             innerKey: "showBeginnerPrompt",
-            value: prevPath === "/registrationsuccess"
+            value: (prevPath === adminPaths.registerPath || prevPath === adminPaths.registrationSuccessPath)
         }));
     }, [dispatch, location.state])
 
-    useEffect(() => {
-        const result = regex.EMAIL_REGEX.test(inputs.email);
-        if (result) dispatch(setObjectItem({key: 'loginSpecifics', innerKey: "identifier", value: "email"}));
-        dispatch(setObjectItem({key: 'registrationValids', innerKey: "validEmail", value: result}));
-    }, [inputs.email, dispatch])
-
-    useEffect(() => {
-        const result = regex.PHONE_NUMBER_REGEX.test(inputs.phoneNumber);
-        if (result) dispatch(setObjectItem({key: 'loginSpecifics', innerKey: "identifier", value: "phoneNumber"}));
-        dispatch(setObjectItem({key: 'registrationValids', innerKey: "validPhoneNumber", value: result}));
-    }, [inputs.phoneNumber, dispatch])
-
-    useEffect(() => {
-        const result = regex.PASSWORD_REGEX.test(inputs.password);
-        dispatch(setObjectItem({key: 'registrationValids', innerKey: "validPassword", value: result}));
-    }, [inputs.password, dispatch])
-
-
-    const handlePersistChange = async (e) => {
-        await dispatch(setItem({key: 'persist', value: e.target.checked}));
-        const item = localStorage.getItem("persist")
-        if (item == null) {
-            localStorage.setItem("persist", e.target.checked)
-        } else {
-            localStorage.removeItem("persist")
-        }
-    };
-
-
-    const handleRegisterWith = () => {
+    const handleLoginWith = () => {
         dispatch(setObjectItem({key: 'loginSpecifics', innerKey: "showPhone", value: !loginSpecifics.showPhone}));
         dispatch(setObjectItem({
             key: 'loginSpecifics',
@@ -141,38 +78,27 @@ const NewLogin = () => {
         }));
     }
 
-    useEffect(() => {
-        dispatch(setObjectItem({
-            key: 'eventProperties',
-            innerKey: "errorMessage",
-            value: initialEventProperties.errorMessage
-        }));
-        dispatch(setObjectItem({key: 'eventProperties', innerKey: "isError", value: false}));
-    }, [inputs.phoneNumber, inputs.email, inputs.password, initialEventProperties.errorMessage, dispatch])
-
-
     const handleLoginSubmit = async (event) => {
         event.preventDefault();
-        const correctEmail = regex.EMAIL_REGEX.test(inputs.email)
-        const correctPhone = regex.PHONE_NUMBER_REGEX.test(inputs.phoneNumber)
-        const correctPassword = regex.PASSWORD_REGEX.test(inputs.password)
+        const correctEmail = regex.EMAIL_REGEX.test(loginInputs.email)
+        const correctPhone = regex.PHONE_NUMBER_REGEX.test(loginInputs.phoneNumber)
+        const correctPassword = regex.ADMIN_PASSWORD_REGEX.test(loginInputs.password)
 
         if (!((correctEmail || correctPhone) && correctPassword)) {
             dispatch(setObjectItem({key: 'eventProperties', innerKey: "errorMessage", value: 'Invalid Entry'}));
             return;
         }
-        const email = correctEmail ? inputs.email : "none";
-        const phoneNumber = correctPhone ? inputs.phoneNumber : "none";
+        const email = correctEmail ? loginInputs.email : "none";
+        const phoneNumber = correctPhone ? loginInputs.phoneNumber : "none";
         try {
             const loginInfo = {
                 email,
                 phoneNumber,
-                password: inputs.password,
+                password: loginInputs.password,
                 identifier: loginSpecifics.identifier,
             }
             dispatch(setObjectItem({key: 'eventProperties', innerKey: "isLoading", value: true}));
             const response = await login(loginInfo).unwrap();
-            console.log("Response is : ", response);
             if (isSuccess) dispatch(setObjectItem({key: 'eventProperties', innerKey: "isLoading", value: false}));
             if (response?.statusCode === 200) {
                 const user = response?.data?.user;
@@ -180,14 +106,10 @@ const NewLogin = () => {
                 if (persist) localStorage.setItem("persist", JSON.stringify(persist))
                 dispatch(setItem({key: 'user', value: user}));
                 dispatch(setItem({key: 'token', value: token}));
-                dispatch(setItem({key: 'persist', value: persist}));
-                dispatch(setItem({key: 'registrationInputs', value: initialRegistrationInputs}));
-                dispatch(setItem({key: 'registrationFocus', value: initialRegistrationFocus}));
-                dispatch(setItem({key: 'registrationValids', value: initialRegistrationValids}));
+                reset();
                 const nextPath = location.state?.from?.pathname || adminPaths.homePath;
                 navigate(nextPath, {replace: true, state: {prevPath: location.pathname}});
-                reset();
-            } else await ResponseHandler(response, refs);
+            } else await ResponseHandler(response, refs, dispatch);
         } catch (error) {
             dispatch(setObjectItem({key: 'eventProperties', innerKey: "isLoading", value: false}));
             await dispatch(setObjectItem({
@@ -199,8 +121,9 @@ const NewLogin = () => {
     };
 
     const reset = () => {
-        dispatch(setItem({key: 'registrationInputs', value: initialRegistrationInputs}));
-        dispatch(setItem({key: 'registrationValids', value: initialRegistrationValids}));
+        dispatch(setItem({key: 'loginInputs', value: initialLoginInputs}));
+        dispatch(setItem({key: 'loginFocus', value: initialLoginFocus}));
+        dispatch(setItem({key: 'validLogin', value: initialValidLogin}));
         dispatch(setItem({key: 'loginSpecifics', value: initialLoginSpecifics}));
         dispatch(setItem({key: 'eventProperties', value: initialEventProperties}));
     }
@@ -215,30 +138,69 @@ const NewLogin = () => {
                                 Sign in using your email or phone number, and the password that you've just created.
                             </div>)}
 
-                            {!loginSpecifics.showPhone && <EmailInput ref={refs.emailRef}/>}
-                            {loginSpecifics.showPhone && <PhoneNumberInput ref={refs.phoneNumberRef}/>}
+                            {!loginSpecifics.showPhone && <EmailInput
+                                ref={refs.emailRef}
+                                changeHandler={(e) => dispatch(handleValidation({
+                                    objectName: "login",
+                                    eventValue: e.target.value,
+                                    inputName: "email",
+                                    regexPattern: "EMAIL_REGEX"
+                                }))}
+                                validEmail={validLogin.validEmail}
+                                value={loginInputs.email}
+                                isFocused={loginFocus.emailFocus}
+                                handleFocus={() => dispatch(handleFocus({objectName: 'login', inputName: "email"}))}
+                                handleBlur={() => dispatch(handleBlur({
+                                    objectName: 'login',
+                                    inputName: "email",
+                                    regexPattern: "EMAIL_REGEX"
+                                }))}
+                            />
+                            }
+                            {loginSpecifics.showPhone && <PhoneNumberInput
+                                ref={refs.phoneNumberRef}
+                                changeHandler={(e) => dispatch(handleValidation({
+                                    objectName: "login",
+                                    eventValue: e,
+                                    inputName: "phoneNumber",
+                                    regexPattern: "PHONE_NUMBER_REGEX"
+                                }))}
+                                validPhoneNumber={validLogin.validPhoneNumber}
+                                value={loginInputs.phoneNumber}
+                                focus={loginFocus.phoneNumberFocus}/>}
 
                             <p className="mt-3">
-                                <Link onClick={handleRegisterWith}
+                                <Link onClick={handleLoginWith}
                                       style={{textDecoration: "none", fontStyle: "italic", color: "#099ff6"}} to="#">
                                     Login with {loginSpecifics.showPhone ? "email" : "phone number"} instead</Link>
                             </p>
 
-                            <PasswordInput ref={refs.passwordRef}/>
+                            <PasswordInput
+                                ref={refs.passwordRef}
+                                changeHandler={(e) => dispatch(handleValidation({
+                                    objectName: "login",
+                                    eventValue: e.target.value,
+                                    inputName: "password",
+                                    regexPattern: "ADMIN_PASSWORD_REGEX"
+                                }))}
+                                validPassword={validLogin.validPassword}
+                                value={loginInputs.password}
+                                isFocused={validLogin.passwordFocus}
+                                handleFocus={() => dispatch(handleFocus({objectName: 'login', inputName: "password"}))}
+                                handleBlur={() => dispatch(handleBlur({
+                                    objectName: 'login',
+                                    inputName: "password",
+                                    regexPattern: "ADMIN_PASSWORD_REGEX"
+                                }))}
+                            />
 
-                            {/* Trust This Device */}
-                            <div className="mb-3 form-check">
-                                <input type="checkbox" className="form-check-input" id="persist"
-                                       name="persist" onChange={handlePersistChange}/>
-                                <label className="form-check-label" htmlFor="persist"
-                                       style={{color: isDarkTheme ? lightColor : darkColor}}>Trust This Device</label>
-                            </div>
                             <ErrorMessageComponent ref={refs.errorRef}/>
 
                             {/* Submit Button */}
                             <div className="d-grid">
                                 <TendaButton
-                                    disabled={!((valids.validPhoneNumber || valids.validEmail) && valids.validPassword && !eventProperties.isError)}
+                                    //!((valids.validPhoneNumber || valids.validEmail) && valids.validPassword && !eventProperties.isError)
+                                    disabled={false}
                                     buttonText={loading ? 'Signing In...' : 'Sign In'}/>
                             </div>
                         </form>

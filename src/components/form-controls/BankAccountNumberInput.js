@@ -1,18 +1,8 @@
 import React from 'react'
-
 import InputField from './InputField'
-import { useSelector } from 'react-redux';
-import { selectMoreInputsValids } from '../../features/auth/authSlice';
 import { forwardRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { setObjectItem } from '../../features/auth/authSlice';
 
-const BankAccountNumberInput = forwardRef(({}, ref) => {
-    const valids = useSelector(selectMoreInputsValids)
-    const dispatch = useDispatch();
-    const handleChange = (event) => {
-        dispatch(setObjectItem({ key: 'moreInputs', innerKey: 'bankAccountNumber', value: event.target.value }));
-    };
+const BankAccountNumberInput = forwardRef(({changeHandler, validBankAccountNumber, value, isFocused, handleFocus, handleBlur}, ref) => {
 
   return (
     <InputField
@@ -22,9 +12,13 @@ const BankAccountNumberInput = forwardRef(({}, ref) => {
         name="bankAccountNumber"
          ref={ref}
         required
-        onChange={handleChange}
+        value={value}
+        handleChange={changeHandler}
+        isFocused={isFocused}
+        handleFocus={handleFocus}
+        handleBlur={handleBlur}
         validation={{
-            isValid: valids.validBankAccountNumber,
+            isValid: validBankAccountNumber,
             message: <>Enter you bank account number, enter a number of length within 6 to 18 characters. <br /></>
         }}
         ariaDescribedBy="bankAccountNumbernote"

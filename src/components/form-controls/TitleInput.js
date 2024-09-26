@@ -1,63 +1,95 @@
-import InputField from './InputField'
-import { useSelector } from 'react-redux';
-import { selectCurrentValids } from '../../features/auth/authSlice';
-import { forwardRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { setObjectItem } from '../../features/auth/authSlice';
-import { regex } from '../../util/regex';
+import {useState, useEffect, useRef, forwardRef} from 'react';
+import {useSelector} from 'react-redux';
+import {selectIsDarkTheme} from '../../features/auth/authSlice';
+import isEqual from 'lodash.isequal';
+import {Select, MenuItem, FormControl, InputLabel, ThemeProvider, Typography} from '@mui/material';
+import {darkColor, lightColor} from '../../util/initials';
+import {useTendaTheme} from "../useTendaTheme";
 
-const TitleInput = forwardRef(({}, ref) => {
-    const valids = useSelector(selectCurrentValids)
-    const dispatch = useDispatch();
-    const handleChange = (value) => {
-        dispatch(setObjectItem({ key: 'registrationInputs', innerKey: "title", value: value }));
-        const result = regex.TITLE_REGEX.test(value) && value !== "Select your preferred title"
-        dispatch(setObjectItem({ key: 'registrationValids', innerKey: "validTitle", value: result }));
-    };
+const TitleInput = forwardRef(({changeHandler, validTitle, value, isFocused, handleFocus, handleBlur}, ref) => {
+    const [options, setOptions] = useState([]);
+    const [open, setOpen] = useState(false); // State to track whether the dropdown is open
+    const valuesRef = useRef([]);
+    const isDarkTheme = useSelector(selectIsDarkTheme);
+    const theme = useTendaTheme();
 
-  return (
-    <InputField
-            label="Title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-            id="title"
-            type="select"
-            name="title"
-            ref={ref}
-            required
-            onChange={handleChange}
-            validation={{
-                isValid: valids.validTitle,
-                message: <>Select your title (Mr., Ms., Mrs., Dr., etc.).</>
-            }}
-            ariaDescribedBy="titlenote"
-            placeholder="Choose a title"
-            options={[
-                {
-                    value: 'Mr.',
-                    label: 'Mr.',
-                },
-                {
-                    value: 'Ms.',
-                    label: 'Ms.',
-                },
-                {
-                    value: 'Mrs.',
-                    label: 'Mrs.',
-                },
-                {
-                    value: 'Dr.',
-                    label: 'Doctor',
-                },
-                {
-                    value: 'Teacher',
-                    label: 'Tr.',
-                },
-                {
-                    value: 'Engineer',
-                    label: 'Eng.',
-                }
-            ]}
-        />
-  )
+    useEffect(() => {
+        const values = [
+            {
+                value: 'Mr.',
+                label: 'Mr.',
+            },
+            {
+                value: 'Ms.',
+                label: 'Ms.',
+            },
+            {
+                value: 'Mrs.',
+                label: 'Mrs.',
+            },
+            {
+                value: 'Dr.',
+                label: 'Doctor',
+            },
+            {
+                value: 'Teacher',
+                label: 'Tr.',
+            },
+            {
+                value: 'Engineer',
+                label: 'Eng.',
+            }
+        ];
+        if (!isEqual(values, valuesRef.current)) {
+            valuesRef.current = values;
+            const optionsData = values.map((title) => ({
+                moreData: title,
+                value: title.value,
+                label: (<Typography variant="body1" component="span">{title.label}</Typography>),
+            }));
+            setOptions(optionsData);
+        }
+    }, []);
+
+    return (
+        <ThemeProvider theme={theme}>
+            <FormControl fullWidth variant="outlined" margin="normal">
+                <InputLabel htmlFor="titleSelector" style={{color: isDarkTheme ? lightColor : darkColor}}>
+                    Title
+                </InputLabel>
+                <Select
+                    id="titleSelector"
+                    ref={ref}
+                    value={value}
+                    onChange={(e) => changeHandler(e)}
+                    onOpen={() => setOpen(true)}  // Open the dropdown
+                    onClose={() => setOpen(false)} // Close the dropdown
+                    open={open}                    // Control the dropdown open state
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    required
+                    label="Title"
+                    inputRef={ref}
+                    sx={{width: '90%'}}
+                    MenuProps={{
+                        PaperProps: {
+                            style: {
+                                backgroundColor: isDarkTheme ? darkColor : lightColor,
+                                color: isDarkTheme ? lightColor : darkColor,
+                            },
+                        },
+                    }}
+                    variant="outlined"
+                >
+                    {options.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </ThemeProvider>
+    );
 });
 
-export default TitleInput
+export default TitleInput;

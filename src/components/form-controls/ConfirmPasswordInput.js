@@ -1,19 +1,8 @@
 import React from 'react'
-
 import InputField from './InputField'
-import { useSelector } from 'react-redux';
-import { selectCurrentValids } from '../../features/auth/authSlice';
 import { forwardRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { setObjectItem } from '../../features/auth/authSlice';
 
-const ConfirmPasswordInput = forwardRef(({}, ref) => {
-    const valids = useSelector(selectCurrentValids)
-    const dispatch = useDispatch();
-    const handleChange = (event) => {
-        dispatch(setObjectItem({ key: 'registrationInputs', innerKey: 'confirmPassword', value: event.target.value }));
-    };
-
+const ConfirmPasswordInput = forwardRef(({changeHandler, validConfirmPassword, value, isFocused, handleFocus, handleBlur}, ref) => {
   return (
     <InputField
             label="Confirm Password"
@@ -22,15 +11,20 @@ const ConfirmPasswordInput = forwardRef(({}, ref) => {
             name="confirmPassword"
             ref={ref}
             required
-            onChange={handleChange}
+            handleChange={changeHandler}
+            handleFocus={handleFocus}
+            handleBlur={handleBlur}
+            isFocused={isFocused}
+            value={value || ""}
             validation={{
-                isValid: valids.validConfirmPassword,
+                isValid: validConfirmPassword,
                 message: <>Must match the first password input field</>
             }}
             ariaDescribedBy="confirmpasswordnote"
-            placeholder="Type password again"
+            placeholder="Type your password again"
         />
   )
 });
 
 export default ConfirmPasswordInput
+

@@ -1,44 +1,39 @@
-import { FaHandHoldingDollar } from "react-icons/fa6";
-import { MdOutlineRequestPage } from "react-icons/md";
-import { GiTakeMyMoney } from "react-icons/gi";
-import { FaCheck } from "react-icons/fa";
-import { FaCcAmazonPay } from "react-icons/fa6";
-import { MdOutlinePaid } from "react-icons/md";
+import { IoLogoWechat } from "react-icons/io5";
 import { adminPaths } from "./frontend";
+import { IoLogoAlipay } from "react-icons/io5";
+import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { FcMoneyTransfer } from "react-icons/fc";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
 
-export const loanLinks = [
+import { BsBank } from "react-icons/bs";
+
+export const receiverAccountLinks = [
     {
-        path: adminPaths.requestLoanPath,
-        text: "Enter new Loan",
-        icon: <FaHandHoldingDollar/>
+        path: adminPaths.wechatAccountsPath,
+        text: "WeChat Accounts",
+        icon: <IoLogoWechat/>
     },
     {
-        path: adminPaths.loanRequestsPath,
-        text: "Loan Requests",
-        icon: <MdOutlineRequestPage/>
+        path: adminPaths.alipayAccountsPath,
+        text: "Alipay Accounts",
+        icon: <IoLogoAlipay/>
     },
     {
-        path: adminPaths.currentLoansListPath,
-        text: "Current Loans",
-        icon: <GiTakeMyMoney/>
-    },
-    {
-        path: adminPaths.settledLoansListPath,
-        text: "Settled Loans",
-        icon: <FaCheck/>
+        path: adminPaths.bankAccountsPath,
+        text: "Bank Accounts",
+        icon: <BsBank/>
     }
 ];
 
-export const paymentLinks = [
+export const sendingRecordLinks = [
     {
-        path: adminPaths.makePaymentPath,
-        text: "Enter new Payment",
-        icon: <FaCcAmazonPay/>
+        path: adminPaths.transferRequestsPath,
+        text: "Transfer requests",
+        icon: <FaMoneyBillTrendUp/>
     },
     {
-        path: adminPaths.paymentsListPath,
-        text: "Recent payments",
-        icon: <MdOutlinePaid/>
-    },
-
+        path: adminPaths.bankAccountsPath,
+        text: "Settled transfers",
+        icon: <FcMoneyTransfer/>
+    }
 ];
