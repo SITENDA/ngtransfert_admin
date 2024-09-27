@@ -1,19 +1,19 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectCurrentUser, setItem } from '../auth/authSlice';
+import React, {useEffect} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import {selectCurrentUser, selectIsDarkTheme, setItem} from '../auth/authSlice';
 import {
     selectAllBankAccounts,
     useGetAllBankAccountsQuery,
 } from './bankAccountsSlice';
-import { useNavigate, useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import {Button, Alert, CircularProgress, Box, ThemeProvider} from '@mui/material';
-import { adminPaths } from '../../util/frontend';
+import {adminPaths} from '../../util/frontend';
 import BankAccountNumberDisplay from '../../components/form-controls/BankAccountNumberDisplay';
 import ImageDisplay from '../../components/form-controls/ImageDisplay';
 import Tables from "../../components/Tables";
 import TableButton from "../../components/form-controls/TableButton";
 import MainPageWrapper from "../../components/MainPageWrapper";
-import { useTendaTheme } from "../../components/useTendaTheme";
+import {useTendaTheme} from "../../components/useTendaTheme";
 
 const BankAccountsListAdmin = () => {
     const navigate = useNavigate();
@@ -21,11 +21,11 @@ const BankAccountsListAdmin = () => {
     const params = useParams();
     const user = useSelector(selectCurrentUser);
     const theme = useTendaTheme();
-
-    const { clientId } = params;
+    const isDarkTheme = useSelector(selectIsDarkTheme);
+    const [bankAccounts, setBankAccounts] = React.useState([]);
 
     useEffect(() => {
-        dispatch(setItem({ key: "title", value: "Bank Accounts" }));
+        dispatch(setItem({key: "title", value: "Bank Accounts"}));
     }, [dispatch]);
 
     const handleAddAccountClick = () => {
@@ -50,56 +50,59 @@ const BankAccountsListAdmin = () => {
 
     const orderedBankAccounts = useSelector(selectAllBankAccounts);
 
-    let filteredBankAccounts = orderedBankAccounts;
+    useEffect(() => {
+        if (isAllBankAccountsSuccess) {
+            console.log("Data fetched, ordered bank accounts : ", orderedBankAccounts);
+            setBankAccounts(orderedBankAccounts)
+        }
+    }, [orderedBankAccounts, isAllBankAccountsSuccess, dispatch]);
 
-    // Filter bankAccounts based on the given clientId
-    if (clientId) {
-        filteredBankAccounts = orderedBankAccounts.filter(account => Number(account.clientId) === Number(clientId));
-    }
 
     const theadLabels = ['Account Name', 'Details', 'Account No', 'Bank'];
-    const tbodyContents = filteredBankAccounts.map(account => [
+    const tbodyContents = bankAccounts.map(account => [
         account.cardHolderName,
         <TableButton
             onClick={() => handleDetailsClick(account?.bankAccountId, account)}
             label="Details"
         />,
-        <BankAccountNumberDisplay bankAccountNumber={account.bankAccountNumber} />,
-        <ImageDisplay imageUrl={account.bank.bankLogoUrl} title={account.bank.bankNameEng} />
+        <BankAccountNumberDisplay bankAccountNumber={account?.bankAccountNumber}/>,
+        <ImageDisplay imageUrl={account?.bank?.bankLogoUrl} title={account?.bank?.bankNameEng}/>
     ]);
 
     let content;
     if (isLoadingBankAccounts) {
         content = (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                <CircularProgress />
+                <CircularProgress/>
             </Box>
         );
-    } else if (orderedBankAccounts.length === 0) {
-        content = (
-            <Alert
-                message="No Bank accounts available"
-                type="warning"
-                showIcon
-            />
-        );
     } else if (isAllBankAccountsSuccess) {
-        content = (
-            <Tables
-                theadLabels={theadLabels}
-                tfootLabels={[]}
-                tbodyContents={tbodyContents}
-            />
-        );
-    } else if (isAllBankAccountsError) {
-        content = <p>Error: {allBankAccountsError}</p>;
+        if (orderedBankAccounts.length === 0) {
+            content = (
+                <Alert
+                    message="No Bank accounts available"
+                    type="warning"
+                    showIcon
+                />
+            )
+        } else if (isAllBankAccountsError) {
+            content = <p>Error: {allBankAccountsError}</p>;
+        } else
+            content = (
+                <Tables
+                    theadLabels={theadLabels}
+                    tfootLabels={[]}
+                    tbodyContents={tbodyContents}
+                />
+            );
     }
 
     return (
         <ThemeProvider theme={theme}>
             <MainPageWrapper>
-                <section>
-                    <Button type='primary' style={{ marginBottom: '10px' }} onClick={handleAddAccountClick}>
+                <section className={`scrollbar-style ${isDarkTheme ? 'dark-theme' : ''}`}
+                         style={{maxHeight: '100vh', overflowY: 'auto', overflowX: 'auto'}}>
+                    <Button type='primary' style={{marginBottom: '10px'}} onClick={handleAddAccountClick}>
                         Add a Bank Account
                     </Button>
                     {content}

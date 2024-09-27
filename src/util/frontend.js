@@ -37,4 +37,6 @@ export const adminPaths = {
     transferRequestsByClientPath                : `${adminBaseUrl}/transferrequestsbyclient`,
     transferRequestDetailsPath                  : `${adminBaseUrl}/transferrequestdetails`,
     applyForTransferPath                        : `${adminBaseUrl}/applyfortransfer`,
+    approvedTransfersPath                        : `${adminBaseUrl}/approvedtransfers`,
+    settledTransfersPath                        : `${adminBaseUrl}/settledtransfers`,
 }

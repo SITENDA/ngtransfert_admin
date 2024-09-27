@@ -4,7 +4,7 @@ import {selectCurrentUser, selectIsDarkTheme, setItem} from '../auth/authSlice';
 import {
     selectAllTransferRequests,
     useGetAllTransferRequestsQuery,
-} from './transferRequestsSlice';
+} from '../transferRequests/transferRequestsSlice';
 import {useNavigate, useParams} from 'react-router-dom';
 import {Alert, CircularProgress, Box, ThemeProvider} from '@mui/material';
 import {adminPaths} from '../../util/frontend';
@@ -14,7 +14,7 @@ import TableButton from "../../components/form-controls/TableButton";
 import MainPageWrapper from "../../components/MainPageWrapper";
 import {useTendaTheme} from "../../components/useTendaTheme";
 
-const TransferRequestsListAdmin = () => {
+const SettledTransfersListAdmin = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const isDarkTheme = useSelector(selectIsDarkTheme);
@@ -26,7 +26,7 @@ const TransferRequestsListAdmin = () => {
     const {clientId} = params;
 
     useEffect(() => {
-        dispatch(setItem({key: "title", value: "Transfer Requests"}));
+        dispatch(setItem({key: "title", value: "Settled Transfers"}));
     }, [dispatch]);
 
     const handleDetailsClick = (transferRequestId, transferRequest) => {
@@ -103,4 +103,4 @@ const TransferRequestsListAdmin = () => {
     );
 };
 
-export default TransferRequestsListAdmin;
+export default SettledTransfersListAdmin;

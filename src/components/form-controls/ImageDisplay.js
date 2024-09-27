@@ -5,7 +5,7 @@ import {backend} from "../../util/backend";
 const ImageDisplay = ({imageUrl, title}) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
 
-    const urlToUse = imageUrl.startsWith("http") ? imageUrl : backend.imagesUrl + imageUrl;
+    const urlToUse = imageUrl?.startsWith("http") ? imageUrl : backend.imagesUrl + imageUrl;
 
     const showModal = () => {
         setIsModalVisible(true);

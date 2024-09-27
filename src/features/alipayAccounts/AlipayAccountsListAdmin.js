@@ -61,15 +61,9 @@ const AlipayAccountsListAdmin = () => {
 
     const orderedAlipayAccounts = useSelector(selectAllAlipayAccounts);
 
-    let filteredAlipayAccounts = orderedAlipayAccounts;
-
-    // Filter alipayAccounts based on the given clientId
-    if (clientId) {
-        filteredAlipayAccounts = orderedAlipayAccounts.filter(account => Number(account.clientId) === Number(clientId));
-    }
 
     const theadLabels = ['Account Name', 'Details', 'Apply'];
-    const tbodyContents = filteredAlipayAccounts.map(alipayAccount => [
+    const tbodyContents = orderedAlipayAccounts.map(alipayAccount => [
         <span>{alipayAccount.alipayAccountName} {alipayAccount.ali ?
             <ImageDisplay imageUrl={alipayAccount.alipayQrCodeUrl} title="Alipay QR Code"/> :
             alipayAccount.email && !alipayAccount.email.startsWith("rand") ?

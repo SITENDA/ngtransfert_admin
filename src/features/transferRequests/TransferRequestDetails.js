@@ -22,6 +22,7 @@ import MainPageWrapper from "../../components/MainPageWrapper";
 import ImageDisplay from "../../components/form-controls/ImageDisplay";
 import EmailDisplay from "../../components/form-controls/EmailDisplay";
 import PhoneNumberDisplay from "../../components/form-controls/PhoneNumberDisplay";
+import SendIcon from "@mui/icons-material/Send";
 
 const TransferRequestDetails = () => {
     const navigate = useNavigate();
@@ -56,6 +57,10 @@ const TransferRequestDetails = () => {
     const handleDeleteWechatAccountClick = () => {
         setDeleteAccountModalVisible(true);
     };
+
+    const handleApproveTransferClick = () => {
+        //Approve transfer code
+    }
 
     if (!transferRequest) {
         return <Typography align="center" color="error" variant="h5" sx={{mt: 5}}>Transfer request not
@@ -124,14 +129,30 @@ const TransferRequestDetails = () => {
                                         {transferRequest?.countryOfDeposit && (
                                             <Grid container sx={{mb: 2}}>
                                                 <Grid item xs={4}>
-                                                    <Typography variant="h6" sx={{fontWeight: 'bold'}}>Country of deposit</Typography>
+                                                    <Typography variant="h6" sx={{fontWeight: 'bold'}}>Country of
+                                                        deposit</Typography>
                                                 </Grid>
                                                 <Grid item xs={8}>
-                                                    <ImageDisplay imageUrl={transferRequest?.countryOfDeposit?.countryFlagUrl} title={`${transferRequest?.countryOfDeposit?.countryName}Flag`}/>
+                                                    <ImageDisplay
+                                                        imageUrl={transferRequest?.countryOfDeposit?.countryFlagUrl}
+                                                        title={`${transferRequest?.countryOfDeposit?.countryName}Flag`}/>
                                                 </Grid>
                                             </Grid>
                                         )}
                                         <Divider sx={{my: 3}}/>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button
+                                            variant="contained"
+                                            color="primary" // Change to primary color for a positive action
+                                            startIcon={<SendIcon/>} // Use SendIcon for transfer action
+                                            onClick={handleApproveTransferClick}
+                                            fullWidth
+                                        >
+                                            Approve transfer
+                                        </Button>
+                                    </CardActions>
+                                    <CardContent>
 
                                         <Typography variant="h5" gutterBottom>Receiver Account Details</Typography>
                                         <Divider sx={{mb: 2}}/>
@@ -140,7 +161,8 @@ const TransferRequestDetails = () => {
                                                 <Typography variant="h6" sx={{fontWeight: 'bold'}}>Name</Typography>
                                             </Grid>
                                             <Grid item xs={8} container alignItems="center">
-                                                <Typography variant="body1">{transferRequest?.receiverAccount.accountName}</Typography>
+                                                <Typography
+                                                    variant="body1">{transferRequest?.receiverAccount.accountName}</Typography>
                                             </Grid>
                                         </Grid>
 
@@ -152,7 +174,8 @@ const TransferRequestDetails = () => {
                                                 <Typography variant="h6" sx={{fontWeight: 'bold'}}>Name</Typography>
                                             </Grid>
                                             <Grid item xs={8} container alignItems="center">
-                                                <Typography variant="body1">{transferRequest.client.fullName}</Typography>
+                                                <Typography
+                                                    variant="body1">{transferRequest.client.fullName}</Typography>
                                             </Grid>
                                         </Grid>
                                         <Grid container sx={{mb: 2}}>
@@ -160,7 +183,8 @@ const TransferRequestDetails = () => {
                                                 <Typography variant="h6" sx={{fontWeight: 'bold'}}>Email</Typography>
                                             </Grid>
                                             <Grid item xs={8}>
-                                                <Typography variant="body1">{<EmailDisplay email={transferRequest.client.email}/>}</Typography>
+                                                <Typography variant="body1">{<EmailDisplay
+                                                    email={transferRequest.client.email}/>}</Typography>
                                             </Grid>
                                         </Grid>
                                         <Grid container sx={{mb: 2}}>
@@ -169,7 +193,8 @@ const TransferRequestDetails = () => {
                                             </Grid>
                                             <Grid item xs={8}>
                                                 <Typography
-                                                    variant="body1"><PhoneNumberDisplay phoneNumber={transferRequest.client.phoneNumber}/></Typography>
+                                                    variant="body1"><PhoneNumberDisplay
+                                                    phoneNumber={transferRequest.client.phoneNumber}/></Typography>
                                             </Grid>
                                         </Grid>
                                     </CardContent>
@@ -200,7 +225,8 @@ const TransferRequestDetails = () => {
                                         Confirm Delete Transfer Request
                                     </Typography>
                                     <Typography sx={{mt: 2}}>
-                                        Are you sure you want to delete this Transfer request? All information about this
+                                        Are you sure you want to delete this Transfer request? All information about
+                                        this
                                         account will be lost.
                                     </Typography>
                                     <Box sx={{mt: 2, display: 'flex', justifyContent: 'flex-end'}}>

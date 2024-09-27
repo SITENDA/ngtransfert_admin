@@ -32,7 +32,12 @@ export const sendingRecordLinks = [
         icon: <FaMoneyBillTrendUp/>
     },
     {
-        path: adminPaths.bankAccountsPath,
+        path: adminPaths.approvedTransfersPath,
+        text: "Approved transfers",
+        icon: <FcMoneyTransfer/>
+    },
+    {
+        path: adminPaths.settledTransfersPath,
         text: "Settled transfers",
         icon: <FcMoneyTransfer/>
     }

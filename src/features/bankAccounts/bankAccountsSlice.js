@@ -19,6 +19,7 @@ export const bankAccountsApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: [{type: 'BankAccount', id: 'LIST'}],
         }),
+
         getAllBankAccounts: builder.query({
             query: () => ({
                 url: backend.bankAccounts.getAllUrl,
@@ -26,6 +27,7 @@ export const bankAccountsApiSlice = apiSlice.injectEndpoints({
             }),
             transformResponse: (responseData) => {
                 let bankAccounts = responseData?.data?.bankAccounts || [];
+                console.log("Bank accounts are : ", bankAccounts)
                 return bankAccountsAdapter.setAll(initialState, bankAccounts);
             },
             providesTags: (result) =>

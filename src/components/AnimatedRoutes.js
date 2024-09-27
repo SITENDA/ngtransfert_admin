@@ -24,6 +24,8 @@ import BankAccountsListAdmin from "../features/bankAccounts/BankAccountsListAdmi
 import BankAccountsByClientList from "../features/bankAccounts/BankAccountsByClientList";
 import AddBankAccount from "../features/bankAccounts/AddBankAccount";
 import BankAccountDetails from "../features/bankAccounts/BankAccountDetails";
+import ApprovedTransfersListAdmin from "../features/approvedTransfers/ApprovedTransfersListAdmin";
+import SettledTransfersListAdmin from "../features/settledTransfers/SettledTransfersListAdmin";
 
 export const pageTransitionStyles = {
     initial: {opacity: 0},
@@ -74,6 +76,8 @@ const AnimatedRoutes = () => {
                                    element={<TransferRequestsByClientList/>}/>
                             <Route path={adminPaths.transferRequestDetailsPath} element={<TransferRequestDetails/>}/>
                             <Route path={adminPaths.applyForTransferPath} element={<ApplyForTransfer/>}/>
+                            <Route path={adminPaths.approvedTransfersPath} element={<ApprovedTransfersListAdmin/>}/>
+                            <Route path={adminPaths.settledTransfersPath} element={<SettledTransfersListAdmin/>}/>
                         </Route>
                     </Route>
                 </Route>

@@ -79,30 +79,33 @@ const AddBankAccount = () => {
         e.preventDefault();
 
         try {
-            const formData = new FormData();
-            formData.append("bankAccountNumber", bankAccountInputs.bankAccountNumber);
-            formData.append("cardHolderName", bankAccountInputs.cardHolderName);
-            formData.append("bankId", bankAccountInputs.bankId);
-            formData.append("clientId", currentUser?.userId);
-            formData.append("bankName", bankAccountInputs.bankName);
-            formData.append("countryId", bankAccountInputs.countryId);
+            // Create a plain object instead of FormData
+            const bankAccountData = {
+                bankAccountNumber: bankAccountInputs.bankAccountNumber,
+                cardHolderName: bankAccountInputs.cardHolderName,
+                bankId: bankAccountInputs.bankId,
+                clientId: currentUser?.userId,
+                countryId: bankAccountInputs.countryId,
+                bankName: bankAccountInputs.bankName,
+            };
 
-            // Set loading to true when the request starts
             setLoading(true);
-            const response = await createBankAccount(formData).unwrap();
+
+            // Use the mutation hook to send the JSON object
+            const response = await createBankAccount(bankAccountData).unwrap();
+
             if (response?.statusCode === 200 && response?.message === "Bank account created successfully") {
                 setTickAnimationVisible(true);
                 reset();
-                setTimeout(() => {
-                    navigate(adminPaths.bankAccountsPath);
-                }, 2000);
+                setTimeout(() => navigate(adminPaths.bankAccountsPath), 2000);
             }
         } catch (error) {
-            console.error('Error generating original QR code:', error);
+            console.error('Error adding bank account:', error);
         } finally {
-            setLoading(false);  // Set loading to false when the request completes
+            setLoading(false);
         }
     };
+
 
     const reset = () => {
         dispatch(setItem({key: 'bankAccountInputs', value: initialBankAccountInputs}));
