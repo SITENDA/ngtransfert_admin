@@ -121,6 +121,15 @@ const AlipayAccountDetails = () => {
                                                     variant="body1">{alipayAccount.alipayAccountName}</Typography>
                                             </Grid>
                                         </Grid>
+                                        <Grid container sx={{mb: 2}}>
+                                            <Grid item xs={4}>
+                                                <Typography variant="h6" sx={{fontWeight: 'bold'}}>Balance</Typography>
+                                            </Grid>
+                                            <Grid item xs={8}>
+                                                <Typography
+                                                    variant="body1">{`${alipayAccount.currency.currencySymbol} ${alipayAccount.balance}`}</Typography>
+                                            </Grid>
+                                        </Grid>
                                         {alipayAccount.email && !alipayAccount.email.startsWith("rand") && (
                                             <Grid container sx={{mb: 2}}>
                                                 <Grid item xs={4}>

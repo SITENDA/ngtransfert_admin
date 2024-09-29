@@ -127,6 +127,15 @@ const BankAccountDetails = () => {
                                                 <Typography variant="body1">{bankAccount.bankAccountNumber}</Typography>
                                             </Grid>
                                         </Grid>
+                                        <Grid container sx={{mb: 2}}>
+                                            <Grid item xs={4}>
+                                                <Typography variant="h6" sx={{fontWeight: 'bold'}}>Balance</Typography>
+                                            </Grid>
+                                            <Grid item xs={8}>
+                                                <Typography
+                                                    variant="body1">{`${bankAccount.currency.currencySymbol} ${bankAccount.balance}`}</Typography>
+                                            </Grid>
+                                        </Grid>
 
                                         <Divider sx={{my: 3}}/>
                                         {/* Bank Details Section */}

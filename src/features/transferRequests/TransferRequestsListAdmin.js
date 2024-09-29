@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {selectCurrentUser, selectIsDarkTheme, setItem} from '../auth/authSlice';
+import {selectIsDarkTheme, setItem} from '../auth/authSlice';
 import {
     selectAllTransferRequests,
     useGetAllTransferRequestsQuery,
 } from './transferRequestsSlice';
-import {useNavigate, useParams} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {Alert, CircularProgress, Box, ThemeProvider} from '@mui/material';
 import {adminPaths} from '../../util/frontend';
 import ImageDisplay from '../../components/form-controls/ImageDisplay';
@@ -18,12 +18,9 @@ const TransferRequestsListAdmin = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const isDarkTheme = useSelector(selectIsDarkTheme);
-    const params = useParams();
-    const user = useSelector(selectCurrentUser);
     const theme = useTendaTheme();
     const [transferRequests, setTransferRequests] = useState([]);
 
-    const {clientId} = params;
 
     useEffect(() => {
         dispatch(setItem({key: "title", value: "Transfer Requests"}));

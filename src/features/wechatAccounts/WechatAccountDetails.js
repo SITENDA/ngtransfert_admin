@@ -123,6 +123,15 @@ const WechatAccountDetails = () => {
                                                     variant="body1">{wechatAccount.wechatAccountName}</Typography>
                                             </Grid>
                                         </Grid>
+                                        <Grid container sx={{mb: 2}}>
+                                            <Grid item xs={4}>
+                                                <Typography variant="h6" sx={{fontWeight: 'bold'}}>Balance</Typography>
+                                            </Grid>
+                                            <Grid item xs={8}>
+                                                <Typography
+                                                    variant="body1">{`${wechatAccount.currency.currencySymbol} ${wechatAccount.balance}`}</Typography>
+                                            </Grid>
+                                        </Grid>
                                         {wechatAccount.email && !wechatAccount.email.startsWith("rand") && (
                                             <Grid container sx={{mb: 2}}>
                                                 <Grid item xs={4}>

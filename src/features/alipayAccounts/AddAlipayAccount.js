@@ -28,11 +28,6 @@ import ClickToUpload from "../../components/form-controls/ClickToUpload";
 import TickAnimation from "../../components/TickAnimation";
 import { adminPaths } from "../../util/frontend";
 
-//TODO: To adjust the AddAlipayAccount, AddAlipayAccount, and AddBankAccount to use the reducers in the authSlice,
-// then proceed to finishing the AddBankAccount page,
-// and returning to their respective lists page when the account is created.
-// Should also add ability for adding a new bank.
-
 const AddAlipayAccount = () => {
     const [alipayQrCodeImage, setAlipayQrCodeImage] = useState({file: null, url: null});
     const [loading, setLoading] = useState(false);  // State variable to track loading status

@@ -1,7 +1,6 @@
 import {createEntityAdapter, createSelector} from "@reduxjs/toolkit";
 import {apiSlice} from "../api/apiSlice";
 import {backend} from "../../util/backend";
-import {selectAllWechatAccountsData} from "../wechatAccounts/wechatAccountsSlice";
 
 const transferRequestsAdapter = createEntityAdapter({
     selectId: (transferRequest) => transferRequest.transferRequestId,
@@ -15,6 +14,7 @@ export const transferRequestsApiSlice = apiSlice.injectEndpoints({
         getAllTransferRequests: builder.query({
             query: () => backend.transferRequests.getAllUrl,
             transformResponse: responseData => {
+                console.log("responseData is : ", responseData)
                 if (responseData?.data?.transferRequests) {
                     const transferRequests = responseData?.data?.transferRequests
                     return transferRequestsAdapter.setAll(initialState, transferRequests)
