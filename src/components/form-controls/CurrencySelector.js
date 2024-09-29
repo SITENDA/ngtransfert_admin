@@ -21,14 +21,22 @@ const CurrencySelector = forwardRef(({
 
     useEffect(() => {
         if (isSuccess) {
-            // Prepare options based on the current object fields
-            // TODO -- Re-order the currencies such that these are on top:
-            // Chinese yuan (CNY) or renminbi (RMB)
-            // United States Dollar
-            // West African CFA franc
-            // Congolese Franc
-            // Central African CFA franc
-            const optionsData = orderedCurrencies.map((currency) => ({
+            // List of currency codes that should appear on top
+            const priorityCurrencies = ["CNY", "USD", "XOF", "CDF", "XAF"];
+
+            // Sort the currencies: prioritized ones appear on top
+            const sortedCurrencies = [...orderedCurrencies].sort((a, b) => {
+                const isAPriority = priorityCurrencies.includes(a.currencyCode);
+                const isBPriority = priorityCurrencies.includes(b.currencyCode);
+
+                // If both are priority, or both are not priority, sort alphabetically by currencyCode
+                if (isAPriority && !isBPriority) return -1;
+                if (!isAPriority && isBPriority) return 1;
+                return a.currencyCode.localeCompare(b.currencyCode);
+            });
+
+            // Prepare options for the Select component
+            const optionsData = sortedCurrencies.map((currency) => ({
                 value: currency.currencyId,
                 label: (
                     <div style={{display: 'flex', alignItems: 'center'}}>
@@ -36,9 +44,11 @@ const CurrencySelector = forwardRef(({
                     </div>
                 ),
             }));
+
             setOptions(optionsData);
         }
     }, [isSuccess, orderedCurrencies]);
+
 
     const handleCurrencyChange = (selectedOption) => {
         const selectedCurrency = orderedCurrencies.find(currency => currency.currencyId === selectedOption.value);

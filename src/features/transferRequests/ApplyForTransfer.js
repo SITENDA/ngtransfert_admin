@@ -297,7 +297,7 @@ const ApplyForTransfer = () => {
                             </form>
                         </div>
                     )}
-                    {tickAnimationVisible && <TickAnimation successMessage="Bank account created successfully!"/>}
+                    {tickAnimationVisible && <TickAnimation successMessage="Transfer requested successfully!"/>}
                 </div>
             </section>
         </MainPageWrapper>

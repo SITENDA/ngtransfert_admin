@@ -35,7 +35,7 @@ export const initialAlipayAccountInputs = {
 };
 
 export const initialTransferRequestInputs = {
-    currencyId                : '',
+    currencyId              : 0,
     amount                  : 0,
     rate                    : 0,
     remark                  : '',
