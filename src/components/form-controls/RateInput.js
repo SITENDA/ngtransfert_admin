@@ -4,7 +4,7 @@ import {forwardRef} from 'react';
 const RateInput = forwardRef(({changeHandler, validRate, value, isFocused, handleFocus, handleBlur}, ref) => {
     return (
         <InputField
-            label="Rate"
+            label="Rate (%)"
             id="rate"
             type="text"
             name="rate"

@@ -23,12 +23,32 @@ export const countriesApiSlice = apiSlice.injectEndpoints({
                 {type: 'Country', id: "LIST"}
             ]
         }),
+        getCountryByCountryId: builder.query({
+            queryFn: (countryId, queryApi, extraOptions, baseQuery) => {
+                // Check if countryId is 0 or not a number
+                if (countryId === 0 || isNaN(countryId)) {
+                    // Return an empty result or handle this as an error if needed
+                    return {error: {status: 400, message: 'Invalid country ID'}};
+                }
+                // Proceed with sending the request if countryId is valid
+                return baseQuery({
+                    url: `${backend.countries.getByIdUrl}?countryId=${countryId}`,
+                    method: 'GET',
+                });
+            },
+            transformResponse: (responseData) => {
+                return responseData?.data?.country || {};
+            },
+            providesTags: (result, error, arg) => [{type: 'Country', id: arg}],
+        }),
+
     })
 })
 
 // -----Exporting our auto-generated hooks ----------------------------------------------------------------------
 export const {
-    useGetAllCountriesQuery
+    useGetAllCountriesQuery,
+    useGetCountryByCountryIdQuery,
 } = countriesApiSlice
 //------------------------------------------------------------------------------------------------------------------
 
@@ -48,7 +68,7 @@ export const {
     selectAll: selectAllCountries,
     selectIds: selectAllCountryIds,
     selectById: selectCountryById,
- } = countriesAdapter.getSelectors((state) => selectAllCountriesData(state) ?? initialState)
+} = countriesAdapter.getSelectors((state) => selectAllCountriesData(state) ?? initialState)
 
 //----------------------------------------------------------------------------------------------------------------
 

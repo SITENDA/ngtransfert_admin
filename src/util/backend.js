@@ -2,7 +2,7 @@
 const env                           = "development";
 const BACKEND_HOST                  = env === "production" ? "back.ngtransfert.org" : "localhost";
 const BACKEND_API_NAME              = env === "production" ? "ngtransfert_backend" : "";
-const VERSION                       = "v9";
+const VERSION                       = "v10";
 const PROTOCOL                      = env === "production" ? "https" : "http";
 
 const baseUrl                       = env === "production" ? `${PROTOCOL}://${BACKEND_HOST}/${BACKEND_API_NAME}/${VERSION}`
@@ -27,6 +27,7 @@ const bankAccountsBaseUrl           = `${bottomUrl}/bankAccounts`;
 const banksBaseUrl                  = `${bottomUrl}/banks`;
 const transferRequestsBaseUrl       = `${bottomUrl}/transferRequests`;
 const countriesBaseUrl              = `${bottomUrl}/countries`;
+const currenciesBaseUrl              = `${bottomUrl}/currencies`;
 
 export const backend = {
     baseUrl,
@@ -87,5 +88,10 @@ export const backend = {
     },
     countries: {
         getAllUrl                   : `${countriesBaseUrl}/getAllCountries`,
+        getByIdUrl                  : `${countriesBaseUrl}/getCountryByCountryId`,
+    },
+    currencies: {
+        getAllUrl                   : `${currenciesBaseUrl}/getAllCurrencies`,
+        getByIdUrl                  : `${currenciesBaseUrl}/getCurrencyById`,
     },
 };

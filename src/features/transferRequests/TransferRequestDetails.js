@@ -92,7 +92,7 @@ const TransferRequestDetails = () => {
                                             </Grid>
                                             <Grid item xs={8}>
                                                 <Typography
-                                                    variant="body1">{`RMB ${transferRequest.amount}`}</Typography>
+                                                    variant="body1">{`${transferRequest?.currency?.currencyCode} ${transferRequest.amount}`}</Typography>
                                             </Grid>
                                         </Grid>
                                         <Divider sx={{mb: 2}}/>
@@ -136,6 +136,8 @@ const TransferRequestDetails = () => {
                                                     <ImageDisplay
                                                         imageUrl={transferRequest?.countryOfDeposit?.countryFlagUrl}
                                                         title={`${transferRequest?.countryOfDeposit?.countryName}Flag`}/>
+                                                    <Typography variant="h6"
+                                                                sx={{fontWeight: 'normal'}}>{transferRequest?.countryOfDeposit?.countryName}</Typography>
                                                 </Grid>
                                             </Grid>
                                         )}

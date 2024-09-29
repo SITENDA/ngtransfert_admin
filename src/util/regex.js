@@ -26,4 +26,5 @@ export const regex = {
     BANK_ID_REGEX               : /^[1-9]\d*$/,
     COUNTRY_ID_REGEX            : /^[1-9]\d*$/,
     REMARK_REGEX                : /^[\w\s.,!?@#$%^&*()\-_=+{};:'"<>|\[\]\/\\]*$/,
+    CURRENCY_ID_REGEX           : /^[1-9]\d*$/,
 };

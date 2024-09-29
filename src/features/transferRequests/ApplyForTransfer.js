@@ -26,6 +26,8 @@ import RemarkInput from "../../components/form-controls/RemarkInput";
 import ReceiverAccountType from "../../util/ReceiverAccountType";
 import {useCreateTransferRequestMutation} from "./transferRequestsSlice";
 import {adminPaths} from "../../util/frontend";
+import {useGetAllCurrenciesQuery} from "../currencies/currenciesSlice";
+import CurrencySelector from "../../components/form-controls/CurrencySelector";
 
 const ApplyForTransfer = () => {
     const [loading, setLoading] = useState(false);  // State variable to track loading status
@@ -35,6 +37,7 @@ const ApplyForTransfer = () => {
     const [createTransferRequest] = useCreateTransferRequestMutation();
     const eventProperties = useSelector(selectEventProperties);
     const refs = {
+        currencyIdRef: useRef(null),
         amountRef: useRef(null),
         rateRef: useRef(null),
         remarkRef: useRef(null),
@@ -49,6 +52,8 @@ const ApplyForTransfer = () => {
     const validTransferRequest = useSelector(selectValidTransferRequest)
     const transferRequestFocus = useSelector(selectTransferRequestFocus)
     const [tickAnimationVisible, setTickAnimationVisible] = useState(false);
+
+    const {data, isSuccess: currenciesLoadedSuccessfully} = useGetAllCurrenciesQuery();
 
     useEffect(() => {
         dispatch(setItem({key: 'title', value: 'Apply for a money transfer'}));
@@ -73,23 +78,59 @@ const ApplyForTransfer = () => {
         dispatch(setObjectItem({key: 'eventProperties', innerKey: "isError", value: false}));
     }, [currentUser?.userId, dispatch, location.state, refs.countryOfDepositIdRef]);
 
+    useEffect(() => {
+    }, [data, currenciesLoadedSuccessfully])
+
+    // const handleAddAccountSubmit = async (e) => {
+    //     e.preventDefault();
+    //
+    //     try {
+    //
+    //         const formData = new FormData();
+    //         formData.append("amount", transferRequestInputs.amount);
+    //         formData.append("rate", transferRequestInputs?.rate);
+    //         formData.append("remark", transferRequestInputs.remark);
+    //         formData.append("receiverAccountType", transferRequestInputs.receiverAccountType);
+    //         formData.append("receiverAccountId", transferRequestInputs.receiverAccountId);
+    //         formData.append("clientId", currentUser?.userId);
+    //         formData.append("countryOfDepositId", transferRequestInputs.countryOfDepositId);
+    //
+    //         // Set loading to true when the request starts
+    //         setLoading(true);
+    //         const response = await createTransferRequest(formData).unwrap();
+    //         if (response?.statusCode === 200 && response.message === "Transfer request saved successfully") {
+    //             setTickAnimationVisible(true);
+    //             reset();
+    //             setTimeout(() => {
+    //                 navigate(adminPaths.transferRequestsPath);
+    //             }, 2000);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error generating original QR code:', error);
+    //     } finally {
+    //         dispatch(setItem({key: 'transferRequestInputs', value: initialTransferRequestInputs}));
+    //         dispatch(setItem({key: 'validTransferRequest', value: initialValidTransferRequest}));
+    //         dispatch(setItem({key: 'transferRequestFocus', value: initialTransferRequestFocus}));
+    //         setLoading(false);  // Set loading to false when the request completes
+    //     }
+    // };
     const handleAddAccountSubmit = async (e) => {
         e.preventDefault();
 
         try {
+            const requestData = {
+                amount: Number(transferRequestInputs.amount),
+                currencyId: transferRequestInputs.currencyId,
+                rate: Number(transferRequestInputs.rate),
+                remark: transferRequestInputs.remark,
+                receiverAccountType: transferRequestInputs.receiverAccountType,
+                receiverAccountId: transferRequestInputs.receiverAccountId,
+                clientId: currentUser?.userId,
+                countryOfDepositId: transferRequestInputs.countryOfDepositId,
+            };
 
-            const formData = new FormData();
-            formData.append("amount", transferRequestInputs.amount);
-            formData.append("rate", transferRequestInputs?.rate);
-            formData.append("remark", transferRequestInputs.remark);
-            formData.append("receiverAccountType", transferRequestInputs.receiverAccountType);
-            formData.append("receiverAccountId", transferRequestInputs.receiverAccountId);
-            formData.append("clientId", currentUser?.userId);
-            formData.append("countryOfDepositId", transferRequestInputs.countryOfDepositId);
-
-            // Set loading to true when the request starts
             setLoading(true);
-            const response = await createTransferRequest(formData).unwrap();
+            const response = await createTransferRequest(requestData).unwrap();
             if (response?.statusCode === 200 && response.message === "Transfer request saved successfully") {
                 setTickAnimationVisible(true);
                 reset();
@@ -98,12 +139,12 @@ const ApplyForTransfer = () => {
                 }, 2000);
             }
         } catch (error) {
-            console.error('Error generating original QR code:', error);
+            console.error('Error processing transfer request:', error);
         } finally {
             dispatch(setItem({key: 'transferRequestInputs', value: initialTransferRequestInputs}));
             dispatch(setItem({key: 'validTransferRequest', value: initialValidTransferRequest}));
             dispatch(setItem({key: 'transferRequestFocus', value: initialTransferRequestFocus}));
-            setLoading(false);  // Set loading to false when the request completes
+            setLoading(false);
         }
     };
 
@@ -111,6 +152,7 @@ const ApplyForTransfer = () => {
         dispatch(setItem({key: 'transferRequestInputs', value: initialBankAccountInputs}));
         dispatch(setItem({key: 'validTransferRequest', value: initialValidBankAccount}));
     };
+
 
     return (
         <MainPageWrapper>
@@ -143,6 +185,27 @@ const ApplyForTransfer = () => {
                                         regexPattern: "COUNTRY_ID_REGEX"
                                     }))}
                                 />
+                                <CurrencySelector
+                                    ref={refs.currencyIdRef}
+                                    changeHandler={(currencyId) => dispatch(handleValidation({
+                                        objectName: "transferRequest",
+                                        eventValue: currencyId,
+                                        inputName: "currencyId",
+                                        regexPattern: "CURRENCY_ID_REGEX"
+                                    }))}
+                                    validCurrency={validTransferRequest.validCurrencyId}
+                                    value={transferRequestInputs.currencyId}
+                                    isFocused={transferRequestFocus.currencyIdFocus}
+                                    handleFocus={() => dispatch(handleFocus({
+                                        objectName: 'transferRequest',
+                                        inputName: "currencyId"
+                                    }))}
+                                    handleBlur={() => dispatch(handleBlur({
+                                        objectName: 'transferRequest',
+                                        inputName: "currencyId",
+                                        regexPattern: "CURRENCY_ID_REGEX"
+                                    }))}
+                                />
 
                                 <AmountInput
                                     ref={refs.amountRef}
@@ -162,7 +225,7 @@ const ApplyForTransfer = () => {
                                     handleBlur={() => dispatch(handleBlur({
                                         objectName: 'transferRequest',
                                         inputName: "amount",
-                                        regexPattern: "AMOUNT_REGEX"
+                                        regexPattern: "CURRENCY_ID_REGEX"
                                     }))}
                                 />
 
@@ -224,6 +287,7 @@ const ApplyForTransfer = () => {
                                             validTransferRequest.validReceiverAccountId &&
                                             validTransferRequest.validReceiverAccountType &&
                                             validTransferRequest.validRemark &&
+                                            validTransferRequest.validCurrencyId &&
                                             validTransferRequest.validAmount
                                         ) || eventProperties.isError}
                                         buttonText={loading ? 'Requesting transfer...' : 'Request Transfer'}

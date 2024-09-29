@@ -35,6 +35,7 @@ export const initialAlipayAccountInputs = {
 };
 
 export const initialTransferRequestInputs = {
+    currencyId                : '',
     amount                  : 0,
     rate                    : 0,
     remark                  : '',
@@ -80,6 +81,7 @@ export const initialValidBankAccount = {
 }
 
 export const initialValidTransferRequest = {
+    validCurrencyId              : false,
     validAmount                  : false,
     validRate                    : false,
     validRemark                  : false,
@@ -164,6 +166,7 @@ export const initialBankAccountFocus = {
 }
 
 export const initialTransferRequestFocus = {
+    currencyIdFocus              : false,
     amountFocus                  : false,
     rateFocus                    : false,
     remarkFocus                  : false,
