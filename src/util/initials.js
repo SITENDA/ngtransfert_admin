@@ -25,6 +25,12 @@ export const initialLoginInputs = {
     identifier          : ''
 };
 
+export const initialTopUpInputs = {
+    topUpMethod     : '',
+    amount          : 0,
+
+}
+
 export const initialAlipayAccountInputs = {
     alipayAccountId: 0,
     alipayAccountName: '',
@@ -111,6 +117,11 @@ export const initialValidWechatAccount = {
     validWechatQrCodeImage: false
 }
 
+export const initialValidTopUp = {
+    validTopUpMethod     : false,
+    validAmount          : false,
+}
+
 export const initialEventProperties = {
     errorMessage              : '',
     isLoading           : false,
@@ -163,6 +174,11 @@ export const initialBankAccountFocus = {
     cardHolderNameFocus     : false,
     errorFocus              : false,
     bankNameFocus           : false,
+}
+
+export const initialTopUpFocus = {
+    topUpMethodFocus     : false,
+    amountFocus          : false,
 }
 
 export const initialTransferRequestFocus = {
@@ -246,17 +262,20 @@ export const initialState =  {
     makePaymentInputs       : initialMakePaymentInputs,
     transferRequestInputs   : initialTransferRequestInputs,
     loginInputs             : initialLoginInputs,
+    topUpInputs             :initialTopUpInputs,
     registrationFocus       : initialRegistrationFocus,
     isDarkTheme             : initialIsDarkTheme,
     darkColor,
     lightColor,
     introPage               : initialIntroPage,
-    validAlipayAccount     : initialValidAlipayAccount,
-    validWechatAccount     : initialValidWechatAccount,
-    validBankAccount       : initialValidBankAccount,
+    validAlipayAccount      : initialValidAlipayAccount,
+    validWechatAccount      : initialValidWechatAccount,
+    validBankAccount        : initialValidBankAccount,
+    validTopUp              : initialValidTopUp,
     alipayAccountFocus      : initialAlipayAccountFocus,
     wechatAccountFocus      : initialWechatAccountFocus,
     bankAccountFocus        : initialBankAccountFocus,
+    topUpFocus              : initialTopUpFocus,
     alipayAccountSpecifics  : initialAlipayAccountSpecifics,
     wechatAccountSpecifics  : initialWechatAccountSpecifics,
     validRegistration       : initialValidRegistration,

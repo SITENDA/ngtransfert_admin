@@ -1,6 +1,10 @@
 // regex.js
+import TopUpMethod from "./TopUpMethod";
+
 const STRICT_PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>|\[\]\/\\?]).{4,24}$/;
 const LENIENT_PASSWORD_REGEX = /^.{4,}$/;
+const TOP_UP_METHOD_REGEX = new RegExp(`^(${Object.values(TopUpMethod).join('|')})$`);
+
 export const regex = {
     ADMIN_PASSWORD_REGEX        : STRICT_PASSWORD_REGEX,
     CLIENT_PASSWORD_REGEX       : LENIENT_PASSWORD_REGEX,
@@ -27,4 +31,5 @@ export const regex = {
     COUNTRY_ID_REGEX            : /^[1-9]\d*$/,
     REMARK_REGEX                : /^[\w\s.,!?@#$%^&*()\-_=+{};:'"<>|\[\]\/\\]*$/,
     CURRENCY_ID_REGEX           : /^[1-9]\d*$/,
+    TOP_UP_METHOD_REGEX         : TOP_UP_METHOD_REGEX,
 };

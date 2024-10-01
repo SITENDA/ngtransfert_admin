@@ -272,7 +272,7 @@ const AddWechatAccount = () => {
                         </form>
                     </div>
                 )}
-                {tickAnimationVisible && <TickAnimation successMessage="Alipay account created successfully!"/>}
+                {tickAnimationVisible && <TickAnimation successMessage="Wechat account created successfully!"/>}
             </div>
         </section>
     );
