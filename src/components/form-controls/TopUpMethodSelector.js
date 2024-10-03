@@ -56,7 +56,7 @@ const TopUpMethodSelector = forwardRef(({
         <div className="mb-3" style={{width: '90%'}}>
             <label htmlFor="topupSelector" className="form-label" style={{color: isDarkTheme ? lightColor : darkColor}}>
                 <div style={{display: 'flex', alignItems: 'center'}}>
-                    <span style={{marginRight: '5px'}}>Top-Up Method</span>
+                    <span style={{marginRight: '5px'}}>Please select your top up Method</span>
                 </div>
             </label>
             <Select

@@ -70,7 +70,7 @@ const WechatAccountDetails = () => {
     }
 
     const handleTopUpClick = () => {
-        navigate(adminPaths.topUpPath, {
+        navigate(adminPaths.topUpInstructionsPath, {
             state: {
                 prevPath: window.location.pathname,
                 wechatAccount

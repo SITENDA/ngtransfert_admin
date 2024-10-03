@@ -69,7 +69,7 @@ const AlipayAccountDetails = () => {
     }
 
     const handleTopUpClick = () => {
-        navigate(adminPaths.topUpPath, {
+        navigate(adminPaths.topUpInstructionsPath, {
             state: {
                 prevPath: window.location.pathname,
                 alipayAccount

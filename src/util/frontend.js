@@ -30,6 +30,7 @@ export const adminPaths = {
     addWechatAccountPath                        : `${adminBaseUrl}/addwechataccount`,
     addBankAccountPath                          : `${adminBaseUrl}/addbankaccount`,
     wechatAccountDetailsPath                    : `${adminBaseUrl}/wechataccountdetails`,
+    topUpInstructionsPath                       : `${adminBaseUrl}/topupinstructions`,
     topUpPath                                   : `${adminBaseUrl}/topup`,
     alipayAccountDetailsPath                    : `${adminBaseUrl}/alipayaccountdetails`,
     bankAccountDetailsPath                      : `${adminBaseUrl}/bankaccountdetails`,

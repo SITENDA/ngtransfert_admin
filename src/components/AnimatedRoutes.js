@@ -27,6 +27,7 @@ import BankAccountDetails from "../features/bankAccounts/BankAccountDetails";
 import ApprovedTransfersListAdmin from "../features/approvedTransfers/ApprovedTransfersListAdmin";
 import SettledTransfersListAdmin from "../features/settledTransfers/SettledTransfersListAdmin";
 import TopUp from "../features/topUp/TopUp";
+import TopUpInstructions from "../features/topUp/TopUpInstructions";
 
 export const pageTransitionStyles = {
     initial: {opacity: 0},
@@ -79,6 +80,8 @@ const AnimatedRoutes = () => {
                             <Route path={adminPaths.applyForTransferPath} element={<ApplyForTransfer/>}/>
                             <Route path={adminPaths.approvedTransfersPath} element={<ApprovedTransfersListAdmin/>}/>
                             <Route path={adminPaths.settledTransfersPath} element={<SettledTransfersListAdmin/>}/>
+                            {/*Top up*/}
+                            <Route path={adminPaths.topUpInstructionsPath} element={<TopUpInstructions/>} />
                             <Route path={adminPaths.topUpPath} element={<TopUp />} />
                         </Route>
                     </Route>

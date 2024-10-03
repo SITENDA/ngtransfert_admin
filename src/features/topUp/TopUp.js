@@ -22,24 +22,20 @@ import {
 } from "../auth/authSlice";
 import {useDeleteAlipayAccountMutation} from "../alipayAccounts/alipayAccountsSlice";
 import AmountInput from "../../components/form-controls/AmountInput";
-import CountrySelector from "../../components/form-controls/CountrySelector";
 
 const TopUp = () => {
-    const [selectedMethod, setSelectedMethod] = useState('');
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
     const isDarkTheme = useSelector(selectIsDarkTheme);
-    const [isDeleteAccountModalVisible, setDeleteAccountModalVisible] = useState(false);
     const [deleteAlipayAccount] = useDeleteAlipayAccountMutation();
     const [tickAnimationVisible, setTickAnimationVisible] = useState(false);
+    const selectedMethod = location.state.selectedMethod;
+    const selectedCountryName = location.state.selectedCountryName;
+
     const topUpInputs = useSelector(selectTopUpInputs)
     const validTopUp = useSelector(selectValidTopUp)
     const topUpFocus = useSelector(selectTopUpFocus)
-
-    const handleMethodChange = (event) => {
-        setSelectedMethod(event.target.value);
-    };
 
     const refs = {
         topUpMethodRef: useRef(null),
@@ -55,17 +51,6 @@ const TopUp = () => {
         console.log(`Top-up method selected: ${selectedMethod}`);
     };
 
-    // Top-up instructions for each method
-    const topUpInstructions = {
-        BANK: "Visit your bank branch and deposit the funds to account number XXXX. Use your phone number as the reference.",
-        MOBILE_MONEY: "Send the top-up amount via Mobile Money to the number 123456789 and provide the transaction ID.",
-        ORANGE_MONEY: "Top up using Orange Money by transferring the funds to account ID ORANGE123.",
-        CASH: "Visit our office to deposit cash directly. Please bring a valid ID for verification."
-    };
-
-    // TODO - To turn this into a TopUp Instructions page having only the country of top up and method,
-    //  and add a continue to top up button that takes the user to
-    //  the actual inputs for top up
     return (
         <MainPageWrapper>
             <section className="container py-5" style={{
@@ -76,68 +61,6 @@ const TopUp = () => {
                     {!tickAnimationVisible && (
                         <>
                             <Grid item xs={12} md={8}>
-                                <CountrySelector
-                                    ref={refs.countryOfDepositIdRef}
-                                    changeHandler={(countryOfDepositId) => dispatch(handleValidation({
-                                        objectName: "topUp",
-                                        eventValue: countryOfDepositId,
-                                        inputName: "countryOfTopUpId",
-                                        regexPattern: "COUNTRY_ID_REGEX"
-                                    }))}
-                                    label="Country of top up"
-                                    validCountry={validTopUp.validCountryOfTopUpId}
-                                    value={topUpInputs.countryOfTopUpId}
-                                    isFocused={topUpFocus.countryOfTopUpIdFocus}
-                                    handleFocus={() => dispatch(handleFocus({
-                                        objectName: 'topUp',
-                                        inputName: "countryOfTopUpId"
-                                    }))}
-                                    handleBlur={() => dispatch(handleBlur({
-                                        objectName: 'topUp',
-                                        inputName: "countryOfTopUpId",
-                                        regexPattern: "COUNTRY_ID_REGEX"
-                                    }))}
-                                />
-
-                                {validTopUp.validCountryOfTopUpId &&
-                                    <TopUpMethodSelector
-                                        ref={refs.topUpMethodRef}
-                                        changeHandler={(selectedOption) => {
-                                            console.log("Selected option : ", selectedOption);
-                                            setSelectedMethod(selectedOption)
-                                            return dispatch(handleValidation({
-                                                objectName: "topUp",
-                                                eventValue: selectedOption.value,
-                                                inputName: "topUpMethod",
-                                                regexPattern: "TOP_UP_METHOD_REGEX"
-                                            }))
-                                        }}
-                                        validTopUpMethod={validTopUp.validTopUpMethod}
-                                        value={topUpInputs.topUpMethod}
-                                        isFocused={topUpFocus.topUpMethodFocus}
-                                        handleFocus={() => dispatch(handleFocus({
-                                            objectName: 'topUp',
-                                            inputName: "topUpMethod"
-                                        }))}
-                                        handleBlur={() => dispatch(handleBlur({
-                                            objectName: 'topUp',
-                                            inputName: "topUpMethod",
-                                            regexPattern: "TOP_UP_METHOD_REGEX"
-                                        }))}
-                                    />}
-
-                                {selectedMethod && (
-                                    <>
-                                        <Divider sx={{my: 3}}/>
-                                        <Typography variant="h6" gutterBottom>
-                                            {selectedMethod.label} Instructions
-                                        </Typography>
-                                        <Divider sx={{mb: 2}}/>
-                                        <Typography variant="body1">
-                                            {topUpInstructions[selectedMethod.value] || "Please select a method to see the instructions."}
-                                        </Typography>
-                                    </>
-                                )}
                                 {validTopUp.validCountryOfTopUpId && validTopUp.validTopUpMethod &&
                                     <AmountInput
                                         ref={refs.amountRef}

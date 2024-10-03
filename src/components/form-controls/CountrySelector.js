@@ -14,12 +14,13 @@ const CountrySelector = forwardRef(({
                                         value,
                                         isFocused,
                                         handleFocus,
-                                        handleBlur
+                                        handleBlur,
+                                        setSelectedCountryName
                                     }, ref) => {
     const [options, setOptions] = useState([]);
     const {data, isSuccess} = useGetPriorityCountriesQuery();
     const isDarkTheme = useSelector(selectIsDarkTheme);
-    const allCountries = useSelector(selectPriorityCountries);
+    const priorityCountries = useSelector(selectPriorityCountries);
     const [currentCountry, setCurrentCountry] = useState(null);
     const dispatch = useDispatch();
     const [fetchedCountry, setFetchedCCountry] = useState(null);
@@ -35,7 +36,7 @@ const CountrySelector = forwardRef(({
             //const filteredCountries = countries.filter(country => currentlyActiveCountries.includes(country.countryName));
 
             // Prepare options for the Select component
-            const optionsData = allCountries.map((country) => ({
+            const optionsData = priorityCountries.map((country) => ({
                 value: country.countryId,
                 label: (
                     <div style={{display: 'flex', alignItems: 'center'}}>
@@ -50,12 +51,13 @@ const CountrySelector = forwardRef(({
             }));
             setOptions(optionsData);
         }
-    }, [data, isSuccess]);
+    }, [priorityCountries, data, isSuccess]);
 
     const handleCountryChange = (selectedOption) => {
-        const selectedCountry = allCountries.find(country => country.countryId === selectedOption.value);
+        const selectedCountry = priorityCountries.find(country => country.countryId === selectedOption.value);
         setCurrentCountry(selectedCountry);
         changeHandler(selectedOption.value);
+        setSelectedCountryName && setSelectedCountryName(selectedCountry?.countryName);
         setTimeout(() => {
             dispatch(setObjectItem({key: 'validTransferRequest', innerKey: "validCountryOfDepositId", value: true}));
         }, 2000);
@@ -63,7 +65,7 @@ const CountrySelector = forwardRef(({
 
     const filterOption = (option, searchText) => {
         const searchRegex = new RegExp(searchText, 'i'); // Case-insensitive search
-        const country = allCountries.find(country => country.countryId === option.value);
+        const country = priorityCountries.find(country => country.countryId === option.value);
         return searchRegex.test(country.countryName);
     };
 
