@@ -21,6 +21,8 @@ import {
     setItem
 } from "../auth/authSlice";
 import {useDeleteAlipayAccountMutation} from "../alipayAccounts/alipayAccountsSlice";
+import AmountInput from "../../components/form-controls/AmountInput";
+import CountrySelector from "../../components/form-controls/CountrySelector";
 
 const TopUp = () => {
     const [selectedMethod, setSelectedMethod] = useState('');
@@ -41,6 +43,7 @@ const TopUp = () => {
 
     const refs = {
         topUpMethodRef: useRef(null),
+        amountRef: useRef(null),
     }
 
     useEffect(() => {
@@ -60,6 +63,9 @@ const TopUp = () => {
         CASH: "Visit our office to deposit cash directly. Please bring a valid ID for verification."
     };
 
+    // TODO - To turn this into a TopUp Instructions page having only the country of top up and method,
+    //  and add a continue to top up button that takes the user to
+    //  the actual inputs for top up
     return (
         <MainPageWrapper>
             <section className="container py-5" style={{
@@ -70,116 +76,102 @@ const TopUp = () => {
                     {!tickAnimationVisible && (
                         <>
                             <Grid item xs={12} md={8}>
-                                <Card sx={{
-                                    background: isDarkTheme ? darkColor : lightColor,
-                                    color: isDarkTheme ? lightColor : darkColor
-                                }}>
+                                <CountrySelector
+                                    ref={refs.countryOfDepositIdRef}
+                                    changeHandler={(countryOfDepositId) => dispatch(handleValidation({
+                                        objectName: "topUp",
+                                        eventValue: countryOfDepositId,
+                                        inputName: "countryOfTopUpId",
+                                        regexPattern: "COUNTRY_ID_REGEX"
+                                    }))}
+                                    label="Country of top up"
+                                    validCountry={validTopUp.validCountryOfTopUpId}
+                                    value={topUpInputs.countryOfTopUpId}
+                                    isFocused={topUpFocus.countryOfTopUpIdFocus}
+                                    handleFocus={() => dispatch(handleFocus({
+                                        objectName: 'topUp',
+                                        inputName: "countryOfTopUpId"
+                                    }))}
+                                    handleBlur={() => dispatch(handleBlur({
+                                        objectName: 'topUp',
+                                        inputName: "countryOfTopUpId",
+                                        regexPattern: "COUNTRY_ID_REGEX"
+                                    }))}
+                                />
 
-                                    <CardContent>
-                                        <TopUpMethodSelector
-                                            ref={refs.topUpMethodRef}
-                                            changeHandler={(selectedOption) => {
-                                                console.log("Selected option : ", selectedOption);
-                                                setSelectedMethod(selectedOption)
-                                                return dispatch(handleValidation({
-                                                    objectName: "topUp",
-                                                    eventValue: selectedOption.value,
-                                                    inputName: "topUpMethod",
-                                                    regexPattern: "TOP_UP_METHOD_REGEX"
-                                                }))
-                                            }}
-                                            validTopUpMethod={validTopUp.validTopUpMethod}
-                                            value={topUpInputs.topUpMethod}
-                                            isFocused={topUpFocus.topUpMethodFocus}
-                                            handleFocus={() => dispatch(handleFocus({
-                                                objectName: 'topUp',
-                                                inputName: "topUpMethod"
-                                            }))}
-                                            handleBlur={() => dispatch(handleBlur({
-                                                objectName: 'topUp',
+                                {validTopUp.validCountryOfTopUpId &&
+                                    <TopUpMethodSelector
+                                        ref={refs.topUpMethodRef}
+                                        changeHandler={(selectedOption) => {
+                                            console.log("Selected option : ", selectedOption);
+                                            setSelectedMethod(selectedOption)
+                                            return dispatch(handleValidation({
+                                                objectName: "topUp",
+                                                eventValue: selectedOption.value,
                                                 inputName: "topUpMethod",
                                                 regexPattern: "TOP_UP_METHOD_REGEX"
-                                            }))}
-                                        />
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={handleConfirmTopUp}
-                                            disabled={!selectedMethod}
-                                            style={{marginTop: '20px'}}
-                                        >
-                                            Confirm Top-Up
-                                        </Button>
+                                            }))
+                                        }}
+                                        validTopUpMethod={validTopUp.validTopUpMethod}
+                                        value={topUpInputs.topUpMethod}
+                                        isFocused={topUpFocus.topUpMethodFocus}
+                                        handleFocus={() => dispatch(handleFocus({
+                                            objectName: 'topUp',
+                                            inputName: "topUpMethod"
+                                        }))}
+                                        handleBlur={() => dispatch(handleBlur({
+                                            objectName: 'topUp',
+                                            inputName: "topUpMethod",
+                                            regexPattern: "TOP_UP_METHOD_REGEX"
+                                        }))}
+                                    />}
+
+                                {selectedMethod && (
+                                    <>
                                         <Divider sx={{my: 3}}/>
-                                        {selectedMethod && (
-                                            <>
-                                                <Typography variant="h6" gutterBottom>
-                                                    {selectedMethod.label} Instructions
-                                                </Typography>
-                                                <Divider sx={{mb: 2}}/>
-                                                <Typography variant="body1">
-                                                    {topUpInstructions[selectedMethod.value] || "Please select a method to see the instructions."}
-                                                </Typography>
-                                            </>
-                                        )}
-                                    </CardContent>
+                                        <Typography variant="h6" gutterBottom>
+                                            {selectedMethod.label} Instructions
+                                        </Typography>
+                                        <Divider sx={{mb: 2}}/>
+                                        <Typography variant="body1">
+                                            {topUpInstructions[selectedMethod.value] || "Please select a method to see the instructions."}
+                                        </Typography>
+                                    </>
+                                )}
+                                {validTopUp.validCountryOfTopUpId && validTopUp.validTopUpMethod &&
+                                    <AmountInput
+                                        ref={refs.amountRef}
+                                        changeHandler={(e) => dispatch(handleValidation({
+                                            objectName: "topUp",
+                                            eventValue: e.target.value,
+                                            inputName: "amount",
+                                            regexPattern: "AMOUNT_REGEX"
+                                        }))}
+                                        validAmount={validTopUp.validAmount}
+                                        value={topUpInputs.amount}
+                                        isFocused={topUpFocus.amountFocus}
+                                        handleFocus={() => dispatch(handleFocus({
+                                            objectName: 'topUp',
+                                            inputName: "amount"
+                                        }))}
+                                        handleBlur={() => dispatch(handleBlur({
+                                            objectName: 'topUp',
+                                            inputName: "amount",
+                                            regexPattern: "AMOUNT_REGEX"
+                                        }))}
+                                    />
+                                }
 
-                                    {/*<CardActions>*/}
-                                    {/*    <Button*/}
-                                    {/*        variant="contained"*/}
-                                    {/*        sx={{backgroundColor: '#4CAF50', color: '#fff'}} // Change to a green color*/}
-                                    {/*        startIcon={<MonetizationOnIcon/>}*/}
-                                    {/*        onClick={handleTopUpClick}*/}
-                                    {/*        fullWidth*/}
-                                    {/*    >*/}
-                                    {/*        Top Up*/}
-                                    {/*    </Button>*/}
-
-                                    {/*</CardActions>*/}
-                                    {/*<CardContent>*/}
-                                    {/*    /!* Client Details Section *!/*/}
-                                    {/*    <Typography variant="h5" gutterBottom>Client Details</Typography>*/}
-                                    {/*    <Divider sx={{mb: 2}}/>*/}
-                                    {/*    <Grid container sx={{mb: 2}} alignItems="center">*/}
-                                    {/*        <Grid item xs={4}>*/}
-                                    {/*            <Typography variant="h6" sx={{fontWeight: 'bold'}}>Name</Typography>*/}
-                                    {/*        </Grid>*/}
-                                    {/*        <Grid item xs={8} container alignItems="center">*/}
-                                    {/*            /!*<Avatar src={alipayAccount.client.profileImageUrl}*!/*/}
-                                    {/*            /!*        alt={alipayAccount.client.fullName} sx={{mr: 2}}/>*!/*/}
-                                    {/*            <Typography variant="body1">{alipayAccount.client.fullName}</Typography>*/}
-                                    {/*        </Grid>*/}
-                                    {/*    </Grid>*/}
-                                    {/*    <Grid container sx={{mb: 2}}>*/}
-                                    {/*        <Grid item xs={4}>*/}
-                                    {/*            <Typography variant="h6" sx={{fontWeight: 'bold'}}>Email</Typography>*/}
-                                    {/*        </Grid>*/}
-                                    {/*        <Grid item xs={8}>*/}
-                                    {/*            <Typography variant="body1">{alipayAccount.client.email}</Typography>*/}
-                                    {/*        </Grid>*/}
-                                    {/*    </Grid>*/}
-                                    {/*    <Grid container sx={{mb: 2}}>*/}
-                                    {/*        <Grid item xs={4}>*/}
-                                    {/*            <Typography variant="h6" sx={{fontWeight: 'bold'}}>Mobile</Typography>*/}
-                                    {/*        </Grid>*/}
-                                    {/*        <Grid item xs={8}>*/}
-                                    {/*            <Typography*/}
-                                    {/*                variant="body1">+{alipayAccount.client.phoneNumber}</Typography>*/}
-                                    {/*        </Grid>*/}
-                                    {/*    </Grid>*/}
-                                    {/*</CardContent>*/}
-                                    {/*<CardActions>*/}
-                                    {/*    <Button*/}
-                                    {/*        variant="contained"*/}
-                                    {/*        color="error"*/}
-                                    {/*        startIcon={<DeleteIcon/>}*/}
-                                    {/*        onClick={handleDeleteAlipayAccountClick}*/}
-                                    {/*        fullWidth*/}
-                                    {/*    >*/}
-                                    {/*        Delete Alipay Account*/}
-                                    {/*    </Button>*/}
-                                    {/*</CardActions>*/}
-                                </Card>
+                                {validTopUp.validAmount && validTopUp.validTopUpMethod && validTopUp.validCountryOfTopUpId &&
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={handleConfirmTopUp}
+                                        disabled={!selectedMethod}
+                                        style={{marginTop: '20px'}}
+                                    >
+                                        Confirm Top-Up
+                                    </Button>}
                             </Grid>
                         </>
                     )}

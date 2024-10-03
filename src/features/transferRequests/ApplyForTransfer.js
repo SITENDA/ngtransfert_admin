@@ -26,7 +26,6 @@ import RemarkInput from "../../components/form-controls/RemarkInput";
 import ReceiverAccountType from "../../util/ReceiverAccountType";
 import {useCreateTransferRequestMutation} from "./transferRequestsSlice";
 import {adminPaths} from "../../util/frontend";
-import {useGetAllCurrenciesQuery} from "../currencies/currenciesSlice";
 import CurrencySelector from "../../components/form-controls/CurrencySelector";
 
 const ApplyForTransfer = () => {
@@ -53,8 +52,6 @@ const ApplyForTransfer = () => {
     const transferRequestFocus = useSelector(selectTransferRequestFocus)
     const [tickAnimationVisible, setTickAnimationVisible] = useState(false);
 
-    const {data, isSuccess: currenciesLoadedSuccessfully} = useGetAllCurrenciesQuery();
-
     useEffect(() => {
         dispatch(setItem({key: 'title', value: 'Apply for a money transfer'}));
         refs.countryOfDepositIdRef?.current.focus();
@@ -78,42 +75,6 @@ const ApplyForTransfer = () => {
         dispatch(setObjectItem({key: 'eventProperties', innerKey: "isError", value: false}));
     }, [currentUser?.userId, dispatch, location.state, refs.countryOfDepositIdRef]);
 
-    useEffect(() => {
-    }, [data, currenciesLoadedSuccessfully])
-
-    // const handleAddAccountSubmit = async (e) => {
-    //     e.preventDefault();
-    //
-    //     try {
-    //
-    //         const formData = new FormData();
-    //         formData.append("amount", transferRequestInputs.amount);
-    //         formData.append("rate", transferRequestInputs?.rate);
-    //         formData.append("remark", transferRequestInputs.remark);
-    //         formData.append("receiverAccountType", transferRequestInputs.receiverAccountType);
-    //         formData.append("receiverAccountId", transferRequestInputs.receiverAccountId);
-    //         formData.append("clientId", currentUser?.userId);
-    //         formData.append("countryOfDepositId", transferRequestInputs.countryOfDepositId);
-    //
-    //         // Set loading to true when the request starts
-    //         setLoading(true);
-    //         const response = await createTransferRequest(formData).unwrap();
-    //         if (response?.statusCode === 200 && response.message === "Transfer request saved successfully") {
-    //             setTickAnimationVisible(true);
-    //             reset();
-    //             setTimeout(() => {
-    //                 navigate(adminPaths.transferRequestsPath);
-    //             }, 2000);
-    //         }
-    //     } catch (error) {
-    //         console.error('Error generating original QR code:', error);
-    //     } finally {
-    //         dispatch(setItem({key: 'transferRequestInputs', value: initialTransferRequestInputs}));
-    //         dispatch(setItem({key: 'validTransferRequest', value: initialValidTransferRequest}));
-    //         dispatch(setItem({key: 'transferRequestFocus', value: initialTransferRequestFocus}));
-    //         setLoading(false);  // Set loading to false when the request completes
-    //     }
-    // };
     const handleAddAccountSubmit = async (e) => {
         e.preventDefault();
 
@@ -179,13 +140,14 @@ const ApplyForTransfer = () => {
                                         inputName: "countryOfDepositId"
                                     }))}
                                     handleBlur={() => dispatch(handleBlur({
-                                        inputsObject: transferRequestInputs,
                                         objectName: 'transferRequest',
                                         inputName: "countryOfDepositId",
                                         regexPattern: "COUNTRY_ID_REGEX"
                                     }))}
                                 />
-                                <CurrencySelector
+
+                                {transferRequestInputs.countryOfDepositId > 0 &&
+                                    <CurrencySelector
                                     ref={refs.currencyIdRef}
                                     changeHandler={(currencyId) => dispatch(handleValidation({
                                         objectName: "transferRequest",
@@ -195,6 +157,7 @@ const ApplyForTransfer = () => {
                                     }))}
                                     validCurrency={validTransferRequest.validCurrencyId}
                                     value={transferRequestInputs.currencyId}
+                                    countryOfDepositId={transferRequestInputs.countryOfDepositId}
                                     isFocused={transferRequestFocus.currencyIdFocus}
                                     handleFocus={() => dispatch(handleFocus({
                                         objectName: 'transferRequest',
@@ -205,7 +168,7 @@ const ApplyForTransfer = () => {
                                         inputName: "currencyId",
                                         regexPattern: "CURRENCY_ID_REGEX"
                                     }))}
-                                />
+                                />}
 
                                 <AmountInput
                                     ref={refs.amountRef}
@@ -225,7 +188,7 @@ const ApplyForTransfer = () => {
                                     handleBlur={() => dispatch(handleBlur({
                                         objectName: 'transferRequest',
                                         inputName: "amount",
-                                        regexPattern: "CURRENCY_ID_REGEX"
+                                        regexPattern: "AMOUNT_REGEX"
                                     }))}
                                 />
 
@@ -245,7 +208,6 @@ const ApplyForTransfer = () => {
                                         inputName: "rate"
                                     }))}
                                     handleBlur={() => dispatch(handleBlur({
-                                        inputsObject: transferRequestInputs,
                                         objectName: 'transferRequest',
                                         inputName: "rate",
                                         regexPattern: "RATE_REGEX"
@@ -268,7 +230,6 @@ const ApplyForTransfer = () => {
                                         inputName: "remark"
                                     }))}
                                     handleBlur={() => dispatch(handleBlur({
-                                        inputsObject: transferRequestInputs,
                                         objectName: 'transferRequest',
                                         inputName: "remark",
                                         regexPattern: "REMARK_REGEX"

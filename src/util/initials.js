@@ -28,6 +28,7 @@ export const initialLoginInputs = {
 export const initialTopUpInputs = {
     topUpMethod     : '',
     amount          : 0,
+    countryOfTopUpId  : '',
 
 }
 
@@ -46,9 +47,9 @@ export const initialTransferRequestInputs = {
     rate                    : 0,
     remark                  : '',
     receiverAccountType     : '',
-    receiverAccountId       : 0,
-    clientId                : 0,
-    countryOfDepositId      : 0
+    receiverAccountId       : null,
+    clientId                : null,
+    countryOfDepositId      : null
 }
 
 export const initialWechatAccountInputs = {
@@ -118,8 +119,9 @@ export const initialValidWechatAccount = {
 }
 
 export const initialValidTopUp = {
-    validTopUpMethod     : false,
-    validAmount          : false,
+    validTopUpMethod        : false,
+    validAmount             : false,
+    validCountryOfTopUpId   : false,
 }
 
 export const initialEventProperties = {
@@ -179,6 +181,7 @@ export const initialBankAccountFocus = {
 export const initialTopUpFocus = {
     topUpMethodFocus     : false,
     amountFocus          : false,
+    countryOfTopUpIdFocus  : false,
 }
 
 export const initialTransferRequestFocus = {

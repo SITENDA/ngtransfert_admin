@@ -4,11 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {selectIsDarkTheme, setObjectItem} from '../../features/auth/authSlice';
 import CountryFlag from './CountryFlag';
 import {darkColor, lightColor} from "../../util/initials";
-import {
-    selectAllCountries,
-    useGetAllCountriesQuery,
-    useGetCountryByCountryIdQuery
-} from "../../features/countries/countriesSlice";
+import { selectPriorityCountries, useGetCountryByCountryIdQuery, useGetPriorityCountriesQuery } from "../../features/countries/countriesSlice";
 import {Box} from '@mui/material';
 
 const CountrySelector = forwardRef(({
@@ -21,9 +17,9 @@ const CountrySelector = forwardRef(({
                                         handleBlur
                                     }, ref) => {
     const [options, setOptions] = useState([]);
-    const {data, isSuccess} = useGetAllCountriesQuery();
+    const {data, isSuccess} = useGetPriorityCountriesQuery();
     const isDarkTheme = useSelector(selectIsDarkTheme);
-    const allCountries = useSelector(selectAllCountries);
+    const allCountries = useSelector(selectPriorityCountries);
     const [currentCountry, setCurrentCountry] = useState(null);
     const dispatch = useDispatch();
     const [fetchedCountry, setFetchedCCountry] = useState(null);
@@ -35,12 +31,11 @@ const CountrySelector = forwardRef(({
 
     useEffect(() => {
         if (isSuccess) {
-            const countries = Object.values(data?.entities);
-            const currentlyActiveCountries = ["Mali", "DR Congo", "Republic of the Congo", "Ivory Coast", "Gabon", "Senegal", "Togo", "China"];
-            const filteredCountries = countries.filter(country => currentlyActiveCountries.includes(country.countryName));
+            //const countries = Object.values(data?.entities);
+            //const filteredCountries = countries.filter(country => currentlyActiveCountries.includes(country.countryName));
 
             // Prepare options for the Select component
-            const optionsData = filteredCountries.map((country) => ({
+            const optionsData = allCountries.map((country) => ({
                 value: country.countryId,
                 label: (
                     <div style={{display: 'flex', alignItems: 'center'}}>

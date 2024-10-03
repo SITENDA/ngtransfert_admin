@@ -23,6 +23,18 @@ export const countriesApiSlice = apiSlice.injectEndpoints({
                 {type: 'Country', id: "LIST"}
             ]
         }),
+        getPriorityCountries: builder.query({
+            query: () => backend.countries.getPriorityCountriesUrl,
+            transformResponse: responseData => {
+                if (responseData?.data?.countries) {
+                    const countries = responseData?.data?.countries || []
+                    return countriesAdapter.setAll(initialState, countries)
+                }
+            },
+            providesTags: (result, error, arg) => [
+                {type: 'Country', id: "LIST"}
+            ]
+        }),
         getCountryByCountryId: builder.query({
             queryFn: (countryId, queryApi, extraOptions, baseQuery) => {
                 // Check if countryId is 0 or not a number
@@ -48,12 +60,14 @@ export const countriesApiSlice = apiSlice.injectEndpoints({
 // -----Exporting our auto-generated hooks ----------------------------------------------------------------------
 export const {
     useGetAllCountriesQuery,
+    useGetPriorityCountriesQuery,
     useGetCountryByCountryIdQuery,
 } = countriesApiSlice
 //------------------------------------------------------------------------------------------------------------------
 
 //---- returning the query result objects-------------------------------------------------------------------------
 export const selectAllCountriesResult = countriesApiSlice.endpoints.getAllCountries.select()
+export const selectPriorityCountriesResult = countriesApiSlice.endpoints.getPriorityCountries.select()
 //------------------------------------------------------------------------------------------------------------------
 
 //----  Creates memoized selectors (takes 2 or more functions as input) ---------------------------------------
@@ -61,14 +75,16 @@ export const selectAllCountriesData = createSelector(
     selectAllCountriesResult,
     allCountriesResult => allCountriesResult.data
 )
+
+export const selectPriorityCountriesData = createSelector(
+    selectPriorityCountriesResult,
+    priorityCountriesResult => priorityCountriesResult.data
+)
 //------------------------------------------------------------------------------------------------------------------
 
 //----  Exporting selectors for data returned by the different endpoints ---------------------------------------
-export const {
-    selectAll: selectAllCountries,
-    selectIds: selectAllCountryIds,
-    selectById: selectCountryById,
-} = countriesAdapter.getSelectors((state) => selectAllCountriesData(state) ?? initialState)
+export const {selectAll: selectAllCountries } = countriesAdapter.getSelectors((state) => selectAllCountriesData(state) ?? initialState)
+export const {selectAll: selectPriorityCountries } = countriesAdapter.getSelectors((state) => selectPriorityCountriesData(state) ?? initialState)
 
 //----------------------------------------------------------------------------------------------------------------
 

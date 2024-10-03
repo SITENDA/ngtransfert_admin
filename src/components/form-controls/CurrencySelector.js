@@ -2,7 +2,7 @@ import React, {useState, useEffect, forwardRef} from 'react';
 import Select from 'react-select';
 import {useSelector} from 'react-redux';
 import {selectIsDarkTheme} from '../../features/auth/authSlice';
-import {useGetAllCurrenciesQuery, selectAllCurrencies} from "../../features/currencies/currenciesSlice";
+import { selectCurrenciesForCountry, useGetCurrenciesForCountryQuery } from "../../features/currencies/currenciesSlice";
 import {darkColor, lightColor} from "../../util/initials";
 
 const CurrencySelector = forwardRef(({
@@ -11,32 +11,34 @@ const CurrencySelector = forwardRef(({
                                          value,
                                          isFocused,
                                          handleFocus,
-                                         handleBlur
+                                         handleBlur,
+                                         countryOfDepositId,
                                      }, ref) => {
     const [options, setOptions] = useState([]);
-    const {isSuccess} = useGetAllCurrenciesQuery();
+    const {isSuccess} = useGetCurrenciesForCountryQuery(countryOfDepositId);
     const isDarkTheme = useSelector(selectIsDarkTheme);
-    const orderedCurrencies = useSelector(selectAllCurrencies);
+    const orderedCurrencies = useSelector(state => selectCurrenciesForCountry(state, countryOfDepositId));
     const [currentCurrency, setCurrentCurrency] = useState(null);
+
 
     useEffect(() => {
         if (isSuccess) {
             // List of currency codes that should appear on top
-            const priorityCurrencies = ["CNY", "USD", "XOF", "CDF", "XAF"];
+            // const priorityCurrencies = ["CNY", "USD", "XOF", "CDF", "XAF"];
 
             // Sort the currencies: prioritized ones appear on top
-            const sortedCurrencies = [...orderedCurrencies].sort((a, b) => {
-                const isAPriority = priorityCurrencies.includes(a.currencyCode);
-                const isBPriority = priorityCurrencies.includes(b.currencyCode);
-
-                // If both are priority, or both are not priority, sort alphabetically by currencyCode
-                if (isAPriority && !isBPriority) return -1;
-                if (!isAPriority && isBPriority) return 1;
-                return a.currencyCode.localeCompare(b.currencyCode);
-            });
+            // const sortedCurrencies = [...orderedCurrencies].sort((a, b) => {
+            //     const isAPriority = priorityCurrencies.includes(a.currencyCode);
+            //     const isBPriority = priorityCurrencies.includes(b.currencyCode);
+            //
+            //     // If both are priority, or both are not priority, sort alphabetically by currencyCode
+            //     if (isAPriority && !isBPriority) return -1;
+            //     if (!isAPriority && isBPriority) return 1;
+            //     return a.currencyCode.localeCompare(b.currencyCode);
+            // });
 
             // Prepare options for the Select component
-            const optionsData = sortedCurrencies.map((currency) => ({
+            const optionsData = orderedCurrencies.map((currency) => ({
                 value: currency.currencyId,
                 label: (
                     <div style={{display: 'flex', alignItems: 'center'}}>
@@ -48,6 +50,10 @@ const CurrencySelector = forwardRef(({
             setOptions(optionsData);
         }
     }, [isSuccess, orderedCurrencies]);
+
+    useEffect(() => {
+
+    }, [value])
 
 
     const handleCurrencyChange = (selectedOption) => {

@@ -17,7 +17,8 @@ const AmountInput = forwardRef(({changeHandler, validAmount, value, isFocused, h
             handleBlur={handleBlur}
             validation={{
                 isValid: validAmount,
-                message: <>Enter the amount of money<br/>that you'd like to pay. <br/></>
+                message: <>Enter the amount of money<br/>that you'd like to pay. <br/>
+                    Amount must be greater than 4.</>
             }}
             ariaDescribedBy="amountnote"
             placeholder="Enter amount here"

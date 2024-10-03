@@ -88,10 +88,13 @@ export const backend = {
     },
     countries: {
         getAllUrl                   : `${countriesBaseUrl}/getAllCountries`,
+        getPriorityCountriesUrl     : `${currenciesBaseUrl}/getPriorityCountries`,
         getByIdUrl                  : `${countriesBaseUrl}/getCountryByCountryId`,
     },
     currencies: {
-        getAllUrl                   : `${currenciesBaseUrl}/getAllCurrencies`,
-        getByIdUrl                  : `${currenciesBaseUrl}/getCurrencyById`,
+        getAllUrl                    : `${currenciesBaseUrl}/getAllCurrencies`,
+        getPriorityCurrenciesUrl     : `${currenciesBaseUrl}/getPriorityCurrencies`,
+        getCurrenciesForCountryUrl   : `${currenciesBaseUrl}/getCurrenciesForCountry`,
+        getByIdUrl                   : `${currenciesBaseUrl}/getCurrencyById`,
     },
 };
