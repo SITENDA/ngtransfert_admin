@@ -21,6 +21,11 @@ import {
     selectCashDepositAddressesByCountryName,
     useGetCashDepositAddressesByCountryNameQuery
 } from "../cashDepositAddresses/cashDepositAddressesSlice";
+import {
+    selectBankDepositAddressesByCountryName,
+    useGetBankDepositAddressesByCountryNameQuery
+} from "../bankDepositAddresses/bankDepositAddressesSlice";
+import TopUpMethod from "../../util/TopUpMethod";
 
 const TopUpInstructions = () => {
     const [selectedMethod, setSelectedMethod] = useState('');
@@ -42,17 +47,79 @@ const TopUpInstructions = () => {
     }, [dispatch]);
 
     const handleGoToTopUp = () => {
-        navigate(adminPaths.topUpPath, {state: {prevPath: window.location.pathname, selectedMethod, selectedCountryName}});
+        navigate(adminPaths.topUpPath, {
+            state: {
+                prevPath: window.location.pathname,
+                selectedMethod,
+                selectedCountryName
+            }
+        });
     };
 
     useGetCashDepositAddressesByCountryNameQuery(selectedCountryName);
-    const fetchedAddresses = useSelector((state) => selectCashDepositAddressesByCountryName(state, selectedCountryName));
+    useGetBankDepositAddressesByCountryNameQuery(selectedCountryName);
+    const fetchedCashDepositAddresses = useSelector((state) => selectCashDepositAddressesByCountryName(state, selectedCountryName));
+    const fetchedBankDepositAddresses = useSelector((state) => selectBankDepositAddressesByCountryName(state, selectedCountryName));
 
-    // Top-up instructions for each method
+    // Top-up instructions for each method //beneficiary name and the company account. Kindly your bank branch
     const topUpInstructions = {
-        BANK: "Visit your bank branch and deposit the funds to account number XXXX. Use your phone number as the reference.",
+        BANK: (
+            <List dense>
+                <ListItem>
+                    <ListItemText primary="Deposit to Any of the Branches Below:"
+                                  secondary={`The list below shows the banks in ${selectedCountryName ? selectedCountryName : ''} in which NGTransfert has accounts, 
+                                  and the account information. Please feel free to visit the nearest to you of any of these banks to make your deposit.`}/>
+                </ListItem>
+                <ListItem>
+                    <ListItemText primary="Take a Picture of the Receipt:"
+                                  secondary="After making the deposit, please take a clear picture the receipt issued to you by the bank, confirming the deposit."/>
+                </ListItem>
+                <ListItem>
+                    <ListItemText primary="Return Here to Continue:"
+                                  secondary="After taking the picture, return to this page and click the “Continue to Top Up” button to enter the remaining details."/>
+                </ListItem>
+            </List>),
         MOBILE_MONEY: "Send the top-up amount via Mobile Money to the number 123456789 and provide the transaction ID.",
-        ORANGE_MONEY: "Top up using Orange Money by transferring the funds to account ID ORANGE123.",
+        WAVE:
+            (<List dense>
+                    <ListItem>
+                        <ListItemText primary="Our Wave Details:"
+                                      secondary={`Top up using Wave by sending to (#########).`}/>
+                    </ListItem>
+                    <ListItem>
+                        <ListItemText primary="Account Number:"
+                                      secondary={9999999}/>
+                    </ListItem>
+                    <ListItem>
+                    <ListItemText primary="Take a Picture (screenshot):"
+                                  secondary="Please remember to take a screenshot (picture) as proof that your transaction has been successful on Wave."/>
+                </ListItem>
+                <ListItem>
+                    <ListItemText primary="Return Here to Continue:"
+                                  secondary="After taking the screenshot, return to this page and click the “Continue to Top Up” button to enter the remaining details."/>
+                </ListItem>
+                </List>
+            ),
+        ORANGE_MONEY:
+            (<List dense>
+                    <ListItem>
+                        <ListItemText primary="Our Orange Money Details:"
+                                      secondary={`Top up using Orange Money by sending to (#144#8*376385*amount*secret#).`}/>
+                    </ListItem>
+                    <ListItem>
+                        <ListItemText primary="Account Number:"
+                                      secondary={376385}/>
+                    </ListItem>
+                    <ListItem>
+                    <ListItemText primary="Take a Picture (screenshot):"
+                                  secondary="Please remember to take a screenshot (picture) as proof that your transaction has been successful on Orange Money."/>
+                </ListItem>
+                <ListItem>
+                    <ListItemText primary="Return Here to Continue:"
+                                  secondary="After taking the screenshot, return to this page and click the “Continue to Top Up” button to enter the remaining details."/>
+                </ListItem>
+                </List>
+            ),
         CASH: (
             <List dense>
                 <ListItem>
@@ -64,11 +131,15 @@ const TopUpInstructions = () => {
                                   secondary="Our agent will provide you with a form to fill out. Carefully complete all the required fields on the form."/>
                 </ListItem>
                 <ListItem>
-                    <ListItemText primary="Take a Picture of the Completed Form:"
-                                  secondary="Once you have filled in the form, take a clear picture of it with your phone."/>
+                    <ListItemText primary="Form Should be Stamped:"
+                                  secondary="Once you have filled in the form, please present it to our agent to be stamped."/>
                 </ListItem>
                 <ListItem>
-                    <ListItemText primary="Return here to continue:"
+                    <ListItemText primary="Take a Picture of the Completed Form:"
+                                  secondary="Take a clear picture the stamped form with your phone."/>
+                </ListItem>
+                <ListItem>
+                    <ListItemText primary="Return Here to Continue:"
                                   secondary="After taking the picture, return to this page and click the “Continue to Top Up” button to enter the remaining details."/>
                 </ListItem>
             </List>
@@ -157,14 +228,37 @@ const TopUpInstructions = () => {
                                 </Box>
 
                                 {/* Display the addresses fetched with styling */}
-                                {fetchedAddresses.length > 0 && (
+                                {selectedMethod.value === TopUpMethod.CASH && fetchedCashDepositAddresses.length > 0 && (
                                     <>
                                         <Divider sx={{my: 3}}/>
                                         <Typography variant="h6" gutterBottom>
-                                            These are our addresses in {selectedCountryName}:
+                                            These are our cash addresses in {selectedCountryName}:
                                         </Typography>
                                         <List>
-                                            {fetchedAddresses.map((address, index) => (
+                                            {fetchedCashDepositAddresses.map((address, index) => (
+                                                <ListItem key={index} sx={{
+                                                    backgroundColor: 'rgba(255, 192, 203, 0.5)',
+                                                    borderRadius: '8px',
+                                                    mb: 2
+                                                }}>
+                                                    <ListItemIcon>
+                                                        <PlaceIcon color="primary"/>
+                                                    </ListItemIcon>
+                                                    <ListItemText primary={address.address}/>
+                                                </ListItem>
+                                            ))}
+                                        </List>
+                                    </>
+                                )}
+
+                                {selectedMethod.value === TopUpMethod.BANK && fetchedBankDepositAddresses.length > 0 && (
+                                    <>
+                                        <Divider sx={{my: 3}}/>
+                                        <Typography variant="h6" gutterBottom>
+                                            These are our bank addresses in {selectedCountryName}:
+                                        </Typography>
+                                        <List>
+                                            {fetchedBankDepositAddresses.map((address, index) => (
                                                 <ListItem key={index} sx={{
                                                     backgroundColor: 'rgba(255, 192, 203, 0.5)',
                                                     borderRadius: '8px',

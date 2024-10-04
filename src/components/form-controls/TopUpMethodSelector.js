@@ -16,8 +16,12 @@ const TopUpMethodSelector = forwardRef(({
 
     const orderedTopUpMethods = [
         {
-            label: "Mobile Money",
+            label: "MTN Mobile Money",
             value: TopUpMethod.MOBILE_MONEY,
+        },
+        {
+            label: "Wave",
+            value: TopUpMethod.WAVE,
         },
         {
             label: "Orange Money",

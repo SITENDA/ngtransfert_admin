@@ -53,6 +53,25 @@ export const countriesApiSlice = apiSlice.injectEndpoints({
             },
             providesTags: (result, error, arg) => [{type: 'Country', id: arg}],
         }),
+        getCountryByCountryName: builder.query({
+            queryFn: (countryName, queryApi, extraOptions, baseQuery) => {
+                // Check if countryName is a valid non-empty string
+                if (!countryName || typeof countryName !== 'string' || countryName.trim().length === 0) {
+                    // Return an error if countryName is not valid
+                    return {error: {status: 400, message: 'Invalid country name'}};
+                }
+                // Proceed with sending the request if countryName is valid
+                return baseQuery({
+                    url: `${backend.countries.getByCountryNameUrl}?countryName=${countryName}`,
+                    method: 'GET',
+                });
+            },
+            transformResponse: (responseData) => {
+                return responseData?.data?.country || {};
+            },
+            providesTags: (result, error, arg) => [{type: 'Country', id: arg}],
+        }),
+
 
     })
 })
@@ -62,6 +81,7 @@ export const {
     useGetAllCountriesQuery,
     useGetPriorityCountriesQuery,
     useGetCountryByCountryIdQuery,
+    useGetCountryByCountryNameQuery,
 } = countriesApiSlice
 //------------------------------------------------------------------------------------------------------------------
 
@@ -83,8 +103,8 @@ export const selectPriorityCountriesData = createSelector(
 //------------------------------------------------------------------------------------------------------------------
 
 //----  Exporting selectors for data returned by the different endpoints ---------------------------------------
-export const {selectAll: selectAllCountries } = countriesAdapter.getSelectors((state) => selectAllCountriesData(state) ?? initialState)
-export const {selectAll: selectPriorityCountries } = countriesAdapter.getSelectors((state) => selectPriorityCountriesData(state) ?? initialState)
+export const {selectAll: selectAllCountries} = countriesAdapter.getSelectors((state) => selectAllCountriesData(state) ?? initialState)
+export const {selectAll: selectPriorityCountries} = countriesAdapter.getSelectors((state) => selectPriorityCountriesData(state) ?? initialState)
 
 //----------------------------------------------------------------------------------------------------------------
 

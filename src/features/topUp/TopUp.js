@@ -22,6 +22,8 @@ import {
 } from "../auth/authSlice";
 import {useDeleteAlipayAccountMutation} from "../alipayAccounts/alipayAccountsSlice";
 import AmountInput from "../../components/form-controls/AmountInput";
+import CurrencySelector from "../../components/form-controls/CurrencySelector";
+import {useGetCountryByCountryNameQuery} from "../countries/countriesSlice";
 
 const TopUp = () => {
     const navigate = useNavigate();
@@ -37,9 +39,18 @@ const TopUp = () => {
     const validTopUp = useSelector(selectValidTopUp)
     const topUpFocus = useSelector(selectTopUpFocus)
 
+    const {data: countryOfDeposit, isSuccess: countryFetched} = useGetCountryByCountryNameQuery(selectedCountryName);
+
+    useEffect(() => {
+        if (countryFetched) {
+            console.log("country Of Deposit fetched : ", countryOfDeposit)
+        }
+    }, [countryFetched, countryOfDeposit]);
+
     const refs = {
-        topUpMethodRef: useRef(null),
-        amountRef: useRef(null),
+        topUpMethodRef  : useRef(null),
+        currencyIdRef   : useRef(null),
+        amountRef       : useRef(null),
     }
 
     useEffect(() => {
@@ -61,6 +72,28 @@ const TopUp = () => {
                     {!tickAnimationVisible && (
                         <>
                             <Grid item xs={12} md={8}>
+                                <CurrencySelector
+                                    ref={refs.currencyIdRef}
+                                    changeHandler={(currencyId) => dispatch(handleValidation({
+                                        objectName: "topUp",
+                                        eventValue: currencyId,
+                                        inputName: "currencyId",
+                                        regexPattern: "CURRENCY_ID_REGEX"
+                                    }))}
+                                    validCurrency={validTopUp.validCurrencyId}
+                                    value={topUpInputs.currencyId}
+                                    countryOfDepositId={topUpInputs.countryOfTopUpId}
+                                    isFocused={topUpFocus.currencyIdFocus}
+                                    handleFocus={() => dispatch(handleFocus({
+                                        objectName: 'topUp',
+                                        inputName: "currencyId"
+                                    }))}
+                                    handleBlur={() => dispatch(handleBlur({
+                                        objectName: 'topUp',
+                                        inputName: "currencyId",
+                                        regexPattern: "CURRENCY_ID_REGEX"
+                                    }))}
+                                />
                                 {validTopUp.validCountryOfTopUpId && validTopUp.validTopUpMethod &&
                                     <AmountInput
                                         ref={refs.amountRef}

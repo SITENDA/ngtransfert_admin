@@ -27,6 +27,7 @@ export const initialLoginInputs = {
 
 export const initialTopUpInputs = {
     topUpMethod     : '',
+    currencyId      : null,
     amount          : 0,
     countryOfTopUpId  : '',
 
@@ -120,6 +121,7 @@ export const initialValidWechatAccount = {
 
 export const initialValidTopUp = {
     validTopUpMethod        : false,
+    validCurrencyId         : false,
     validAmount             : false,
     validCountryOfTopUpId   : false,
 }
@@ -180,6 +182,7 @@ export const initialBankAccountFocus = {
 
 export const initialTopUpFocus = {
     topUpMethodFocus     : false,
+    currencyIdFocus      : null,
     amountFocus          : false,
     countryOfTopUpIdFocus  : false,
 }
