@@ -26,7 +26,12 @@ export const transferRequestsApiSlice = apiSlice.injectEndpoints({
             ]
         }),
         getTransferRequestsByClientId: builder.query({
-            query: (clientId) => `${backend.transferRequests.getAllByClientIdUrl}?clientId=${clientId}`,
+            query: (clientId) => {
+                if (!Number(clientId) || clientId < 1) {
+                    return {error: {status: 400, message: 'Invalid client ID'}};
+                }
+                return `${backend.transferRequests.getAllByClientIdUrl}?clientId=${clientId}`
+            },
             transformResponse: responseData => {
                 if (responseData?.data?.transferRequests) {
                     const transferRequests = responseData?.data?.transferRequests
@@ -54,10 +59,15 @@ export const transferRequestsApiSlice = apiSlice.injectEndpoints({
             },
         }),
         getTransferRequestByTransferRequestId: builder.query({
-            query: (transferRequestId) => ({
+            query: (transferRequestId) => {
+                if (!Number(transferRequestId) || transferRequestId < 1) {
+                    return {error: {status: 400, message: 'Invalid Transfer Request ID'}};
+                }
+                return ({
                 url: `${backend.transferRequests.getByIdUrl}?transferRequestId=${transferRequestId}`,
                 method: 'GET',
-            }),
+            })
+            },
             transformResponse: (responseData) => {
                 let transferRequestArray = responseData?.data?.transferRequest || [];
                 return transferRequestsAdapter.setAll(initialState, transferRequestArray);

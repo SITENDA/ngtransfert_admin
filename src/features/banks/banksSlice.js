@@ -25,7 +25,12 @@ export const banksApiSlice = apiSlice.injectEndpoints({
             ]
         }),
         getAllBanksInCountry: builder.query({
-            query: (countryId) => countryId? `${backend.banks.getAllByCountryUrl}?countryId=${countryId}` : [],
+            query: (countryId) => {
+                if (!Number(countryId) || countryId < 1) {
+                    return {error: {status: 400, message: 'Invalid country ID'}};
+                }
+                return `${backend.banks.getAllByCountryUrl}?countryId=${countryId}`
+            },
             transformResponse: responseData => {
                 if (responseData?.data?.banks) {
                     const banks = responseData?.data?.banks
@@ -38,7 +43,12 @@ export const banksApiSlice = apiSlice.injectEndpoints({
             ]
         }),
         getBankById: builder.query({
-            query: (bankId) => bankId? `${backend.banks.getByIdUrl}?bankId=${bankId}` : null,
+            query: (bankId) => {
+                if (!Number(bankId) || bankId < 1) {
+                    return {error: {status: 400, message: 'Invalid bank ID'}};
+                }
+                return `${backend.banks.getByIdUrl}?bankId=${bankId}`
+            },
             transformResponse: responseData => {
                 if (responseData?.data?.bank) {
                     return responseData?.data?.bank

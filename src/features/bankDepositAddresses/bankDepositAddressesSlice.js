@@ -21,10 +21,13 @@ export const bankDepositAddressesApiSlice = apiSlice.injectEndpoints({
         }),
         getBankDepositAddressesByCountryId: builder.query({
             query: (countryId) => {
-                return countryId > 0 ? ({
+                if (!Number(countryId) || countryId < 1) {
+                    return {error: {status: 400, message: 'Invalid country ID'}};
+                }
+                return ({
                     url: `${backend.bankDepositAddresses.getBankDepositAddressesByCountryIdUrl}?countryId=${countryId}`,
                     method: 'GET',
-                }) : null
+                })
             },
             transformResponse: (responseData) => {
                 let bankDepositAddresses = responseData?.data?.bankDepositAddresses || [];
@@ -40,10 +43,13 @@ export const bankDepositAddressesApiSlice = apiSlice.injectEndpoints({
         }),
         getBankDepositAddressesByCountryName: builder.query({
             query: (countryName) => {
-                return countryName?.length > 0 ? ({
+                if (!countryName || typeof countryName !== 'string' || countryName.trim().length === 0) {
+                    return {error: {status: 400, message: 'Invalid country name'}};
+                }
+                return ({
                     url: `${backend.bankDepositAddresses.getBankDepositAddressesByCountryNameUrl}?countryName=${countryName}`,
                     method: 'GET',
-                }) : null
+                })
             },
             transformResponse: (responseData) => {
                 let bankDepositAddresses = responseData?.data?.bankDepositAddresses || [];

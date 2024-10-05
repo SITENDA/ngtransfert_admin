@@ -38,8 +38,7 @@ export const countriesApiSlice = apiSlice.injectEndpoints({
         getCountryByCountryId: builder.query({
             queryFn: (countryId, queryApi, extraOptions, baseQuery) => {
                 // Check if countryId is 0 or not a number
-                if (countryId === 0 || isNaN(countryId)) {
-                    // Return an empty result or handle this as an error if needed
+                if (!Number(countryId) || countryId < 1) {
                     return {error: {status: 400, message: 'Invalid country ID'}};
                 }
                 // Proceed with sending the request if countryId is valid
@@ -49,15 +48,14 @@ export const countriesApiSlice = apiSlice.injectEndpoints({
                 });
             },
             transformResponse: (responseData) => {
-                return responseData?.data?.country || {};
+                const country = [responseData?.data?.country] || []
+                return countriesAdapter.setAll(initialState, country)
             },
             providesTags: (result, error, arg) => [{type: 'Country', id: arg}],
         }),
         getCountryByCountryName: builder.query({
             queryFn: (countryName, queryApi, extraOptions, baseQuery) => {
-                // Check if countryName is a valid non-empty string
                 if (!countryName || typeof countryName !== 'string' || countryName.trim().length === 0) {
-                    // Return an error if countryName is not valid
                     return {error: {status: 400, message: 'Invalid country name'}};
                 }
                 // Proceed with sending the request if countryName is valid
@@ -67,7 +65,8 @@ export const countriesApiSlice = apiSlice.injectEndpoints({
                 });
             },
             transformResponse: (responseData) => {
-                return responseData?.data?.country || {};
+                const country = [responseData?.data?.country] || []
+                return countriesAdapter.setAll(initialState, country)
             },
             providesTags: (result, error, arg) => [{type: 'Country', id: arg}],
         }),
@@ -88,6 +87,7 @@ export const {
 //---- returning the query result objects-------------------------------------------------------------------------
 export const selectAllCountriesResult = countriesApiSlice.endpoints.getAllCountries.select()
 export const selectPriorityCountriesResult = countriesApiSlice.endpoints.getPriorityCountries.select()
+export const selectCountryByCountryNameResult = (countryName) => countriesApiSlice.endpoints.getCountryByCountryName.select(countryName)
 //------------------------------------------------------------------------------------------------------------------
 
 //----  Creates memoized selectors (takes 2 or more functions as input) ---------------------------------------
@@ -100,11 +100,20 @@ export const selectPriorityCountriesData = createSelector(
     selectPriorityCountriesResult,
     priorityCountriesResult => priorityCountriesResult.data
 )
+
+export const selectCountryByCountryNameData = (countryName) => createSelector(
+    selectCountryByCountryNameResult(countryName),
+    countryByCountryNameResult => {
+        console.log("Country By Country Name Result : ", countryByCountryNameResult)
+        return countryByCountryNameResult?.data
+    }
+)
 //------------------------------------------------------------------------------------------------------------------
 
 //----  Exporting selectors for data returned by the different endpoints ---------------------------------------
 export const {selectAll: selectAllCountries} = countriesAdapter.getSelectors((state) => selectAllCountriesData(state) ?? initialState)
 export const {selectAll: selectPriorityCountries} = countriesAdapter.getSelectors((state) => selectPriorityCountriesData(state) ?? initialState)
+export const {selectAll: selectCountryByCountryName} = countriesAdapter.getSelectors((state, countryName) => selectCountryByCountryNameData(countryName)(state) ?? initialState)
 
 //----------------------------------------------------------------------------------------------------------------
 

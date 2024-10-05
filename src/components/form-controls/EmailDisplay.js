@@ -3,10 +3,12 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/
 import {useSelector} from "react-redux";
 import {selectIsDarkTheme} from "../../features/auth/authSlice";
 import {darkColor, lightColor} from "../../util/initials";
+import {Typography} from "antd";
 
 const EmailDisplay = ({ email }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const isDarkTheme = useSelector(selectIsDarkTheme);
+
     const showModal = () => {
         setIsModalVisible(true);
     };
@@ -16,8 +18,16 @@ const EmailDisplay = ({ email }) => {
     };
 
     return (
-        <div>
-            <span style={{ cursor: 'pointer', textDecoration: 'underline', fontSize : '1rem', color: isDarkTheme ? lightColor : darkColor }} onClick={showModal}>
+        <>
+            <span
+                style={{
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    fontSize: '1rem',
+                    color: isDarkTheme ? lightColor : darkColor
+                }}
+                onClick={showModal}
+            >
                 {email}
             </span>
             <Dialog
@@ -29,7 +39,9 @@ const EmailDisplay = ({ email }) => {
             >
                 <DialogTitle id="email-dialog-title">Email</DialogTitle>
                 <DialogContent>
-                    <span style={{ fontSize: '1.5em' }}>{email}</span>
+                    <Typography variant="body1" style={{ fontSize: '1.5em' }}>
+                        {email}
+                    </Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCancel} color="primary">
@@ -37,7 +49,7 @@ const EmailDisplay = ({ email }) => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </>
     );
 };
 

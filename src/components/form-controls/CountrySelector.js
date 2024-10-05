@@ -4,7 +4,11 @@ import {useDispatch, useSelector} from 'react-redux';
 import {selectIsDarkTheme, setObjectItem} from '../../features/auth/authSlice';
 import CountryFlag from './CountryFlag';
 import {darkColor, lightColor} from "../../util/initials";
-import { selectPriorityCountries, useGetCountryByCountryIdQuery, useGetPriorityCountriesQuery } from "../../features/countries/countriesSlice";
+import {
+    selectPriorityCountries,
+    useGetCountryByCountryIdQuery,
+    useGetPriorityCountriesQuery
+} from "../../features/countries/countriesSlice";
 import {Box} from '@mui/material';
 
 const CountrySelector = forwardRef(({
@@ -18,20 +22,30 @@ const CountrySelector = forwardRef(({
                                         setSelectedCountryName
                                     }, ref) => {
     const [options, setOptions] = useState([]);
-    const {data, isSuccess} = useGetPriorityCountriesQuery();
+    const {data, isSuccess: priorityCountriesFetchedSuccessfully, isError: isPriorityCountriesError, error: priorityCountriesError} = useGetPriorityCountriesQuery();
     const isDarkTheme = useSelector(selectIsDarkTheme);
     const priorityCountries = useSelector(selectPriorityCountries);
     const [currentCountry, setCurrentCountry] = useState(null);
     const dispatch = useDispatch();
     const [fetchedCountry, setFetchedCCountry] = useState(null);
-    const {data: countryData, isSuccess: countryFetchedSuccessfully} = useGetCountryByCountryIdQuery(value);
+    const {
+        data: countryData,
+        isSuccess: countryFetchedSuccessfully,
+        isError: isCountryFetchedError,
+        error: countryFetchedError,
+    } = useGetCountryByCountryIdQuery(value);
 
     useEffect(() => {
-        setFetchedCCountry(countryData?.data?.country)
-    }, [countryData, countryFetchedSuccessfully]);
+        if (countryFetchedSuccessfully) {
+            setFetchedCCountry(countryData?.data?.country)
+        } else if (isCountryFetchedError) {
+            console.log("Error is : ", countryFetchedError)
+        }
+
+    }, [countryData, countryFetchedSuccessfully, countryFetchedError, isCountryFetchedError]);
 
     useEffect(() => {
-        if (isSuccess) {
+        if (priorityCountriesFetchedSuccessfully) {
             //const countries = Object.values(data?.entities);
             //const filteredCountries = countries.filter(country => currentlyActiveCountries.includes(country.countryName));
 
@@ -50,8 +64,10 @@ const CountrySelector = forwardRef(({
                 ),
             }));
             setOptions(optionsData);
+        } else if (isPriorityCountriesError) {
+            console.log("Priority Countries Error : ", priorityCountriesError);
         }
-    }, [priorityCountries, data, isSuccess]);
+    }, [priorityCountries, data, priorityCountriesFetchedSuccessfully, isPriorityCountriesError, priorityCountriesError]);
 
     const handleCountryChange = (selectedOption) => {
         const selectedCountry = priorityCountries.find(country => country.countryId === selectedOption.value);

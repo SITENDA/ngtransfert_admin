@@ -38,7 +38,12 @@ export const currenciesApiSlice = apiSlice.injectEndpoints({
             ]
         }),
         getCurrenciesForCountry: builder.query({
-            query: (countryId) => countryId ? `${backend.currencies.getCurrenciesForCountryUrl}?countryId=${countryId}` : [],
+            query: (countryId) => {
+                if (!Number(countryId) || countryId < 1) {
+                    return {error: {status: 400, message: 'Invalid country ID'}};
+                }
+                return `${backend.currencies.getCurrenciesForCountryUrl}?countryId=${countryId}`
+            },
             transformResponse: responseData => {
                 if (responseData?.data?.currencies) {
                     const currencies = responseData?.data?.currencies
@@ -52,7 +57,13 @@ export const currenciesApiSlice = apiSlice.injectEndpoints({
         }),
 
         getCurrencyById: builder.query({
-            query: (currencyId) => currencyId ? `${backend.currencies.getByIdUrl}?currencyId=${currencyId}` : null,
+            query: (currencyId) =>
+            {
+                if (!Number(currencyId) || currencyId < 1) {
+                    return {error: {status: 400, message: 'Invalid currency ID'}};
+                }
+                return `${backend.currencies.getByIdUrl}?currencyId=${currencyId}`
+            },
             transformResponse: responseData => {
                 if (responseData?.data?.currency) {
                     return responseData?.data?.currency

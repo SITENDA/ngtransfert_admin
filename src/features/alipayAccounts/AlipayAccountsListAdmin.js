@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectCurrentUser, selectIsDarkTheme, setItem } from '../auth/authSlice';
+import { selectIsDarkTheme, setItem } from '../auth/authSlice';
 import {
     selectAllAlipayAccounts,
     useGetAllAlipayAccountsQuery
@@ -20,14 +20,10 @@ const AlipayAccountsListAdmin = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const isDarkTheme = useSelector(selectIsDarkTheme);
-    const params = useParams();
-    const user = useSelector(selectCurrentUser);
     const theme = useTendaTheme();
 
-    const { clientId } = params;
-
     useEffect(() => {
-        dispatch(setItem({ key: "title", value: "Alipay Accounts" }));
+        dispatch(setItem({ key: "title", value: "All Alipay Accounts" }));
     }, [dispatch]);
 
     const handleAddAccountClick = () => {

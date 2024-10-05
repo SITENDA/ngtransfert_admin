@@ -3,11 +3,13 @@ import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { useSelector } from "react-redux";
 import { selectIsDarkTheme } from "../../features/auth/authSlice";
 import { darkColor, lightColor } from "../../util/initials";
+import PhoneIcon from '@mui/icons-material/Phone'; // Add a phone icon for better aesthetics
 
 const PhoneNumberDisplay = ({ phoneNumber }) => {
-    // Parse the phone number to get country code and formatted number
+    // Parse the phone number
     const phoneNumberWithPlusSign = phoneNumber?.trim().startsWith('+') ? phoneNumber.trim() : `+${phoneNumber?.trim()}`;
-    const parsedPhoneNumber = phoneNumber?.trim().startsWith('rand_phonenumber') ? false: parsePhoneNumberFromString(phoneNumberWithPlusSign || '');
+    const parsedPhoneNumber = phoneNumber?.trim().startsWith('rand_phonenumber') ? false : parsePhoneNumberFromString(phoneNumberWithPlusSign || '');
+
     const isDarkTheme = useSelector(selectIsDarkTheme);
 
     // Styling
@@ -20,10 +22,10 @@ const PhoneNumberDisplay = ({ phoneNumber }) => {
             fontFamily: 'Arial, sans-serif',
         },
         flag: {
-            width: '24px', // Adjusted width for a small flag
-            height: '16px', // Maintain aspect ratio for the flag
+            width: '24px', // Small flag size
+            height: '16px', // Aspect ratio for flags
             objectFit: 'cover',
-            borderRadius: '2px', // Slightly rounded corners for better aesthetics
+            borderRadius: '2px', // Rounded corners for aesthetics
         },
         fallbackIcon: {
             fontSize: '1.5rem',
@@ -33,7 +35,6 @@ const PhoneNumberDisplay = ({ phoneNumber }) => {
             letterSpacing: '0.1rem',
             fontSize: '1.0rem',
             color: isDarkTheme ? lightColor : darkColor,
-            backgroundColor: 'transparent',
         },
     };
 
@@ -43,16 +44,19 @@ const PhoneNumberDisplay = ({ phoneNumber }) => {
 
     const formattedNumber = parsedPhoneNumber.formatInternational();
 
-    // Render the phone number with China flag and better formatting
     return (
-        <div style={styles.container}>
+        <span style={styles.container}>
+            {/* Display flag or fallback icon */}
             <img
                 src="https://flagcdn.com/w320/cn.png" // China Flag image
                 alt="China Flag"
                 style={styles.flag}
             />
+            {/* Phone icon */}
+            <PhoneIcon style={styles.fallbackIcon} />
+            {/* Display the formatted phone number */}
             <span style={styles.number}>{formattedNumber}</span>
-        </div>
+        </span>
     );
 };
 

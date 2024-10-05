@@ -1,9 +1,10 @@
-import {forwardRef, useState} from 'react';
+import React, {forwardRef, useState} from 'react';
 import {darkColor, lightColor} from "../../util/initials";
 import {useSelector} from "react-redux";
 import {selectIsDarkTheme} from "../../features/auth/authSlice";
-import TopUpMethod from "../../util/TopUpMethod";
+import {orderedTopUpMethods} from "../../util/TopUpMethod";
 import Select from 'react-select';
+import SelectedMethodDisplay from "./SelectedMethodDisplay";
 
 const TopUpMethodSelector = forwardRef(({
                                      changeHandler,
@@ -14,29 +15,6 @@ const TopUpMethodSelector = forwardRef(({
                                      handleBlur
                                  }, ref) => {
 
-    const orderedTopUpMethods = [
-        {
-            label: "MTN Mobile Money",
-            value: TopUpMethod.MOBILE_MONEY,
-        },
-        {
-            label: "Wave",
-            value: TopUpMethod.WAVE,
-        },
-        {
-            label: "Orange Money",
-            value: TopUpMethod.ORANGE_MONEY,
-        },
-        {
-            label: "Cash",
-            value: TopUpMethod.CASH,
-        },
-        {
-            label: "Bank",
-            value: TopUpMethod.BANK
-        }
-
-    ]
 
     const isDarkTheme = useSelector(selectIsDarkTheme);
 
@@ -48,6 +26,12 @@ const TopUpMethodSelector = forwardRef(({
         setCurrentTopUpMethod(selectedTopUpMethod);
         changeHandler(selectedOption);
     };
+
+    const optionsData = orderedTopUpMethods.map((method) => ({
+    value: method.value,
+    label: ( <SelectedMethodDisplay method={method}/>),
+}));
+
 
     const filterOption = (option, searchText) => {
         const searchRegex = new RegExp(searchText, 'i'); // Case-insensitive search
@@ -66,7 +50,7 @@ const TopUpMethodSelector = forwardRef(({
             <Select
                 id="topupSelector"
                 ref={ref}
-                options={orderedTopUpMethods}
+                options={optionsData}
                 onBlur={handleBlur}
                 onFocus={handleFocus}
                 value={currentTopUpMethod ? {

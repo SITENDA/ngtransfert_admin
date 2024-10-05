@@ -39,10 +39,15 @@ export const bankAccountsApiSlice = apiSlice.injectEndpoints({
                     : [{type: 'BankAccount', id: 'LIST'}],
         }),
         getBankAccountsByClientId: builder.query({
-            query: (bankAccountId) => ({
-                url: `${backend.bankAccounts.getAllByClientIdUrl }?bankAccountId=${bankAccountId}`,
+            query: (clientId) => {
+                if (!Number(clientId) || clientId < 1) {
+                    return {error: {status: 400, message: 'Invalid client ID'}};
+                }
+                return ({
+                url: `${backend.bankAccounts.getAllByClientIdUrl }?clientId=${clientId}`,
                 method: 'GET',
-            }),
+            })
+            },
             transformResponse: (responseData) => {
                 let bankAccounts = responseData?.data?.bankAccounts || [];
                 return bankAccountsAdapter.setAll(initialState, bankAccounts);
@@ -57,10 +62,15 @@ export const bankAccountsApiSlice = apiSlice.injectEndpoints({
         }),
 
         getBankAccountByBankAccountId: builder.query({
-            query: (bankAccountId) => ({
+            query: (bankAccountId) => {
+                if (!Number(bankAccountId) || bankAccountId < 1) {
+                    return {error: {status: 400, message: 'Invalid bank account ID'}};
+                }
+                return ({
                 url: `${backend.bankAccounts.getByIdUrl}?bankAccountId=${bankAccountId}`,
                 method: 'GET',
-            }),
+            })
+            },
             transformResponse: (responseData) => {
                 let bankAccountArray = responseData?.data?.bankAccount || [];
                 bankAccountArray = bankAccountArray.map(bankAccount => {
@@ -112,7 +122,7 @@ export const {
 
 export const selectAllBankAccountsResult = bankAccountsApiSlice.endpoints.getAllBankAccounts.select()
 export const selectBankAccountsByClientIdResult = (clientId) => bankAccountsApiSlice.endpoints.getBankAccountsForClient.select(clientId)
-export const selectBankAccountByBankAccountIdResult = (clientId) => bankAccountsApiSlice.endpoints.getBankAccountByBankAccountId(clientId)
+export const selectBankAccountByBankAccountIdResult = (bankAccountId) => bankAccountsApiSlice.endpoints.getBankAccountByBankAccountId(bankAccountId)
 
 //----------------------------------------------------------------------------------------------------------------
 

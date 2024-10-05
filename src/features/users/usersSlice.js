@@ -53,7 +53,12 @@ export const usersApiSlice = apiSlice.injectEndpoints({
             ]
         }),
         getUserByUserId: builder.query({
-            query: (userId) => `${backend.users.getByUserIdUrl}?userId=${userId}`,
+            query: (userId) => {
+                if (!Number(userId) || userId < 1) {
+                    return {error: {status: 400, message: 'Invalid User ID'}};
+                }
+                return `${backend.users.getByUserIdUrl}?userId=${userId}`
+            },
             transformResponse: responseData => {
                 const user = responseData?.data?.user;
                 // Check if user exists and is an object
@@ -118,7 +123,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 // -----Exporting our auto-generated hooks ----------------------------------------------------------------------
 export const {
     useRegisterMutation,
-    useGetUserByIdQuery,
     useGetAllUsersQuery,
     useGetAllClientsQuery,
     useGetUserByUserIdQuery,

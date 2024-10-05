@@ -30,6 +30,7 @@ const countriesBaseUrl      = `${bottomUrl}/countries`;
 const currenciesBaseUrl     = `${bottomUrl}/currencies`;
 const cashDepositAddressesBaseUrl = `${bottomUrl}/cashDepositAddresses`;
 const bankDepositAddressesBaseUrl = `${bottomUrl}/bankDepositAddresses`;
+const exchangesBaseUrl = `${bottomUrl}/exchanges`;
 
 export const backend = {
     baseUrl,
@@ -90,7 +91,7 @@ export const backend = {
     },
     countries: {
         getAllUrl               : `${countriesBaseUrl}/getAllCountries`,
-        getPriorityCountriesUrl : `${currenciesBaseUrl}/getPriorityCountries`,
+        getPriorityCountriesUrl : `${countriesBaseUrl}/getPriorityCountries`,
         getByIdUrl              : `${countriesBaseUrl}/getCountryByCountryId`,
         getByCountryNameUrl     : `${countriesBaseUrl}/getCountryByCountryName`,
     },
@@ -111,5 +112,8 @@ export const backend = {
         getBankDepositAddressesByCountryIdUrl       : `${bankDepositAddressesBaseUrl}/getBankDepositAddressesByCountryId`,
         createBankDepositAddressUrl                 : `${bankDepositAddressesBaseUrl}/createBankDepositAddress}`,
         deleteUrl                                   : `${bankDepositAddressesBaseUrl}/deleteBankDepositAddress}`,
+    },
+    exchanges : {
+        doCurrencyExchangeUrl: `${exchangesBaseUrl}/doCurrencyExchange`,
     }
 };

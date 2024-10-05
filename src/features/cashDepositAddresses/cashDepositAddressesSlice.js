@@ -21,10 +21,13 @@ export const cashDepositAddressesApiSlice = apiSlice.injectEndpoints({
         }),
         getCashDepositAddressesByCountryId: builder.query({
             query: (countryId) => {
-                return countryId > 0 ? ({
+                if (!Number(countryId) || countryId < 1) {
+                    return {error: {status: 400, message: 'Invalid country ID'}};
+                }
+                return ({
                     url: `${backend.cashDepositAddresses.getCashDepositAddressesByCountryIdUrl}?countryId=${countryId}`,
                     method: 'GET',
-                }) : null
+                })
             },
             transformResponse: (responseData) => {
                 let cashDepositAddresses = responseData?.data?.cashDepositAddresses || [];
@@ -40,10 +43,13 @@ export const cashDepositAddressesApiSlice = apiSlice.injectEndpoints({
         }),
         getCashDepositAddressesByCountryName: builder.query({
             query: (countryName) => {
-                return countryName?.length > 0 ? ({
+                if (!countryName || typeof countryName !== 'string' || countryName.trim().length === 0) {
+                    return {error: {status: 400, message: 'Invalid country name'}};
+                }
+                return ({
                     url: `${backend.cashDepositAddresses.getCashDepositAddressesByCountryNameUrl}?countryName=${countryName}`,
                     method: 'GET',
-                }) : null
+                })
             },
             transformResponse: (responseData) => {
                 let cashDepositAddresses = responseData?.data?.cashDepositAddresses || [];

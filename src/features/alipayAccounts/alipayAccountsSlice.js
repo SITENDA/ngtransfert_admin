@@ -37,10 +37,15 @@ export const alipayAccountsApiSlice = apiSlice.injectEndpoints({
                     : [{type: 'AlipayAccount', id: 'LIST'}],
         }),
         getAlipayAccountsByClientId: builder.query({
-            query: (alipayAccountId) => ({
-                url: `${backend.alipayAccounts.getAllByClientIdUrl }?alipayAccountId=${alipayAccountId}`,
-                method: 'GET',
-            }),
+            query: (clientId) => {
+                if (!Number(clientId) || clientId < 1) {
+                    return {error: {status: 400, message: 'Invalid client ID'}};
+                }
+                return ({
+                    url: `${backend.alipayAccounts.getAllByClientIdUrl}?clientId=${clientId}`,
+                    method: 'GET',
+                })
+            },
             transformResponse: (responseData) => {
                 let alipayAccounts = responseData?.data?.alipayAccounts || [];
                 return alipayAccountsAdapter.setAll(initialState, alipayAccounts);
@@ -48,17 +53,22 @@ export const alipayAccountsApiSlice = apiSlice.injectEndpoints({
             providesTags: (result, error, arg) =>
                 result
                     ? [
-                        { type: 'AlipayAccount', id: arg },
-                        ...result.ids.map((id) => ({ type: 'AlipayAccount', id })),
+                        {type: 'AlipayAccount', id: arg},
+                        ...result.ids.map((id) => ({type: 'AlipayAccount', id})),
                     ]
-                    : [{ type: 'AlipayAccount', id: arg }],
+                    : [{type: 'AlipayAccount', id: arg}],
         }),
 
         getAlipayAccountByAlipayAccountId: builder.query({
-            query: (alipayAccountId) => ({
+            query: (alipayAccountId) => {
+                if (!Number(alipayAccountId) || alipayAccountId < 1) {
+                    return {error: {status: 400, message: 'Invalid alipay account ID'}};
+                }
+                return ({
                 url: `${backend.alipayAccounts.getByIdUrl}?alipayAccountId=${alipayAccountId}`,
                 method: 'GET',
-            }),
+            })
+            },
             transformResponse: (responseData) => {
                 let alipayAccountArray = responseData?.data?.alipayAccount || [];
                 alipayAccountArray = alipayAccountArray.map(alipayAccount => {
@@ -74,20 +84,20 @@ export const alipayAccountsApiSlice = apiSlice.injectEndpoints({
             providesTags: (result, error, arg) =>
                 result
                     ? [
-                        { type: 'AlipayAccount', id: arg },
-                        ...result.ids.map((id) => ({ type: 'AlipayAccount', id })),
+                        {type: 'AlipayAccount', id: arg},
+                        ...result.ids.map((id) => ({type: 'AlipayAccount', id})),
                     ]
-                    : [{ type: 'AlipayAccount', id: arg }],
+                    : [{type: 'AlipayAccount', id: arg}],
         }),
-        
+
         deleteAlipayAccount: builder.mutation({
             query: alipayAccount => ({
                 url: `${backend.alipayAccounts.deleteUrl}/${alipayAccount.alipayAccountId}`,
                 method: 'DELETE',
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: 'AlipayAccount', id: arg.alipayAccountId },
-                { type: 'AlipayAccount', id: 'LIST' },
+                {type: 'AlipayAccount', id: arg.alipayAccountId},
+                {type: 'AlipayAccount', id: 'LIST'},
             ],
         }),
 
@@ -110,7 +120,7 @@ export const {
 
 export const selectAllAlipayAccountsResult = alipayAccountsApiSlice.endpoints.getAllAlipayAccounts.select()
 export const selectAlipayAccountsForClientResult = (clientId) => alipayAccountsApiSlice.endpoints.getAlipayAccountsForClient.select(clientId)
-export const selectAlipayAccountByAlipayAccountIdResult = (clientId) => alipayAccountsApiSlice.endpoints.getAlipayAccountByAlipayAccountId(clientId)
+export const selectAlipayAccountByAlipayAccountIdResult = (alipayAccountId) => alipayAccountsApiSlice.endpoints.getAlipayAccountByAlipayAccountId(alipayAccountId)
 
 //----------------------------------------------------------------------------------------------------------------
 

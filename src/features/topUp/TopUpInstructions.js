@@ -3,7 +3,7 @@ import {Typography, Button, Grid, Divider, Box, List, ListItem, ListItemText, Li
 import TopUpMethodSelector from "../../components/form-controls/TopUpMethodSelector";
 import {darkColor, lightColor} from "../../util/initials";
 import MainPageWrapper from "../../components/MainPageWrapper";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {
     handleBlur,
@@ -30,13 +30,17 @@ import TopUpMethod from "../../util/TopUpMethod";
 const TopUpInstructions = () => {
     const [selectedMethod, setSelectedMethod] = useState('');
     const [selectedCountryName, setSelectedCountryName] = useState(null);
-
+    const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const isDarkTheme = useSelector(selectIsDarkTheme);
     const topUpInputs = useSelector(selectTopUpInputs);
     const validTopUp = useSelector(selectValidTopUp);
     const topUpFocus = useSelector(selectTopUpFocus);
+
+    const alipayAccount = location?.state?.alipayAccount;
+    const wechatAccount = location?.state?.wechatAccount;
+    const bankAccount = location?.state?.bankAccount;
 
     const refs = {
         topUpMethodRef: useRef(null),
@@ -50,8 +54,11 @@ const TopUpInstructions = () => {
         navigate(adminPaths.topUpPath, {
             state: {
                 prevPath: window.location.pathname,
-                selectedMethod,
-                selectedCountryName
+                selectedMethod: selectedMethod.value,
+                selectedCountryName,
+                alipayAccount : alipayAccount? alipayAccount : null,
+                wechatAccount : wechatAccount? wechatAccount : null,
+                bankAccount   : bankAccount? bankAccount : null,
             }
         });
     };

@@ -37,7 +37,12 @@ export const wechatAccountsApiSlice = apiSlice.injectEndpoints({
                     : [{type: 'WechatAccount', id: 'LIST'}],
         }),
         getWechatAccountsByClientId: builder.query({
-            query: (clientId) => `${backend.wechatAccounts.getAllByClientIdUrl}?clientId=${clientId}`,
+            query: (clientId) => {
+                if (!Number(clientId) || clientId < 1) {
+                    return {error: {status: 400, message: 'Invalid client ID'}};
+                }
+                return `${backend.wechatAccounts.getAllByClientIdUrl}?clientId=${clientId}`
+            },
             transformResponse: responseData => {
                 if (responseData?.data?.wechatAccounts) {
                     const wechatAccounts = responseData?.data?.wechatAccounts || [];
@@ -51,10 +56,15 @@ export const wechatAccountsApiSlice = apiSlice.injectEndpoints({
         }),
 
         getWechatAccountByWechatAccountId: builder.query({
-            query: (wechatAccountId) => ({
+            query: (wechatAccountId) => {
+                if (!Number(wechatAccountId) || wechatAccountId < 1) {
+                    return {error: {status: 400, message: 'Invalid Wechat Account ID'}};
+                }
+                return ({
                 url: `${backend.wechatAccounts.getByIdUrl}?wechatAccountId=${wechatAccountId}`,
                 method: 'GET',
-            }),
+            })
+            },
             transformResponse: (responseData) => {
                 let wechatAccountArray = responseData?.data?.wechatAccount || [];
                 wechatAccountArray = wechatAccountArray.map(wechatAccount => {
