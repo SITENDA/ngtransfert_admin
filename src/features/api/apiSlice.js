@@ -26,7 +26,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         else if (args?.error && !args?.method) {
             return args
         }
-        else if (args?.url?.trim()?.endsWith('=')) {
+        else if (args?.url?.trim()?.endsWith('=') || args?.url?.trim()?.endsWith('undefined')) {
             return {error: {status: 400, message: 'Invalid request: Invalid request parameter'}};
         }
 

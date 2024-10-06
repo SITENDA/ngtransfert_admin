@@ -26,10 +26,13 @@ export const initialLoginInputs = {
 };
 
 export const initialTopUpInputs = {
-    topUpMethod     : '',
-    currencyId      : null,
-    amount          : 0,
-    countryOfTopUpId  : '',
+    topUpMethod         : '',
+    currencyId          : null,
+    sourceAmount        : null,
+    targetAmount        : null,
+    sourceCurrencyCode  : null,
+    targetCurrencyCode  : "CNY",
+    countryOfTopUpId    : '',
 
 }
 
@@ -122,8 +125,11 @@ export const initialValidWechatAccount = {
 export const initialValidTopUp = {
     validTopUpMethod        : false,
     validCurrencyId         : false,
-    validAmount             : false,
+    validSourceAmount       : false,
+    validTargetAmount       : false,
     validCountryOfTopUpId   : false,
+    validSourceCurrencyCode : false,
+    validTargetCurrencyCode : false,
 }
 
 export const initialEventProperties = {
@@ -181,10 +187,13 @@ export const initialBankAccountFocus = {
 }
 
 export const initialTopUpFocus = {
-    topUpMethodFocus     : false,
-    currencyIdFocus      : null,
-    amountFocus          : false,
-    countryOfTopUpIdFocus  : false,
+    topUpMethodFocus        : false,
+    currencyIdFocus         : null,
+    sourceAmountFocus       : false,
+    targetAmountFocus       : false,
+    countryOfTopUpIdFocus   : false,
+    sourceCurrencyCodeFocus : false,
+    targetCurrencyCodeFocus : false
 }
 
 export const initialTransferRequestFocus = {

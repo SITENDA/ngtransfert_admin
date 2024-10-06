@@ -16,7 +16,7 @@ export const regex = {
     TITLE_REGEX                 : /^.+$/,
     CLIENT_ID_REGEX             : /^[1-9]\d*$/,
     PRINCIPAL_REGEX             : /^(?!0(\.0+)?$)([5-9]|\d{2,})(\.\d+)?$/,
-    AMOUNT_REGEX                : /^(?!0(\.0+)?$)([5-9]|\d{2,})(\.\d+)?$/,
+    AMOUNT_REGEX                : /^(?!0(\.0+)?$)([0-9]|\d{2,})(\.\d+)?$/,
     RATE_REGEX                  : /^(?!0(\.0+)?$)\d+(\.\d+)?$/,
     COLLATERAL_REGEX            : /^.{3,}$/,
     REASON_FOR_LOAN_REGEX       : /^.{4,}$/,

@@ -1,10 +1,10 @@
 import InputField from './InputField'
 import {forwardRef} from 'react';
 
-const AmountInput = forwardRef(({changeHandler, validAmount, value, isFocused, handleFocus, handleBlur}, ref) => {
+const AmountInput = forwardRef(({changeHandler, validAmount, value, isFocused, handleFocus, handleBlur, label}, ref) => {
     return (
         <InputField
-            label="Amount"
+            label={label ? label : "Amount"}
             id="amount"
             type="number"
             name="amount"

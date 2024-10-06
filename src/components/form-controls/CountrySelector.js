@@ -39,7 +39,7 @@ const CountrySelector = forwardRef(({
         if (countryFetchedSuccessfully) {
             setFetchedCCountry(countryData?.data?.country)
         } else if (isCountryFetchedError) {
-            console.log("Error is : ", countryFetchedError)
+            //console.log("Error is : ", countryFetchedError)
         }
 
     }, [countryData, countryFetchedSuccessfully, countryFetchedError, isCountryFetchedError]);

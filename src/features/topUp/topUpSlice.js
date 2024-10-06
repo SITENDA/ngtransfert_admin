@@ -1,64 +1,38 @@
 import {apiSlice} from "../api/apiSlice";
 import {backend} from "../../util/backend";
 
+const isValidNumber = (number) => Number(number) && number >= 1
+    const isValidString = (str) => (str && typeof str === 'string' && str.trim().length >= 0)
+
 export const topUpApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
-        // doCurrencyExchange: builder.query({
-        //     query: (sourceCurrencyCode, targetCurrencyCode, sourceAmount, countryId) => {
-        //         if (!Number(countryId) || countryId < 1) {
-        //             console.log("Country id : ", countryId);
-        //             return {error: {status: 400, message: 'Invalid country ID'}};
-        //         } else if (!Number(sourceAmount) || sourceAmount < 1) {
-        //             console.log("source amount : ", sourceAmount);
-        //             return {error: {status: 400, message: 'Invalid source amount'}};
-        //         } else if (!sourceCurrencyCode || typeof sourceCurrencyCode !== 'string' || sourceCurrencyCode.trim().length === 0) {
-        //             console.log("source currency code : ", sourceCurrencyCode);
-        //             return {error: {status: 400, message: 'Invalid source currency code'}};
-        //         } else if (!targetCurrencyCode || typeof targetCurrencyCode !== 'string' || targetCurrencyCode.trim().length === 0) {
-        //             console.log("target currency code : ", targetCurrencyCode);
-        //             return {error: {status: 400, message: 'Invalid target currency code'}};
-        //         }
-        //         // Correctly format the query parameters using '&'
-        //         return {
-        //             url: `${backend.exchanges.doCurrencyExchangeUrl}?sourceCurrencyCode=${sourceCurrencyCode}&targetCurrencyCode=${targetCurrencyCode}&sourceAmount=${sourceAmount}&countryId=${countryId}`,
-        //             method: 'GET',
-        //         };
-        //     },
-        //
-        //     transformResponse: (responseData) => {
-        //         return responseData?.data || {};
-        //     },
-        //     providesTags: (result, error, arg) =>
-        //         result
-        //             ? [
-        //                 {type: 'BankAccount', id: arg},
-        //                 ...result.ids.map((id) => ({type: 'BankAccount', id})),
-        //             ]
-        //             : [{type: 'BankAccount', id: arg}],
-        // }),
+
         doCurrencyExchange: builder.mutation({
-            query: ({sourceCurrencyCode, targetCurrencyCode, sourceAmount, countryId}) => {
+            query: ({sourceCurrencyCode, targetCurrencyCode, sourceAmount, targetAmount, countryId, directionOfExchange}) => {
                 // Check for invalid inputs
-                if (!Number(countryId) || countryId < 1) {
-                    console.log("Country id : ", countryId);
+                if (!isValidNumber(countryId)) {
                     return {error: {status: 400, message: 'Invalid country ID'}};
-                } else if (!Number(sourceAmount) || sourceAmount < 1) {
-                    console.log("source amount : ", sourceAmount);
-                    return {error: {status: 400, message: 'Invalid source amount'}};
-                } else if (!sourceCurrencyCode || typeof sourceCurrencyCode !== 'string' || sourceCurrencyCode.trim().length === 0) {
-                    console.log("source currency code : ", sourceCurrencyCode);
+                }
+                else if (!isValidNumber(sourceAmount) && !isValidNumber(targetAmount)) {
+                    return {error: {status: 400, message: 'Invalid source and target amount'}};
+                }
+                else if (!isValidString(sourceCurrencyCode)){
                     return {error: {status: 400, message: 'Invalid source currency code'}};
-                } else if (!targetCurrencyCode || typeof targetCurrencyCode !== 'string' || targetCurrencyCode.trim().length === 0) {
-                    console.log("target currency code : ", targetCurrencyCode);
+                } else if (!isValidString(targetCurrencyCode)) {
                     return {error: {status: 400, message: 'Invalid target currency code'}};
+                }
+                else if (!isValidString(directionOfExchange)) {
+                    return {error: {status: 400, message: 'Invalid direction of exchange'}};
                 }
 
                 // Create FormData object
                 const formData = new FormData();
                 formData.append('sourceCurrencyCode', sourceCurrencyCode);
                 formData.append('targetCurrencyCode', targetCurrencyCode);
-                formData.append('sourceAmount', sourceAmount);
+                formData.append('sourceAmount', sourceAmount ? sourceAmount : 0);
+                formData.append('targetAmount', targetAmount ? targetAmount : 0);
                 formData.append('countryId', countryId);
+                formData.append('directionOfExchange', directionOfExchange);
 
                 // Return the request as a POST request
                 return {
