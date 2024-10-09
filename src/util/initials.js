@@ -33,7 +33,7 @@ export const initialTopUpInputs = {
     sourceCurrencyCode  : null,
     targetCurrencyCode  : "CNY",
     countryOfTopUpId    : '',
-
+    proofPicture        : {file: null, url: null},
 }
 
 export const initialAlipayAccountInputs = {
@@ -42,7 +42,7 @@ export const initialAlipayAccountInputs = {
     clientId: 0,
     email: '',
     phoneNumber: '',
-    alipayQrCodeImage: {file: null, url: null} // This will hold the file object for the image
+    alipayQrCodeImage: {file: null, url: null}
 };
 
 export const initialTransferRequestInputs = {
@@ -130,6 +130,7 @@ export const initialValidTopUp = {
     validCountryOfTopUpId   : false,
     validSourceCurrencyCode : false,
     validTargetCurrencyCode : false,
+    validProofPicture       : false,
 }
 
 export const initialEventProperties = {
@@ -193,7 +194,8 @@ export const initialTopUpFocus = {
     targetAmountFocus       : false,
     countryOfTopUpIdFocus   : false,
     sourceCurrencyCodeFocus : false,
-    targetCurrencyCodeFocus : false
+    targetCurrencyCodeFocus : false,
+    proofPictureFocus       : false,
 }
 
 export const initialTransferRequestFocus = {

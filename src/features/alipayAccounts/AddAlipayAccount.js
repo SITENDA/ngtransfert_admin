@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {message} from 'antd';
 import {useDispatch, useSelector} from 'react-redux';
-import {useLocation, Link, useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import {
     selectValidAlipayAccount,
     selectEventProperties,
@@ -9,7 +8,7 @@ import {
     selectAlipayAccountSpecifics,
     selectAlipayAccountFocus,
     setItem,
-    setObjectItem, selectCurrentUser, handleValidation, handleFocus, handleBlur, selectIsDarkTheme,
+    setObjectItem, selectCurrentUser, handleValidation, handleFocus, handleBlur, handleImageChange,
 } from "../auth/authSlice";
 import {useCreateAlipayAccountMutation} from "./alipayAccountsSlice";
 import EmailInput from "../../components/form-controls/EmailInput";
@@ -19,23 +18,19 @@ import {
     initialAlipayAccountInputs,
     initialValidAlipayAccount,
     initialAlipayAccountSpecifics,
-    initialEventProperties, lightColor, darkColor,
+    initialEventProperties,
 } from "../../util/initials";
 import ErrorMessageComponent from "../../components/form-controls/ErrorMessageComponent";
 import TendaButton from "../../components/form-controls/TendaButton";
 import {regex} from "../../util/regex";
-import ClickToUpload from "../../components/form-controls/ClickToUpload";
 import TickAnimation from "../../components/TickAnimation";
 import {adminPaths} from "../../util/frontend";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCheck, faTimes} from "@fortawesome/free-solid-svg-icons";
 import {useTendaTheme} from "../../components/useTendaTheme";
-import {ThemeProvider, Typography} from "@mui/material";
+import {Button, Divider, ThemeProvider, Typography} from "@mui/material";
 import MainPageWrapper from "../../components/MainPageWrapper";
-import QrCodeImageInput from "../../components/form-controls/QrCodeImageInput";
+import ImageInput from "../../components/form-controls/ImageInput";
 
 const AddAlipayAccount = () => {
-    const [alipayQrCodeImage, setAlipayQrCodeImage] = useState({file: null, url: null});
     const [loading, setLoading] = useState(false);  // State variable to track loading status
     const dispatch = useDispatch();
     const location = useLocation();
@@ -57,7 +52,6 @@ const AddAlipayAccount = () => {
     const currentUser = useSelector(selectCurrentUser);
     const navigate = useNavigate();
     const alipayAccountFocus = useSelector(selectAlipayAccountFocus);
-    const isDarkTheme = useSelector(selectIsDarkTheme);
 
     useEffect(() => {
         dispatch(setItem({key: 'title', value: 'Add Alipay Account'}));
@@ -71,14 +65,6 @@ const AddAlipayAccount = () => {
         if (result) dispatch(setObjectItem({key: 'alipayAccountSpecifics', innerKey: "identifier", value: "email"}));
     }, [alipayAccountInputs.email, dispatch]);
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        const currentImage = {file, url: URL.createObjectURL(file)};
-        setAlipayQrCodeImage(currentImage);
-        dispatch(setObjectItem({key: 'alipayAccountInputs', innerKey: "alipayQrCodeImage", value: currentImage}));
-        message.success(`${file.name} uploaded successfully.`);
-    };
-
     const handleAddAccountSubmit = async (e) => {
         e.preventDefault();
 
@@ -89,7 +75,7 @@ const AddAlipayAccount = () => {
             formData.append("alipayAccountIdentifier", alipayAccountSpecifics.identifier);
             formData.append("email", alipayAccountInputs.email);
             formData.append("phoneNumber", alipayAccountInputs.phoneNumber);
-            formData.append("alipayQrCodeImage", alipayQrCodeImage?.file || new Blob());
+            formData.append("alipayQrCodeImage", alipayAccountInputs.alipayQrCodeImage?.file || new Blob());
 
             // Set loading to true when the request starts
             setLoading(true);
@@ -174,6 +160,7 @@ const AddAlipayAccount = () => {
                                             regexPattern: "ALIPAY_ACCOUNT_NAME_REGEX"
                                         }))}
                                     />}
+                                    <Divider sx={{my: 3}}/>
 
                                     {alipayAccountSpecifics.showEmail &&
                                         <EmailInput
@@ -211,48 +198,82 @@ const AddAlipayAccount = () => {
                                         value={alipayAccountInputs.phoneNumber}
                                         focus={alipayAccountFocus.phoneNumberFocus}/>}
                                     {alipayAccountSpecifics.showQrCodeImage &&
-                                        <QrCodeImageInput handleFileChange={handleFileChange} qrCodeImage={alipayQrCodeImage} />
+                                        <ImageInput
+                                            handleImageChange={(e) => dispatch(handleImageChange({
+                                                objectName: "alipayAccount",
+                                                file: e.target.files[0],
+                                                inputName: "alipayQrCodeImage",
+                                                regexPattern: "UPLOAD_IMAGE_URL_REGEX",
+                                            }))}
+                                            image={alipayAccountInputs.alipayQrCodeImage} label="QR Code Image"/>
                                     }
 
-                                    {!alipayAccountSpecifics.showEmail && <p className="mt-3">
-                                        <Link onClick={handleUseEmail}
-                                              style={{
-                                                  textDecoration: "none",
-                                                  fontStyle: "italic",
-                                                  color: "white",
-                                                  fontSize: '1rem'
-                                              }}>
-                                            Use email instead</Link>
-                                    </p>}
+                                    <Divider sx={{my: 3}}/>
 
-                                    {!alipayAccountSpecifics.showPhone && <p className="mt-3">
-                                        <Link onClick={handleUsePhoneNumber}
-                                              style={{
-                                                  textDecoration: "none",
-                                                  fontStyle: "italic",
-                                                  color: "white",
-                                                  fontSize: '1rem'
-                                              }}>
-                                            Use phone number instead</Link>
-                                    </p>}
+                                    {!alipayAccountSpecifics.showEmail && (
+                                        <Typography variant="body2" className="mt-3">
+                                            <Button
+                                                onClick={handleUseEmail}
+                                                variant="text"
+                                                sx={{
+                                                    fontStyle: "italic",
+                                                    color: "white",
+                                                    fontSize: '1rem',
+                                                    padding: 0, // Removes default padding to make it more like a link
+                                                    minWidth: 'auto', // Ensures button size doesn't increase due to default width
+                                                    textTransform: 'none', // Keeps the text as it is, without uppercase transformation
+                                                }}
+                                            >
+                                                Use email instead
+                                            </Button>
+                                        </Typography>
+                                    )}
 
-                                    {!alipayAccountSpecifics.showQrCodeImage && <p className="mt-3">
-                                        <Link onClick={handleUseAlipayQrCode}
-                                              style={{
-                                                  textDecoration: "none",
-                                                  fontStyle: "italic",
-                                                  color: "white",
-                                                  fontSize: '1rem'
-                                              }}>
-                                            Use Alipay QR Code</Link>
-                                    </p>}
+                                    {!alipayAccountSpecifics.showPhone && (
+                                        <Typography variant="body2" className="mt-3">
+                                            <Button
+                                                onClick={handleUsePhoneNumber}
+                                                variant="text"
+                                                sx={{
+                                                    fontStyle: "italic",
+                                                    color: "white",
+                                                    fontSize: '1rem',
+                                                    padding: 0,
+                                                    minWidth: 'auto',
+                                                    textTransform: 'none',
+                                                }}
+                                            >
+                                                Use phone number instead
+                                            </Button>
+                                        </Typography>
+                                    )}
+
+                                    {!alipayAccountSpecifics.showQrCodeImage && (
+                                        <Typography variant="body2" className="mt-3">
+                                            <Button
+                                                onClick={handleUseAlipayQrCode}
+                                                variant="text"
+                                                sx={{
+                                                    fontStyle: "italic",
+                                                    color: "white",
+                                                    fontSize: '1rem',
+                                                    padding: 0,
+                                                    minWidth: 'auto',
+                                                    textTransform: 'none',
+                                                }}
+                                            >
+                                                Use Alipay QR Code
+                                            </Button>
+                                        </Typography>
+                                    )}
+
 
                                     <ErrorMessageComponent ref={refs.errorRef}/>
 
                                     {/* Submit Button */}
                                     <div className="d-grid">
                                         <TendaButton
-                                            disabled={!((alipayQrCodeImage.file || validAlipayAccount.validEmail || validAlipayAccount.validPhoneNumber) && validAlipayAccount.validAlipayAccountName && !eventProperties.isError)}
+                                            disabled={!((validAlipayAccount.validAlipayQrCodeImage || validAlipayAccount.validEmail || validAlipayAccount.validPhoneNumber) && validAlipayAccount.validAlipayAccountName && !eventProperties.isError)}
                                             buttonText={loading ? 'Adding account...' : 'Add account'}/>
                                     </div>
                                 </form>

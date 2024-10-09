@@ -1,47 +1,42 @@
 import React from 'react';
-import { useSelector } from "react-redux";
-import { selectIsDarkTheme } from "../../features/auth/authSlice";
-import { darkColor, lightColor } from "../../util/initials";
-import ReplayIcon from '@mui/icons-material/Replay'; // Import a reload icon
+import ReplayIcon from '@mui/icons-material/Replay';
+import {Box, Typography, IconButton, Button} from '@mui/material';
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
 
 const ClickToUpload = ({ handleFileChange, imageUrl }) => {
-    const isDarkTheme = useSelector(selectIsDarkTheme);
-
     return (
-        <div>
+        <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            sx={{cursor: 'pointer'}}
+        >
             <input
                 type="file"
                 id="alipayQrCodeImage-upload"
-                style={{
-                    display: 'none', // Hide the actual input element
-                }}
+                style={{ display: 'none' }} // Hide the actual input element
                 onChange={(e) => handleFileChange(e)}
             />
-            <label
-                htmlFor="alipayQrCodeImage-upload"
-                style={{
-                    width: '100px',
-                    height: '100px',
-                    border: '1px dashed #ccc',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    color: isDarkTheme ? lightColor : darkColor,
-                    cursor: 'pointer',
-                    flexDirection: 'column', // Center text and icon vertically
-                }}
-            >
-                {imageUrl ? (
-                    <>
-                        <ReplayIcon fontSize="small" style={{ marginBottom: '5px' }} /> {/* Reload icon */}
-                        <span>Change Image</span>
-                    </>
-                ) : (
-                    <span>Click to Upload</span>
-                )}
+            <label htmlFor="alipayQrCodeImage-upload" style={{ width: '100%', height: '100%' }}>
+                <IconButton component="span" sx={{ flexDirection: 'column' }}>
+                    {imageUrl ? (
+                        <>
+                            <ReplayIcon fontSize="small" style={{ marginBottom: '5px' }} />
+                            <Typography variant="caption">Change Image</Typography>
+                        </>
+                    ) : (
+                        <Button
+                            variant="outlined"
+                            component="span"
+                            startIcon={<PhotoCamera />}
+                        >
+                            Upload
+                        </Button>
+                    )}
+                </IconButton>
             </label>
-        </div>
+        </Box>
     );
 };
 

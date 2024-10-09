@@ -8,7 +8,7 @@ import {Link, useLocation, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {
     handleBlur,
-    handleFocus,
+    handleFocus, handleImageChange,
     handleValidation,
     selectIsDarkTheme, selectTopUpFocus,
     selectTopUpInputs, selectValidTopUp,
@@ -20,6 +20,7 @@ import {orderedTopUpMethods} from "../../util/TopUpMethod";
 import SelectedMethodDisplay from "../../components/form-controls/SelectedMethodDisplay";
 import {useDoCurrencyExchangeMutation} from "./topUpSlice";
 import ClickToUpload from "../../components/form-controls/ClickToUpload";
+import ImageInput from "../../components/form-controls/ImageInput";
 
 const TopUp = () => {
     const navigate = useNavigate();
@@ -89,10 +90,11 @@ const TopUp = () => {
 
 
     const refs = {
-        topUpMethodRef: useRef(null),
-        currencyIdRef: useRef(null),
-        sourceAmountRef: useRef(null),
-        targetAmountRef: useRef(null),
+        topUpMethodRef      : useRef(null),
+        currencyIdRef       : useRef(null),
+        sourceAmountRef     : useRef(null),
+        targetAmountRef     : useRef(null),
+        proofPictureRef     : useRef(null),
     }
 
     useEffect(() => {
@@ -329,22 +331,6 @@ const TopUp = () => {
                                                     inputName: "targetAmount",
                                                     regexPattern: "AMOUNT_REGEX"
                                                 }))}/>)}
-
-                                            {/*<div style={{textAlign: 'center', height: '150px', maxHeight: '150px'}}>*/}
-                                            {/*    <label htmlFor="alipayQrCodeImage-upload"*/}
-                                            {/*           style={{cursor: 'pointer', display: 'block'}}>*/}
-                                            {/*        {alipayQrCodeImage.url ?*/}
-                                            {/*            <img src={alipayQrCodeImage.url} alt="Share 1"*/}
-                                            {/*                 style={{width: '100px', height: '100px'}}/> :*/}
-                                            {/*            <ClickToUpload/>}*/}
-                                            {/*    </label>*/}
-                                            {/*    <input*/}
-                                            {/*        type="file"*/}
-                                            {/*        id="alipayQrCodeImage-upload"*/}
-                                            {/*        style={{display: 'none'}}*/}
-                                            {/*        onChange={(e) => handleFileChange(e, setAlipayQrCodeImage)}*/}
-                                            {/*    />*/}
-                                            {/*</div>*/}
 
                                         </>
 

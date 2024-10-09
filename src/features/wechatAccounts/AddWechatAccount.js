@@ -1,5 +1,4 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Typography, message} from 'antd';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate, useLocation, Link} from 'react-router-dom';
 import {
@@ -9,7 +8,7 @@ import {
     selectWechatAccountSpecifics,
     selectWechatAccountFocus,
     setItem,
-    setObjectItem, selectCurrentUser, handleValidation, handleFocus, handleBlur,
+    setObjectItem, selectCurrentUser, handleValidation, handleFocus, handleBlur, handleImageChange,
 } from "../auth/authSlice";
 import {useCreateWechatAccountMutation} from "./wechatAccountsSlice";
 import EmailInput from "../../components/form-controls/EmailInput";
@@ -24,14 +23,11 @@ import {
 import ErrorMessageComponent from "../../components/form-controls/ErrorMessageComponent";
 import TendaButton from "../../components/form-controls/TendaButton";
 import {regex} from "../../util/regex";
-import ClickToUpload from "../../components/form-controls/ClickToUpload";
 import {adminPaths} from "../../util/frontend";
 import TickAnimation from "../../components/TickAnimation";
-
-const {Text} = Typography;
+import ImageInput from "../../components/form-controls/ImageInput";
 
 const AddWechatAccount = () => {
-    const [wechatQrCodeImage, setWechatQrCodeImage] = useState({file: null, url: null});
     const [loading, setLoading] = useState(false);  // State variable to track loading status
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -65,14 +61,6 @@ const AddWechatAccount = () => {
         dispatch(setObjectItem({key: 'validWechatAccount', innerKey: "validEmail", value: result}));
     }, [wechatAccountInputs.email, dispatch]);
 
-    const handleFileChange = (e, setWechatQrCodeImage) => {
-        const file = e.target.files[0];
-        const currentImage = {file, url: URL.createObjectURL(file)};
-        setWechatQrCodeImage(currentImage);
-        dispatch(setObjectItem({key: 'wechatAccountInputs', innerKey: "wechatQrCodeImage", value: currentImage}));
-        message.success(`${file.name} uploaded successfully.`);
-    };
-
     const handleAddAccountSubmit = async (e) => {
         e.preventDefault();
 
@@ -85,7 +73,7 @@ const AddWechatAccount = () => {
             formData.append("phoneNumber", wechatAccountInputs.phoneNumber);
 
             // Append wechatQrCodeImage or an empty Blob if it is not defined
-            formData.append("wechatQrCodeImage", wechatQrCodeImage?.file || new Blob());
+            formData.append("wechatQrCodeImage", wechatAccountInputs.wechatQrCodeImage?.file || new Blob());
 
             // Set loading to true when the request starts
             setLoading(true);
@@ -212,20 +200,14 @@ const AddWechatAccount = () => {
                             }
 
                             {wechatAccountSpecifics.showQrCodeImage &&
-                                <div style={{textAlign: 'center', height: '150px', maxHeight: '150px'}}>
-                                    <label htmlFor="wechatQrCodeImage-upload"
-                                           style={{cursor: 'pointer', display: 'block'}}>
-                                        {wechatQrCodeImage.url ? <img src={wechatQrCodeImage.url} alt="Share 1"
-                                                                      style={{width: '100px', height: '100px'}}/> :
-                                            <ClickToUpload/>}
-                                    </label>
-                                    <input
-                                        type="file"
-                                        id="wechatQrCodeImage-upload"
-                                        style={{display: 'none'}}
-                                        onChange={(e) => handleFileChange(e, setWechatQrCodeImage)}
-                                    />
-                                </div>
+                                <ImageInput
+                                    handleImageChange={(e) => dispatch(handleImageChange({
+                                        objectName: "wechatAccount",
+                                        file: e.target.files[0],
+                                        inputName: "wechatQrCodeImage",
+                                        regexPattern: "UPLOAD_IMAGE_URL_REGEX",
+                                    }))}
+                                    image={wechatAccountInputs.wechatQrCodeImage} label="QR Code Image"/>
                             }
 
                             {!wechatAccountSpecifics.showEmail && <p className="mt-3">
@@ -266,7 +248,7 @@ const AddWechatAccount = () => {
                             {/* Submit Button */}
                             <div className="d-grid">
                                 <TendaButton
-                                    disabled={!((wechatQrCodeImage.file || validWechatAccount.validEmail || validWechatAccount.validPhoneNumber) && validWechatAccount.validWechatAccountName && !eventProperties.isError)}
+                                    disabled={!((validWechatAccount.validWechatQrCodeImage || validWechatAccount.validEmail || validWechatAccount.validPhoneNumber) && validWechatAccount.validWechatAccountName && !eventProperties.isError)}
                                     buttonText={loading ? 'Adding account...' : 'Add account'}/>
                             </div>
                         </form>

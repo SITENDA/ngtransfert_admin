@@ -32,4 +32,5 @@ export const regex = {
     REMARK_REGEX                : /^[\w\s.,!?@#$%^&*()\-_=+{};:'"<>|\[\]\/\\]*$/,
     CURRENCY_ID_REGEX           : /^[1-9]\d*$/,
     TOP_UP_METHOD_REGEX         : TOP_UP_METHOD_REGEX,
+    UPLOAD_IMAGE_URL_REGEX      : /^blob:https?:\/\/\S+/i,
 };

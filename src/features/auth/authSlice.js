@@ -1,6 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 import { initialState } from "../../util/initials";
 import {regex} from "../../util/regex";
+import {message} from "antd";
 
 const authSlice = createSlice({
     name: 'auth',
@@ -71,7 +72,6 @@ const authSlice = createSlice({
 
         handleValidation: (state, action) => {
             let {objectName, eventValue, inputName, regexPattern: regexString} = action.payload;
-
             objectName = trimIfString(objectName);
             inputName = trimIfString(inputName);
             const inputsObjectInState = getInputsObjectInState(state, objectName);
@@ -86,6 +86,13 @@ const authSlice = createSlice({
             if (objectName === "registration" && (inputName === "password" || inputName === "confirmPassword")) {
                 validateRegistrationPasswords(state);
             }
+        },
+        handleImageChange: (state, action) => {
+            let {file, inputName, objectName, regexPattern: regexString} = action.payload;
+            const currentImage = {file, url: URL.createObjectURL(file)};
+            const inputsObjectInState = getInputsObjectInState(state, objectName);
+            inputsObjectInState[inputName] = currentImage;
+            validateKey(state, objectName, inputName, regexString, currentImage.url);
         },
     },
 })
@@ -115,13 +122,14 @@ const trimIfString = (item) => {
     return typeof item === 'string' ? item.trim() : item;
 }
 
-const validateKey = (state, objectName, inputName, regexString) => {
+const validateKey = (state, objectName, inputName, regexString, imageUrl) => {
     const validObjectInState = getValidObjectInState(state, objectName);
     const validInnerKey = getValidInnerKey(inputName);
     const regexPattern = regex[regexString];
     const inputsObjectInState = getInputsObjectInState(state, objectName);
-    const result = regexPattern.test(inputsObjectInState[inputName])
-    validObjectInState[validInnerKey] = regexPattern.test(inputsObjectInState[inputName]);
+    const itemToTest = imageUrl ? imageUrl : inputsObjectInState[inputName];
+    const result = regexPattern.test(itemToTest)
+    validObjectInState[validInnerKey] = result;
     return result;
 }
 
@@ -137,7 +145,8 @@ export const {
     setObjectItem,
     handleFocus,
     handleBlur,
-    handleValidation
+    handleValidation,
+    handleImageChange
 } = authSlice.actions
 
 export const selectCurrentUser                      = (state) => state.auth.user;
