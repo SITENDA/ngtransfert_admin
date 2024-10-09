@@ -30,8 +30,8 @@ const UploadButton = ({ hasImage, handleImageChange, labelId }) => {
                         <Button
                             variant="outlined"
                             component="span"
-                            onClick={()=>{console.log("Button clicked")}}
                             startIcon={<PhotoCamera />}
+                            type="button"  // Ensures the button type is "button"
                         >
                             Upload
                         </Button>

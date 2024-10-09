@@ -1,22 +1,28 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setItem } from '../features/auth/authSlice';
+import React, {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
+import {setItem} from '../features/auth/authSlice';
 
-const MainPageWrapper = ({ children }) => {
+const MainPageWrapper = ({children}) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(setItem({ key: 'sidebarCollapsed', value: true }));
+        dispatch(setItem({key: 'sidebarCollapsed', value: true}));
     }, [dispatch]);
 
     const handleMainPageWrapperClick = (event) => {
-        // Check if the click event is within a form or a submit button
-        const isFormElement = event.target.closest('form');
-        const isSubmitButton = event.target.type === 'submit';
+        // Check if the clicked element is a button, link, input, or interactive element
+        const clickedElement = event.target;
+        const isInteractiveElement =
+            clickedElement.tagName === 'BUTTON' ||
+            clickedElement.tagName === 'A' ||
+            clickedElement.tagName === 'INPUT' ||
+            clickedElement.tagName === 'TEXTAREA' ||
+            clickedElement.tagName === 'SELECT' ||
+            clickedElement.isContentEditable;
 
-        if (!isFormElement && !isSubmitButton) {
-            event.preventDefault();
-            dispatch(setItem({ key: 'sidebarCollapsed', value: true }));
+        // Collapse sidebar only if the click was on an empty space (not an interactive element)
+        if (!isInteractiveElement) {
+            dispatch(setItem({key: 'sidebarCollapsed', value: true}));
         }
     };
 

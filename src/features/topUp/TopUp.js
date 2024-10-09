@@ -90,11 +90,11 @@ const TopUp = () => {
 
 
     const refs = {
-        topUpMethodRef      : useRef(null),
-        currencyIdRef       : useRef(null),
-        sourceAmountRef     : useRef(null),
-        targetAmountRef     : useRef(null),
-        proofPictureRef     : useRef(null),
+        topUpMethodRef: useRef(null),
+        currencyIdRef: useRef(null),
+        sourceAmountRef: useRef(null),
+        targetAmountRef: useRef(null),
+        proofPictureRef: useRef(null),
     }
 
     useEffect(() => {
@@ -332,8 +332,16 @@ const TopUp = () => {
                                                     regexPattern: "AMOUNT_REGEX"
                                                 }))}/>)}
 
-                                        </>
+                                            <ImageInput
+                                                handleImageChange={(e) => dispatch(handleImageChange({
+                                                    objectName: "topUp",
+                                                    file: e.target.files[0],
+                                                    inputName: "proofPicture",
+                                                    regexPattern: "UPLOAD_IMAGE_URL_REGEX",
+                                                }))}
+                                                image={topUpInputs.proofPicture} label="Picture of proof"/>
 
+                                        </>
 
                                     }
                                     {validTopUp.validAmount && validTopUp.validTopUpMethod && validTopUp.validCountryOfTopUpId &&
