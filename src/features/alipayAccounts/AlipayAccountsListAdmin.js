@@ -1,10 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectIsDarkTheme, setItem } from '../auth/authSlice';
-import {
-    selectAllAlipayAccounts,
-    useGetAllAlipayAccountsQuery
-} from './alipayAccountsSlice';
 import { useNavigate, useParams } from 'react-router-dom';
 import {Button, Alert, CircularProgress, Box, ThemeProvider} from '@mui/material';
 import { adminPaths } from '../../util/frontend';
@@ -15,6 +11,7 @@ import Tables from "../../components/Tables";
 import TableButton from "../../components/form-controls/TableButton";
 import MainPageWrapper from "../../components/MainPageWrapper";
 import { useTendaTheme } from "../../components/useTendaTheme";
+import {selectAllReceiverAccounts, useGetAllReceiverAccountsQuery} from "../receiverAccounts/receiverAccountsSlice";
 
 const AlipayAccountsListAdmin = () => {
     const navigate = useNavigate();
@@ -23,7 +20,7 @@ const AlipayAccountsListAdmin = () => {
     const theme = useTendaTheme();
 
     useEffect(() => {
-        dispatch(setItem({ key: "title", value: "All Alipay Accounts" }));
+        dispatch(setItem({ key: "title", value: "All Receiver Accounts" }));
     }, [dispatch]);
 
     const handleAddAccountClick = () => {
@@ -49,48 +46,48 @@ const AlipayAccountsListAdmin = () => {
     };
 
     const {
-        isLoading: isLoadingAlipayAccounts,
-        isSuccess: isAllAlipayAccountsSuccess,
-        isError: isAllAlipayAccountsError,
-        error: allAlipayAccountsError
-    } = useGetAllAlipayAccountsQuery();
+        isLoading: isLoadingReceiverAccounts,
+        isSuccess: isAllReceiverAccountsSuccess,
+        isError: isAllReceiverAccountsError,
+        error: allReceiverAccountsError
+    } = useGetAllReceiverAccountsQuery();
 
-    const orderedAlipayAccounts = useSelector(selectAllAlipayAccounts);
+    const orderedReceiverAccounts = useSelector(selectAllReceiverAccounts);
 
 
     const theadLabels = ['Account Name', 'Details', 'Apply'];
-    const tbodyContents = orderedAlipayAccounts.map(alipayAccount => [
-        <span>{alipayAccount.alipayAccountName} {alipayAccount.alipayAccountIdentifier === "qrCodeImage" ?
-            <ImageDisplay imageUrl={alipayAccount.alipayQrCodeUrl} title="Alipay QR Code"/> :
-            alipayAccount.alipayAccountIdentifier === "email" ?
-                <EmailDisplay email={alipayAccount.email}/> :
-                <PhoneNumberDisplay phoneNumber={alipayAccount.phoneNumber}/>}</span>,
+    const tbodyContents = orderedReceiverAccounts.map(receiverAccount => [
+        <span>{receiverAccount.alipayAccountName} {receiverAccount.receiverAccountIdentifier === "qrCodeImage" ?
+            <ImageDisplay imageUrl={receiverAccount.qrCodeUrl} title="Receiver QR Code"/> :
+            receiverAccount.receiverAccountIdentifier === "email" ?
+                <EmailDisplay email={receiverAccount.email}/> :
+                <PhoneNumberDisplay phoneNumber={receiverAccount.phoneNumber}/>}</span>,
         <TableButton
-            onClick={() => handleDetailsClick(alipayAccount?.alipayAccountId, alipayAccount)}
+            onClick={() => handleDetailsClick(receiverAccount?.accountId, receiverAccount)}
             label="Details"
         />,
         <TableButton
-            onClick={() => handleApplyClick(alipayAccount?.alipayAccountId, alipayAccount)}
+            onClick={() => handleApplyClick(receiverAccount?.accountId, receiverAccount)}
             label="Apply"
         />
     ]);
 
     let content;
-    if (isLoadingAlipayAccounts) {
+    if (isLoadingReceiverAccounts) {
         content = (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
                 <CircularProgress />
             </Box>
         );
-    } else if (orderedAlipayAccounts.length === 0) {
+    } else if (orderedReceiverAccounts.length === 0) {
         content = (
             <Alert
-                message="No Alipay accounts available"
+                message="No Receiver accounts available"
                 type="warning"
                 showIcon
             />
         );
-    } else if (isAllAlipayAccountsSuccess) {
+    } else if (isAllReceiverAccountsSuccess) {
         content = (
             <Tables
                 theadLabels={theadLabels}
@@ -98,8 +95,8 @@ const AlipayAccountsListAdmin = () => {
                 tbodyContents={tbodyContents}
             />
         );
-    } else if (isAllAlipayAccountsError) {
-        content = <p>Error: {allAlipayAccountsError}</p>;
+    } else if (isAllReceiverAccountsError) {
+        content = <p>Error: {allReceiverAccountsError}</p>;
     }
 
     return (

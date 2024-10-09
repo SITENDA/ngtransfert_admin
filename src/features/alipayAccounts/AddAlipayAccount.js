@@ -10,7 +10,6 @@ import {
     setItem,
     setObjectItem, selectCurrentUser, handleValidation, handleFocus, handleBlur, handleImageChange,
 } from "../auth/authSlice";
-import {useCreateAlipayAccountMutation} from "./alipayAccountsSlice";
 import EmailInput from "../../components/form-controls/EmailInput";
 import PhoneNumberInput from "../../components/form-controls/PhoneNumberInput";
 import AlipayAccountNameInput from "../../components/form-controls/AlipayAccountNameInput";
@@ -29,12 +28,14 @@ import {useTendaTheme} from "../../components/useTendaTheme";
 import {Button, Divider, ThemeProvider, Typography} from "@mui/material";
 import MainPageWrapper from "../../components/MainPageWrapper";
 import ImageInput from "../../components/form-controls/ImageInput";
+import ReceiverAccountType from "../../util/ReceiverAccountType";
+import {useCreateReceiverAccountMutation} from "../receiverAccounts/receiverAccountsSlice";
 
 const AddAlipayAccount = () => {
     const [loading, setLoading] = useState(false);  // State variable to track loading status
     const dispatch = useDispatch();
     const location = useLocation();
-    const [createAlipayAccount, {isSuccess}] = useCreateAlipayAccountMutation();
+    const [createReceiverAccount, {isSuccess}] = useCreateReceiverAccountMutation();
     const alipayAccountSpecifics = useSelector(selectAlipayAccountSpecifics);
     const validAlipayAccount = useSelector(selectValidAlipayAccount);
     const eventProperties = useSelector(selectEventProperties);
@@ -70,17 +71,21 @@ const AddAlipayAccount = () => {
 
         try {
             const formData = new FormData();
-            formData.append("alipayAccountName", alipayAccountInputs.alipayAccountName);
+            formData.append("receiverAccountName", alipayAccountInputs.alipayAccountName);
+            formData.append("receiverAccountType", ReceiverAccountType.ALIPAY_ACCOUNT);
             formData.append("clientId", currentUser?.userId);
-            formData.append("alipayAccountIdentifier", alipayAccountSpecifics.identifier);
+            formData.append("receiverAccountIdentifier", alipayAccountSpecifics.identifier);
+            formData.append("qrCodeImage", alipayAccountInputs.alipayQrCodeImage?.file || new Blob());
             formData.append("email", alipayAccountInputs.email);
             formData.append("phoneNumber", alipayAccountInputs.phoneNumber);
-            formData.append("alipayQrCodeImage", alipayAccountInputs.alipayQrCodeImage?.file || new Blob());
+            formData.append("bankAccountNumber", 0);
+            formData.append("bankId", 0);
 
             // Set loading to true when the request starts
             setLoading(true);
-            const response = await createAlipayAccount(formData).unwrap();
-            if (response?.statusCode === 200 && response?.message === "Alipay account created successfully") {
+            const response = await createReceiverAccount(formData).unwrap();
+            console.log("response : ", response)
+            if (response?.statusCode === 200 && response?.message === "Receiver account created successfully") {
                 setTickAnimationVisible(true);
                 reset();
                 setTimeout(() => {

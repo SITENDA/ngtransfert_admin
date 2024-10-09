@@ -8,29 +8,30 @@ const PROTOCOL                  = env === "production" ? "https" : "http";
 const baseUrl                   = env === "production" ? `${PROTOCOL}://${BACKEND_HOST}/${BACKEND_API_NAME}/${VERSION}`
     : "http://localhost:8080";
 
-const bottomUrl             = "/nnyinimu";
-const free_access           = "/auth";
-const registerUrl           = `${free_access}/register`;
-const loginUrl              = `${free_access}/signin`;
-const contactUrl            = `${free_access}/contact`;
-const logoutUrl             = `${free_access}/signout`;
-const refreshUrl            = `${free_access}/refresh`;
-const imagesUrl             = env === "production" ? 'https://admin.ngtransfert.org/images/' : 'http://localhost:8080/auth/images/';
-const avatarUrl             = `${free_access}/avatars`;
-const checkAccountStatusUrl = `${free_access}/checkVerificationStatus`;
-const resendVerificationUrl = `${free_access}/resendVerificationLink`;
-const usersBaseUrl          = `${bottomUrl}/users`;
-const rolesBaseUrl          = `${bottomUrl}/roles`;
-const alipayAccountsBaseUrl = `${bottomUrl}/alipayAccounts`;
-const wechatAccountsBaseUrl = `${bottomUrl}/wechatAccounts`;
-const bankAccountsBaseUrl   = `${bottomUrl}/bankAccounts`;
-const banksBaseUrl          = `${bottomUrl}/banks`;
-const transferRequestsBaseUrl = `${bottomUrl}/transferRequests`;
-const countriesBaseUrl      = `${bottomUrl}/countries`;
-const currenciesBaseUrl     = `${bottomUrl}/currencies`;
-const cashDepositAddressesBaseUrl = `${bottomUrl}/cashDepositAddresses`;
-const bankDepositAddressesBaseUrl = `${bottomUrl}/bankDepositAddresses`;
-const exchangesBaseUrl = `${bottomUrl}/exchanges`;
+const bottomUrl                     = "/nnyinimu";
+const free_access                   = "/auth";
+const registerUrl                   = `${free_access}/register`;
+const loginUrl                      = `${free_access}/signin`;
+const contactUrl                    = `${free_access}/contact`;
+const logoutUrl                     = `${free_access}/signout`;
+const refreshUrl                    = `${free_access}/refresh`;
+const imagesUrl                     = env === "production" ? 'https://admin.ngtransfert.org/images/' : 'http://localhost:8080/auth/images/';
+const avatarUrl                     = `${free_access}/avatars`;
+const checkAccountStatusUrl         = `${free_access}/checkVerificationStatus`;
+const resendVerificationUrl         = `${free_access}/resendVerificationLink`;
+const usersBaseUrl                  = `${bottomUrl}/users`;
+const rolesBaseUrl                  = `${bottomUrl}/roles`;
+const alipayAccountsBaseUrl         = `${bottomUrl}/alipayAccounts`;
+const wechatAccountsBaseUrl         = `${bottomUrl}/wechatAccounts`;
+const bankAccountsBaseUrl           = `${bottomUrl}/bankAccounts`;
+const banksBaseUrl                  = `${bottomUrl}/banks`;
+const transferRequestsBaseUrl       = `${bottomUrl}/transferRequests`;
+const countriesBaseUrl              = `${bottomUrl}/countries`;
+const currenciesBaseUrl             = `${bottomUrl}/currencies`;
+const cashDepositAddressesBaseUrl   = `${bottomUrl}/cashDepositAddresses`;
+const bankDepositAddressesBaseUrl   = `${bottomUrl}/bankDepositAddresses`;
+const exchangesBaseUrl              = `${bottomUrl}/exchanges`;
+const receiverAccountsBaseUrl       = `${bottomUrl}/receiverAccounts`;
 
 export const backend = {
     baseUrl,
@@ -54,6 +55,14 @@ export const backend = {
         getByUserIdUrl          : `${usersBaseUrl}/getByUserId`,
         deleteUrl               : `${usersBaseUrl}/deleteUser`,
     },
+    receiverAccounts: {
+        createAccountUrl        : `${receiverAccountsBaseUrl}/createReceiverAccount`,
+        getAllUrl               : `${receiverAccountsBaseUrl}/getAllReceiverAccounts`,
+        getAllByClientIdUrl     : `${receiverAccountsBaseUrl}/getReceiverAccountsForClient`,
+        getByIdUrl              : `${receiverAccountsBaseUrl}/getReceiverAccountByReceiverAccountId`,
+        deleteUrl               : `${receiverAccountsBaseUrl}/deleteReceiverAccount`,
+    },
+
     alipayAccounts: {
         createAccountUrl        : `${alipayAccountsBaseUrl}/createAlipayAccount`,
         getAllUrl               : `${alipayAccountsBaseUrl}/getAllAlipayAccounts`,
