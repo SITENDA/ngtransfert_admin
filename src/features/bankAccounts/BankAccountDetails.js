@@ -25,6 +25,7 @@ import ImageDisplay from "../../components/form-controls/ImageDisplay";
 import PhoneNumberDisplay from "../../components/form-controls/PhoneNumberDisplay";
 import EmailDisplay from "../../components/form-controls/EmailDisplay";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import ReceiverAccountType from "../../util/ReceiverAccountType";
 
 const BankAccountDetails = () => {
     const navigate = useNavigate();
@@ -73,7 +74,7 @@ const BankAccountDetails = () => {
         navigate(adminPaths.topUpInstructionsPath, {
             state: {
                 prevPath: window.location.pathname,
-                bankAccount
+                receiverAccount: bankAccount
             }
         });
     }

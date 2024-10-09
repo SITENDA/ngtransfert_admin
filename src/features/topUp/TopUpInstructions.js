@@ -38,9 +38,7 @@ const TopUpInstructions = () => {
     const validTopUp = useSelector(selectValidTopUp);
     const topUpFocus = useSelector(selectTopUpFocus);
 
-    const alipayAccount = location?.state?.alipayAccount;
-    const wechatAccount = location?.state?.wechatAccount;
-    const bankAccount = location?.state?.bankAccount;
+    const receiverAccount = location?.state?.receiverAccount;
 
     const refs = {
         topUpMethodRef: useRef(null),
@@ -50,15 +48,14 @@ const TopUpInstructions = () => {
         dispatch(setItem({key: "title", value: "Top Up Instructions"}));
     }, [dispatch]);
 
+
     const handleGoToTopUp = () => {
         navigate(adminPaths.topUpPath, {
             state: {
                 prevPath: window.location.pathname,
                 selectedMethod: selectedMethod.value,
                 selectedCountryName,
-                alipayAccount : alipayAccount? alipayAccount : null,
-                wechatAccount : wechatAccount? wechatAccount : null,
-                bankAccount   : bankAccount? bankAccount : null,
+                receiverAccount,
             }
         });
     };

@@ -72,7 +72,7 @@ const AlipayAccountDetails = () => {
         navigate(adminPaths.topUpInstructionsPath, {
             state: {
                 prevPath: window.location.pathname,
-                alipayAccount
+                receiverAccount: alipayAccount
             }
         });
     }

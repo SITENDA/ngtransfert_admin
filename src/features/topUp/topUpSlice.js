@@ -54,9 +54,24 @@ export const topUpApiSlice = apiSlice.injectEndpoints({
                     : [{type: 'BankAccount', id: arg}],
         }),
 
+        topUpAccountBalance: builder.mutation({
+            query: (topUpData) => {
+                return {
+                    url: backend.exchanges.topUpAccountBalanceUrl,
+                    method: 'POST',
+                    body: topUpData,
+                };
+            },
+            transformResponse: (responseData) => {
+                console.log("Response top up information is : ", responseData);
+                return responseData?.data || {};
+            },
+        }),
+
     }),
 });
 
 export const {
     useDoCurrencyExchangeMutation,
+    useTopUpAccountBalanceMutation,
 } = topUpApiSlice;

@@ -115,5 +115,6 @@ export const backend = {
     },
     exchanges : {
         doCurrencyExchangeUrl: `${exchangesBaseUrl}/doCurrencyExchange`,
+        topUpAccountBalanceUrl: `${exchangesBaseUrl}/topUpAccountBalance`,
     }
 };

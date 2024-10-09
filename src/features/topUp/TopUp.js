@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Typography, Button, Grid, Card, CardActions, CardContent, Divider, CircularProgress, Box} from '@mui/material';
+import {Typography, Button, Grid, Card, CardContent, Divider, CircularProgress} from '@mui/material';
 import {darkColor, initialAlipayAccountSpecifics, lightColor} from "../../util/initials";
 import ImageDisplay from "../../components/form-controls/ImageDisplay";
 import TickAnimation from "../../components/TickAnimation";
@@ -18,18 +18,16 @@ import AmountInput from "../../components/form-controls/AmountInput";
 import {useGetCountryByCountryNameQuery} from "../countries/countriesSlice";
 import {orderedTopUpMethods} from "../../util/TopUpMethod";
 import SelectedMethodDisplay from "../../components/form-controls/SelectedMethodDisplay";
-import {useDoCurrencyExchangeMutation} from "./topUpSlice";
-import ClickToUpload from "../../components/form-controls/ClickToUpload";
+import {useDoCurrencyExchangeMutation, useTopUpAccountBalanceMutation} from "./topUpSlice";
 import ImageInput from "../../components/form-controls/ImageInput";
+import {adminPaths} from "../../util/frontend";
 
 const TopUp = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
 
-    const alipayAccount = location?.state?.alipayAccount;
-    const wechatAccount = location?.state?.wechatAccount;
-    const bankAccount = location?.state?.bankAccount;
+    const receiverAccount = location?.state?.receiverAccount;
 
     const isDarkTheme = useSelector(selectIsDarkTheme);
     const topUpInputs = useSelector(selectTopUpInputs)
@@ -49,19 +47,9 @@ const TopUp = () => {
     const foundMethod = orderedTopUpMethods.find(method => method.value === stateSelectedMethod);
     const selectedMethod = {...foundMethod, label: <SelectedMethodDisplay method={foundMethod}/>};
     const selectedCountryName = location.state.selectedCountryName;
+    const [topUpAccountBalance, {isLoading: topUpLoading, isSuccess: topUpIsSuccessful, isError: topUpHasError, error}] = useTopUpAccountBalanceMutation();
 
     const {data: countryData, isSuccess: countryFetched} = useGetCountryByCountryNameQuery(selectedCountryName);
-
-    const handleUseAlipayQrCode = () => {
-        const currentAlipayAccountSpecifics = {...initialAlipayAccountSpecifics, showQrCodeImage: true};
-        dispatch(setItem({key: 'alipayAccountSpecifics', value: currentAlipayAccountSpecifics}));
-        dispatch(setObjectItem({
-            key: 'alipayAccountSpecifics',
-            innerKey: "identifier",
-            value: "alipayQrCodeImage"
-        }));
-    };
-
 
     const [doCurrencyExchange, {
         data: currencyExchangeData,
@@ -145,8 +133,6 @@ const TopUp = () => {
         // Start a timer to reset isTyping to true after 3 seconds
         const timer = setTimeout(() => {
             setCanSubmit(true); // Set isTyping to false
-            console.log("Typing forward : ", isTypingForward)
-            console.log("Typing backward : ", isTypingBackward)
             if (isTypingForward || isTypingBackward) {
                 handleCurrencyExchange(); // Trigger the exchange only after isTyping is true
             }
@@ -182,9 +168,32 @@ const TopUp = () => {
     ]);
 
 
-    const handleConfirmTopUp = () => {
+    const handleConfirmTopUp = async (e) => {
+        e.preventDefault();
         console.log(`Top-up method selected: ${selectedMethod}`);
+        try {
+            const topUpData = new FormData();
+            topUpData.append("receiverAccountType", receiverAccount?.receiverAccountType);
+            topUpData.append("accountIdentifier", receiverAccount?.accountIdentifier);
+            topUpData.append("accountId", receiverAccount?.accountId);
+            topUpData.append("amountInRMB", topUpInputs?.targetAmount);
+            topUpData.append("proofPicture", topUpInputs.proofPicture?.file || new Blob());
+
+            // Set loading to true when the request starts
+            const response = await topUpAccountBalance(topUpData).unwrap();
+            if (response?.statusCode === 200 && response?.message === "Account topped up successfully") {
+                setTickAnimationVisible(true);
+                setTimeout(() => {
+                    navigate(adminPaths.alipayAccountsPath);
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('Error topping up:', error);
+        } finally {
+           // setLoading(false);  // Set loading to false when the request completes
+        }
     };
+
 
     const isValidNumber = (number) => Number(number) && number >= 1
     const isValidString = (str) => (str && typeof str === 'string' && str.trim().length >= 0)
@@ -285,7 +294,7 @@ const TopUp = () => {
                                                     regexPattern: "AMOUNT_REGEX"
                                                 }))}/>)}
 
-
+                                            <Divider sx={{mb: 2}}/>
                                             {(directionOfExchange === "forward") && (isLoading || isTypingForward) ? (
                                                 <CircularProgress size={15}/>
                                             ) : (<AmountInput
@@ -332,6 +341,8 @@ const TopUp = () => {
                                                     regexPattern: "AMOUNT_REGEX"
                                                 }))}/>)}
 
+                                            <Divider sx={{mb: 2}}/>
+
                                             <ImageInput
                                                 handleImageChange={(e) => dispatch(handleImageChange({
                                                     objectName: "topUp",
@@ -344,7 +355,10 @@ const TopUp = () => {
                                         </>
 
                                     }
-                                    {validTopUp.validAmount && validTopUp.validTopUpMethod && validTopUp.validCountryOfTopUpId &&
+                                    {(validTopUp.validSourceAmount || validTopUp.validTargetAmount) &&
+                                        validTopUp.validTopUpMethod &&
+                                        validTopUp.validCountryOfTopUpId &&
+                                        validTopUp.validProofPicture &&
                                         <>
                                             <Divider sx={{mb: 2}}/>
                                             <Button

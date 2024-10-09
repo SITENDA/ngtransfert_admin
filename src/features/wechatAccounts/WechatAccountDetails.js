@@ -24,6 +24,7 @@ import ImageDisplay from "../../components/form-controls/ImageDisplay";
 import EmailDisplay from "../../components/form-controls/EmailDisplay";
 import PhoneNumberDisplay from "../../components/form-controls/PhoneNumberDisplay";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import ReceiverAccountType from "../../util/ReceiverAccountType";
 
 
 const WechatAccountDetails = () => {
@@ -73,7 +74,7 @@ const WechatAccountDetails = () => {
         navigate(adminPaths.topUpInstructionsPath, {
             state: {
                 prevPath: window.location.pathname,
-                wechatAccount
+                receiverAccount: wechatAccount
             }
         });
     }
