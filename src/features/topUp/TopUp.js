@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Typography, Button, Grid, Card, CardContent, Divider, CircularProgress} from '@mui/material';
-import {darkColor, initialAlipayAccountSpecifics, lightColor} from "../../util/initials";
+import {darkColor, lightColor} from "../../util/initials";
 import ImageDisplay from "../../components/form-controls/ImageDisplay";
 import TickAnimation from "../../components/TickAnimation";
 import MainPageWrapper from "../../components/MainPageWrapper";
@@ -170,18 +170,18 @@ const TopUp = () => {
 
     const handleConfirmTopUp = async (e) => {
         e.preventDefault();
-        console.log(`Top-up method selected: ${selectedMethod}`);
         try {
             const topUpData = new FormData();
             topUpData.append("receiverAccountType", receiverAccount?.receiverAccountType);
             topUpData.append("accountIdentifier", receiverAccount?.accountIdentifier);
             topUpData.append("accountId", receiverAccount?.accountId);
+            topUpData.append("currency", topUpInputs?.targetCurrencyCode);
             topUpData.append("amountInRMB", topUpInputs?.targetAmount);
             topUpData.append("proofPicture", topUpInputs.proofPicture?.file || new Blob());
 
             // Set loading to true when the request starts
             const response = await topUpAccountBalance(topUpData).unwrap();
-            if (response?.statusCode === 200 && response?.message === "Account topped up successfully") {
+            if (response?.statusCode === 200 && response?.message === "Top Up Requested successfully") {
                 setTickAnimationVisible(true);
                 setTimeout(() => {
                     navigate(adminPaths.alipayAccountsPath);

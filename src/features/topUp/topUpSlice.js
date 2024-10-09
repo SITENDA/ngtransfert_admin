@@ -63,8 +63,7 @@ export const topUpApiSlice = apiSlice.injectEndpoints({
                 };
             },
             transformResponse: (responseData) => {
-                console.log("Response top up information is : ", responseData);
-                return responseData?.data || {};
+                return responseData || {};
             },
         }),
 
