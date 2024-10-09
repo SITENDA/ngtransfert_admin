@@ -67,9 +67,9 @@ const AlipayAccountsByClientList = () => {
 
     const theadLabels = ['Account Name', 'Details', 'Apply'];
     const tbodyContents = filteredAlipayAccounts.map(alipayAccount => [
-        <span>{alipayAccount.alipayAccountName} {alipayAccount.ali ?
+        <span>{alipayAccount.alipayAccountName} {alipayAccount.alipayAccountIdentifier === "qrCodeImage" ?
             <ImageDisplay imageUrl={alipayAccount.alipayQrCodeUrl} title="Alipay QR Code"/> :
-            alipayAccount.email && !alipayAccount.email.startsWith("rand") ?
+            alipayAccount.alipayAccountIdentifier === "email" ?
                 <EmailDisplay email={alipayAccount.email}/> :
                 <PhoneNumberDisplay phoneNumber={alipayAccount.phoneNumber}/>}</span>,
         <TableButton

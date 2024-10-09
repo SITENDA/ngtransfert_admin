@@ -9,7 +9,7 @@ import {
     selectAlipayAccountSpecifics,
     selectAlipayAccountFocus,
     setItem,
-    setObjectItem, selectCurrentUser, handleValidation, handleFocus, handleBlur,
+    setObjectItem, selectCurrentUser, handleValidation, handleFocus, handleBlur, selectIsDarkTheme,
 } from "../auth/authSlice";
 import {useCreateAlipayAccountMutation} from "./alipayAccountsSlice";
 import EmailInput from "../../components/form-controls/EmailInput";
@@ -19,14 +19,20 @@ import {
     initialAlipayAccountInputs,
     initialValidAlipayAccount,
     initialAlipayAccountSpecifics,
-    initialEventProperties,
+    initialEventProperties, lightColor, darkColor,
 } from "../../util/initials";
 import ErrorMessageComponent from "../../components/form-controls/ErrorMessageComponent";
 import TendaButton from "../../components/form-controls/TendaButton";
 import {regex} from "../../util/regex";
 import ClickToUpload from "../../components/form-controls/ClickToUpload";
 import TickAnimation from "../../components/TickAnimation";
-import { adminPaths } from "../../util/frontend";
+import {adminPaths} from "../../util/frontend";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCheck, faTimes} from "@fortawesome/free-solid-svg-icons";
+import {useTendaTheme} from "../../components/useTendaTheme";
+import {ThemeProvider, Typography} from "@mui/material";
+import MainPageWrapper from "../../components/MainPageWrapper";
+import QrCodeImageInput from "../../components/form-controls/QrCodeImageInput";
 
 const AddAlipayAccount = () => {
     const [alipayQrCodeImage, setAlipayQrCodeImage] = useState({file: null, url: null});
@@ -46,10 +52,12 @@ const AddAlipayAccount = () => {
         errorRef: useRef(),
         alipayQrCodeRef: useRef(null),
     };
+    const theme = useTendaTheme();
     const [tickAnimationVisible, setTickAnimationVisible] = useState(false);
     const currentUser = useSelector(selectCurrentUser);
     const navigate = useNavigate();
     const alipayAccountFocus = useSelector(selectAlipayAccountFocus);
+    const isDarkTheme = useSelector(selectIsDarkTheme);
 
     useEffect(() => {
         dispatch(setItem({key: 'title', value: 'Add Alipay Account'}));
@@ -63,7 +71,7 @@ const AddAlipayAccount = () => {
         if (result) dispatch(setObjectItem({key: 'alipayAccountSpecifics', innerKey: "identifier", value: "email"}));
     }, [alipayAccountInputs.email, dispatch]);
 
-    const handleFileChange = (e, setAlipayQrCodeImage) => {
+    const handleFileChange = (e) => {
         const file = e.target.files[0];
         const currentImage = {file, url: URL.createObjectURL(file)};
         setAlipayQrCodeImage(currentImage);
@@ -138,132 +146,123 @@ const AddAlipayAccount = () => {
     };
 
     return (
-        <section id="login" className="container py-5" style={{height: '100vh'}}>
-            <div className="row justify-content-center">
-                {!tickAnimationVisible && (
-                    <div className="col-lg-8">
-                        <form onSubmit={handleAddAccountSubmit}>
-                            {<AlipayAccountNameInput
-                                ref={refs.alipayAccountNameRef}
-                                changeHandler={(e) => dispatch(handleValidation({
-                                    objectName: "alipayAccount",
-                                    eventValue: e.target.value,
-                                    inputName: "alipayAccountName",
-                                    regexPattern: "ALIPAY_ACCOUNT_NAME_REGEX",
-                                }))}
-                                validAlipayAccountName={validAlipayAccount.validAlipayAccountName}
-                                value={alipayAccountInputs.alipayAccountName}
-                                isFocused={alipayAccountFocus.alipayAccountNameFocus}
-                                handleFocus={() => dispatch(handleFocus({
-                                    objectName: 'alipayAccount',
-                                    inputName: "alipayAccountName"
-                                }))}
-                                handleBlur={() => dispatch(handleBlur({
-                                    objectName: 'alipayAccount',
-                                    inputName: "alipayAccountName",
-                                    regexPattern: "ALIPAY_ACCOUNT_NAME_REGEX"
-                                }))}
-                            />}
+        <ThemeProvider theme={theme}>
+            <MainPageWrapper>
+                <section id="login" className="container py-5" style={{height: '100vh'}}>
+                    <div className="row justify-content-center">
+                        {!tickAnimationVisible && (
+                            <div className="col-lg-8">
+                                <form onSubmit={handleAddAccountSubmit}>
+                                    {<AlipayAccountNameInput
+                                        ref={refs.alipayAccountNameRef}
+                                        changeHandler={(e) => dispatch(handleValidation({
+                                            objectName: "alipayAccount",
+                                            eventValue: e.target.value,
+                                            inputName: "alipayAccountName",
+                                            regexPattern: "ALIPAY_ACCOUNT_NAME_REGEX",
+                                        }))}
+                                        validAlipayAccountName={validAlipayAccount.validAlipayAccountName}
+                                        value={alipayAccountInputs.alipayAccountName}
+                                        isFocused={alipayAccountFocus.alipayAccountNameFocus}
+                                        handleFocus={() => dispatch(handleFocus({
+                                            objectName: 'alipayAccount',
+                                            inputName: "alipayAccountName"
+                                        }))}
+                                        handleBlur={() => dispatch(handleBlur({
+                                            objectName: 'alipayAccount',
+                                            inputName: "alipayAccountName",
+                                            regexPattern: "ALIPAY_ACCOUNT_NAME_REGEX"
+                                        }))}
+                                    />}
 
-                            {alipayAccountSpecifics.showEmail &&
-                                <EmailInput
-                                    ref={refs.emailRef}
-                                    changeHandler={(e) => dispatch(handleValidation({
-                                        objectName: "alipayAccount",
-                                        eventValue: e.target.value,
-                                        "inputName": "email",
-                                        "regexPattern": "EMAIL_REGEX"
-                                    }))}
-                                    validEmail={validAlipayAccount.validEmail}
-                                    value={alipayAccountInputs.email}
-                                    isFocused={alipayAccountFocus.emailFocus}
-                                    handleFocus={() => dispatch(handleFocus({
-                                        objectName: 'alipayAccount',
-                                        inputName: "email"
-                                    }))}
-                                    handleBlur={() => dispatch(handleBlur({
-                                        inputsObject: alipayAccountInputs,
-                                        objectName: 'alipayAccount',
-                                        inputName: "email",
-                                        regexPattern: "EMAIL_REGEX"
-                                    }))}
-                                />
-                            }
-                            {alipayAccountSpecifics.showPhone && <PhoneNumberInput
-                                ref={refs.phoneNumberRef}
-                                changeHandler={(e) => dispatch(handleValidation({
-                                    objectName: "alipayAccount",
-                                    eventValue: e,
-                                    "inputName": "phoneNumber",
-                                    "regexPattern": "PHONE_NUMBER_REGEX"
-                                }))}
-                                validPhoneNumber={validAlipayAccount.validPhoneNumber}
-                                value={alipayAccountInputs.phoneNumber}
-                                focus={alipayAccountFocus.phoneNumberFocus}/>}
-                            {alipayAccountSpecifics.showQrCodeImage &&
-                                <div style={{textAlign: 'center', height: '150px', maxHeight: '150px'}}>
-                                    <label htmlFor="alipayQrCodeImage-upload"
-                                           style={{cursor: 'pointer', display: 'block'}}>
-                                        {alipayQrCodeImage.url ? <img src={alipayQrCodeImage.url} alt="Share 1"
-                                                                      style={{width: '100px', height: '100px'}}/> :
-                                            <ClickToUpload/>}
-                                    </label>
-                                    <input
-                                        type="file"
-                                        id="alipayQrCodeImage-upload"
-                                        style={{display: 'none'}}
-                                        onChange={(e) => handleFileChange(e, setAlipayQrCodeImage)}
-                                    />
-                                </div>
-                            }
+                                    {alipayAccountSpecifics.showEmail &&
+                                        <EmailInput
+                                            ref={refs.emailRef}
+                                            changeHandler={(e) => dispatch(handleValidation({
+                                                objectName: "alipayAccount",
+                                                eventValue: e.target.value,
+                                                "inputName": "email",
+                                                "regexPattern": "EMAIL_REGEX"
+                                            }))}
+                                            validEmail={validAlipayAccount.validEmail}
+                                            value={alipayAccountInputs.email}
+                                            isFocused={alipayAccountFocus.emailFocus}
+                                            handleFocus={() => dispatch(handleFocus({
+                                                objectName: 'alipayAccount',
+                                                inputName: "email"
+                                            }))}
+                                            handleBlur={() => dispatch(handleBlur({
+                                                inputsObject: alipayAccountInputs,
+                                                objectName: 'alipayAccount',
+                                                inputName: "email",
+                                                regexPattern: "EMAIL_REGEX"
+                                            }))}
+                                        />
+                                    }
+                                    {alipayAccountSpecifics.showPhone && <PhoneNumberInput
+                                        ref={refs.phoneNumberRef}
+                                        changeHandler={(e) => dispatch(handleValidation({
+                                            objectName: "alipayAccount",
+                                            eventValue: e,
+                                            "inputName": "phoneNumber",
+                                            "regexPattern": "PHONE_NUMBER_REGEX"
+                                        }))}
+                                        validPhoneNumber={validAlipayAccount.validPhoneNumber}
+                                        value={alipayAccountInputs.phoneNumber}
+                                        focus={alipayAccountFocus.phoneNumberFocus}/>}
+                                    {alipayAccountSpecifics.showQrCodeImage &&
+                                        <QrCodeImageInput handleFileChange={handleFileChange} qrCodeImage={alipayQrCodeImage} />
+                                    }
 
-                            {!alipayAccountSpecifics.showEmail && <p className="mt-3">
-                                <Link onClick={handleUseEmail}
-                                      style={{
-                                          textDecoration: "none",
-                                          fontStyle: "italic",
-                                          color: "white",
-                                          fontSize: '1rem'
-                                      }}>
-                                    Use email instead</Link>
-                            </p>}
+                                    {!alipayAccountSpecifics.showEmail && <p className="mt-3">
+                                        <Link onClick={handleUseEmail}
+                                              style={{
+                                                  textDecoration: "none",
+                                                  fontStyle: "italic",
+                                                  color: "white",
+                                                  fontSize: '1rem'
+                                              }}>
+                                            Use email instead</Link>
+                                    </p>}
 
-                            {!alipayAccountSpecifics.showPhone && <p className="mt-3">
-                                <Link onClick={handleUsePhoneNumber}
-                                      style={{
-                                          textDecoration: "none",
-                                          fontStyle: "italic",
-                                          color: "white",
-                                          fontSize: '1rem'
-                                      }}>
-                                    Use phone number instead</Link>
-                            </p>}
+                                    {!alipayAccountSpecifics.showPhone && <p className="mt-3">
+                                        <Link onClick={handleUsePhoneNumber}
+                                              style={{
+                                                  textDecoration: "none",
+                                                  fontStyle: "italic",
+                                                  color: "white",
+                                                  fontSize: '1rem'
+                                              }}>
+                                            Use phone number instead</Link>
+                                    </p>}
 
-                            {!alipayAccountSpecifics.showQrCodeImage && <p className="mt-3">
-                                <Link onClick={handleUseAlipayQrCode}
-                                      style={{
-                                          textDecoration: "none",
-                                          fontStyle: "italic",
-                                          color: "white",
-                                          fontSize: '1rem'
-                                      }}>
-                                    Use Alipay QR Code</Link>
-                            </p>}
+                                    {!alipayAccountSpecifics.showQrCodeImage && <p className="mt-3">
+                                        <Link onClick={handleUseAlipayQrCode}
+                                              style={{
+                                                  textDecoration: "none",
+                                                  fontStyle: "italic",
+                                                  color: "white",
+                                                  fontSize: '1rem'
+                                              }}>
+                                            Use Alipay QR Code</Link>
+                                    </p>}
 
-                            <ErrorMessageComponent ref={refs.errorRef}/>
+                                    <ErrorMessageComponent ref={refs.errorRef}/>
 
-                            {/* Submit Button */}
-                            <div className="d-grid">
-                                <TendaButton
-                                    disabled={!((alipayQrCodeImage.file || validAlipayAccount.validEmail || validAlipayAccount.validPhoneNumber) && validAlipayAccount.validAlipayAccountName && !eventProperties.isError)}
-                                    buttonText={loading ? 'Adding account...' : 'Add account'}/>
+                                    {/* Submit Button */}
+                                    <div className="d-grid">
+                                        <TendaButton
+                                            disabled={!((alipayQrCodeImage.file || validAlipayAccount.validEmail || validAlipayAccount.validPhoneNumber) && validAlipayAccount.validAlipayAccountName && !eventProperties.isError)}
+                                            buttonText={loading ? 'Adding account...' : 'Add account'}/>
+                                    </div>
+                                </form>
                             </div>
-                        </form>
+                        )}
+                        {tickAnimationVisible && <TickAnimation successMessage="Alipay account created successfully!"/>}
                     </div>
-                )}
-                {tickAnimationVisible && <TickAnimation successMessage="Alipay account created successfully!"/>}
-            </div>
-        </section>
+                </section>
+            </MainPageWrapper>
+        </ThemeProvider>
     );
 };
 

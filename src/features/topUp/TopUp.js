@@ -1,10 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Typography, Button, Grid, Card, CardActions, CardContent, Divider, CircularProgress, Box} from '@mui/material';
-import {darkColor, lightColor} from "../../util/initials";
+import {darkColor, initialAlipayAccountSpecifics, lightColor} from "../../util/initials";
 import ImageDisplay from "../../components/form-controls/ImageDisplay";
 import TickAnimation from "../../components/TickAnimation";
 import MainPageWrapper from "../../components/MainPageWrapper";
-import {useLocation, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {
     handleBlur,
@@ -19,6 +19,7 @@ import {useGetCountryByCountryNameQuery} from "../countries/countriesSlice";
 import {orderedTopUpMethods} from "../../util/TopUpMethod";
 import SelectedMethodDisplay from "../../components/form-controls/SelectedMethodDisplay";
 import {useDoCurrencyExchangeMutation} from "./topUpSlice";
+import ClickToUpload from "../../components/form-controls/ClickToUpload";
 
 const TopUp = () => {
     const navigate = useNavigate();
@@ -49,6 +50,16 @@ const TopUp = () => {
     const selectedCountryName = location.state.selectedCountryName;
 
     const {data: countryData, isSuccess: countryFetched} = useGetCountryByCountryNameQuery(selectedCountryName);
+
+    const handleUseAlipayQrCode = () => {
+        const currentAlipayAccountSpecifics = {...initialAlipayAccountSpecifics, showQrCodeImage: true};
+        dispatch(setItem({key: 'alipayAccountSpecifics', value: currentAlipayAccountSpecifics}));
+        dispatch(setObjectItem({
+            key: 'alipayAccountSpecifics',
+            innerKey: "identifier",
+            value: "alipayQrCodeImage"
+        }));
+    };
 
 
     const [doCurrencyExchange, {
@@ -191,7 +202,6 @@ const TopUp = () => {
                                     color: isDarkTheme ? lightColor : darkColor
                                 }}>
                                     <CardContent>
-                                        <Divider sx={{mb: 2}}/>
                                         <Grid container sx={{mb: 2}}>
                                             <Grid item xs={4}>
                                                 <Typography variant="h6" sx={{fontWeight: 'bold'}}>Country
@@ -205,6 +215,7 @@ const TopUp = () => {
                                                             sx={{fontWeight: 'normal'}}>{countryOfDeposit?.countryName}</Typography>
                                             </Grid>
                                         </Grid>
+                                        <Divider sx={{mb: 2}}/>
                                         <Grid container sx={{mb: 2}}>
                                             <Grid item xs={4}>
                                                 <Typography variant="h6" sx={{fontWeight: 'bold'}}>Method :</Typography>
@@ -214,6 +225,7 @@ const TopUp = () => {
                                                             sx={{fontWeight: 'normal'}}>{selectedMethod.label}</Typography>
                                             </Grid>
                                         </Grid>
+                                        <Divider sx={{mb: 2}}/>
 
                                         {exchangeData?.adminRate && <Grid container sx={{mb: 2}}>
                                             <Grid item xs={4}>
@@ -228,7 +240,7 @@ const TopUp = () => {
 
                                     {validTopUp.validCountryOfTopUpId && validTopUp.validTopUpMethod &&
                                         <>
-
+                                            <Divider sx={{mb: 2}}/>
                                             {(directionOfExchange === "backward") && (isLoading || isTypingBackward) ? (
                                                 <CircularProgress size={15}/>
                                             ) : (<AmountInput
@@ -318,20 +330,40 @@ const TopUp = () => {
                                                     regexPattern: "AMOUNT_REGEX"
                                                 }))}/>)}
 
+                                            {/*<div style={{textAlign: 'center', height: '150px', maxHeight: '150px'}}>*/}
+                                            {/*    <label htmlFor="alipayQrCodeImage-upload"*/}
+                                            {/*           style={{cursor: 'pointer', display: 'block'}}>*/}
+                                            {/*        {alipayQrCodeImage.url ?*/}
+                                            {/*            <img src={alipayQrCodeImage.url} alt="Share 1"*/}
+                                            {/*                 style={{width: '100px', height: '100px'}}/> :*/}
+                                            {/*            <ClickToUpload/>}*/}
+                                            {/*    </label>*/}
+                                            {/*    <input*/}
+                                            {/*        type="file"*/}
+                                            {/*        id="alipayQrCodeImage-upload"*/}
+                                            {/*        style={{display: 'none'}}*/}
+                                            {/*        onChange={(e) => handleFileChange(e, setAlipayQrCodeImage)}*/}
+                                            {/*    />*/}
+                                            {/*</div>*/}
+
                                         </>
 
 
                                     }
                                     {validTopUp.validAmount && validTopUp.validTopUpMethod && validTopUp.validCountryOfTopUpId &&
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={handleConfirmTopUp}
-                                            disabled={!selectedMethod}
-                                            style={{marginTop: '20px'}}
-                                        >
-                                            Confirm Top-Up
-                                        </Button>}
+                                        <>
+                                            <Divider sx={{mb: 2}}/>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={handleConfirmTopUp}
+                                                disabled={!selectedMethod}
+                                                style={{marginTop: '20px'}}
+                                            >
+                                                Confirm Top-Up
+                                            </Button>
+                                        </>
+                                    }
                                 </Card>
                             </Grid>
                         </>

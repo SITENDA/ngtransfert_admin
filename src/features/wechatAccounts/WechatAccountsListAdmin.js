@@ -68,9 +68,9 @@ const WechatAccountsListAdmin = () => {
 
     const theadLabels = ['Account Name', 'Details', 'Apply'];
     const tbodyContents = filteredWechatAccounts.map(wechatAccount => [
-        <span>{wechatAccount.wechatAccountName} {wechatAccount.wechatQrCodeUrl ?
+        <span>{wechatAccount.wechatAccountName} {wechatAccount.wechatAccountIdentifier === "qrCodeImage" ?
             <ImageDisplay imageUrl={wechatAccount.wechatQrCodeUrl} title="Wechat QR Code"/> :
-            wechatAccount.email && !wechatAccount.email.startsWith("rand") ?
+            wechatAccount.wechatAccountIdentifier === "email" ?
                 <EmailDisplay email={wechatAccount.email}/> :
                 <PhoneNumberDisplay phoneNumber={wechatAccount.phoneNumber}/>}
         </span>,
