@@ -12,6 +12,7 @@ import TableButton from "../../components/form-controls/TableButton";
 import MainPageWrapper from "../../components/MainPageWrapper";
 import { useTendaTheme } from "../../components/useTendaTheme";
 import {selectAllReceiverAccounts, useGetAllReceiverAccountsQuery} from "./receiverAccountsSlice";
+import ReceiverAccountIdentifier from "../../util/ReceiverAccountIdentifier";
 
 const ReceiverAccountsListAdmin = () => {
     const navigate = useNavigate();
@@ -57,9 +58,9 @@ const ReceiverAccountsListAdmin = () => {
 
     const theadLabels = ['Account Name', 'Details', 'Apply'];
     const tbodyContents = orderedReceiverAccounts.map(receiverAccount => [
-        <span>{receiverAccount.receiverAccountName} {receiverAccount.receiverAccountIdentifier === "qrCodeImage" ?
-            <ImageDisplay imageUrl={receiverAccount.qrCodeUrl} title="Receiver QR Code"/> :
-            receiverAccount.receiverAccountIdentifier === "email" ?
+        <span>{receiverAccount.receiverAccountName} {receiverAccount.receiverAccountIdentifier === ReceiverAccountIdentifier.QR_CODE_IMAGE ?
+            <ImageDisplay imageUrl={receiverAccount.qrCodeUrl} title="QR Code"/> :
+            receiverAccount.receiverAccountIdentifier === ReceiverAccountIdentifier.EMAIL ?
                 <EmailDisplay email={receiverAccount.email}/> :
                 <PhoneNumberDisplay phoneNumber={receiverAccount.phoneNumber}/>}</span>,
         <TableButton

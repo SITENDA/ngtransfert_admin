@@ -16,7 +16,6 @@ import {
 import SendIcon from '@mui/icons-material/Send';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {useDeleteAlipayAccountMutation} from "../alipayAccounts/alipayAccountsSlice";
 import TickAnimation from '../../components/TickAnimation';
 import {adminPaths} from '../../util/frontend';
 import {darkColor, lightColor} from "../../util/initials";
@@ -25,6 +24,7 @@ import ImageDisplay from "../../components/form-controls/ImageDisplay";
 import EmailDisplay from "../../components/form-controls/EmailDisplay";
 import PhoneNumberDisplay from "../../components/form-controls/PhoneNumberDisplay";
 import ReceiverAccountIdentifier from "../../util/ReceiverAccountIdentifier";
+import {useDeleteReceiverAccountMutation} from "./receiverAccountsSlice";
 
 const ReceiverAccountDetails = () => {
     const navigate = useNavigate();
@@ -32,7 +32,7 @@ const ReceiverAccountDetails = () => {
     const location = useLocation();
     const isDarkTheme = useSelector(selectIsDarkTheme);
     const [isDeleteAccountModalVisible, setDeleteAccountModalVisible] = useState(false);
-    const [deleteAlipayAccount] = useDeleteAlipayAccountMutation();
+    const [deleteReceiverAccount] = useDeleteReceiverAccountMutation();
     const [tickAnimationVisible, setTickAnimationVisible] = useState(false);
 
     useEffect(() => {
@@ -42,11 +42,11 @@ const ReceiverAccountDetails = () => {
     let receiverAccount = location?.state?.receiverAccount;
 
     const handleDeleteOk = async () => {
-        const response = await deleteAlipayAccount(receiverAccount).unwrap();
+        const response = await deleteReceiverAccount(receiverAccount).unwrap();
         if (response?.statusCode === 200 && response?.message === "Receiver account deleted successfully") {
             setTickAnimationVisible(true);
             setTimeout(() => {
-                navigate(adminPaths.alipayAccountsPath);
+                navigate(adminPaths.receiverAccountsPath);
             }, 2000);
         }
         setDeleteAccountModalVisible(false);

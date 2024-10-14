@@ -1,7 +1,6 @@
 import  { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectCurrentUser, selectIsDarkTheme, setItem } from '../auth/authSlice';
-import { selectAllIndividualAlipayAccounts, useGetAlipayAccountsByClientIdQuery } from '../alipayAccounts/alipayAccountsSlice';
 import { useNavigate, useParams } from 'react-router-dom';
 import {Button, Alert, CircularProgress, Box, ThemeProvider} from '@mui/material';
 import { adminPaths } from '../../util/frontend';
@@ -12,6 +11,8 @@ import Tables from "../../components/Tables";
 import TableButton from "../../components/form-controls/TableButton";
 import MainPageWrapper from "../../components/MainPageWrapper";
 import {useTendaTheme} from "../../components/useTendaTheme";
+import ReceiverAccountIdentifier from "../../util/ReceiverAccountIdentifier";
+import {selectAllIndividualReceiverAccounts, useGetReceiverAccountsByClientIdQuery} from "./receiverAccountsSlice";
 
 const ReceiverAccountsByClientList = () => {
     const navigate = useNavigate();
@@ -24,80 +25,80 @@ const ReceiverAccountsByClientList = () => {
     const { clientId } = params;
 
     useEffect(() => {
-        dispatch(setItem({ key: "title", value: "Alipay Accounts" }));
+        dispatch(setItem({ key: "title", value: "Receiver Accounts for client" }));
     }, [dispatch]);
 
     const handleAddAccountClick = () => {
-        navigate(adminPaths.addAlipayAccountPath);
+        navigate(adminPaths.addReceiverAccountPath);
     };
 
-    const handleApplyClick = (alipayAccountId, alipayAccount) => {
+    const handleApplyClick = (accountId, receiverAccount) => {
         navigate(adminPaths.applyForTransferPath, {
             state: {
                 prevPath: window.location.pathname,
-                alipayAccount
+                receiverAccount
             }
         });
     };
 
-    const handleDetailsClick = (alipayAccountId, alipayAccount) => {
-        navigate(adminPaths.alipayAccountDetailsPath, {
+    const handleDetailsClick = (accountId, receiverAccount) => {
+        navigate(adminPaths.receiverAccountDetailsPath, {
             state: {
                 prevPath: window.location.pathname,
-                alipayAccount
+                receiverAccount
             }
         });
     };
 
     const {
-        isLoading: isLoadingAlipayAccounts,
-        isSuccess: isAllAlipayAccountsSuccess,
-        isError: isAllAlipayAccountsError,
-        error: allAlipayAccountsError
-    } = useGetAlipayAccountsByClientIdQuery(user.userId);
+        isLoading: isLoadingReceiverAccounts,
+        isSuccess: isAllReceiverAccountsSuccess,
+        isError: isAllReceiverAccountsError,
+        error: allReceiverAccountsError
+    } = useGetReceiverAccountsByClientIdQuery(user.userId);
 
-    const orderedAlipayAccounts = useSelector(state => selectAllIndividualAlipayAccounts(state, user?.userId));
+    const orderedReceiverAccounts = useSelector(state => selectAllIndividualReceiverAccounts(state, user?.userId));
 
-    let filteredAlipayAccounts = orderedAlipayAccounts;
+    let filteredReceiverAccounts = orderedReceiverAccounts;
 
-    // Filter alipayAccounts based on the given clientId
+    // Filter receiverAccounts based on the given clientId
     if (clientId) {
-        filteredAlipayAccounts = orderedAlipayAccounts.filter(account => Number(account.clientId) === Number(clientId));
+        filteredReceiverAccounts = orderedReceiverAccounts.filter(account => Number(account.clientId) === Number(clientId));
     }
 
     const theadLabels = ['Account Name', 'Details', 'Apply'];
-    const tbodyContents = filteredAlipayAccounts.map(alipayAccount => [
-        <span>{alipayAccount.alipayAccountName} {alipayAccount.alipayAccountIdentifier === "qrCodeImage" ?
-            <ImageDisplay imageUrl={alipayAccount.alipayQrCodeUrl} title="Alipay QR Code"/> :
-            alipayAccount.alipayAccountIdentifier === "email" ?
-                <EmailDisplay email={alipayAccount.email}/> :
-                <PhoneNumberDisplay phoneNumber={alipayAccount.phoneNumber}/>}</span>,
+    const tbodyContents = filteredReceiverAccounts.map(receiverAccount => [
+        <span>{receiverAccount.receiverAccountName} {receiverAccount.receiverAccountIdentifier === ReceiverAccountIdentifier.QR_CODE_IMAGE ?
+            <ImageDisplay imageUrl={receiverAccount.qrCodeUrl} title="QR Code"/> :
+            receiverAccount.receiverAccountIdentifier === ReceiverAccountIdentifier.EMAIL ?
+                <EmailDisplay email={receiverAccount.email}/> :
+                <PhoneNumberDisplay phoneNumber={receiverAccount.phoneNumber}/>}</span>,
         <TableButton
-            onClick={() => handleDetailsClick(alipayAccount?.alipayAccountId, alipayAccount)}
+            onClick={() => handleDetailsClick(receiverAccount?.accountId, receiverAccount)}
             label="Details"
         />,
         <TableButton
-            onClick={() => handleApplyClick(alipayAccount?.alipayAccountId, alipayAccount)}
+            onClick={() => handleApplyClick(receiverAccount?.accountId, receiverAccount)}
             label="Apply"
         />
     ]);
 
     let content;
-    if (isLoadingAlipayAccounts) {
+    if (isLoadingReceiverAccounts) {
         content = (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
                 <CircularProgress />
             </Box>
         );
-    } else if (orderedAlipayAccounts.length === 0) {
+    } else if (orderedReceiverAccounts.length === 0) {
         content = (
             <Alert
-                message="No Alipay accounts available"
+                message="No Receiver accounts available"
                 type="warning"
                 showIcon
             />
         );
-    } else if (isAllAlipayAccountsSuccess) {
+    } else if (isAllReceiverAccountsSuccess) {
         content = (
             <Tables
                 theadLabels={theadLabels}
@@ -105,8 +106,8 @@ const ReceiverAccountsByClientList = () => {
                 tbodyContents={tbodyContents}
             />
         );
-    } else if (isAllAlipayAccountsError) {
-        content = <p>Error: {allAlipayAccountsError}</p>;
+    } else if (isAllReceiverAccountsError) {
+        content = <p>Error: {allReceiverAccountsError}</p>;
     }
 
     return (
@@ -115,7 +116,7 @@ const ReceiverAccountsByClientList = () => {
                 <section className={`scrollbar-style ${isDarkTheme ? 'dark-theme' : ''}`}
                          style={{ maxHeight: '100vh', overflowY: 'auto', overflowX: 'auto' }}>
                     <Button type='primary' style={{ marginBottom: '10px' }} onClick={handleAddAccountClick}>
-                        Add an Alipay Account
+                        Add a Receiver Account
                     </Button>
                     {content}
                 </section>

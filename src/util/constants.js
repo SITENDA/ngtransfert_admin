@@ -1,7 +1,6 @@
 import { IoLogoWechat } from "react-icons/io5";
 import { adminPaths } from "./frontend";
 import { IoLogoAlipay } from "react-icons/io5";
-import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { FcMoneyTransfer } from "react-icons/fc";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 
@@ -14,8 +13,8 @@ export const receiverAccountLinks = [
         icon: <IoLogoWechat/>
     },
     {
-        path: adminPaths.alipayAccountsPath,
-        text: "Alipay Accounts",
+        path: adminPaths.receiverAccountsPath,
+        text: "Receiver Accounts",
         icon: <IoLogoAlipay/>
     },
     {
