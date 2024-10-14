@@ -105,7 +105,7 @@ const AddWechatAccount = () => {
     };
 
     const handleUsePhoneNumber = () => {
-        const currentwechatAccountSpecifics = {...initialWechatAccountSpecifics, showPhone: true};
+        const currentwechatAccountSpecifics = {...initialWechatAccountSpecifics, showPhoneNumber: true};
         dispatch(setItem({key: 'wechatAccountSpecifics', value: currentwechatAccountSpecifics}));
         dispatch(setObjectItem({
             key: 'wechatAccountSpecifics',
@@ -184,7 +184,7 @@ const AddWechatAccount = () => {
                                     }))}
                                 />
                             }
-                            {wechatAccountSpecifics.showPhone &&
+                            {wechatAccountSpecifics.showPhoneNumber &&
                                 <PhoneNumberInput
                                     ref={refs.phoneNumberRef}
                                     changeHandler={(e) => dispatch(handleValidation({
@@ -221,7 +221,7 @@ const AddWechatAccount = () => {
                                     Use email instead</Link>
                             </p>}
 
-                            {!wechatAccountSpecifics.showPhone && <p className="mt-3">
+                            {!wechatAccountSpecifics.showPhoneNumber && <p className="mt-3">
                                 <Link onClick={handleUsePhoneNumber}
                                       style={{
                                           textDecoration: "none",

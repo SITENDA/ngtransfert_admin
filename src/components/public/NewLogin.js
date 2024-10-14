@@ -70,7 +70,7 @@ const NewLogin = () => {
     }, [dispatch, location.state])
 
     const handleLoginWith = () => {
-        dispatch(setObjectItem({key: 'loginSpecifics', innerKey: "showPhone", value: !loginSpecifics.showPhone}));
+        dispatch(setObjectItem({key: 'loginSpecifics', innerKey: "showPhoneNumber", value: !loginSpecifics.showPhoneNumber}));
         dispatch(setObjectItem({
             key: 'loginSpecifics',
             innerKey: "identifier",
@@ -138,7 +138,7 @@ const NewLogin = () => {
                                 Sign in using your email or phone number, and the password that you've just created.
                             </div>)}
 
-                            {!loginSpecifics.showPhone && <EmailInput
+                            {!loginSpecifics.showPhoneNumber && <EmailInput
                                 ref={refs.emailRef}
                                 changeHandler={(e) => dispatch(handleValidation({
                                     objectName: "login",
@@ -157,7 +157,7 @@ const NewLogin = () => {
                                 }))}
                             />
                             }
-                            {loginSpecifics.showPhone && <PhoneNumberInput
+                            {loginSpecifics.showPhoneNumber && <PhoneNumberInput
                                 ref={refs.phoneNumberRef}
                                 changeHandler={(e) => dispatch(handleValidation({
                                     objectName: "login",
@@ -172,7 +172,7 @@ const NewLogin = () => {
                             <p className="mt-3">
                                 <Link onClick={handleLoginWith}
                                       style={{textDecoration: "none", fontStyle: "italic", color: "#099ff6"}} to="#">
-                                    Login with {loginSpecifics.showPhone ? "email" : "phone number"} instead</Link>
+                                    Login with {loginSpecifics.showPhoneNumber ? "email" : "phone number"} instead</Link>
                             </p>
 
                             <PasswordInput

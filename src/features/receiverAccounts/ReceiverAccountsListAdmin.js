@@ -1,18 +1,19 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectIsDarkTheme, setItem } from '../auth/authSlice';
-import { useNavigate } from 'react-router-dom';
+import React, {useEffect} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import {selectIsDarkTheme, setItem} from '../auth/authSlice';
+import {useNavigate} from 'react-router-dom';
 import {Button, Alert, CircularProgress, Box, ThemeProvider} from '@mui/material';
-import { adminPaths } from '../../util/frontend';
+import {adminPaths} from '../../util/frontend';
 import ImageDisplay from '../../components/form-controls/ImageDisplay';
 import EmailDisplay from '../../components/form-controls/EmailDisplay';
 import PhoneNumberDisplay from '../../components/form-controls/PhoneNumberDisplay';
 import Tables from "../../components/Tables";
 import TableButton from "../../components/form-controls/TableButton";
 import MainPageWrapper from "../../components/MainPageWrapper";
-import { useTendaTheme } from "../../components/useTendaTheme";
+import {useTendaTheme} from "../../components/useTendaTheme";
 import {selectAllReceiverAccounts, useGetAllReceiverAccountsQuery} from "./receiverAccountsSlice";
 import ReceiverAccountIdentifier from "../../util/ReceiverAccountIdentifier";
+import ReceiverAccountType from "../../util/ReceiverAccountType";
 
 const ReceiverAccountsListAdmin = () => {
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ const ReceiverAccountsListAdmin = () => {
     const theme = useTendaTheme();
 
     useEffect(() => {
-        dispatch(setItem({ key: "title", value: "All Receiver Accounts" }));
+        dispatch(setItem({key: "title", value: "All Receiver Accounts"}));
     }, [dispatch]);
 
     const handleAddAccountClick = () => {
@@ -62,7 +63,12 @@ const ReceiverAccountsListAdmin = () => {
             <ImageDisplay imageUrl={receiverAccount.qrCodeUrl} title="QR Code"/> :
             receiverAccount.receiverAccountIdentifier === ReceiverAccountIdentifier.EMAIL ?
                 <EmailDisplay email={receiverAccount.email}/> :
-                <PhoneNumberDisplay phoneNumber={receiverAccount.phoneNumber}/>}</span>,
+                receiverAccount.receiverAccountIdentifier === ReceiverAccountIdentifier.PHONE_NUMBER ?
+                    <PhoneNumberDisplay phoneNumber={receiverAccount.phoneNumber}/> :
+                    receiverAccount.receiverAccountType === ReceiverAccountType.BANK_ACCOUNT ?
+                        <ImageDisplay imageUrl={receiverAccount?.bank?.bankLogoUrl}
+                                      title={`${receiverAccount?.bank?.bankNameEng} Logo`}/>
+                        : null}</span>,
         <TableButton
             onClick={() => handleDetailsClick(receiverAccount?.accountId, receiverAccount)}
             label="Details"
@@ -77,7 +83,7 @@ const ReceiverAccountsListAdmin = () => {
     if (isLoadingReceiverAccounts) {
         content = (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                <CircularProgress />
+                <CircularProgress/>
             </Box>
         );
     } else if (orderedReceiverAccounts.length === 0) {
@@ -104,8 +110,8 @@ const ReceiverAccountsListAdmin = () => {
         <ThemeProvider theme={theme}>
             <MainPageWrapper>
                 <section className={`scrollbar-style ${isDarkTheme ? 'dark-theme' : ''}`}
-                         style={{ maxHeight: '100vh', overflowY: 'auto', overflowX: 'auto' }}>
-                    <Button type='primary' style={{ marginBottom: '10px' }} onClick={handleAddAccountClick}>
+                         style={{maxHeight: '100vh', overflowY: 'auto', overflowX: 'auto'}}>
+                    <Button type='primary' style={{marginBottom: '10px'}} onClick={handleAddAccountClick}>
                         Add a Receiver Account
                     </Button>
                     {content}

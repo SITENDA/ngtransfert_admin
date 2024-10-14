@@ -107,7 +107,11 @@ const getValidObjectInState = (state, objectName) => {
 }
 
 const getValidInnerKey = (inputName) => {
-    return `valid${inputName.charAt(0).toUpperCase() + inputName.slice(1)}`;
+    return getPrefixedInnerKey('valid', inputName);
+}
+
+const getPrefixedInnerKey = (prefix, inputName) => {
+    return `${prefix}${inputName.charAt(0).toUpperCase() + inputName.slice(1)}`;
 }
 
 const setFocusObjectInState = (state, objectName, inputName, value) => {
@@ -136,6 +140,9 @@ const validateRegistrationPasswords = (state) => {
     state.validRegistration["validPassword"] = regex.CLIENT_PASSWORD_REGEX.test(state.registrationInputs["password"]);
     state.validRegistration["validConfirmPassword"] = Boolean(state.registrationInputs["password"].length > 0) && state.registrationInputs["password"] === state.registrationInputs["confirmPassword"];
 };
+
+export const isValidNumber = (number) => Number(number) && number >= 1
+export const isValidString = (str) => (str && typeof str === 'string' && str.trim().length >= 0)
 
 export const {
     setCredentials,

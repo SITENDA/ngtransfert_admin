@@ -39,22 +39,24 @@ export const initialTopUpInputs = {
 }
 
 export const initialReceiverAccountInputs = {
-    receiverAccountId           : 0,
     receiverAccountName         : '',
     receiverAccountType         : '',
-    clientId                    : 0,
+    clientId                    : null,
     receiverAccountIdentifier   : ReceiverAccountIdentifier.QR_CODE_IMAGE,
     qrCodeImage                 : {file: null, url: null},
     email                       : '',
     phoneNumber                 : '',
     bankAccountNumber           : '',
     bankId                      : '',
+    countryId                   : null,
+    cardHolderName              : '',
+    bankName                    : ''
 };
 
 export const initialTransferRequestInputs = {
-    currencyId              : 0,
-    amount                  : 0,
-    rate                    : 0,
+    currencyId              : null,
+    amount                  : null,
+    rate                    : null,
     remark                  : '',
     receiverAccountType     : '',
     receiverAccountId       : null,
@@ -63,28 +65,28 @@ export const initialTransferRequestInputs = {
 }
 
 export const initialWechatAccountInputs = {
-    wechatAccountId: 0,
+    wechatAccountId: null,
     wechatAccountName: '',
-    clientId: 0,
+    clientId: null,
     email: '',
     phoneNumber: '',
     wechatQrCodeImage: {file: null, url: null} // This will hold the file object for the image
 };
 
 export const initialBankAccountInputs = {
-    countryId: 0,
-    bankAccountId: 0,
-    bankAccountNumber: 0,
-    bankId : 0,
-    clientId: 0,
+    countryId: null,
+    bankAccountId: null,
+    bankAccountNumber: null,
+    bankId : null,
+    clientId: null,
     cardHolderName: '',
     bankName: ''
 }
 
 export const initialMakePaymentInputs = {
-    clientId: 0,
-    amount: 0,
-    loanId: 0,
+    clientId: null,
+    amount: null,
+    loanId: null,
 }
 
 export const initialValidBankAccount = {
@@ -109,7 +111,6 @@ export const initialValidTransferRequest = {
 }
 
 export const initialValidReceiverAccount = {
-    validReceiverAccountId          : false,
     validReceiverAccountName        : false,
     validReceiverAccountType        : false,
     validClientId                   : false,
@@ -119,6 +120,9 @@ export const initialValidReceiverAccount = {
     validPhoneNumber                : false,
     validBankAccountNumber          : false,
     validBankId                     : false,
+    validCountryId                  : false,
+    validCardHolderName             : false,
+    validBankName                   : false,
 }
 
 export const initialValidWechatAccount = {
@@ -153,13 +157,13 @@ export const initialEventProperties = {
 export const initialLoginSpecifics = {
     identifier          : 'email',
     showBeginnerPrompt  : false,
-    showPhone           : false
+    showPhoneNumber           : false
 }
 
 export const initialReceiverAccountSpecifics = {
     identifier          : ReceiverAccountIdentifier.QR_CODE_IMAGE,
     showBeginnerPrompt  : false,
-    showPhone           : false,
+    showPhoneNumber     : false,
     showEmail           : false,
     showQrCodeImage     : false
 }
@@ -167,7 +171,7 @@ export const initialReceiverAccountSpecifics = {
 export const initialWechatAccountSpecifics = {
     identifier          : 'qrCodeImage',
     showBeginnerPrompt  : false,
-    showPhone           : false,
+    showPhoneNumber           : false,
     showEmail           : false,
     showQrCodeImage : false
 }
@@ -213,7 +217,6 @@ export const initialTransferRequestFocus = {
     rateFocus                    : false,
     remarkFocus                  : false,
     receiverAccountTypeFocus     : false,
-    receiverAccountIdFocus       : false,
     clientIdFocus                : false,
     countryOfDepositIdFocus      : false
 }
@@ -235,7 +238,6 @@ export const initialLoginFocus = {
 }
 
 export const initialReceiverAccountFocus = {
-    receiverAccountIdFocus          : false,
     receiverAccountNameFocus        : false,
     receiverAccountTypeFocus        : false,
     clientIdFocus                   : false,
@@ -245,6 +247,10 @@ export const initialReceiverAccountFocus = {
     phoneNumberFocus                : false,
     bankAccountNumberFocus          : false,
     bankIdFocus                     : false,
+    countryIdFocus                  : false,
+    cardHolderNameFocus             : false,
+    bankNameFocus                   : false
+
 }
 
 export const initialWechatAccountFocus = {

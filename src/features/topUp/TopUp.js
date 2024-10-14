@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {
     handleBlur,
     handleFocus, handleImageChange,
-    handleValidation,
+    handleValidation, isValidNumber, isValidString,
     selectIsDarkTheme, selectTopUpFocus,
     selectTopUpInputs, selectValidTopUp,
     setItem, setObjectItem
@@ -193,10 +193,6 @@ const TopUp = () => {
            // setLoading(false);  // Set loading to false when the request completes
         }
     };
-
-
-    const isValidNumber = (number) => Number(number) && number >= 1
-    const isValidString = (str) => (str && typeof str === 'string' && str.trim().length >= 0)
 
     return (
         <MainPageWrapper>

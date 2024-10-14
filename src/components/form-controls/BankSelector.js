@@ -2,14 +2,14 @@ import {useState, useEffect, forwardRef} from 'react';
 import Select from 'react-select';
 import {useSelector} from 'react-redux';
 import {selectIsDarkTheme} from '../../features/auth/authSlice';
-import {useGetAllBanksInCountryQuery, selectAllBanksInCountry} from "../../features/banks/banksSlice";
+import { useGetBanksByCountryNameQuery, selectBanksByCountryName } from "../../features/banks/banksSlice";
 import BankLogo from './BankLogo';
 import CountryFlag from './CountryFlag';
 import {darkColor, lightColor} from "../../util/initials";
 import ImageDisplay from "./ImageDisplay";
 
 const BankSelector = forwardRef(({
-                                     countryId,
+                                     countryName,
                                      changeHandler,
                                      validBank,
                                      value,
@@ -18,9 +18,11 @@ const BankSelector = forwardRef(({
                                      handleBlur
                                  }, ref) => {
     const [options, setOptions] = useState([]);
-    const {isSuccess} = useGetAllBanksInCountryQuery(countryId);
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const {isSuccess} = useGetBanksByCountryNameQuery(countryName);
+    // const {isSuccess: successfullyGof } = useGetBanksByCountryNameQuery(countryName);
     const isDarkTheme = useSelector(selectIsDarkTheme);
-    const orderedBanks = useSelector(state => selectAllBanksInCountry(state, countryId));
+    const orderedBanks = useSelector(state => selectBanksByCountryName(state, countryName));
     const [currentBank, setCurrentBank] = useState(null);
 
     useEffect(() => {

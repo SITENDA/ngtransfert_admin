@@ -1,9 +1,11 @@
 // regex.js
 import TopUpMethod from "./TopUpMethod";
+import ReceiverAccountType from "./ReceiverAccountType";
 
 const STRICT_PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>|\[\]\/\\?]).{4,24}$/;
 const LENIENT_PASSWORD_REGEX = /^.{4,}$/;
 const TOP_UP_METHOD_REGEX = new RegExp(`^(${Object.values(TopUpMethod).join('|')})$`);
+const RECEIVER_ACCOUNT_TYPE_REGEX = new RegExp(`^(${Object.values(ReceiverAccountType).join('|')})$`);
 
 export const regex = {
     ADMIN_PASSWORD_REGEX        : STRICT_PASSWORD_REGEX,
@@ -32,5 +34,6 @@ export const regex = {
     REMARK_REGEX                : /^[\w\s.,!?@#$%^&*()\-_=+{};:'"<>|\[\]\/\\]*$/,
     CURRENCY_ID_REGEX           : /^[1-9]\d*$/,
     TOP_UP_METHOD_REGEX         : TOP_UP_METHOD_REGEX,
+    RECEIVER_ACCOUNT_TYPE_REGEX : RECEIVER_ACCOUNT_TYPE_REGEX,
     UPLOAD_IMAGE_URL_REGEX      : /^blob:https?:\/\/\S+/i,
 };
