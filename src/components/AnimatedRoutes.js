@@ -8,10 +8,10 @@ import {adminPaths, publicPaths} from '../util/frontend';
 import LayoutAdmin from './admin/LayoutAdmin';
 import Dashboard from './admin/Dashboard';
 import {AnimatePresence} from 'framer-motion';
-import AlipayAccountsListAdmin from "../features/alipayAccounts/AlipayAccountsListAdmin";
-import AlipayAccountDetails from "../features/alipayAccounts/AlipayAccountDetails";
-import AlipayAccountsByClientList from "../features/alipayAccounts/AlipayAccountsByClientList";
-import AddAlipayAccount from "../features/alipayAccounts/AddAlipayAccount";
+import ReceiverAccountsListAdmin from "../features/receiverAccounts/ReceiverAccountsListAdmin";
+import ReceiverAccountDetails from "../features/receiverAccounts/ReceiverAccountDetails";
+import ReceiverAccountsByClientList from "../features/receiverAccounts/ReceiverAccountsByClientList";
+import AddReceiverAccount from "../features/receiverAccounts/AddReceiverAccount";
 import WechatAccountsByClientList from "../features/wechatAccounts/WechatAccountsByClientList";
 import WechatAccountsListAdmin from "../features/wechatAccounts/WechatAccountsListAdmin";
 import AddWechatAccount from "../features/wechatAccounts/AddWechatAccount";
@@ -54,12 +54,12 @@ const AnimatedRoutes = () => {
                     <Route element={<RequireAuth allowedRoles={["ADMIN"]}/>}>
                         <Route path={adminPaths.homePath} element={<LayoutAdmin/>}>
                             <Route index element={<Dashboard/>}/>
-                            {/*Alipay Accounts*/}
-                            <Route path={adminPaths.alipayAccountsPath} element={<AlipayAccountsListAdmin/>}/>
-                            <Route path={adminPaths.alipayAccountsByClientPath}
-                                   element={<AlipayAccountsByClientList/>}/>
-                            <Route path={adminPaths.alipayAccountDetailsPath} element={<AlipayAccountDetails/>}/>
-                            <Route path={adminPaths.addAlipayAccountPath} element={<AddAlipayAccount/>}/>
+                            {/*Receiver Accounts*/}
+                            <Route path={adminPaths.receiverAccountsPath} element={<ReceiverAccountsListAdmin/>}/>
+                            <Route path={adminPaths.receiverAccountsByClientPath}
+                                   element={<ReceiverAccountsByClientList/>}/>
+                            <Route path={adminPaths.receiverAccountDetailsPath} element={<ReceiverAccountDetails/>}/>
+                            <Route path={adminPaths.addReceiverAccountPath} element={<AddReceiverAccount/>}/>
                             {/*Wechat Accounts*/}
                             <Route path={adminPaths.wechatAccountsPath} element={<WechatAccountsListAdmin/>}/>
                             <Route path={adminPaths.wechatAccountsByClientPath}

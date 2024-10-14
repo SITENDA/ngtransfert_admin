@@ -16,7 +16,7 @@ import {
 import SendIcon from '@mui/icons-material/Send';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {useDeleteAlipayAccountMutation} from "./alipayAccountsSlice";
+import {useDeleteAlipayAccountMutation} from "../alipayAccounts/alipayAccountsSlice";
 import TickAnimation from '../../components/TickAnimation';
 import {adminPaths} from '../../util/frontend';
 import {darkColor, lightColor} from "../../util/initials";
@@ -26,7 +26,7 @@ import EmailDisplay from "../../components/form-controls/EmailDisplay";
 import PhoneNumberDisplay from "../../components/form-controls/PhoneNumberDisplay";
 import ReceiverAccountIdentifier from "../../util/ReceiverAccountIdentifier";
 
-const AlipayAccountDetails = () => {
+const ReceiverAccountDetails = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
@@ -271,4 +271,4 @@ const modalStyle = {
     p: 4,
 };
 
-export default AlipayAccountDetails;
+export default ReceiverAccountDetails;

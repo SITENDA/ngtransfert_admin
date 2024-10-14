@@ -11,9 +11,9 @@ import Tables from "../../components/Tables";
 import TableButton from "../../components/form-controls/TableButton";
 import MainPageWrapper from "../../components/MainPageWrapper";
 import { useTendaTheme } from "../../components/useTendaTheme";
-import {selectAllReceiverAccounts, useGetAllReceiverAccountsQuery} from "../receiverAccounts/receiverAccountsSlice";
+import {selectAllReceiverAccounts, useGetAllReceiverAccountsQuery} from "./receiverAccountsSlice";
 
-const AlipayAccountsListAdmin = () => {
+const ReceiverAccountsListAdmin = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const isDarkTheme = useSelector(selectIsDarkTheme);
@@ -24,20 +24,20 @@ const AlipayAccountsListAdmin = () => {
     }, [dispatch]);
 
     const handleAddAccountClick = () => {
-        navigate(adminPaths.addAlipayAccountPath);
+        navigate(adminPaths.addReceiverAccountPath);
     };
 
-    const handleApplyClick = (alipayAccountId, alipayAccount) => {
+    const handleApplyClick = (accountId, receiverAccount) => {
         navigate(adminPaths.applyForTransferPath, {
             state: {
                 prevPath: window.location.pathname,
-                alipayAccount
+                receiverAccount
             }
         });
     };
 
     const handleDetailsClick = (accountId, receiverAccount) => {
-        navigate(adminPaths.alipayAccountDetailsPath, {
+        navigate(adminPaths.receiverAccountDetailsPath, {
             state: {
                 prevPath: window.location.pathname,
                 receiverAccount
@@ -57,7 +57,7 @@ const AlipayAccountsListAdmin = () => {
 
     const theadLabels = ['Account Name', 'Details', 'Apply'];
     const tbodyContents = orderedReceiverAccounts.map(receiverAccount => [
-        <span>{receiverAccount.alipayAccountName} {receiverAccount.receiverAccountIdentifier === "qrCodeImage" ?
+        <span>{receiverAccount.receiverAccountName} {receiverAccount.receiverAccountIdentifier === "qrCodeImage" ?
             <ImageDisplay imageUrl={receiverAccount.qrCodeUrl} title="Receiver QR Code"/> :
             receiverAccount.receiverAccountIdentifier === "email" ?
                 <EmailDisplay email={receiverAccount.email}/> :
@@ -105,7 +105,7 @@ const AlipayAccountsListAdmin = () => {
                 <section className={`scrollbar-style ${isDarkTheme ? 'dark-theme' : ''}`}
                          style={{ maxHeight: '100vh', overflowY: 'auto', overflowX: 'auto' }}>
                     <Button type='primary' style={{ marginBottom: '10px' }} onClick={handleAddAccountClick}>
-                        Add an Alipay Account
+                        Add a Receiver Account
                     </Button>
                     {content}
                 </section>
@@ -114,4 +114,4 @@ const AlipayAccountsListAdmin = () => {
     );
 };
 
-export default AlipayAccountsListAdmin;
+export default ReceiverAccountsListAdmin;

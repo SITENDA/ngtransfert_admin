@@ -1,9 +1,9 @@
 import InputField from './InputField'
 import {forwardRef} from 'react';
 
-const AlipayAccountNameInput = forwardRef(({
+const ReceiverAccountNameInput = forwardRef(({
                                                changeHandler,
-                                               validAlipayAccountName,
+                                               validReceiverAccountName,
                                                value,
                                                isFocused,
                                                handleFocus,
@@ -11,14 +11,14 @@ const AlipayAccountNameInput = forwardRef(({
                                            }, ref) => {
     return (
         <InputField
-            label="Alipay Account Name"
-            id="alipayaccountname"
+            label="Account Name"
+            id="receiveraccountname"
             type="text"
-            name="alipayAccountName"
+            name="receiverAccountName"
             ref={ref}
             required
             validation={{
-                isValid: validAlipayAccountName,
+                isValid: validReceiverAccountName,
                 message: <>At least two or more names. <br/>
                     Each starts with a capital letter. <br/>
                     Letters, numbers, underscores, allowed.</>
@@ -28,9 +28,9 @@ const AlipayAccountNameInput = forwardRef(({
             handleChange={changeHandler}
             handleFocus={handleFocus}
             handleBlur={handleBlur}
-            ariaDescribedBy="alipayaccountnamenote"
-            placeholder="Enter your Alipay account name"
+            ariaDescribedBy="receiveraccountnamenote"
+            placeholder="Enter your Receiver account name"
         />
     )
 });
-export default AlipayAccountNameInput
+export default ReceiverAccountNameInput

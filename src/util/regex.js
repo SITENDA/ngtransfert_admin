@@ -24,7 +24,7 @@ export const regex = {
     NATIONAL_ID_REGEX           : /^[^\s]{5,20}$/,
     BANK_ACCOUNT_NUMBER_REGEX   : /^\d{6,18}$/,
     PASSPORT_NUMBER_REGEX       : /^\w{6,12}$/,
-    ALIPAY_ACCOUNT_NAME_REGEX   : /^.{2,}$/,
+    RECEIVER_ACCOUNT_NAME_REGEX : /^.{2,}$/,
     WECHAT_ACCOUNT_NAME_REGEX   : /^.{2,}$/,
     BANK_NAME_REGEX             : /^(?=.*\b(?:bank|银行|banque|banco)\b)(?!.*\bOther banks\b).*/i,  // Case-insensitive match for "bank" in English, French, and Chinese
     BANK_ID_REGEX               : /^[1-9]\d*$/,

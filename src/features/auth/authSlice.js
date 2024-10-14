@@ -1,7 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 import { initialState } from "../../util/initials";
 import {regex} from "../../util/regex";
-import {message} from "antd";
 
 const authSlice = createSlice({
     name: 'auth',
@@ -154,19 +153,19 @@ export const selectCurrentToken                     = (state) => state.auth.toke
 export const selectPersist                          = (state) => state.auth.persist;
 export const selectCurrentTitle                     = (state) => state.auth.title;
 export const selectRegistrationInputs               = (state) => state.auth.registrationInputs;
-export const selectAlipayAccountInputs              = (state) => state.auth.alipayAccountInputs;
+export const selectReceiverAccountInputs            = (state) => state.auth.receiverAccountInputs;
 export const selectWechatAccountInputs              = (state) => state.auth.wechatAccountInputs;
 export const selectBankAccountInputs                = (state) => state.auth.bankAccountInputs;
 export const selectTransferRequestInputs            = (state) => state.auth.transferRequestInputs;
 export const selectTopUpInputs                      = (state) => state.auth.topUpInputs;
 export const selectValidRegistration                = (state) => state.auth.validRegistration;
 export const selectValidLogin                       = (state) => state.auth.validLogin;
-export const selectValidAlipayAccount               = (state) => state.auth.validAlipayAccount;
+export const selectValidReceiverAccount             = (state) => state.auth.validReceiverAccount;
 export const selectValidBankAccount                 = (state) => state.auth.validBankAccount;
 export const selectValidWechatAccount               = (state) => state.auth.validWechatAccount;
 export const selectValidTransferRequest             = (state) => state.auth.validTransferRequest;
 export const selectValidTopUp                       = (state) => state.auth.validTopUp;
-export const selectAlipayAccountSpecifics           = (state) => state.auth.alipayAccountSpecifics;
+export const selectReceiverAccountSpecifics         = (state) => state.auth.receiverAccountSpecifics;
 export const selectWechatAccountSpecifics           = (state) => state.auth.wechatAccountSpecifics;
 export const selectRegistrationFocus                = (state) => state.auth.registrationFocus;
 export const selectBankAccountFocus                 = (state) => state.auth.bankAccountFocus;
@@ -182,7 +181,7 @@ export const selectDarkColor                        = (state) => state.auth.dark
 export const selectLightColor                       = (state) => state.auth.lightColor;
 export const selectLoginInputs                      = (state) => state.auth.loginInputs;
 export const selectLoginFocus                       = (state) => state.auth.loginFocus;
-export const selectAlipayAccountFocus               = (state) => state.auth.alipayAccountFocus;
+export const selectReceiverAccountFocus             = (state) => state.auth.receiverAccountFocus;
 export const selectWechatAccountFocus               = (state) => state.auth.wechatAccountFocus;
 
 export default authSlice.reducer;

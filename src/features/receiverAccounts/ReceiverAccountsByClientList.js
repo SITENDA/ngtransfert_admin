@@ -1,7 +1,7 @@
 import  { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectCurrentUser, selectIsDarkTheme, setItem } from '../auth/authSlice';
-import { selectAllIndividualAlipayAccounts, useGetAlipayAccountsByClientIdQuery } from './alipayAccountsSlice';
+import { selectAllIndividualAlipayAccounts, useGetAlipayAccountsByClientIdQuery } from '../alipayAccounts/alipayAccountsSlice';
 import { useNavigate, useParams } from 'react-router-dom';
 import {Button, Alert, CircularProgress, Box, ThemeProvider} from '@mui/material';
 import { adminPaths } from '../../util/frontend';
@@ -13,7 +13,7 @@ import TableButton from "../../components/form-controls/TableButton";
 import MainPageWrapper from "../../components/MainPageWrapper";
 import {useTendaTheme} from "../../components/useTendaTheme";
 
-const AlipayAccountsByClientList = () => {
+const ReceiverAccountsByClientList = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const isDarkTheme = useSelector(selectIsDarkTheme);
@@ -124,4 +124,4 @@ const AlipayAccountsByClientList = () => {
     );
 };
 
-export default AlipayAccountsByClientList;
+export default ReceiverAccountsByClientList;
