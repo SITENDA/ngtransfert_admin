@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectIsDarkTheme, setItem } from '../auth/authSlice';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {Button, Alert, CircularProgress, Box, ThemeProvider} from '@mui/material';
 import { adminPaths } from '../../util/frontend';
 import ImageDisplay from '../../components/form-controls/ImageDisplay';
@@ -36,11 +36,11 @@ const AlipayAccountsListAdmin = () => {
         });
     };
 
-    const handleDetailsClick = (alipayAccountId, alipayAccount) => {
+    const handleDetailsClick = (accountId, receiverAccount) => {
         navigate(adminPaths.alipayAccountDetailsPath, {
             state: {
                 prevPath: window.location.pathname,
-                alipayAccount
+                receiverAccount
             }
         });
     };

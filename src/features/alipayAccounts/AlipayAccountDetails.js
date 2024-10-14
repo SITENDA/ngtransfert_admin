@@ -24,6 +24,7 @@ import MainPageWrapper from "../../components/MainPageWrapper";
 import ImageDisplay from "../../components/form-controls/ImageDisplay";
 import EmailDisplay from "../../components/form-controls/EmailDisplay";
 import PhoneNumberDisplay from "../../components/form-controls/PhoneNumberDisplay";
+import ReceiverAccountIdentifier from "../../util/ReceiverAccountIdentifier";
 
 const AlipayAccountDetails = () => {
     const navigate = useNavigate();
@@ -35,14 +36,14 @@ const AlipayAccountDetails = () => {
     const [tickAnimationVisible, setTickAnimationVisible] = useState(false);
 
     useEffect(() => {
-        dispatch(setItem({key: "title", value: "Alipay Account Details"}));
+        dispatch(setItem({key: "title", value: "Receiver Account Details"}));
     }, [dispatch]);
 
-    let alipayAccount = location?.state?.alipayAccount;
+    let receiverAccount = location?.state?.receiverAccount;
 
     const handleDeleteOk = async () => {
-        const response = await deleteAlipayAccount(alipayAccount).unwrap();
-        if (response?.statusCode === 200 && response?.message === "Alipay account deleted successfully") {
+        const response = await deleteAlipayAccount(receiverAccount).unwrap();
+        if (response?.statusCode === 200 && response?.message === "Receiver account deleted successfully") {
             setTickAnimationVisible(true);
             setTimeout(() => {
                 navigate(adminPaths.alipayAccountsPath);
@@ -63,7 +64,7 @@ const AlipayAccountDetails = () => {
         navigate(adminPaths.applyForTransferPath, {
             state: {
                 prevPath: window.location.pathname,
-                alipayAccount
+                receiverAccount
             }
         });
     }
@@ -72,14 +73,13 @@ const AlipayAccountDetails = () => {
         navigate(adminPaths.topUpInstructionsPath, {
             state: {
                 prevPath: window.location.pathname,
-                receiverAccount: alipayAccount
+                receiverAccount,
             }
         });
     }
 
-    if (!alipayAccount) {
-        return <Typography align="center" color="error" variant="h5" sx={{mt: 5}}>Alipay Account not
-            found!</Typography>;
+    if (!receiverAccount) {
+        navigate(adminPaths.alipayAccountsPath, {replace: true});
     }
 
     return (
@@ -118,7 +118,7 @@ const AlipayAccountDetails = () => {
                                             </Grid>
                                             <Grid item xs={8}>
                                                 <Typography
-                                                    variant="body1">{alipayAccount.alipayAccountName}</Typography>
+                                                    variant="body1">{receiverAccount.receiverAccountName}</Typography>
                                             </Grid>
                                         </Grid>
                                         <Grid container sx={{mb: 2}}>
@@ -127,40 +127,40 @@ const AlipayAccountDetails = () => {
                                             </Grid>
                                             <Grid item xs={8}>
                                                 <Typography
-                                                    variant="body1">{`${alipayAccount.currency.currencySymbol} ${alipayAccount.balance}`}</Typography>
+                                                    variant="body1">{`${receiverAccount.currency.currencySymbol} ${receiverAccount.balance}`}</Typography>
                                             </Grid>
                                         </Grid>
-                                        {alipayAccount.email && !alipayAccount.email.startsWith("rand") && (
+                                        {receiverAccount.receiverAccountIdentifier === "email" && (
                                             <Grid container sx={{mb: 2}}>
                                                 <Grid item xs={4}>
                                                     <Typography variant="h6"
                                                                 sx={{fontWeight: 'bold'}}>Email</Typography>
                                                 </Grid>
                                                 <Grid item xs={8}>
-                                                    <EmailDisplay email={<EmailDisplay email={alipayAccount.email}/>}/>
+                                                    <EmailDisplay email={<EmailDisplay email={receiverAccount.email}/>}/>
                                                 </Grid>
                                             </Grid>
                                         )}
-                                        {alipayAccount.phoneNumber && !alipayAccount.phoneNumber.startsWith("rand") && (
+                                        {receiverAccount.receiverAccountIdentifier === ReceiverAccountIdentifier.PHONE_NUMBER && (
                                             <Grid container sx={{mb: 2}}>
                                                 <Grid item xs={4}>
                                                     <Typography variant="h6"
                                                                 sx={{fontWeight: 'bold'}}>Mobile</Typography>
                                                 </Grid>
                                                 <Grid item xs={8}>
-                                                    <PhoneNumberDisplay phoneNumber={alipayAccount.phoneNumber}/>
+                                                    <PhoneNumberDisplay phoneNumber={receiverAccount.phoneNumber}/>
                                                 </Grid>
                                             </Grid>
                                         )}
-                                        {alipayAccount.alipayQrCodeUrl && (
+                                        {receiverAccount.receiverAccountIdentifier === ReceiverAccountIdentifier.QR_CODE_IMAGE && (
                                             <Grid container sx={{mb: 2}}>
                                                 <Grid item xs={4}>
                                                     <Typography variant="h6" sx={{fontWeight: 'bold'}}>QR
                                                         Code</Typography>
                                                 </Grid>
                                                 <Grid item xs={8}>
-                                                    <ImageDisplay imageUrl={alipayAccount.alipayQrCodeUrl}
-                                                                  title="Alipay QR Code"/>
+                                                    <ImageDisplay imageUrl={receiverAccount.qrCodeUrl}
+                                                                  title="QR Code"/>
                                                 </Grid>
                                             </Grid>
                                         )}
@@ -189,7 +189,7 @@ const AlipayAccountDetails = () => {
                                             <Grid item xs={8} container alignItems="center">
                                                 {/*<Avatar src={alipayAccount.client.profileImageUrl}*/}
                                                 {/*        alt={alipayAccount.client.fullName} sx={{mr: 2}}/>*/}
-                                                <Typography variant="body1">{alipayAccount.client.fullName}</Typography>
+                                                <Typography variant="body1">{receiverAccount.client.fullName}</Typography>
                                             </Grid>
                                         </Grid>
                                         <Grid container sx={{mb: 2}}>
@@ -197,7 +197,7 @@ const AlipayAccountDetails = () => {
                                                 <Typography variant="h6" sx={{fontWeight: 'bold'}}>Email</Typography>
                                             </Grid>
                                             <Grid item xs={8}>
-                                                <Typography variant="body1">{alipayAccount.client.email}</Typography>
+                                                <Typography variant="body1">{receiverAccount.client.email}</Typography>
                                             </Grid>
                                         </Grid>
                                         <Grid container sx={{mb: 2}}>
@@ -206,7 +206,7 @@ const AlipayAccountDetails = () => {
                                             </Grid>
                                             <Grid item xs={8}>
                                                 <Typography
-                                                    variant="body1">+{alipayAccount.client.phoneNumber}</Typography>
+                                                    variant="body1">{receiverAccount.client.phoneNumber}</Typography>
                                             </Grid>
                                         </Grid>
                                     </CardContent>
@@ -218,7 +218,7 @@ const AlipayAccountDetails = () => {
                                             onClick={handleDeleteAlipayAccountClick}
                                             fullWidth
                                         >
-                                            Delete Alipay Account
+                                            Delete Receiver Account
                                         </Button>
                                     </CardActions>
                                 </Card>
@@ -234,10 +234,10 @@ const AlipayAccountDetails = () => {
                                     color: isDarkTheme ? lightColor : darkColor
                                 }}>
                                     <Typography variant="h6" component="h2">
-                                        Confirm Delete Alipay Account
+                                        Confirm Delete Receiver Account
                                     </Typography>
                                     <Typography sx={{mt: 2}}>
-                                        Are you sure you want to delete this Alipay account? All information about this
+                                        Are you sure you want to delete this Receiver account? All information about this
                                         account will be lost.
                                     </Typography>
                                     <Box sx={{mt: 2, display: 'flex', justifyContent: 'flex-end'}}>
@@ -253,7 +253,7 @@ const AlipayAccountDetails = () => {
                         </>
                     )}
                 </Grid>
-                {tickAnimationVisible && <TickAnimation successMessage="Alipay Account deleted successfully!"/>}
+                {tickAnimationVisible && <TickAnimation successMessage="Receiver Account deleted successfully!"/>}
             </section>
         </MainPageWrapper>
     );
