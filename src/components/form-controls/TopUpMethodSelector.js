@@ -29,7 +29,7 @@ const TopUpMethodSelector = forwardRef(({
 
     const optionsData = orderedTopUpMethods.map((method) => ({
     value: method.value,
-    label: ( <SelectedMethodDisplay method={method}/>),
+    label: ( <SelectedMethodDisplay orderedReceiverAccountType={method}/>),
 }));
 
 

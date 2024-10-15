@@ -1,11 +1,9 @@
-import React from 'react';
-
-function SelectedMethodDisplay({ method }) {
+function SelectedMethodDisplay({ orderedReceiverAccountType }) {
     return (
         <span style={{display: 'inline-flex', alignItems: 'center', gap: '10px'}}>
             <>
-                <span>{method.label}</span>
-                {method.icon}
+                <span>{orderedReceiverAccountType.label}</span>
+                {orderedReceiverAccountType.icon}
             </>
         </span>
     );

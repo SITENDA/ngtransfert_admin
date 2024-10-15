@@ -45,7 +45,7 @@ const TopUp = () => {
 
     const stateSelectedMethod = location.state.selectedMethod;
     const foundMethod = orderedTopUpMethods.find(method => method.value === stateSelectedMethod);
-    const selectedMethod = {...foundMethod, label: <SelectedMethodDisplay method={foundMethod}/>};
+    const selectedMethod = {...foundMethod, label: <SelectedMethodDisplay orderedReceiverAccountType={foundMethod}/>};
     const selectedCountryName = location.state.selectedCountryName;
     const [topUpAccountBalance, {isLoading: topUpLoading, isSuccess: topUpIsSuccessful, isError: topUpHasError, error}] = useTopUpAccountBalanceMutation();
 

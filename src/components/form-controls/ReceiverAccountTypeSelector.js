@@ -28,7 +28,7 @@ const ReceiverAccountTypeSelector = forwardRef(({
 
     const optionsData = orderedReceiverAccountTypes.map((method) => ({
     value: method.value,
-    label: ( <SelectedMethodDisplay method={method}/>),
+    label: ( <SelectedMethodDisplay orderedReceiverAccountType={method}/>),
 }));
 
 

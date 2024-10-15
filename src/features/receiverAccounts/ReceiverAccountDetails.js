@@ -2,17 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate, useLocation} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {setItem, selectIsDarkTheme} from '../auth/authSlice';
-import {
-    Modal,
-    Box,
-    Button,
-    Card,
-    CardContent,
-    CardActions,
-    Typography,
-    Grid,
-    Divider
-} from '@mui/material';
+import {Modal, Box, Button, Card, CardContent, CardActions, Typography, Grid, Divider} from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -25,6 +15,8 @@ import EmailDisplay from "../../components/form-controls/EmailDisplay";
 import PhoneNumberDisplay from "../../components/form-controls/PhoneNumberDisplay";
 import ReceiverAccountIdentifier from "../../util/ReceiverAccountIdentifier";
 import {useDeleteReceiverAccountMutation} from "./receiverAccountsSlice";
+import ReceiverAccountType, {orderedReceiverAccountTypes} from "../../util/ReceiverAccountType";
+import SelectedMethodDisplay from "../../components/form-controls/SelectedMethodDisplay";
 
 const ReceiverAccountDetails = () => {
     const navigate = useNavigate();
@@ -39,7 +31,8 @@ const ReceiverAccountDetails = () => {
         dispatch(setItem({key: "title", value: "Receiver Account Details"}));
     }, [dispatch]);
 
-    let receiverAccount = location?.state?.receiverAccount;
+    const receiverAccount = location?.state?.receiverAccount;
+    const displayedReceiverAccount = orderedReceiverAccountTypes.find(orderedReceiverAccountType => orderedReceiverAccountType.value === receiverAccount.receiverAccountType);
 
     const handleDeleteOk = async () => {
         const response = await deleteReceiverAccount(receiverAccount).unwrap();
@@ -114,6 +107,17 @@ const ReceiverAccountDetails = () => {
                                         <Divider sx={{mb: 2}}/>
                                         <Grid container sx={{mb: 2}}>
                                             <Grid item xs={4}>
+                                                <Typography variant="h6" sx={{fontWeight: 'bold'}}>Type</Typography>
+                                            </Grid>
+                                            <Grid item xs={8}>
+                                                <Typography
+                                                    variant="body1"> <SelectedMethodDisplay
+                                                    orderedReceiverAccountType={displayedReceiverAccount}/></Typography>
+                                            </Grid>
+                                        </Grid>
+                                        <Divider sx={{mb: 2}}/>
+                                        <Grid container sx={{mb: 2}}>
+                                            <Grid item xs={4}>
                                                 <Typography variant="h6" sx={{fontWeight: 'bold'}}>Name</Typography>
                                             </Grid>
                                             <Grid item xs={8}>
@@ -122,6 +126,7 @@ const ReceiverAccountDetails = () => {
                                             </Grid>
                                         </Grid>
                                         <Grid container sx={{mb: 2}}>
+
                                             <Grid item xs={4}>
                                                 <Typography variant="h6" sx={{fontWeight: 'bold'}}>Balance</Typography>
                                             </Grid>
@@ -130,6 +135,56 @@ const ReceiverAccountDetails = () => {
                                                     variant="body1">{`${receiverAccount.currency.currencySymbol} ${receiverAccount.balance}`}</Typography>
                                             </Grid>
                                         </Grid>
+                                        {receiverAccount.receiverAccountType === ReceiverAccountType.BANK_ACCOUNT &&
+                                            <>
+                                                <Divider sx={{mb: 2}}/>
+                                                <Grid container sx={{mb: 2}}>
+                                                    <Grid item xs={4}>
+                                                        <Typography variant="h6"
+                                                                    sx={{fontWeight: 'bold'}}>Number</Typography>
+                                                    </Grid>
+                                                    <Grid item xs={8}>
+                                                        <Typography
+                                                            variant="body1">{receiverAccount.bankAccountNumber}</Typography>
+                                                    </Grid>
+                                                </Grid>
+                                                <Divider sx={{my: 3}}/>
+                                                {/* Bank Details Section */}
+                                                <Typography variant="h5" gutterBottom>Bank Details</Typography>
+                                                <Divider sx={{mb: 2}}/>
+                                                <Grid container sx={{mb: 2}} alignItems="center">
+                                                    <Grid item xs={4}>
+                                                        <Typography variant="h6"
+                                                                    sx={{fontWeight: 'bold'}}>Name</Typography>
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <Typography variant="body1">
+                                                            {receiverAccount.bank.bankNameEng} ({receiverAccount.bank.bankShortName})
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item xs={2}>
+                                                        <ImageDisplay imageUrl={receiverAccount.bank.bankLogoUrl}
+                                                                      title={receiverAccount.bank.bankNameEng}/>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid container sx={{mb: 2}} alignItems="center">
+                                                    <Grid item xs={4}>
+                                                        <Typography variant="h6"
+                                                                    sx={{fontWeight: 'bold'}}>Country</Typography>
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <Typography variant="body1">
+                                                            {receiverAccount.bank.country.countryName}
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item xs={2}>
+                                                        <ImageDisplay
+                                                            imageUrl={receiverAccount.bank.country.countryFlagUrl}
+                                                            title={receiverAccount.bank.country.countryName}/>
+                                                    </Grid>
+                                                </Grid>
+                                            </>
+                                        }
                                         {receiverAccount.receiverAccountIdentifier === "email" && (
                                             <Grid container sx={{mb: 2}}>
                                                 <Grid item xs={4}>
@@ -137,7 +192,8 @@ const ReceiverAccountDetails = () => {
                                                                 sx={{fontWeight: 'bold'}}>Email</Typography>
                                                 </Grid>
                                                 <Grid item xs={8}>
-                                                    <EmailDisplay email={<EmailDisplay email={receiverAccount.email}/>}/>
+                                                    <EmailDisplay
+                                                        email={<EmailDisplay email={receiverAccount.email}/>}/>
                                                 </Grid>
                                             </Grid>
                                         )}
@@ -189,7 +245,8 @@ const ReceiverAccountDetails = () => {
                                             <Grid item xs={8} container alignItems="center">
                                                 {/*<Avatar src={alipayAccount.client.profileImageUrl}*/}
                                                 {/*        alt={alipayAccount.client.fullName} sx={{mr: 2}}/>*/}
-                                                <Typography variant="body1">{receiverAccount.client.fullName}</Typography>
+                                                <Typography
+                                                    variant="body1">{receiverAccount.client.fullName}</Typography>
                                             </Grid>
                                         </Grid>
                                         <Grid container sx={{mb: 2}}>
@@ -237,7 +294,8 @@ const ReceiverAccountDetails = () => {
                                         Confirm Delete Receiver Account
                                     </Typography>
                                     <Typography sx={{mt: 2}}>
-                                        Are you sure you want to delete this Receiver account? All information about this
+                                        Are you sure you want to delete this Receiver account? All information about
+                                        this
                                         account will be lost.
                                     </Typography>
                                     <Box sx={{mt: 2, display: 'flex', justifyContent: 'flex-end'}}>
