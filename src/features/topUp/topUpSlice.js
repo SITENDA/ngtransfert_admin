@@ -70,14 +70,71 @@ export const topUpApiSlice = apiSlice.injectEndpoints({
                     return {error: {status: 400, message: 'Invalid target country name'}};
                 }
                 return ({
-                url: `${backend.exchanges.getRateForCurrencyAndCountryUrl}?countryName=${countryName}`,
-                method: 'GET',
-            })
+                    url: `${backend.exchanges.getRateForCurrencyAndCountryUrl}?countryName=${countryName}`,
+                    method: 'GET',
+                })
             },
             transformResponse: (responseData) => {
                 return responseData?.data || null;
             }
         }),
+
+        getAmountInCNY: builder.mutation({
+            query: ({countryName, sourceAmount}) => {
+                if (!isValidString(countryName)) {
+                    return {error: {status: 400, message: 'Invalid country name'}};
+                }
+                if (!isValidNumber(sourceAmount)) {
+                    return {error: {status: 400, message: 'Invalid source amount'}};
+                }
+
+                // Create FormData object
+                const formData = new FormData();
+                formData.append('countryName', countryName);
+                formData.append('sourceAmount', sourceAmount);
+
+                // Return the request as a POST request
+                return {
+                    url: backend.exchanges.getAmountInCNYUrl,
+                    method: 'POST',
+                    body: formData,  // Submit FormData
+                };
+            },
+
+            transformResponse: (responseData) => {
+                console.log("Response data is : ", responseData)
+                return responseData?.data || null;
+            },
+        }),
+
+        getAmountInTargetCurrency: builder.mutation({
+            query: ({countryName, targetAmount}) => {
+                if (!isValidString(countryName)) {
+                    return {error: {status: 400, message: 'Invalid target country name'}};
+                }
+                if (!isValidNumber(targetAmount)) {
+                    return {error: {status: 400, message: 'Invalid target amount'}};
+                }
+
+                // Create FormData object
+                const formData = new FormData();
+                formData.append('countryName', countryName);
+                formData.append('targetAmount', targetAmount);
+
+                // Return the request as a POST request
+                return {
+                    url: backend.exchanges.getAmountInTargetCurrencyUrl,
+                    method: 'POST',
+                    body: formData,  // Submit FormData
+                };
+            },
+
+            transformResponse: (responseData) => {
+                console.log("Response data is : ", responseData)
+                return responseData?.data || null;
+            },
+        }),
+
 
         topUpAccountBalance: builder.mutation({
             query: (topUpData) => {
@@ -99,10 +156,6 @@ export const {
     useDoCurrencyExchangeMutation,
     useTopUpAccountBalanceMutation,
     useGetRateForCurrencyAndCountryQuery,
+    useGetAmountInCNYMutation,
+    useGetAmountInTargetCurrencyMutation,
 } = topUpApiSlice;
-
-export const selectRateForCurrencyAndCountryResult = (countryName) => topUpApiSlice.endpoints.getRateForCurrencyAndCountry.select(countryName)
-export const selectRateForCurrencyAndCountryData = (countryName) => createSelector(
-    selectRateForCurrencyAndCountryResult(countryName),
-    (rateForCurrencyAndCountryResult) => rateForCurrencyAndCountryResult.data
-)
