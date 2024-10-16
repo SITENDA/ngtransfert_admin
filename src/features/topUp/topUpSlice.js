@@ -1,27 +1,37 @@
 import {apiSlice} from "../api/apiSlice";
 import {backend} from "../../util/backend";
+import {
+    bankAccountsApiSlice,
+    selectBankAccountsByClientIdData,
+    selectBankAccountsByClientIdResult
+} from "../bankAccounts/bankAccountsSlice";
+import {createSelector} from "@reduxjs/toolkit";
 
 const isValidNumber = (number) => Number(number) && number >= 1
-    const isValidString = (str) => (str && typeof str === 'string' && str.trim().length >= 0)
+const isValidString = (str) => (str && typeof str === 'string' && str.trim().length >= 0)
 
 export const topUpApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
 
         doCurrencyExchange: builder.mutation({
-            query: ({sourceCurrencyCode, targetCurrencyCode, sourceAmount, targetAmount, countryId, directionOfExchange}) => {
+            query: ({
+                        sourceCurrencyCode,
+                        targetCurrencyCode,
+                        sourceAmount,
+                        targetAmount,
+                        countryId,
+                        directionOfExchange
+                    }) => {
                 // Check for invalid inputs
                 if (!isValidNumber(countryId)) {
                     return {error: {status: 400, message: 'Invalid country ID'}};
-                }
-                else if (!isValidNumber(sourceAmount) && !isValidNumber(targetAmount)) {
+                } else if (!isValidNumber(sourceAmount) && !isValidNumber(targetAmount)) {
                     return {error: {status: 400, message: 'Invalid source and target amount'}};
-                }
-                else if (!isValidString(sourceCurrencyCode)){
+                } else if (!isValidString(sourceCurrencyCode)) {
                     return {error: {status: 400, message: 'Invalid source currency code'}};
                 } else if (!isValidString(targetCurrencyCode)) {
                     return {error: {status: 400, message: 'Invalid target currency code'}};
-                }
-                else if (!isValidString(directionOfExchange)) {
+                } else if (!isValidString(directionOfExchange)) {
                     return {error: {status: 400, message: 'Invalid direction of exchange'}};
                 }
 
@@ -48,10 +58,25 @@ export const topUpApiSlice = apiSlice.injectEndpoints({
             providesTags: (result, error, arg) =>
                 result
                     ? [
-                        {type: 'BankAccount', id: arg},
-                        ...result.ids.map((id) => ({type: 'BankAccount', id})),
+                        {type: 'Exchange', id: arg},
+                        ...result.ids.map((id) => ({type: 'Exchange', id})),
                     ]
-                    : [{type: 'BankAccount', id: arg}],
+                    : [{type: 'Exchange', id: arg}],
+        }),
+
+        getRateForCurrencyAndCountry: builder.query({
+            query: (countryName) => {
+                if (!isValidString(countryName)) {
+                    return {error: {status: 400, message: 'Invalid target country name'}};
+                }
+                return ({
+                url: `${backend.exchanges.getRateForCurrencyAndCountryUrl}?countryName=${countryName}`,
+                method: 'GET',
+            })
+            },
+            transformResponse: (responseData) => {
+                return responseData?.data || null;
+            }
         }),
 
         topUpAccountBalance: builder.mutation({
@@ -73,4 +98,11 @@ export const topUpApiSlice = apiSlice.injectEndpoints({
 export const {
     useDoCurrencyExchangeMutation,
     useTopUpAccountBalanceMutation,
+    useGetRateForCurrencyAndCountryQuery,
 } = topUpApiSlice;
+
+export const selectRateForCurrencyAndCountryResult = (countryName) => topUpApiSlice.endpoints.getRateForCurrencyAndCountry.select(countryName)
+export const selectRateForCurrencyAndCountryData = (countryName) => createSelector(
+    selectRateForCurrencyAndCountryResult(countryName),
+    (rateForCurrencyAndCountryResult) => rateForCurrencyAndCountryResult.data
+)

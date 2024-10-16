@@ -124,7 +124,8 @@ export const backend = {
         deleteUrl                                   : `${bankDepositAddressesBaseUrl}/deleteBankDepositAddress}`,
     },
     exchanges : {
-        doCurrencyExchangeUrl: `${exchangesBaseUrl}/doCurrencyExchange`,
-        topUpAccountBalanceUrl: `${exchangesBaseUrl}/topUpAccountBalance`,
+        doCurrencyExchangeUrl                       : `${exchangesBaseUrl}/doCurrencyExchange`,
+        topUpAccountBalanceUrl                      : `${exchangesBaseUrl}/topUpAccountBalance`,
+        getRateForCurrencyAndCountryUrl             : `${exchangesBaseUrl}/getRateForCurrencyAndCountry`,
     }
 };
