@@ -20,6 +20,7 @@ import useSelectStyles from "../../hooks/useSelectStyles";
 import SelectedMethodDisplay from "../../components/form-controls/SelectedMethodDisplay";
 import {faWeixin} from "@fortawesome/free-brands-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 
 const ReceiverAccountsListAdmin = () => {
     const navigate = useNavigate();
@@ -48,6 +49,16 @@ const ReceiverAccountsListAdmin = () => {
         });
     };
 
+    const handleTopUpClick = (e, receiverAccount) => {
+        e.preventDefault();
+        navigate(adminPaths.topUpInstructionsPath, {
+            state: {
+                prevPath: window.location.pathname,
+                receiverAccount,
+            }
+        });
+    }
+
     const handleDetailsClick = (accountId, receiverAccount) => {
         navigate(adminPaths.receiverAccountDetailsPath, {
             state: {
@@ -67,13 +78,14 @@ const ReceiverAccountsListAdmin = () => {
     const orderedReceiverAccounts = useSelector(selectAllReceiverAccounts);
 
     // Dropdown options, including "All" for showing all accounts
-    const icons = orderedReceiverAccountTypes.map((accountType) => (<span style={{marginLeft: '20px'}}> {accountType.icon} </span>))
+    const icons = orderedReceiverAccountTypes.map((accountType) => (
+        <span style={{marginLeft: '20px'}}> {accountType.icon} </span>))
     const accountTypeOptions = [
         {value: 'all', label: <>All {icons}</>},
         ...orderedReceiverAccountTypes.map((accountType) => ({
-        value: accountType.value,
-        label: (<SelectedMethodDisplay orderedReceiverAccountType={accountType}/>),
-    }))
+            value: accountType.value,
+            label: (<SelectedMethodDisplay orderedReceiverAccountType={accountType}/>),
+        }))
     ];
 
     const handleFilterChange = (selectedOption) => {
@@ -87,22 +99,21 @@ const ReceiverAccountsListAdmin = () => {
             receiverAccount.receiverAccountType === selectedAccountType
         );
 
-    const theadLabels = ['Account Name', 'Details', 'Apply'];
+    const theadLabels = ['Account Name', 'Top Up', 'Apply'];
     const tbodyContents = filteredReceiverAccounts.map(receiverAccount => [
-        <span>{receiverAccount.receiverAccountName} {receiverAccount.receiverAccountIdentifier === ReceiverAccountIdentifier.QR_CODE_IMAGE ?
-            <ImageDisplay imageUrl={receiverAccount.qrCodeUrl} title="QR Code"/> :
-            receiverAccount.receiverAccountIdentifier === ReceiverAccountIdentifier.EMAIL ?
-                <EmailDisplay email={receiverAccount.email}/> :
-                receiverAccount.receiverAccountIdentifier === ReceiverAccountIdentifier.PHONE_NUMBER ?
-                    <PhoneNumberDisplay phoneNumber={receiverAccount.phoneNumber}/> :
-                    receiverAccount.receiverAccountType === ReceiverAccountType.BANK_ACCOUNT ?
-                        <ImageDisplay imageUrl={receiverAccount?.bank?.bankLogoUrl}
-                                      title={`${receiverAccount?.bank?.bankNameEng} Logo`}/>
-                        : null}</span>,
-        <TableButton
+        <span>{receiverAccount.receiverAccountName} <br/><TableButton
             onClick={() => handleDetailsClick(receiverAccount?.accountId, receiverAccount)}
             label="Details"
-        />,
+        /></span>,
+
+        <Button
+            variant="contained"
+            sx={{backgroundColor: '#4CAF50', color: '#fff'}} // Change to a green color
+            startIcon={<MonetizationOnIcon/>}
+            onClick={(e, receiverAccount) => handleTopUpClick(e, receiverAccount)}
+        >
+            Top Up
+        </Button>,
         <TableButton
             onClick={() => handleApplyClick(receiverAccount?.accountId, receiverAccount)}
             label="Apply"
@@ -141,23 +152,42 @@ const ReceiverAccountsListAdmin = () => {
             <MainPageWrapper>
                 <section className={`scrollbar-style ${isDarkTheme ? 'dark-theme' : ''}`}
                          style={{maxHeight: '100vh', overflowY: 'auto', overflowX: 'auto'}}>
-                    {/* Dropdown for filtering by account type */}
-                    <Select
-                        options={accountTypeOptions}
-                        onChange={handleFilterChange}
-                        defaultValue={accountTypeOptions[0]} // Default to "All"
-                        placeholder="Select account type"
-                        styles={selectStyles}
-                    />
-                    <Divider sx={{mb: 2}}/>
 
                     <Button type='primary' style={{marginBottom: '10px'}} onClick={handleAddAccountClick}>
                         Add a Receiver Account
                     </Button>
+
+                    <Divider sx={{mb: 2}}/>
+
+                    <div style={{display: 'flex', alignItems: 'center', marginBottom: '10px'}}>
+                        <label htmlFor="accountTypeSelector"
+                               style={{marginRight: '20px', color: isDarkTheme ? lightColor : darkColor}}>
+                            Category
+                        </label>
+                        <Select
+                            id="accountTypeSelector"
+                            options={accountTypeOptions}
+                            onChange={handleFilterChange}
+                            defaultValue={accountTypeOptions[0]} // Default to "All"
+                            placeholder="Select account type"
+                            isSearchable={false}
+                            menuPlacement="auto"
+                            menuPosition="fixed"
+                            styles={{
+                                ...selectStyles,
+                                container: (provided) => ({
+                                    ...provided,
+                                    width: '200px',  // Adjust the width as needed
+                                }),
+                            }}
+                        />
+                    </div>
+
                     {content}
                 </section>
             </MainPageWrapper>
         </ThemeProvider>
+
     );
 };
 

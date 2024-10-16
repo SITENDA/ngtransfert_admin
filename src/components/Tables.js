@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react';
 import { useSelector } from "react-redux";
 import { selectIsDarkTheme } from "../features/auth/authSlice";
 import { darkColor, lightColor } from "../util/initials";
 import {
-    Box,
     Card,
     CardContent,
     Table,
@@ -15,13 +13,10 @@ import {
     TableFooter,
     Paper
 } from '@mui/material';
+import '../assets/css/Tables.css'
 
 const Tables = ({ theadLabels, tfootLabels, tbodyContents }) => {
     const isDarkTheme = useSelector(selectIsDarkTheme);
-
-    useEffect(() => {
-        // Initialize any required JavaScript plugins here if needed
-    }, []);
 
     return (
         <Card sx={{ mb: 4, boxShadow: 3, background: isDarkTheme ? darkColor : lightColor }}>

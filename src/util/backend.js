@@ -2,7 +2,7 @@
 const env                       = "development";
 const BACKEND_HOST              = env === "production" ? "back.ngtransfert.org" : "localhost";
 const BACKEND_API_NAME          = env === "production" ? "ngtransfert_backend" : "";
-const VERSION                   = "v11";
+const VERSION                   = "v12";
 const PROTOCOL                  = env === "production" ? "https" : "http";
 
 const baseUrl                   = env === "production" ? `${PROTOCOL}://${BACKEND_HOST}/${BACKEND_API_NAME}/${VERSION}`

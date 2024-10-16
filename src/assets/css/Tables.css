@@ -1,0 +1,19 @@
+/*@media (max-width: 600px) {*/
+/*  .MuiTable-root {*/
+/*    display: block; !* Allow table to behave more like block elements on small screens *!*/
+/*    width: 100%;*/
+/*    overflow-x: auto; !* Enable horizontal scrolling if still necessary *!*/
+/*  }*/
+
+/*  .MuiTableCell-root {*/
+/*    white-space: normal; !* Ensure wrapping *!*/
+/*    padding: 8px; !* Adjust padding for small screens *!*/
+/*    display: block; !* Allow table cells to stack vertically *!*/
+/*    width: 100%; !* Ensure the content fits within the screen width *!*/
+/*    box-sizing: border-box; !* Ensure padding and borders are included in the width calculation *!*/
+/*  }*/
+
+/*  .MuiTableRow-root {*/
+/*    display: block; !* Stack table rows vertically *!*/
+/*  }*/
+/*}*/
