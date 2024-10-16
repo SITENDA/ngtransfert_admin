@@ -7,7 +7,13 @@ import {
     selectValidLogin,
     selectLoginSpecifics,
     setItem,
-    handleValidation, selectLoginInputs, selectLoginFocus, handleFocus, handleBlur, selectCurrentToken
+    handleValidation,
+    selectLoginInputs,
+    selectLoginFocus,
+    handleFocus,
+    handleBlur,
+    selectCurrentToken,
+    selectEventProperties
 } from '../../features/auth/authSlice';
 import {useLoginMutation} from '../../features/auth/authApiSlice';
 import {regex} from '../../util/regex';
@@ -49,6 +55,7 @@ const NewLogin = () => {
     const allowedRoles = ["ADMIN"];
     const hasRole = user?.roles?.find(role => allowedRoles?.includes(role.roleName));
     const token = useSelector(selectCurrentToken);
+    const eventProperties = useSelector(selectEventProperties);
 
     useEffect(() => {
         if (Boolean(user?.fullName) && hasRole && token?.length > 0 && token !== "nothing") {
@@ -199,8 +206,7 @@ const NewLogin = () => {
                             {/* Submit Button */}
                             <div className="d-grid">
                                 <TendaButton
-                                    //!((valids.validPhoneNumber || valids.validEmail) && valids.validPassword && !eventProperties.isError)
-                                    disabled={false}
+                                    disabled={!((validLogin.validPhoneNumber || validLogin.validEmail) && validLogin.validPassword && !eventProperties.isError)}
                                     buttonText={loading ? 'Signing In...' : 'Sign In'}/>
                             </div>
                         </form>

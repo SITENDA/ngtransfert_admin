@@ -1,11 +1,5 @@
 import {apiSlice} from "../api/apiSlice";
 import {backend} from "../../util/backend";
-import {
-    bankAccountsApiSlice,
-    selectBankAccountsByClientIdData,
-    selectBankAccountsByClientIdResult
-} from "../bankAccounts/bankAccountsSlice";
-import {createSelector} from "@reduxjs/toolkit";
 
 const isValidNumber = (number) => Number(number) && number >= 1
 const isValidString = (str) => (str && typeof str === 'string' && str.trim().length >= 0)

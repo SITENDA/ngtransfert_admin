@@ -5,21 +5,15 @@ import {useNavigate} from 'react-router-dom';
 import {Button, Alert, CircularProgress, Box, ThemeProvider, Divider} from '@mui/material';
 import Select from 'react-select'; // Import react-select
 import {adminPaths} from '../../util/frontend';
-import ImageDisplay from '../../components/form-controls/ImageDisplay';
-import EmailDisplay from '../../components/form-controls/EmailDisplay';
-import PhoneNumberDisplay from '../../components/form-controls/PhoneNumberDisplay';
 import Tables from "../../components/Tables";
 import TableButton from "../../components/form-controls/TableButton";
 import MainPageWrapper from "../../components/MainPageWrapper";
 import {useTendaTheme} from "../../components/useTendaTheme";
 import {selectAllReceiverAccounts, useGetAllReceiverAccountsQuery} from "./receiverAccountsSlice";
-import ReceiverAccountIdentifier from "../../util/ReceiverAccountIdentifier";
-import ReceiverAccountType, {orderedReceiverAccountTypes} from "../../util/ReceiverAccountType";
+import {orderedReceiverAccountTypes} from "../../util/ReceiverAccountType";
 import {darkColor, lightColor} from "../../util/initials";
 import useSelectStyles from "../../hooks/useSelectStyles";
 import SelectedMethodDisplay from "../../components/form-controls/SelectedMethodDisplay";
-import {faWeixin} from "@fortawesome/free-brands-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 
 const ReceiverAccountsListAdmin = () => {

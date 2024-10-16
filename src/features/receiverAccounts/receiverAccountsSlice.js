@@ -119,7 +119,7 @@ export const {
 //---- returning the query result objects-------------------------------------------------------------------------
 
 export const selectAllReceiverAccountsResult = receiverAccountsApiSlice.endpoints.getAllReceiverAccounts.select()
-export const selectReceiverAccountsForClientResult = (clientId) => receiverAccountsApiSlice.endpoints.getReceiverAccountsForClient.select(clientId)
+export const selectReceiverAccountsForClientResult = (clientId) => receiverAccountsApiSlice.endpoints.getReceiverAccountsByClientId.select(clientId)
 export const selectReceiverAccountByReceiverAccountIdResult = (receiverAccountId) => receiverAccountsApiSlice.endpoints.getReceiverAccountByReceiverAccountId(receiverAccountId)
 
 //----------------------------------------------------------------------------------------------------------------

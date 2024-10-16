@@ -72,7 +72,7 @@ const ReceiverAccountDetails = () => {
     }
 
     if (!receiverAccount) {
-        navigate(adminPaths.alipayAccountsPath, {replace: true});
+        navigate(adminPaths.receiverAccountsPath, {replace: true});
     }
 
     return (
