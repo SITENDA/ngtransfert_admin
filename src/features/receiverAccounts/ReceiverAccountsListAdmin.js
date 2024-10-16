@@ -1,8 +1,9 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {selectIsDarkTheme, setItem} from '../auth/authSlice';
 import {useNavigate} from 'react-router-dom';
-import {Button, Alert, CircularProgress, Box, ThemeProvider} from '@mui/material';
+import {Button, Alert, CircularProgress, Box, ThemeProvider, Divider} from '@mui/material';
+import Select from 'react-select'; // Import react-select
 import {adminPaths} from '../../util/frontend';
 import ImageDisplay from '../../components/form-controls/ImageDisplay';
 import EmailDisplay from '../../components/form-controls/EmailDisplay';
@@ -13,13 +14,22 @@ import MainPageWrapper from "../../components/MainPageWrapper";
 import {useTendaTheme} from "../../components/useTendaTheme";
 import {selectAllReceiverAccounts, useGetAllReceiverAccountsQuery} from "./receiverAccountsSlice";
 import ReceiverAccountIdentifier from "../../util/ReceiverAccountIdentifier";
-import ReceiverAccountType from "../../util/ReceiverAccountType";
+import ReceiverAccountType, {orderedReceiverAccountTypes} from "../../util/ReceiverAccountType";
+import {darkColor, lightColor} from "../../util/initials";
+import useSelectStyles from "../../hooks/useSelectStyles";
+import SelectedMethodDisplay from "../../components/form-controls/SelectedMethodDisplay";
+import {faWeixin} from "@fortawesome/free-brands-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const ReceiverAccountsListAdmin = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const isDarkTheme = useSelector(selectIsDarkTheme);
     const theme = useTendaTheme();
+
+    // State to track the selected filter option
+    const [selectedAccountType, setSelectedAccountType] = useState(null);
+    const selectStyles = useSelectStyles(isDarkTheme, darkColor, lightColor);
 
     useEffect(() => {
         dispatch(setItem({key: "title", value: "All Receiver Accounts"}));
@@ -56,9 +66,29 @@ const ReceiverAccountsListAdmin = () => {
 
     const orderedReceiverAccounts = useSelector(selectAllReceiverAccounts);
 
+    // Dropdown options, including "All" for showing all accounts
+    const icons = orderedReceiverAccountTypes.map((accountType) => (<span style={{marginLeft: '20px'}}> {accountType.icon} </span>))
+    const accountTypeOptions = [
+        {value: 'all', label: <>All {icons}</>},
+        ...orderedReceiverAccountTypes.map((accountType) => ({
+        value: accountType.value,
+        label: (<SelectedMethodDisplay orderedReceiverAccountType={accountType}/>),
+    }))
+    ];
+
+    const handleFilterChange = (selectedOption) => {
+        setSelectedAccountType(selectedOption.value);
+    };
+
+    // Filter the accounts based on selected account type
+    const filteredReceiverAccounts = selectedAccountType === 'all' || !selectedAccountType
+        ? orderedReceiverAccounts // Show all accounts if "All" is selected
+        : orderedReceiverAccounts.filter(receiverAccount =>
+            receiverAccount.receiverAccountType === selectedAccountType
+        );
 
     const theadLabels = ['Account Name', 'Details', 'Apply'];
-    const tbodyContents = orderedReceiverAccounts.map(receiverAccount => [
+    const tbodyContents = filteredReceiverAccounts.map(receiverAccount => [
         <span>{receiverAccount.receiverAccountName} {receiverAccount.receiverAccountIdentifier === ReceiverAccountIdentifier.QR_CODE_IMAGE ?
             <ImageDisplay imageUrl={receiverAccount.qrCodeUrl} title="QR Code"/> :
             receiverAccount.receiverAccountIdentifier === ReceiverAccountIdentifier.EMAIL ?
@@ -86,7 +116,7 @@ const ReceiverAccountsListAdmin = () => {
                 <CircularProgress/>
             </Box>
         );
-    } else if (orderedReceiverAccounts.length === 0) {
+    } else if (filteredReceiverAccounts.length === 0) {
         content = (
             <Alert
                 message="No Receiver accounts available"
@@ -111,6 +141,16 @@ const ReceiverAccountsListAdmin = () => {
             <MainPageWrapper>
                 <section className={`scrollbar-style ${isDarkTheme ? 'dark-theme' : ''}`}
                          style={{maxHeight: '100vh', overflowY: 'auto', overflowX: 'auto'}}>
+                    {/* Dropdown for filtering by account type */}
+                    <Select
+                        options={accountTypeOptions}
+                        onChange={handleFilterChange}
+                        defaultValue={accountTypeOptions[0]} // Default to "All"
+                        placeholder="Select account type"
+                        styles={selectStyles}
+                    />
+                    <Divider sx={{mb: 2}}/>
+
                     <Button type='primary' style={{marginBottom: '10px'}} onClick={handleAddAccountClick}>
                         Add a Receiver Account
                     </Button>

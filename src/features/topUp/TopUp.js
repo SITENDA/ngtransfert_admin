@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Typography, Button, Grid, Card, CardContent, Divider, CircularProgress} from '@mui/material';
-import {darkColor, lightColor} from "../../util/initials";
+import {darkColor, initialTopUpInputs, lightColor} from "../../util/initials";
 import ImageDisplay from "../../components/form-controls/ImageDisplay";
 import TickAnimation from "../../components/TickAnimation";
 import MainPageWrapper from "../../components/MainPageWrapper";
@@ -159,13 +159,12 @@ const TopUp = () => {
         dispatch(setItem({key: "title", value: "Top Up"}));
     }, [dispatch]);
 
-    const handleConfirmTopUp = async (e) => {
-        e.preventDefault();
+    const handleConfirmTopUp = async () => {
         try {
             const topUpData = new FormData();
             topUpData.append("receiverAccountType", receiverAccount?.receiverAccountType);
-            topUpData.append("accountIdentifier", receiverAccount?.receiverAccountIdentifier);
-            topUpData.append("accountId", receiverAccount?.receiverAccountId);
+            topUpData.append("receiverAccountIdentifier", receiverAccount?.receiverAccountIdentifier);
+            topUpData.append("receiverAccountId", receiverAccount?.receiverAccountId);
             topUpData.append("currency", topUpInputs?.targetCurrencyCode);
             topUpData.append("amountInRMB", topUpInputs?.targetAmount);
             topUpData.append("proofPicture", topUpInputs.proofPicture?.file || new Blob());
@@ -182,6 +181,10 @@ const TopUp = () => {
             console.error('Error topping up:', error);
         } finally {
             // setLoading(false);  // Set loading to false when the request completes
+            dispatch(setItem({
+                key: "topUpInputs",
+                value: initialTopUpInputs
+            }));
         }
     };
 

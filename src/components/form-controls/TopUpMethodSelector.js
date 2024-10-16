@@ -5,6 +5,7 @@ import {selectIsDarkTheme} from "../../features/auth/authSlice";
 import {orderedTopUpMethods} from "../../util/TopUpMethod";
 import Select from 'react-select';
 import SelectedMethodDisplay from "./SelectedMethodDisplay";
+import useSelectStyles from "../../hooks/useSelectStyles";
 
 const TopUpMethodSelector = forwardRef(({
                                      changeHandler,
@@ -19,6 +20,7 @@ const TopUpMethodSelector = forwardRef(({
     const isDarkTheme = useSelector(selectIsDarkTheme);
 
     const [currentTopUpMethod, setCurrentTopUpMethod] = useState(null);
+    const selectStyles = useSelectStyles(isDarkTheme, darkColor, lightColor);
 
 
     const handleTopUpMethodChange = (selectedOption) => {
@@ -61,23 +63,7 @@ const TopUpMethodSelector = forwardRef(({
                 isSearchable
                 filterOption={filterOption}
                 placeholder="Search for top up method..."
-                styles={{
-                    control: (base) => ({
-                        ...base,
-                        backgroundColor: isDarkTheme ? darkColor : lightColor,
-                        color: isDarkTheme ? lightColor : darkColor,
-                        border: `1px solid ${isDarkTheme ? lightColor : darkColor}`,
-                    }),
-                    option: (provided, state) => ({
-                        ...provided,
-                        backgroundColor: state.isFocused ? (isDarkTheme ? '#555' : '#eee') : (isDarkTheme ? darkColor : lightColor),
-                        color: isDarkTheme ? lightColor : darkColor,
-                    }),
-                    singleValue: (provided) => ({
-                        ...provided,
-                        color: isDarkTheme ? 'white' : darkColor, // Set text color for selected item
-                    }),
-                }}
+                styles={selectStyles}
             />
         </div>
     );

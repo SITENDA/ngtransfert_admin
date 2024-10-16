@@ -138,6 +138,7 @@ export const topUpApiSlice = apiSlice.injectEndpoints({
 
         topUpAccountBalance: builder.mutation({
             query: (topUpData) => {
+                console.log("Top up data is : ", topUpData)
                 return {
                     url: backend.exchanges.topUpAccountBalanceUrl,
                     method: 'POST',

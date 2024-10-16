@@ -5,18 +5,20 @@ import {selectIsDarkTheme} from "../../features/auth/authSlice";
 import {orderedReceiverAccountTypes} from "../../util/ReceiverAccountType";
 import Select from 'react-select';
 import SelectedMethodDisplay from "./SelectedMethodDisplay";
+import useSelectStyles from "../../hooks/useSelectStyles";
 
 const ReceiverAccountTypeSelector = forwardRef(({
-                                     changeHandler,
-                                     validReceiverAccountType,
-                                     value,
-                                     isFocused,
-                                     handleFocus,
-                                     handleBlur
-                                 }, ref) => {
+                                                    changeHandler,
+                                                    validReceiverAccountType,
+                                                    value,
+                                                    isFocused,
+                                                    handleFocus,
+                                                    handleBlur
+                                                }, ref) => {
 
 
     const isDarkTheme = useSelector(selectIsDarkTheme);
+    const selectStyles = useSelectStyles(isDarkTheme, darkColor, lightColor);
     const [currentReceiverAccountType, setCurrentReceiverAccountType] = useState(null);
 
 
@@ -26,10 +28,10 @@ const ReceiverAccountTypeSelector = forwardRef(({
         changeHandler(selectedOption);
     };
 
-    const optionsData = orderedReceiverAccountTypes.map((method) => ({
-    value: method.value,
-    label: ( <SelectedMethodDisplay orderedReceiverAccountType={method}/>),
-}));
+    const optionsData = orderedReceiverAccountTypes.map((accountType) => ({
+        value: accountType.value,
+        label: (<SelectedMethodDisplay orderedReceiverAccountType={accountType}/>),
+    }));
 
 
     const filterOption = (option, searchText) => {
@@ -41,10 +43,12 @@ const ReceiverAccountTypeSelector = forwardRef(({
 
     return (
         <div className="mb-3" style={{width: '90%'}}>
-            <label htmlFor="receiverAccountTypeSelector" className="form-label" style={{color: isDarkTheme ? lightColor : darkColor}}>
+            <label htmlFor="receiverAccountTypeSelector" className="form-label"
+                   style={{color: isDarkTheme ? lightColor : darkColor}}>
                 <div style={{display: 'flex', alignItems: 'center'}}>
                     {!value && <span style={{marginRight: '5px'}}>Select Receiver Account Type</span>}
-                    {value && <><span style={{marginRight: '5px'}}>Account Type : {currentReceiverAccountType?.icon}</span> </>}
+                    {value && <><span
+                        style={{marginRight: '5px'}}>Account Type : {currentReceiverAccountType?.icon}</span> </>}
                 </div>
             </label>
             <Select
@@ -61,23 +65,7 @@ const ReceiverAccountTypeSelector = forwardRef(({
                 isSearchable
                 filterOption={filterOption}
                 placeholder="Search receiver account type..."
-                styles={{
-                    control: (base) => ({
-                        ...base,
-                        backgroundColor: isDarkTheme ? darkColor : lightColor,
-                        color: isDarkTheme ? lightColor : darkColor,
-                        border: `1px solid ${isDarkTheme ? lightColor : darkColor}`,
-                    }),
-                    option: (provided, state) => ({
-                        ...provided,
-                        backgroundColor: state.isFocused ? (isDarkTheme ? '#555' : '#eee') : (isDarkTheme ? darkColor : lightColor),
-                        color: isDarkTheme ? lightColor : darkColor,
-                    }),
-                    singleValue: (provided) => ({
-                        ...provided,
-                        color: isDarkTheme ? 'white' : darkColor, // Set text color for selected item
-                    }),
-                }}
+                styles={selectStyles}
             />
         </div>
     );
