@@ -8,7 +8,7 @@ import {adminPaths} from '../../util/frontend';
 import Tables from "../../components/Tables";
 import TableButton from "../../components/form-controls/TableButton";
 import MainPageWrapper from "../../components/MainPageWrapper";
-import {useTendaTheme} from "../../components/useTendaTheme";
+import {useTendaTheme} from "../../hooks/useTendaTheme";
 import {selectAllReceiverAccounts, useGetAllReceiverAccountsQuery} from "./receiverAccountsSlice";
 import {orderedReceiverAccountTypes} from "../../util/ReceiverAccountType";
 import {darkColor, lightColor} from "../../util/initials";
@@ -104,7 +104,7 @@ const ReceiverAccountsListAdmin = () => {
             variant="contained"
             sx={{backgroundColor: '#4CAF50', color: '#fff'}} // Change to a green color
             startIcon={<MonetizationOnIcon/>}
-            onClick={(e, receiverAccount) => handleTopUpClick(e, receiverAccount)}
+            onClick={(e) => handleTopUpClick(e, receiverAccount)}
         >
             Top Up
         </Button>,

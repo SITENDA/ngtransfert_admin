@@ -1,55 +1,40 @@
-import { Outlet } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { useRefreshMutation } from "../../features/auth/authApiSlice";
-import { selectCurrentToken, selectCurrentUser, setItem } from "../../features/auth/authSlice";
-import { useSelector, useDispatch } from "react-redux";
+import {useEffect, useState} from 'react';
+import {useRefreshMutation} from "../../features/auth/authApiSlice";
+import {selectCurrentToken, selectCurrentUser} from "../../features/auth/authSlice";
+import {useSelector} from "react-redux";
+import {Outlet} from "react-router-dom";
+import {CircularProgress, Box} from '@mui/material';
 
-const PersistLogin = () => {
+function PersistLogin() {
     const [isLoading, setIsLoading] = useState(true);
-    const [refresh, { isLoading: isRefreshLoading }] = useRefreshMutation();
-    const dispatch = useDispatch()
-    const token = useSelector(selectCurrentToken)
-    const persist = true;
+    const [refresh] = useRefreshMutation();
+    const user = useSelector(selectCurrentUser);
+    const accessToken = useSelector(selectCurrentToken)
 
     useEffect(() => {
-        let isMounted = true;
-
         const verifyRefreshToken = async () => {
             try {
-                const result = await refresh();
-                if (result?.data?.data?.user) {
-                    dispatch(setItem({ key: 'user', value: result?.data?.data?.user }));
-                }
-                if (result?.data?.data?.token) {
-                    dispatch(setItem({ key: 'token', value: result?.data?.data?.token }));
-                }
-
-            }
-            catch (err) {
-                console.error("Error caught in persist login : ", err);
-            }
-            finally {
-                (isRefreshLoading || isMounted) && setIsLoading(false);
+                await refresh();
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setIsLoading(false)
             }
         }
 
-        // persist added here AFTER tutorial video
-        // Avoids unwanted call to verifyRefreshToken
-        !token && persist ? verifyRefreshToken() : setIsLoading(false);
-
-        return () => isMounted = false;
+        !(accessToken?.length > 10 || user?.fullName) ? verifyRefreshToken() : setIsLoading(false);
     }, [])
-
     return (
         <>
-            {!persist
-                ? <Outlet />
-                : isLoading
-                    ? <p>Loading...</p>
-                    : <Outlet />
-            }
+            {isLoading ? (
+                <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+                    <CircularProgress/>
+                </Box>
+            ) : (
+                <Outlet/>
+            )}
         </>
-    )
+    );
 }
 
-export default PersistLogin
+export default PersistLogin;

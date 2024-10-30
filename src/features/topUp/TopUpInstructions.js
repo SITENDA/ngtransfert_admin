@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Typography, Button, Grid, Divider, Box, List, ListItem, ListItemText, ListItemIcon} from '@mui/material';
+import { Button, Grid, List, ListItem, ListItemText } from '@mui/material';
 import TopUpMethodSelector from "../../components/form-controls/TopUpMethodSelector";
 import {darkColor, lightColor} from "../../util/initials";
 import MainPageWrapper from "../../components/MainPageWrapper";
@@ -15,8 +15,7 @@ import {
 } from "../auth/authSlice";
 import CountrySelector from "../../components/form-controls/CountrySelector";
 import {adminPaths} from "../../util/frontend";
-import InfoIcon from '@mui/icons-material/Info';
-import PlaceIcon from '@mui/icons-material/Place';  // Import an icon for addresses
+
 import {
     selectCashDepositAddressesByCountryName,
     useGetCashDepositAddressesByCountryNameQuery
@@ -45,6 +44,9 @@ const TopUpInstructions = () => {
     }
 
     useEffect(() => {
+        if (!location?.state?.receiverAccount) {
+            navigate(adminPaths.receiverAccountsPath, {replace: true})
+        }
         dispatch(setItem({key: "title", value: "Top Up Instructions"}));
     }, [dispatch]);
 
@@ -211,72 +213,6 @@ const TopUpInstructions = () => {
 
                         {selectedMethod && (
                             <>
-                                <Divider sx={{my: 3}}/>
-                                <Box
-                                    sx={{
-                                        padding: '20px',
-                                        backgroundColor: 'rgba(249,249,163,0.3)',  // Soft yellow background
-                                        border: '1px solid #ddd',
-                                        borderRadius: '10px',
-                                        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                                    }}
-                                >
-                                    <Typography variant="h6" gutterBottom>
-                                        <InfoIcon sx={{mr: 1, verticalAlign: 'middle'}}/>
-                                        {selectedMethod.label} Instructions
-                                    </Typography>
-                                    <Divider sx={{mb: 2}}/>
-                                    <Typography variant="body1">
-                                        {topUpInstructions[selectedMethod.value] || "Please select a method to see the instructions."}
-                                    </Typography>
-                                </Box>
-
-                                {/* Display the addresses fetched with styling */}
-                                {selectedMethod.value === TopUpMethod.CASH && fetchedCashDepositAddresses.length > 0 && (
-                                    <>
-                                        <Divider sx={{my: 3}}/>
-                                        <Typography variant="h6" gutterBottom>
-                                            These are our cash addresses in {selectedCountryName}:
-                                        </Typography>
-                                        <List>
-                                            {fetchedCashDepositAddresses.map((address, index) => (
-                                                <ListItem key={index} sx={{
-                                                    backgroundColor: 'rgba(255, 192, 203, 0.5)',
-                                                    borderRadius: '8px',
-                                                    mb: 2
-                                                }}>
-                                                    <ListItemIcon>
-                                                        <PlaceIcon color="primary"/>
-                                                    </ListItemIcon>
-                                                    <ListItemText primary={address.address}/>
-                                                </ListItem>
-                                            ))}
-                                        </List>
-                                    </>
-                                )}
-
-                                {selectedMethod.value === TopUpMethod.BANK && fetchedBankDepositAddresses.length > 0 && (
-                                    <>
-                                        <Divider sx={{my: 3}}/>
-                                        <Typography variant="h6" gutterBottom>
-                                            These are our bank addresses in {selectedCountryName}:
-                                        </Typography>
-                                        <List>
-                                            {fetchedBankDepositAddresses.map((address, index) => (
-                                                <ListItem key={index} sx={{
-                                                    backgroundColor: 'rgba(255, 192, 203, 0.5)',
-                                                    borderRadius: '8px',
-                                                    mb: 2
-                                                }}>
-                                                    <ListItemIcon>
-                                                        <PlaceIcon color="primary"/>
-                                                    </ListItemIcon>
-                                                    <ListItemText primary={address.address}/>
-                                                </ListItem>
-                                            ))}
-                                        </List>
-                                    </>
-                                )}
 
                                 <Button
                                     variant="contained"

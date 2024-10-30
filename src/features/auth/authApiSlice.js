@@ -1,6 +1,7 @@
-import { apiSlice } from "../api/apiSlice";
-import { refreshRequestConfig } from "../api/apiSlice";
-import { backend } from "../../util/backend";
+import {apiSlice} from "../api/apiSlice";
+import {refreshRequestConfig} from "../api/apiSlice";
+import {backend} from "../../util/backend";
+import {setItem} from "../../features/auth/authSlice";
 
 export const authApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
@@ -8,52 +9,52 @@ export const authApiSlice = apiSlice.injectEndpoints({
             query: credentials => ({
                 url: backend.loginUrl,
                 method: 'POST',
-                body: { ...credentials }
+                body: {...credentials}
             }),
             invalidatesTags: ['User'],
-        }),
-        contact: builder.mutation({
-            query: contactInfo => ({
-                url: backend.contactUrl,
-                method: 'POST',
-                body: { ...contactInfo }
-            }),
-            invalidatesTags: ['Contact'],
         }),
         logout: builder.mutation({
-            query: credentials => ({
-                url: backend.logoutUrl,
-                method: 'POST',
-                // body: { ...credentials }
-            }),
-            invalidatesTags: ['User'],
+            queryFn: async (_, queryApi, __, baseQuery) => {
+                try {
+                    // Make the API call
+                    const logoutResult = await baseQuery({
+                        url: backend.logoutUrl,
+                        method: 'POST',
+                    });
+
+                    // Handle API error
+                    if (logoutResult.error) {
+                        return {error: logoutResult.error};
+                    }
+                    queryApi.dispatch(setItem({key: "user", value: null}));
+                    queryApi.dispatch(setItem({key: "token", value: null}));
+
+                    return {data: logoutResult.data};
+                } catch (error) {
+                    console.log("Logout called error")
+                    queryApi.dispatch(setItem({key: "user", value: null}));
+                    queryApi.dispatch(setItem({key: "token", value: null}));
+                    return {error: error};
+                }
+            },
+            invalidatesTags: ['User', 'Token'],
         }),
 
         refresh: builder.mutation({
             queryFn: async (_, queryApi, __, baseQuery) => {
                 const refreshResult = await baseQuery(refreshRequestConfig);
                 if (refreshResult.error) {
-                    console.error('Refresh token request error:', refreshResult.error);
-                    return { error: refreshResult.error };
+                    return {error: refreshResult.error};
                 }
-                return { data: refreshResult.data };
+                queryApi.dispatch(setItem({key: "user", value: refreshResult?.data?.data?.user}));
+                queryApi.dispatch(setItem({key: "token", value: refreshResult?.data?.data?.token}));
+
+                return {data: refreshResult.data};
             },
             invalidatesTags: ['User'],
-        }),
-        getAvatar: builder.query({
-            query: (filename) => ({
-                url: backend.avatarUrl,
-                method: 'GET'
-            }),
-          }),
+        })
     })
 })
 
 
-export const {
-        useLoginMutation,
-        useContactMutation,
-        useLogoutMutation,
-        useRefreshMutation,
-        useGetAvatarQuery
-    } = authApiSlice;
+export const {useLoginMutation, useLogoutMutation, useRefreshMutation} = authApiSlice;

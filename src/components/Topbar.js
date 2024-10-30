@@ -16,7 +16,7 @@ import {
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useLogoutMutation } from '../features/auth/authApiSlice';
 import { initialState } from '../util/initials';
-import { adminPaths } from '../util/frontend';
+import {adminPaths, publicPaths} from '../util/frontend';
 import UserProfile from './form-controls/UserProfile';
 import { darkColor, lightColor } from '../util/initials';
 import Logo from './form-controls/Logo';
@@ -246,7 +246,7 @@ const Topbar = () => {
                                 </Menu>
                             </>
                         ) : (
-                            <Button color="inherit" component={Link} to={adminPaths.loginPath} style={{ color: isDarkTheme ? 'inherit' : darkColor }}>
+                            <Button color="inherit" component={Link} to={publicPaths.loginPath} style={{ color: isDarkTheme ? 'inherit' : darkColor }}>
                                 Sign in
                             </Button>
                         )}

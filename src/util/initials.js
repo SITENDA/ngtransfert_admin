@@ -1,6 +1,6 @@
 import ReceiverAccountIdentifier from "./ReceiverAccountIdentifier";
 
-export const initialUser       = {};
+export const initialUser       = '';
 export const initialToken      = '';
 export const persistItem = localStorage.getItem("persist");
 export const initialPersist    = typeof(persistItem) === "string" ? JSON.parse(persistItem) : false;
@@ -11,6 +11,7 @@ export const initialIsDarkTheme = true;
 export const darkColor = 'rgb(0, 21, 41)';
 export const lightColor = 'rgb(255, 255, 255)';
 export const initialIntroPage = "LandingPage"
+export const allowedRoles = ["ADMIN"];
 
 export const initialRegistrationInputs = {
     fullName            : '',

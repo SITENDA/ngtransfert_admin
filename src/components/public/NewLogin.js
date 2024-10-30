@@ -26,13 +26,14 @@ import {
     initialValidLogin,
     initialEventProperties,
     initialLoginFocus,
-    initialLoginSpecifics
+    initialLoginSpecifics, allowedRoles
 } from '../../util/initials';
 import {selectPersist} from '../../features/auth/authSlice';
 import ErrorMessageComponent from '../form-controls/ErrorMessageComponent';
 import TendaButton from '../form-controls/TendaButton';
 import {adminPaths} from "../../util/frontend";
 import {ResponseHandler} from "../ResponseHandler";
+
 
 const NewLogin = () => {
     const navigate = useNavigate();
@@ -52,7 +53,6 @@ const NewLogin = () => {
     const loginFocus = useSelector(selectLoginFocus)
     const loginSpecifics = useSelector(selectLoginSpecifics)
     const user = useSelector(selectCurrentUser)
-    const allowedRoles = ["ADMIN"];
     const hasRole = user?.roles?.find(role => allowedRoles?.includes(role.roleName));
     const token = useSelector(selectCurrentToken);
     const eventProperties = useSelector(selectEventProperties);

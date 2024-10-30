@@ -22,7 +22,7 @@ import ErrorMessageComponent from "../../components/form-controls/ErrorMessageCo
 import TendaButton from "../../components/form-controls/TendaButton";
 import TickAnimation from "../../components/TickAnimation";
 import {adminPaths} from "../../util/frontend";
-import {useTendaTheme} from "../../components/useTendaTheme";
+import {useTendaTheme} from "../../hooks/useTendaTheme";
 import {Button, Divider, ThemeProvider, Typography} from "@mui/material";
 import MainPageWrapper from "../../components/MainPageWrapper";
 import ImageInput from "../../components/form-controls/ImageInput";

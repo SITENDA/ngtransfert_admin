@@ -6,16 +6,13 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import 'bootstrap/js/dist/modal';
 import { Menu, Button } from 'antd';
-import UserProfile from '../form-controls/UserProfile';
 import { selectIsDarkTheme } from '../../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
 import { useLogoutMutation } from '../../features/auth/authApiSlice';
-import { initialState } from '../../util/initials';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import ToggleThemeButtonClient from './ToggleThemeButtonClient';
-import { HomeOutlined, PhoneOutlined } from '@ant-design/icons'
-import { adminPaths, publicPaths } from '../../util/frontend';
+import { publicPaths } from '../../util/frontend';
 import { useEffect, useState } from 'react';
 
 const TopbarClient = () => {
@@ -41,24 +38,13 @@ const TopbarClient = () => {
 
     }
 
-    async function handleLogout() {
-        console.log("Logout function called")
+    const handleLogout = async () => {
         const response = await logout().unwrap();
-
         if (response.statusCode === 204) {
-            localStorage.setItem("prevPath", "/topbar");
-
-            // Create an array of promises for resetting state items
-            const resetStatePromises = Object.entries(authState).map(([key, value]) =>
-                dispatch(setItem({ key, value: initialState[key] }))
-            );
-
-            // Wait for all state items to be reset
-            await Promise.all(resetStatePromises);
-
-            navigate("/");
+            dispatch(setItem({ key: 'token', value: '' }));
+            dispatch(setItem({ key: 'user', value: '' }));
         }
-    }
+    };
 
 
     const items = [

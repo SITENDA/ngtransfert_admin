@@ -32,13 +32,10 @@ const MenuListClient = ({isDarkTheme}) => {
                     <Link onClick={() => HandleLinkClicked(adminPaths.homePath)}
                           to={adminPaths.homePath}>Dashboard</Link>
                 </Menu.Item>
-                <Menu.SubMenu key="receiver-accounts" icon={<PayCircleOutlined/>} title="Receiver Accounts">
-                    {receiverAccountLinks.map((item, index) => (
-                        <Menu.Item key={`${item.text}-${index}`} icon={item.icon}>
-                            <Link onClick={() => HandleLinkClicked(item.path)} to={item.path}>{item.text}</Link>
-                        </Menu.Item>
-                    ))}
-                </Menu.SubMenu>
+                <Menu.Item key="receiver-accounts" icon={<PayCircleOutlined/>}>
+                    <Link onClick={() => HandleLinkClicked(adminPaths.receiverAccountsPath)}
+                          to={adminPaths.receiverAccountsPath}>Receiver Accounts</Link>
+                </Menu.Item>
                 <Menu.SubMenu key="sending-records" icon={<PayCircleOutlined/>} title="Sending Records">
                     {sendingRecordLinks.map((item, index) => (
                         <Menu.Item key={`${item.text}-${index}`} icon={item.icon}>

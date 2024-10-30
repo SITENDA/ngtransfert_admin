@@ -166,7 +166,7 @@ const TopUp = () => {
             topUpData.append("receiverAccountIdentifier", receiverAccount?.receiverAccountIdentifier);
             topUpData.append("receiverAccountId", receiverAccount?.receiverAccountId);
             topUpData.append("currency", topUpInputs?.targetCurrencyCode);
-            topUpData.append("amountInRMB", topUpInputs?.targetAmount);
+            topUpData.append("amountInCNY", topUpInputs?.targetAmount);
             topUpData.append("proofPicture", topUpInputs.proofPicture?.file || new Blob());
 
             // Set loading to true when the request starts

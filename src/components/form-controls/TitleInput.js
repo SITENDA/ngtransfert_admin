@@ -4,7 +4,7 @@ import {selectIsDarkTheme} from '../../features/auth/authSlice';
 import isEqual from 'lodash.isequal';
 import {Select, MenuItem, FormControl, InputLabel, ThemeProvider, Typography} from '@mui/material';
 import {darkColor, lightColor} from '../../util/initials';
-import {useTendaTheme} from "../useTendaTheme";
+import {useTendaTheme} from "../../hooks/useTendaTheme";
 
 const TitleInput = forwardRef(({changeHandler, validTitle, value, isFocused, handleFocus, handleBlur}, ref) => {
     const [options, setOptions] = useState([]);

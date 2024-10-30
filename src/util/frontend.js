@@ -8,13 +8,11 @@ const adminBaseUrl     = "/admin"
 export const publicPaths = {
     adminPath                   : `${publicBaseUrl}`,
     loginPath                   : `${publicBaseUrl}/login`,
-    registerPath                : `${publicBaseUrl}/register`,
     unauthorizedPath            : `${publicBaseUrl}/unauthorized`,
 }
 
 export const adminPaths = {
     homePath                                    : `${adminBaseUrl}`,
-    loginPath                                   : `${adminBaseUrl}/login`,
     registerPath                                : `${adminBaseUrl}/register`,
     unauthorizedPath                            : `${adminBaseUrl}/unauthorized`,
     registrationSuccessPath                     : `${adminBaseUrl}/registrationsuccess`,

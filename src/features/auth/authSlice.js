@@ -18,26 +18,17 @@ const authSlice = createSlice({
                 ...initialState
             }
         },
-        updatePersist: (state, action) => {
-            state.persist = action.payload
-        },
         setItem: (state, action) => {
-            const {key, value} = action.payload;
-            const trimmedValue = trimIfString(value); // Assuming `trimIfString` trims strings.
-
-            if (typeof trimmedValue === 'string' || typeof trimmedValue === 'number' || typeof trimmedValue === 'boolean') {
-                // For primitive values, directly assign to state
-                state[key] = trimmedValue;
-            } else if (typeof trimmedValue === 'object' && trimmedValue !== null) {
+            const {key, value} = action?.payload;
+            const trimmedValue = trimIfString(value);
+            if (typeof trimmedValue === 'object') {
                 // If the value is an object, assign its keys to the corresponding state object
                 // This will overwrite the state object's keys with those of the new object.
                 state[key] = {
                     ...state[key], // Keep the existing keys if any
                     ...trimmedValue // Overwrite or set new values from the provided object
                 };
-            } else {
-                console.error("Unsupported value type in setItem.");
-            }
+            } else state[key] = trimmedValue;
         },
         setObjectItem: (state, action) => {
             const {key, innerKey, value} = action.payload;

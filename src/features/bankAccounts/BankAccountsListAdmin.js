@@ -13,7 +13,7 @@ import ImageDisplay from '../../components/form-controls/ImageDisplay';
 import Tables from "../../components/Tables";
 import TableButton from "../../components/form-controls/TableButton";
 import MainPageWrapper from "../../components/MainPageWrapper";
-import {useTendaTheme} from "../../components/useTendaTheme";
+import {useTendaTheme} from "../../hooks/useTendaTheme";
 
 const BankAccountsListAdmin = () => {
     const navigate = useNavigate();

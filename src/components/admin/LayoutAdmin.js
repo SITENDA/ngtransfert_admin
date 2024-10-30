@@ -8,7 +8,7 @@ import PageHeading from '../PageHeading';
 import Topbar from "../Topbar";
 import FooterAdmin from "./FooterAdmin";
 import SidebarAdmin from "./SidebarAdmin";
-import {useTendaTheme} from "../useTendaTheme";
+import {useTendaTheme} from "../../hooks/useTendaTheme";
 import {ThemeProvider} from "@mui/material";
 
 const {Content} = Layout;
