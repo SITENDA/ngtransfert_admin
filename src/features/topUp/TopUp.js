@@ -6,19 +6,7 @@ import TickAnimation from "../../components/TickAnimation";
 import MainPageWrapper from "../../components/MainPageWrapper";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {
-    handleBlur,
-    handleFocus,
-    handleImageChange,
-    handleValidation,
-    isValidNumber,
-    selectIsDarkTheme,
-    selectTopUpFocus,
-    selectTopUpInputs,
-    selectValidTopUp,
-    setItem,
-    setObjectItem
-} from "../auth/authSlice";
+import { handleBlur, handleFocus, handleImageChange, handleValidation, isValidNumber, selectIsDarkTheme, selectTopUpFocus, selectTopUpInputs, selectValidTopUp, setItem, setObjectItem } from "../auth/authSlice";
 import AmountInput from "../../components/form-controls/AmountInput";
 import {useGetCountryByCountryNameQuery} from "../countries/countriesSlice";
 import {orderedTopUpMethods} from "../../util/TopUpMethod";
@@ -27,7 +15,7 @@ import {
     useTopUpAccountBalanceMutation,
     useGetRateForCurrencyAndCountryQuery,
     useGetAmountInCNYMutation,
-    useGetAmountInTargetCurrencyMutation
+    useGetAmountInOtherCurrencyMutation
 } from "./topUpSlice";
 import ImageInput from "../../components/form-controls/ImageInput";
 import {adminPaths} from "../../util/frontend";
@@ -45,11 +33,11 @@ const TopUp = () => {
     const topUpFocus = useSelector(selectTopUpFocus)
 
     const refs = {
-        topUpMethodRef: useRef(null),
-        currencyIdRef: useRef(null),
-        sourceAmountRef: useRef(null),
-        targetAmountRef: useRef(null),
-        proofPictureRef: useRef(null),
+        topUpMethodRef              : useRef(null),
+        currencyIdRef               : useRef(null),
+        amountInOtherCurrencyRef    : useRef(null),
+        amountInCNYRef              : useRef(null),
+        proofPictureRef             : useRef(null),
     }
 
     const [tickAnimationVisible, setTickAnimationVisible] = useState(false);
@@ -77,12 +65,12 @@ const TopUp = () => {
         isError: errorGettingAmountInCNY
     }] = useGetAmountInCNYMutation();
 
-    const [getAmountInTargetCurrency, {
-        data: amountInTargetCurrencyData,
-        isLoading: loadingAmountInTargetCurrency,
-        isSuccess: gotAmountInTargetCurrency,
-        isError: errorGettingAmountInTargetCurrency
-    }] = useGetAmountInTargetCurrencyMutation();
+    const [getAmountInOtherCurrency, {
+        data: amountInOtherCurrencyData,
+        isLoading: loadingAmountInOtherCurrency,
+        isSuccess: gotAmountInOtherCurrency,
+        isError: errorGettingAmountInOtherCurrency
+    }] = useGetAmountInOtherCurrencyMutation();
 
     const {
         data: rateForCurrencyAndCountryData,
@@ -92,24 +80,24 @@ const TopUp = () => {
     } = useGetRateForCurrencyAndCountryQuery(selectedCountryName);
 
     useEffect(() => {
-        if (gotAmountInCNY && amountInCNYData?.targetAmount) {
+        if (gotAmountInCNY && amountInCNYData?.amountInCNY) {
             dispatch(setObjectItem({
                 key: "topUpInputs",
-                innerKey: "targetAmount",
-                value: amountInCNYData?.targetAmount
+                innerKey: "amountInCNY",
+                value: amountInCNYData?.amountInCNY
             }));
         }
-    }, [amountInCNYData?.targetAmount, dispatch, gotAmountInCNY]);
+    }, [amountInCNYData?.amountInCNY, dispatch, gotAmountInCNY]);
 
     useEffect(() => {
-        if (gotAmountInTargetCurrency && amountInTargetCurrencyData?.sourceAmount) {
+        if (gotAmountInOtherCurrency && amountInOtherCurrencyData?.amountInOtherCurrency) {
             dispatch(setObjectItem({
                 key: "topUpInputs",
-                innerKey: "sourceAmount",
-                value: amountInTargetCurrencyData?.sourceAmount
+                innerKey: "amountInOtherCurrency",
+                value: amountInOtherCurrencyData?.amountInOtherCurrency
             }));
         }
-    }, [amountInTargetCurrencyData?.sourceAmount, dispatch, gotAmountInTargetCurrency]);
+    }, [amountInOtherCurrencyData?.amountInOtherCurrency, dispatch, gotAmountInOtherCurrency]);
 
 
     useEffect(() => {
@@ -123,34 +111,33 @@ const TopUp = () => {
             setCountryOfDeposit(countryData?.data?.country)
             dispatch(setObjectItem({
                 key: "topUpInputs",
-                innerKey: "sourceCurrencyCode",
+                innerKey: "otherCurrencyCode",
                 value: countryData?.data?.country?.currency?.currencyCode
             }))
         }
     }, [countryData, countryFetched, countryOfDeposit, dispatch]);
 
     const handleGetAmountInCNY = async () => {
-        if ((isValidNumber(topUpInputs.sourceAmount)) && canSubmit) {
+        if ((isValidNumber(topUpInputs.amountInOtherCurrency))) {
             await getAmountInCNY({
                 countryName: selectedCountryName,
-                sourceAmount: topUpInputs.sourceAmount,
+                amountInOtherCurrency: topUpInputs.amountInOtherCurrency,
             }).unwrap();
             setCanSubmit(false);
         } else {
-            console.error("Source amount is invalid");
+            console.error("handleGetAmountInCNY : Amount in other currency is invalid");
         }
     }
 
-    const handleGetAmountInTargetCurrency = async () => {
-        if ((isValidNumber(topUpInputs.targetAmount)) && canSubmit) {
-            await getAmountInTargetCurrency({
+    const handleGetAmountInOtherCurrency = async () => {
+        if ((isValidNumber(topUpInputs.amountInCNY))) {
+            await getAmountInOtherCurrency({
                 countryName: selectedCountryName,
-                targetAmount: topUpInputs.targetAmount,
+                amountInCNY: topUpInputs.amountInCNY,
             }).unwrap();
             setCanSubmit(false);
-            console.log('Data returned is : ', amountInCNYData)
         } else {
-            console.error("Target amount is invalid");
+            console.error("handleGetAmountInOtherCurrency : Amount in CNY is invalid");
         }
     }
 
@@ -165,8 +152,8 @@ const TopUp = () => {
             topUpData.append("receiverAccountType", receiverAccount?.receiverAccountType);
             topUpData.append("receiverAccountIdentifier", receiverAccount?.receiverAccountIdentifier);
             topUpData.append("receiverAccountId", receiverAccount?.receiverAccountId);
-            topUpData.append("currency", topUpInputs?.targetCurrencyCode);
-            topUpData.append("amountInCNY", topUpInputs?.targetAmount);
+            topUpData.append("currency", topUpInputs?.cnyCurrencyCode);
+            topUpData.append("amountInCNY", topUpInputs?.amountInCNY);
             topUpData.append("proofPicture", topUpInputs.proofPicture?.file || new Blob());
 
             // Set loading to true when the request starts
@@ -260,148 +247,100 @@ const TopUp = () => {
                                             <Divider sx={{mb: 2}}/>
 
                                             <Grid container spacing={2} alignItems="center">
-                                                {/* AmountInput for source amount */}
+                                                {/* AmountInput for amount in other currency */}
                                                 <Grid item xs={12} sm={8}>
-                                                    {loadingAmountInTargetCurrency ? (
+                                                    {loadingAmountInOtherCurrency ? (
                                                         <CircularProgress size={15}/>
                                                     ) : (
                                                         <AmountInput
-                                                            ref={refs.sourceAmountRef}
+                                                            ref={refs.amountInOtherCurrencyRef}
                                                             changeHandler={(e) => {
                                                                 setCanSubmit(true);
                                                                 if (e.target.value === 0) {
                                                                     dispatch(setObjectItem({
                                                                         key: "topUpInputs",
-                                                                        innerKey: "targetAmount",
+                                                                        innerKey: "amountInCNY",
                                                                         value: 0
                                                                     }));
                                                                 }
-                                                                dispatch(handleValidation({
-                                                                    objectName: "topUp",
-                                                                    eventValue: e.target.value,
-                                                                    inputName: "sourceAmount",
-                                                                    regexPattern: "AMOUNT_REGEX"
-                                                                }));
                                                                 return dispatch(handleValidation({
                                                                     objectName: "topUp",
-                                                                    eventValue: topUpInputs.targetAmount,
-                                                                    inputName: "targetAmount",
+                                                                    eventValue: e.target.value,
+                                                                    inputName: "amountInOtherCurrency",
                                                                     regexPattern: "AMOUNT_REGEX"
                                                                 }));
                                                             }}
-                                                            validAmount={validTopUp.validSourceAmount}
-                                                            value={topUpInputs.sourceAmount}
+                                                            validAmount={validTopUp.validAmountInOtherCurrency}
+                                                            value={topUpInputs.amountInOtherCurrency}
                                                             label={countryOfDeposit?.currency?.currencyCode
                                                                 ? `Amount in ${countryOfDeposit?.currency?.currencyCode}`
                                                                 : "Amount"}
-                                                            isFocused={topUpFocus.sourceAmountFocus}
+                                                            isFocused={topUpFocus.amountInOtherCurrencyFocus}
                                                             handleFocus={() =>
                                                                 dispatch(handleFocus({
                                                                     objectName: "topUp",
-                                                                    inputName: "sourceAmount"
+                                                                    inputName: "amountInOtherCurrency"
                                                                 }))
                                                             }
+                                                            handleGetAmountInCNY={handleGetAmountInCNY}
                                                             handleBlur={() =>
                                                                 dispatch(handleBlur({
                                                                     objectName: "topUp",
-                                                                    inputName: "sourceAmount",
+                                                                    inputName: "amountInOtherCurrency",
                                                                     regexPattern: "AMOUNT_REGEX"
                                                                 }))
                                                             }
                                                         />
                                                     )}
-                                                </Grid>
-                                                <Grid item xs={12} sm={4}>
-                                                    <Button
-                                                        variant="contained"
-                                                        fullWidth
-                                                        onClick={handleGetAmountInCNY}
-                                                        sx={{
-                                                            minWidth: 'fit-content',       // Make the button as narrow as possible
-                                                            width: 'fit-content',
-                                                            backgroundColor: 'rgba(160,160,7, 0.8)',    // Orange color for the button
-                                                            textTransform: 'none',         // Prevent text from being capitalized
-                                                            '&:hover': {
-                                                                backgroundColor: 'rgba(255,140,0,0.6)',  // Darker orange on hover
-                                                            },
-                                                        }}
-                                                    >
-                                                        Get amount in CNY
-                                                    </Button>
                                                 </Grid>
                                             </Grid>
 
                                             <Divider sx={{mb: 2}}/>
 
                                             <Grid container spacing={2} alignItems="center">
-                                                {/* AmountInput for target amount */}
+                                                {/* AmountInput for amount in other currency */}
                                                 <Grid item xs={12} sm={8}>
                                                     {loadingAmountInCNY ? (
                                                         <CircularProgress size={15}/>
                                                     ) : (
                                                         <AmountInput
-                                                            ref={refs.targetAmountRef}
+                                                            ref={refs.amountInCNYRef}
                                                             changeHandler={(e) => {
                                                                 setCanSubmit(true);
                                                                 if (e.target.value === 0) {
                                                                     dispatch(setObjectItem({
                                                                         key: "topUpInputs",
-                                                                        innerKey: "sourceAmount",
+                                                                        innerKey: "amountInOtherCurrency",
                                                                         value: 0
                                                                     }));
                                                                 }
-
-                                                                dispatch(handleValidation({
-                                                                    objectName: "topUp",
-                                                                    eventValue: e.target.value,
-                                                                    inputName: "targetAmount",
-                                                                    regexPattern: "AMOUNT_REGEX"
-                                                                }));
                                                                 return dispatch(handleValidation({
                                                                     objectName: "topUp",
-                                                                    eventValue: topUpInputs.sourceAmount,
-                                                                    inputName: "sourceAmount",
+                                                                    eventValue: e.target.value,
+                                                                    inputName: "amountInCNY",
                                                                     regexPattern: "AMOUNT_REGEX"
                                                                 }));
                                                             }}
-                                                            validAmount={validTopUp.validTargetAmount}
-                                                            value={topUpInputs.targetAmount}
+                                                            validAmount={validTopUp.validAmountInCNY}
+                                                            value={topUpInputs.amountInCNY}
                                                             label="Amount in CNY"
-                                                            isFocused={topUpFocus.targetAmountFocus}
+                                                            isFocused={topUpFocus.amountInCNYFocus}
+                                                            handleGetAmountInOtherCurrency={handleGetAmountInOtherCurrency}
                                                             handleFocus={() =>
                                                                 dispatch(handleFocus({
                                                                     objectName: "topUp",
-                                                                    inputName: "targetAmount"
+                                                                    inputName: "amountInCNY"
                                                                 }))
                                                             }
                                                             handleBlur={() =>
                                                                 dispatch(handleBlur({
                                                                     objectName: "topUp",
-                                                                    inputName: "targetAmount",
+                                                                    inputName: "amountInCNY",
                                                                     regexPattern: "AMOUNT_REGEX"
                                                                 }))
                                                             }
                                                         />
                                                     )}
-                                                </Grid>
-                                                <Grid item xs={12} sm={4}>
-                                                    <Button
-                                                        variant="contained"
-                                                        fullWidth
-                                                        onClick={handleGetAmountInTargetCurrency}
-                                                        sx={{
-                                                            minWidth: 'fit-content',       // Make the button as narrow as possible
-                                                            width: 'fit-content',
-                                                            backgroundColor: 'rgba(8,161,41,0.8)',    // Orange color for the button
-                                                            textTransform: 'none',         // Prevent text from being capitalized
-                                                            '&:hover': {
-                                                                backgroundColor: 'rgba(255,140,0,0.6)',  // Darker orange on hover
-                                                            },
-                                                        }}
-                                                    >
-                                                        Get amount
-                                                        in {countryOfDeposit?.currency?.currencyCode || "source currency"}
-                                                    </Button>
                                                 </Grid>
                                             </Grid>
 
@@ -419,7 +358,7 @@ const TopUp = () => {
                                         </>
 
                                     }
-                                    {(validTopUp.validSourceAmount || validTopUp.validTargetAmount) &&
+                                    {(validTopUp.validAmountInCNY || validTopUp.validAmountInOtherCurrency) &&
                                         validTopUp.validTopUpMethod &&
                                         validTopUp.validCountryOfTopUpId &&
                                         validTopUp.validProofPicture &&

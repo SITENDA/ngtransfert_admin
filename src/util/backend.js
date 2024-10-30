@@ -128,6 +128,6 @@ export const backend = {
         topUpAccountBalanceUrl                      : `${exchangesBaseUrl}/topUpAccountBalance`,
         getRateForCurrencyAndCountryUrl             : `${exchangesBaseUrl}/getRateForCurrencyAndCountry`,
         getAmountInCNYUrl                           : `${exchangesBaseUrl}/getAmountInCNY`,
-        getAmountInTargetCurrencyUrl                           : `${exchangesBaseUrl}/getAmountInTargetCurrency`
+        getAmountInOtherCurrencyUrl                 : `${exchangesBaseUrl}/getAmountInOtherCurrency`
     }
 };

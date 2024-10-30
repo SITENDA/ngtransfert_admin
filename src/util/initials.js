@@ -1,17 +1,17 @@
 import ReceiverAccountIdentifier from "./ReceiverAccountIdentifier";
 
-export const initialUser       = '';
-export const initialToken      = '';
-export const persistItem = localStorage.getItem("persist");
-export const initialPersist    = typeof(persistItem) === "string" ? JSON.parse(persistItem) : false;
-export const initialTitle      = 'NG Transfert';
-export const initialSidebarCollapsed = window.innerWidth < 630;
-export const initialNavbarShown = false;
-export const initialIsDarkTheme = true;
-export const darkColor = 'rgb(0, 21, 41)';
-export const lightColor = 'rgb(255, 255, 255)';
-export const initialIntroPage = "LandingPage"
-export const allowedRoles = ["ADMIN"];
+export const initialUser                = '';
+export const initialToken               = '';
+export const persistItem                = localStorage.getItem("persist");
+export const initialPersist       = typeof(persistItem) === "string" ? JSON.parse(persistItem) : false;
+export const initialTitle               = 'NG Transfert';
+export const initialSidebarCollapsed   = window.innerWidth < 630;
+export const initialNavbarShown        = false;
+export const initialIsDarkTheme        = true;
+export const darkColor                   = 'rgb(0, 21, 41)';
+export const lightColor                  = 'rgb(255, 255, 255)';
+export const initialIntroPage            = "LandingPage"
+export const allowedRoles               = ["ADMIN"];
 
 export const initialRegistrationInputs = {
     fullName            : '',
@@ -29,15 +29,16 @@ export const initialLoginInputs = {
 };
 
 export const initialTopUpInputs = {
-    topUpMethod         : '',
-    currencyId          : null,
-    sourceAmount        : null,
-    targetAmount        : null,
-    sourceCurrencyCode  : null,
-    targetCurrencyCode  : "CNY",
-    countryOfTopUpId    : '',
-    proofPicture        : {file: null, url: null},
+    topUpMethod             : '',
+    currencyId              : null,
+    amountInOtherCurrency   : null,
+    amountInCNY             : null,
+    otherCurrencyCode       : null,
+    cnyCurrencyCode         : "CNY",
+    countryOfTopUpId        : '',
+    proofPicture            : {file: null, url: null},
 }
+
 
 export const initialReceiverAccountInputs = {
     receiverAccountName         : '',
@@ -127,28 +128,28 @@ export const initialValidReceiverAccount = {
 }
 
 export const initialValidWechatAccount = {
-    validWechatAccountId: false,
-    validWechatAccountName : false,
-    validEmail: false,
-    validPhoneNumber: false,
-    validClientId: false,
-    validWechatAccountIdentifier: false,
-    validWechatQrCodeImage: false
+    validWechatAccountId            : false,
+    validWechatAccountName          : false,
+    validEmail                      : false,
+    validPhoneNumber                : false,
+    validClientId                   : false,
+    validWechatAccountIdentifier    : false,
+    validWechatQrCodeImage          : false
 }
 
 export const initialValidTopUp = {
-    validTopUpMethod        : false,
-    validCurrencyId         : false,
-    validSourceAmount       : false,
-    validTargetAmount       : false,
-    validCountryOfTopUpId   : false,
-    validSourceCurrencyCode : false,
-    validTargetCurrencyCode : false,
-    validProofPicture       : false,
+    validTopUpMethod            : false,
+    validCurrencyId             : false,
+    validAmountInOtherCurrency  : false,
+    validAmountInCNY            : false,
+    validCountryOfTopUpId       : false,
+    validOtherCurrencyCode      : false,
+    validCnyCurrencyCode        : false,
+    validProofPicture           : false,
 }
 
 export const initialEventProperties = {
-    errorMessage              : '',
+    errorMessage        : '',
     isLoading           : false,
     isError             : false,
     isSuccess           : false,
@@ -158,7 +159,7 @@ export const initialEventProperties = {
 export const initialLoginSpecifics = {
     identifier          : 'email',
     showBeginnerPrompt  : false,
-    showPhoneNumber           : false
+    showPhoneNumber     : false
 }
 
 export const initialReceiverAccountSpecifics = {
@@ -172,9 +173,9 @@ export const initialReceiverAccountSpecifics = {
 export const initialWechatAccountSpecifics = {
     identifier          : 'qrCodeImage',
     showBeginnerPrompt  : false,
-    showPhoneNumber           : false,
+    showPhoneNumber     : false,
     showEmail           : false,
-    showQrCodeImage : false
+    showQrCodeImage     : false
 }
 
 export const initialValidRegistration = {
@@ -204,11 +205,11 @@ export const initialBankAccountFocus = {
 export const initialTopUpFocus = {
     topUpMethodFocus        : false,
     currencyIdFocus         : null,
-    sourceAmountFocus       : false,
-    targetAmountFocus       : false,
+    amountInOtherCurrencyFocus       : false,
+    amountInCNYFocus        : false,
     countryOfTopUpIdFocus   : false,
-    sourceCurrencyCodeFocus : false,
-    targetCurrencyCodeFocus : false,
+    otherCurrencyCodeFocus  : false,
+    cnyCurrencyCodeFocus    : false,
     proofPictureFocus       : false,
 }
 

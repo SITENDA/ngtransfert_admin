@@ -74,18 +74,18 @@ export const topUpApiSlice = apiSlice.injectEndpoints({
         }),
 
         getAmountInCNY: builder.mutation({
-            query: ({countryName, sourceAmount}) => {
+            query: ({countryName, amountInOtherCurrency}) => {
                 if (!isValidString(countryName)) {
                     return {error: {status: 400, message: 'Invalid country name'}};
                 }
-                if (!isValidNumber(sourceAmount)) {
-                    return {error: {status: 400, message: 'Invalid source amount'}};
+                if (!isValidNumber(amountInOtherCurrency)) {
+                    return {error: {status: 400, message: 'Invalid amount in other currency'}};
                 }
 
                 // Create FormData object
                 const formData = new FormData();
                 formData.append('countryName', countryName);
-                formData.append('sourceAmount', sourceAmount);
+                formData.append('amountInOtherCurrency', amountInOtherCurrency);
 
                 // Return the request as a POST request
                 return {
@@ -101,30 +101,29 @@ export const topUpApiSlice = apiSlice.injectEndpoints({
             },
         }),
 
-        getAmountInTargetCurrency: builder.mutation({
-            query: ({countryName, targetAmount}) => {
+        getAmountInOtherCurrency: builder.mutation({
+            query: ({countryName, amountInCNY}) => {
                 if (!isValidString(countryName)) {
-                    return {error: {status: 400, message: 'Invalid target country name'}};
+                    return {error: {status: 400, message: 'Invalid country name'}};
                 }
-                if (!isValidNumber(targetAmount)) {
-                    return {error: {status: 400, message: 'Invalid target amount'}};
+                if (!isValidNumber(amountInCNY)) {
+                    return {error: {status: 400, message: 'Invalid amount in CNY'}};
                 }
 
                 // Create FormData object
                 const formData = new FormData();
                 formData.append('countryName', countryName);
-                formData.append('targetAmount', targetAmount);
+                formData.append('amountInCNY', amountInCNY);
 
                 // Return the request as a POST request
                 return {
-                    url: backend.exchanges.getAmountInTargetCurrencyUrl,
+                    url: backend.exchanges.getAmountInOtherCurrencyUrl,
                     method: 'POST',
                     body: formData,  // Submit FormData
                 };
             },
 
             transformResponse: (responseData) => {
-                console.log("Response data is : ", responseData)
                 return responseData?.data || null;
             },
         }),
@@ -132,7 +131,6 @@ export const topUpApiSlice = apiSlice.injectEndpoints({
 
         topUpAccountBalance: builder.mutation({
             query: (topUpData) => {
-                console.log("Top up data is : ", topUpData)
                 return {
                     url: backend.exchanges.topUpAccountBalanceUrl,
                     method: 'POST',
@@ -152,5 +150,5 @@ export const {
     useTopUpAccountBalanceMutation,
     useGetRateForCurrencyAndCountryQuery,
     useGetAmountInCNYMutation,
-    useGetAmountInTargetCurrencyMutation,
+    useGetAmountInOtherCurrencyMutation,
 } = topUpApiSlice;
