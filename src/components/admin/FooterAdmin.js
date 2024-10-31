@@ -2,7 +2,6 @@ import React from 'react'
 import { Layout } from 'antd'
 import { useSelector } from 'react-redux';
 import { selectDarkColor, selectIsDarkTheme, selectLightColor } from '../../features/auth/authSlice'
-import { MailOutlined, PhoneOutlined } from '@ant-design/icons';
 
 const { Footer } = Layout;
 

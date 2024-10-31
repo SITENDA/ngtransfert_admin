@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from "react-redux";
-import { selectCurrentUser, setItem, selectIsDarkTheme } from "../../features/auth/authSlice";
-import { useNavigate } from "react-router-dom";
-import { useGetAllWechatAccountsQuery } from '../../features/wechatAccounts/wechatAccountsSlice';
-import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale, Title } from 'chart.js';
+import React, {useEffect, useState} from 'react';
+import {useSelector, useDispatch} from "react-redux";
+import {selectCurrentUser, setItem, selectIsDarkTheme} from "../../features/auth/authSlice";
+import {useNavigate} from "react-router-dom";
+import {Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale, Title} from 'chart.js';
 import ErrorBoundary from '../ErrorBoundary';
-import { usersApiSlice } from '../../features/users/usersSlice';
+import {usersApiSlice} from '../../features/users/usersSlice';
 import {
     Box,
     Card,
@@ -13,9 +12,8 @@ import {
     Grid,
     Typography,
     IconButton,
-    Button,
     createTheme,
-    ThemeProvider
+    ThemeProvider, CircularProgress, Divider
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -23,15 +21,82 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import CommentIcon from '@mui/icons-material/Comment';
 import MainPageWrapper from "../MainPageWrapper";
-import { darkColor, lightColor } from '../../util/initials';
+import {darkColor, lightColor} from '../../util/initials';
+import {useGetAllReceiverAccountsQuery} from "../../features/receiverAccounts/receiverAccountsSlice";
+import {
+    useGetAllAdminPercentagesQuery,
+    useGetExchangeRatesBySourceCurrencyCNYQuery
+} from "../../features/topUp/topUpSlice";
+import {useTendaTheme} from "../../hooks/useTendaTheme";
+import ImageDisplay from "../form-controls/ImageDisplay";
 
 const Dashboard = () => {
     const dispatch = useDispatch();
     const user = useSelector(selectCurrentUser);
     const isDarkTheme = useSelector(selectIsDarkTheme);
     const navigate = useNavigate();
-    const [loanRequestsData, setLoanRequestsData] = useState([]);
-    const { data, isLoading } = useGetAllWechatAccountsQuery();
+    const {data, isLoading} = useGetAllReceiverAccountsQuery();
+    const {
+        data: adminPercentagesData,
+        isLoading: loadingAdminPercentages,
+        isSuccess: loadedAdminPercentages
+    } = useGetAllAdminPercentagesQuery();
+    const {
+        data: exchangeRatesData,
+        isLoading: loadingExchangeRates,
+        isSuccess: loadedExchangeRates
+    } = useGetExchangeRatesBySourceCurrencyCNYQuery();
+
+    const displayRates = exchangeRatesData?.map(exchangeRate => {
+        if (exchangeRate?.targetCurrency?.currencyName === exchangeRate?.sourceCurrency?.currencyName)
+            return;
+        return (
+            <Grid item xs={12} sm={6} md={3}>
+                <Card sx={{borderLeft: '5px solid #4e73df', boxShadow: 3}}>
+                    <CardContent>
+                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                            <Box>
+                                <Typography variant="subtitle2" color="primary" gutterBottom>
+                                    {`${exchangeRate?.targetCurrency?.currencyName} (${exchangeRate?.targetCurrency?.currencyCode})`}
+                                </Typography>
+                                <Typography variant="h5" fontWeight="bold">
+                                    {`${exchangeRate?.rateValue} ${exchangeRate?.sourceCurrency?.currencySymbol}`}
+                                </Typography>
+                            </Box>
+                            <CalendarTodayIcon fontSize="large" sx={{color: 'gray'}}/>
+                        </Box>
+                    </CardContent>
+                </Card>
+            </Grid>)
+    })
+
+    const displayAdminPercentages = adminPercentagesData?.map(adminPercentage => {
+        return (
+            <Grid item xs={12} sm={6} md={3}>
+                <Card sx={{borderLeft: '5px solid #4e73df', boxShadow: 3}}>
+                    <CardContent>
+                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                            <Box>
+                                <Typography variant="subtitle2" color="primary" gutterBottom>
+                                    {`${adminPercentage?.country?.countryName} (${adminPercentage?.country?.currency?.currencySymbol})`}
+                                </Typography>
+                                <Typography variant="h5" fontWeight="bold">
+                                    {`${adminPercentage?.percentage} %`}
+                                </Typography>
+                            </Box>
+                            <Grid item xs={2}>
+                                <ImageDisplay
+                                    imageUrl={adminPercentage?.country?.countryFlagUrl}
+                                    title={adminPercentage?.country?.countryName}/>
+                            </Grid>
+                        </Box>
+                    </CardContent>
+                </Card>
+            </Grid>)
+    })
+
+    const theme = useTendaTheme();
+
     const chartData = {
         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
         datasets: [{
@@ -144,12 +209,21 @@ const Dashboard = () => {
     }
 
     useEffect(() => {
-        dispatch(setItem({ key: 'title', value: 'Welcome CEO!' }));
+        dispatch(setItem({key: 'title', value: 'Welcome CEO!'}));
         Chart.register(LineController, CategoryScale, LineElement, PointElement, LinearScale, Title);
         Chart.defaults.font.family = 'Nunito, -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
         Chart.defaults.font.color = '#858796';
-        dispatch(usersApiSlice.endpoints.getAllUsers.initiate());
+        dispatch(usersApiSlice.endpoints.getAllUsers.initiate()
+        );
     }, [dispatch]);
+
+    useEffect(() => {
+        console.log("Admin Percentages data: ", adminPercentagesData)
+    }, [adminPercentagesData, loadedAdminPercentages]);
+
+    useEffect(() => {
+        console.log("Exchange rates data: ", exchangeRatesData)
+    }, [exchangeRatesData, loadedExchangeRates]);
 
     let chart;
 
@@ -179,18 +253,11 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (!isLoading && data && data.entities) {
-            const loanRequestsArray = Object.values(data.entities);
-            setLoanRequestsData(loanRequestsArray);
+            //const loanRequestsArray = Object.values(data.entities);
+            //setLoanRequestsData(loanRequestsArray);
         }
     }, [data, isLoading]);
 
-    const handleRequestLoanClick = () => {
-        navigate('../../requestloan', { state: { user } });
-    };
-
-    const handleEnterPaymentClick = () => {
-        navigate('../../newPayment', { state: { user } });
-    };
 
     if (isLoading) {
         return (
@@ -202,129 +269,117 @@ const Dashboard = () => {
         );
     }
 
-    const numOfLoanRequests = loanRequestsData.length;
-    const numOfCurrentLoans = 0;
-    const numOfNewlySettledLoans = 0;
-    const numOfInvestments = 0;
-    const recentPayments = 0;
-
-    const theme = createTheme({
-        palette: {
-            mode: isDarkTheme ? 'dark' : 'light',
-            primary: {
-                main: '#4e73df',
-            },
-            secondary: {
-                main: '#36b9cc',
-            },
-            background: {
-                default: isDarkTheme ? darkColor : lightColor,
-                paper: isDarkTheme ? darkColor : lightColor,
-            },
-            text: {
-                primary: isDarkTheme ? lightColor : darkColor,
-            },
-        },
-    });
-
     return (
         <ThemeProvider theme={theme}>
             <ErrorBoundary fallback="Error in dashboard">
                 <MainPageWrapper>
-                    <Box sx={{ flexGrow: 1 }}>
+
+                    <Box sx={{flexGrow: 1}}>
+                        <Typography variant="h6" sx={{color: isDarkTheme ? lightColor : darkColor}} gutterBottom>Exchange
+                            Rates (with CNY)</Typography>
+                        <Divider sx={{mb: 2}}/>
                         <Grid container spacing={3}>
-                            <Grid item xs={12} sm={6} md={3}>
-                                <Card sx={{ borderLeft: '5px solid #4e73df', boxShadow: 3 }}>
-                                    <CardContent>
-                                        <Box display="flex" justifyContent="space-between" alignItems="center">
-                                            <Box>
-                                                <Typography variant="subtitle2" color="primary" gutterBottom>
-                                                    Earnings (Monthly)
-                                                </Typography>
-                                                <Typography variant="h5" fontWeight="bold">
-                                                    $40,000
-                                                </Typography>
-                                            </Box>
-                                            <CalendarTodayIcon fontSize="large" sx={{ color: 'gray' }} />
-                                        </Box>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={3}>
-                                <Card sx={{ borderLeft: '5px solid #1cc88a', boxShadow: 3 }}>
-                                    <CardContent>
-                                        <Box display="flex" justifyContent="space-between" alignItems="center">
-                                            <Box>
-                                                <Typography variant="subtitle2" color="primary" gutterBottom>
-                                                    Earnings (Annual)
-                                                </Typography>
-                                                <Typography variant="h5" fontWeight="bold">
-                                                    $215,000
-                                                </Typography>
-                                            </Box>
-                                            <AttachMoneyIcon fontSize="large" sx={{ color: 'gray' }} />
-                                        </Box>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={3}>
-                                <Card sx={{ borderLeft: '5px solid #36b9cc', boxShadow: 3 }}>
-                                    <CardContent>
-                                        <Box display="flex" justifyContent="space-between" alignItems="center">
-                                            <Box>
-                                                <Typography variant="subtitle2" color="primary" gutterBottom>
-                                                    Invested
-                                                </Typography>
-                                                <Box display="flex" alignItems="center">
-                                                    <Typography variant="h5" fontWeight="bold" mr={1}>
-                                                        50%
-                                                    </Typography>
-                                                    <Box sx={{ flexGrow: 1 }}>
-                                                        <Box height="10px" width="100%" borderRadius="5px" bgcolor="#e0e0e0">
-                                                            <Box
-                                                                height="100%"
-                                                                width="50%"
-                                                                borderRadius="5px"
-                                                                bgcolor="#36b9cc"
-                                                            />
-                                                        </Box>
-                                                    </Box>
-                                                </Box>
-                                            </Box>
-                                            <AssessmentIcon fontSize="large" sx={{ color: 'gray' }} />
-                                        </Box>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={3}>
-                                <Card sx={{ borderLeft: '5px solid #f6c23e', boxShadow: 3 }}>
-                                    <CardContent>
-                                        <Box display="flex" justifyContent="space-between" alignItems="center">
-                                            <Box>
-                                                <Typography variant="subtitle2" color="primary" gutterBottom>
-                                                    Pending Requests
-                                                </Typography>
-                                                <Typography variant="h5" fontWeight="bold">
-                                                    18
-                                                </Typography>
-                                            </Box>
-                                            <CommentIcon fontSize="large" sx={{ color: 'gray' }} />
-                                        </Box>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
+                            {loadingExchangeRates ? <CircularProgress size={15}/> : displayRates}
                         </Grid>
+                        <Divider sx={{mb: 2}}/>
+                        <Typography variant="h6" sx={{color: isDarkTheme ? lightColor : darkColor}} gutterBottom>Admin
+                            Percentages</Typography>
+                        <Grid container spacing={3}>
+                            {loadingAdminPercentages ? <CircularProgress size={15}/> : displayAdminPercentages}
+                        </Grid>
+
+                        {/*<Grid item xs={12} sm={6} md={3}>*/}
+                        {/*    <Card sx={{borderLeft: '5px solid #4e73df', boxShadow: 3}}>*/}
+                        {/*        <CardContent>*/}
+                        {/*            <Box display="flex" justifyContent="space-between" alignItems="center">*/}
+                        {/*                <Box>*/}
+                        {/*                    <Typography variant="subtitle2" color="primary" gutterBottom>*/}
+                        {/*                        Earnings (Monthly)*/}
+                        {/*                    </Typography>*/}
+                        {/*                    <Typography variant="h5" fontWeight="bold">*/}
+                        {/*                        $40,000*/}
+                        {/*                    </Typography>*/}
+                        {/*                </Box>*/}
+                        {/*                <CalendarTodayIcon fontSize="large" sx={{color: 'gray'}}/>*/}
+                        {/*            </Box>*/}
+                        {/*        </CardContent>*/}
+                        {/*    </Card>*/}
+                        {/*</Grid>*/}
+                        {/*<Grid item xs={12} sm={6} md={3}>*/}
+                        {/*    <Card sx={{borderLeft: '5px solid #1cc88a', boxShadow: 3}}>*/}
+                        {/*        <CardContent>*/}
+                        {/*            <Box display="flex" justifyContent="space-between" alignItems="center">*/}
+                        {/*                <Box>*/}
+                        {/*                    <Typography variant="subtitle2" color="primary" gutterBottom>*/}
+                        {/*                        Earnings (Annual)*/}
+                        {/*                    </Typography>*/}
+                        {/*                    <Typography variant="h5" fontWeight="bold">*/}
+                        {/*                        $215,000*/}
+                        {/*                    </Typography>*/}
+                        {/*                </Box>*/}
+                        {/*                <AttachMoneyIcon fontSize="large" sx={{color: 'gray'}}/>*/}
+                        {/*            </Box>*/}
+                        {/*        </CardContent>*/}
+                        {/*    </Card>*/}
+                        {/*</Grid>*/}
+                        {/*<Grid item xs={12} sm={6} md={3}>*/}
+                        {/*    <Card sx={{borderLeft: '5px solid #36b9cc', boxShadow: 3}}>*/}
+                        {/*        <CardContent>*/}
+                        {/*            <Box display="flex" justifyContent="space-between" alignItems="center">*/}
+                        {/*                <Box>*/}
+                        {/*                    <Typography variant="subtitle2" color="primary" gutterBottom>*/}
+                        {/*                        Invested*/}
+                        {/*                    </Typography>*/}
+                        {/*                    <Box display="flex" alignItems="center">*/}
+                        {/*                        <Typography variant="h5" fontWeight="bold" mr={1}>*/}
+                        {/*                            50%*/}
+                        {/*                        </Typography>*/}
+                        {/*                        <Box sx={{flexGrow: 1}}>*/}
+                        {/*                            <Box height="10px" width="100%" borderRadius="5px"*/}
+                        {/*                                 bgcolor="#e0e0e0">*/}
+                        {/*                                <Box*/}
+                        {/*                                    height="100%"*/}
+                        {/*                                    width="50%"*/}
+                        {/*                                    borderRadius="5px"*/}
+                        {/*                                    bgcolor="#36b9cc"*/}
+                        {/*                                />*/}
+                        {/*                            </Box>*/}
+                        {/*                        </Box>*/}
+                        {/*                    </Box>*/}
+                        {/*                </Box>*/}
+                        {/*                <AssessmentIcon fontSize="large" sx={{color: 'gray'}}/>*/}
+                        {/*            </Box>*/}
+                        {/*        </CardContent>*/}
+                        {/*    </Card>*/}
+                        {/*</Grid>*/}
+                        {/*<Grid item xs={12} sm={6} md={3}>*/}
+                        {/*    <Card sx={{borderLeft: '5px solid #f6c23e', boxShadow: 3}}>*/}
+                        {/*        <CardContent>*/}
+                        {/*            <Box display="flex" justifyContent="space-between" alignItems="center">*/}
+                        {/*                <Box>*/}
+                        {/*                    <Typography variant="subtitle2" color="primary" gutterBottom>*/}
+                        {/*                        Pending Requests*/}
+                        {/*                    </Typography>*/}
+                        {/*                    <Typography variant="h5" fontWeight="bold">*/}
+                        {/*                        18*/}
+                        {/*                    </Typography>*/}
+                        {/*                </Box>*/}
+                        {/*                <CommentIcon fontSize="large" sx={{color: 'gray'}}/>*/}
+                        {/*            </Box>*/}
+                        {/*        </CardContent>*/}
+                        {/*    </Card>*/}
+                        {/*</Grid>*/}
 
                         <Grid container spacing={3} mt={3}>
                             <Grid item xs={12} md={8}>
-                                <Card sx={{ boxShadow: 3 }}>
+                                <Card sx={{boxShadow: 3}}>
                                     <CardContent>
                                         <Box display="flex" justifyContent="space-between" alignItems="center">
                                             <Typography variant="h6" fontWeight="bold" color="primary">
                                                 Earnings Overview
                                             </Typography>
                                             <IconButton>
-                                                <MoreVertIcon />
+                                                <MoreVertIcon/>
                                             </IconButton>
                                         </Box>
                                         <Box mt={3}>
@@ -334,14 +389,14 @@ const Dashboard = () => {
                                 </Card>
                             </Grid>
                             <Grid item xs={12} md={4}>
-                                <Card sx={{ boxShadow: 3 }}>
+                                <Card sx={{boxShadow: 3}}>
                                     <CardContent>
                                         <Box display="flex" justifyContent="space-between" alignItems="center">
                                             <Typography variant="h6" fontWeight="bold" color="primary">
                                                 Revenue Sources
                                             </Typography>
                                             <IconButton>
-                                                <MoreVertIcon />
+                                                <MoreVertIcon/>
                                             </IconButton>
                                         </Box>
                                         <Box mt={3}>

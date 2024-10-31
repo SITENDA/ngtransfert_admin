@@ -14,7 +14,7 @@ export const ResponseHandler = async (response, refs, dispatch) => {
         await dispatch(setObjectItem({
             key: 'eventProperties', innerKey: "errorMessage",
             value: <>A user with these credentials does not exist. <br/>
-                Please try again or register for a new account in case it is your first time at Novic.</>
+                Please try again or register for a new account in case it is your first time at NG Transfert.</>
         }));
         await dispatch(setObjectItem({key: 'eventProperties', innerKey: "isError", value: true}));
         refs.errorRef.current.focus();

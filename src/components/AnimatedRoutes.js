@@ -12,18 +12,10 @@ import ReceiverAccountsListAdmin from "../features/receiverAccounts/ReceiverAcco
 import ReceiverAccountDetails from "../features/receiverAccounts/ReceiverAccountDetails";
 import ReceiverAccountsByClientList from "../features/receiverAccounts/ReceiverAccountsByClientList";
 import AddReceiverAccount from "../features/receiverAccounts/AddReceiverAccount";
-import WechatAccountsByClientList from "../features/wechatAccounts/WechatAccountsByClientList";
-import WechatAccountsListAdmin from "../features/wechatAccounts/WechatAccountsListAdmin";
-import AddWechatAccount from "../features/wechatAccounts/AddWechatAccount";
-import WechatAccountDetails from "../features/wechatAccounts/WechatAccountDetails";
 import ApplyForTransfer from "../features/transferRequests/ApplyForTransfer";
 import TransferRequestsListAdmin from "../features/transferRequests/TransferRequestsListAdmin";
 import TransferRequestsByClientList from "../features/transferRequests/TransferRequestsByClientList";
 import TransferRequestDetails from "../features/transferRequests/TransferRequestDetails";
-import BankAccountsListAdmin from "../features/bankAccounts/BankAccountsListAdmin";
-import BankAccountsByClientList from "../features/bankAccounts/BankAccountsByClientList";
-import AddBankAccount from "../features/bankAccounts/AddBankAccount";
-import BankAccountDetails from "../features/bankAccounts/BankAccountDetails";
 import ApprovedTransfersListAdmin from "../features/approvedTransfers/ApprovedTransfersListAdmin";
 import SettledTransfersListAdmin from "../features/settledTransfers/SettledTransfersListAdmin";
 import TopUp from "../features/topUp/TopUp";
@@ -60,18 +52,6 @@ const AnimatedRoutes = () => {
                                    element={<ReceiverAccountsByClientList/>}/>
                             <Route path={adminPaths.receiverAccountDetailsPath} element={<ReceiverAccountDetails/>}/>
                             <Route path={adminPaths.addReceiverAccountPath} element={<AddReceiverAccount/>}/>
-                            {/*Wechat Accounts*/}
-                            <Route path={adminPaths.wechatAccountsPath} element={<WechatAccountsListAdmin/>}/>
-                            <Route path={adminPaths.wechatAccountsByClientPath}
-                                   element={<WechatAccountsByClientList/>}/>
-                            <Route path={adminPaths.wechatAccountDetailsPath} element={<WechatAccountDetails/>}/>
-                            <Route path={adminPaths.addWechatAccountPath} element={<AddWechatAccount/>}/>
-                            {/*Bank Accounts*/}
-                            <Route path={adminPaths.bankAccountsPath} element={<BankAccountsListAdmin/>}/>
-                            <Route path={adminPaths.bankAccountsByClientPath}
-                                   element={<BankAccountsByClientList/>}/>
-                            <Route path={adminPaths.bankAccountDetailsPath} element={<BankAccountDetails/>}/>
-                            <Route path={adminPaths.addBankAccountPath} element={<AddBankAccount/>}/>
                             {/*Transfer Requests*/}
                             <Route path={adminPaths.transferRequestsPath} element={<TransferRequestsListAdmin/>}/>
                             <Route path={adminPaths.transferRequestsByClientPath}

@@ -6,7 +6,19 @@ import TickAnimation from "../../components/TickAnimation";
 import MainPageWrapper from "../../components/MainPageWrapper";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import { handleBlur, handleFocus, handleImageChange, handleValidation, isValidNumber, selectIsDarkTheme, selectTopUpFocus, selectTopUpInputs, selectValidTopUp, setItem, setObjectItem } from "../auth/authSlice";
+import {
+    handleBlur,
+    handleFocus,
+    handleImageChange,
+    handleValidation,
+    isValidNumber,
+    selectIsDarkTheme,
+    selectTopUpFocus,
+    selectTopUpInputs,
+    selectValidTopUp,
+    setItem,
+    setObjectItem
+} from "../auth/authSlice";
 import AmountInput from "../../components/form-controls/AmountInput";
 import {useGetCountryByCountryNameQuery} from "../countries/countriesSlice";
 import {orderedTopUpMethods} from "../../util/TopUpMethod";
@@ -33,11 +45,11 @@ const TopUp = () => {
     const topUpFocus = useSelector(selectTopUpFocus)
 
     const refs = {
-        topUpMethodRef              : useRef(null),
-        currencyIdRef               : useRef(null),
-        amountInOtherCurrencyRef    : useRef(null),
-        amountInCNYRef              : useRef(null),
-        proofPictureRef             : useRef(null),
+        topUpMethodRef: useRef(null),
+        currencyIdRef: useRef(null),
+        amountInOtherCurrencyRef: useRef(null),
+        amountInCNYRef: useRef(null),
+        proofPictureRef: useRef(null),
     }
 
     const [tickAnimationVisible, setTickAnimationVisible] = useState(false);
@@ -345,6 +357,24 @@ const TopUp = () => {
                                             </Grid>
 
                                             <Divider sx={{mb: 2}}/>
+                                            {
+                                                countryData?.data?.country.countryName === "DR Congo" &&
+                                                <>
+                                                    <Grid container>
+                                                        <Grid item xs={4}>
+                                                            <Typography variant="body1" sx={{fontWeight: 'bold'}}>Transfer
+                                                                Fee
+                                                                :</Typography>
+                                                        </Grid>
+                                                        <Grid item xs={8}>
+                                                            <Typography variant="body1"
+                                                                        sx={{fontWeight: 'normal'}}>{selectedMethod.label}</Typography>
+                                                        </Grid>
+                                                    </Grid>
+                                                    <Divider sx={{mb: 2}}/>
+                                                </>
+                                            }
+
 
                                             <ImageInput
                                                 handleImageChange={(e) => dispatch(handleImageChange({
@@ -358,6 +388,7 @@ const TopUp = () => {
                                         </>
 
                                     }
+
                                     {(validTopUp.validAmountInCNY || validTopUp.validAmountInOtherCurrency) &&
                                         validTopUp.validTopUpMethod &&
                                         validTopUp.validCountryOfTopUpId &&

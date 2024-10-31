@@ -1,8 +1,8 @@
 // backend.js
-const env                       = "development";
+const env                       = "production";
 const BACKEND_HOST              = env === "production" ? "back.ngtransfert.org" : "localhost";
 const BACKEND_API_NAME          = env === "production" ? "ngtransfert_backend" : "";
-const VERSION                   = "v13";
+const VERSION                   = "v14";
 const PROTOCOL                  = env === "production" ? "https" : "http";
 
 const baseUrl                   = env === "production" ? `${PROTOCOL}://${BACKEND_HOST}/${BACKEND_API_NAME}/${VERSION}`
@@ -21,9 +21,6 @@ const checkAccountStatusUrl         = `${free_access}/checkVerificationStatus`;
 const resendVerificationUrl         = `${free_access}/resendVerificationLink`;
 const usersBaseUrl                  = `${bottomUrl}/users`;
 const rolesBaseUrl                  = `${bottomUrl}/roles`;
-const alipayAccountsBaseUrl         = `${bottomUrl}/alipayAccounts`;
-const wechatAccountsBaseUrl         = `${bottomUrl}/wechatAccounts`;
-const bankAccountsBaseUrl           = `${bottomUrl}/bankAccounts`;
 const banksBaseUrl                  = `${bottomUrl}/banks`;
 const transferRequestsBaseUrl       = `${bottomUrl}/transferRequests`;
 const countriesBaseUrl              = `${bottomUrl}/countries`;
@@ -32,6 +29,7 @@ const cashDepositAddressesBaseUrl   = `${bottomUrl}/cashDepositAddresses`;
 const bankDepositAddressesBaseUrl   = `${bottomUrl}/bankDepositAddresses`;
 const exchangesBaseUrl              = `${bottomUrl}/exchanges`;
 const receiverAccountsBaseUrl       = `${bottomUrl}/receiverAccounts`;
+const adminPercentagesBaseUrl       = `${bottomUrl}/adminPercentages`;
 
 export const backend = {
     baseUrl,
@@ -61,29 +59,6 @@ export const backend = {
         getAllByClientIdUrl     : `${receiverAccountsBaseUrl}/getReceiverAccountsForClient`,
         getByIdUrl              : `${receiverAccountsBaseUrl}/getReceiverAccountByReceiverAccountId`,
         deleteUrl               : `${receiverAccountsBaseUrl}/deleteReceiverAccount`,
-    },
-
-    alipayAccounts: {
-        createAccountUrl        : `${alipayAccountsBaseUrl}/createAlipayAccount`,
-        getAllUrl               : `${alipayAccountsBaseUrl}/getAllAlipayAccounts`,
-        getAllByClientIdUrl     : `${alipayAccountsBaseUrl}/getAlipayAccountsForClient`,
-        getByIdUrl              : `${alipayAccountsBaseUrl}/getAlipayAccountByAlipayAccountId`,
-        deleteUrl               : `${alipayAccountsBaseUrl}/deleteAlipayAccount`,
-    },
-    wechatAccounts: {
-        createAccountUrl        : `${wechatAccountsBaseUrl}/createWechatAccount`,
-        getAllUrl               : `${wechatAccountsBaseUrl}/getAllWechatAccounts`,
-        getAllByClientIdUrl     : `${wechatAccountsBaseUrl}/getWechatAccountsForClient`,
-        getByIdUrl              : `${wechatAccountsBaseUrl}/getWechatAccountByWechatAccountId`,
-        deleteUrl               : `${wechatAccountsBaseUrl}/deleteWechatAccount`,
-    },
-    bankAccounts: {
-        createAccountUrl        : `${bankAccountsBaseUrl}/createBankAccount`,
-        getAllUrl               : `${bankAccountsBaseUrl}/getAllBankAccounts`,
-        getAllByClientIdUrl     : `${bankAccountsBaseUrl}/getBankAccountsForClient`,
-        getByIdUrl              : `${bankAccountsBaseUrl}/getBankAccountByBankAccountId`,
-        deleteUrl               : `${bankAccountsBaseUrl}/deleteBankAccount`,
-
     },
     banks: {
         createBankUrl           : `${banksBaseUrl}/createBank`,
@@ -124,10 +99,15 @@ export const backend = {
         deleteUrl                                   : `${bankDepositAddressesBaseUrl}/deleteBankDepositAddress}`,
     },
     exchanges : {
+        getAllUrl                                   : `${exchangesBaseUrl}/getAllExchangeRates`,
+        findAllBySourceCurrencyCNYUrl               : `${exchangesBaseUrl}/findAllBySourceCurrencyCNY`,
         doCurrencyExchangeUrl                       : `${exchangesBaseUrl}/doCurrencyExchange`,
         topUpAccountBalanceUrl                      : `${exchangesBaseUrl}/topUpAccountBalance`,
         getRateForCurrencyAndCountryUrl             : `${exchangesBaseUrl}/getRateForCurrencyAndCountry`,
         getAmountInCNYUrl                           : `${exchangesBaseUrl}/getAmountInCNY`,
         getAmountInOtherCurrencyUrl                 : `${exchangesBaseUrl}/getAmountInOtherCurrency`
+    },
+    adminPercentages: {
+        getAllAdminPercentagesUrl                    : `${adminPercentagesBaseUrl}/getAllAdminPercentages`,
     }
 };

@@ -142,6 +142,35 @@ export const topUpApiSlice = apiSlice.injectEndpoints({
             },
         }),
 
+        getAllAdminPercentages: builder.query({
+            query: () => ({
+                url: backend.adminPercentages.getAllAdminPercentagesUrl,
+                method: 'GET',
+            }),
+            transformResponse: (responseData) => {
+                return responseData?.data?.adminPercentages || [];
+            }
+        }),
+        getAllExchangeRates: builder.query({
+            query: () => ({
+                url: backend.exchanges.getAllUrl,
+                method: 'GET',
+            }),
+            transformResponse: (responseData) => {
+                return responseData?.data?.exchangeRates || [];
+            }
+        }),
+
+        getExchangeRatesBySourceCurrencyCNY: builder.query({
+            query: () => ({
+                url: backend.exchanges.findAllBySourceCurrencyCNYUrl,
+                method: 'GET',
+            }),
+            transformResponse: (responseData) => {
+                return responseData?.data?.exchangeRates || [];
+            }
+        }),
+
     }),
 });
 
@@ -151,4 +180,7 @@ export const {
     useGetRateForCurrencyAndCountryQuery,
     useGetAmountInCNYMutation,
     useGetAmountInOtherCurrencyMutation,
+    useGetAllAdminPercentagesQuery,
+    useGetAllExchangeRatesQuery,
+    useGetExchangeRatesBySourceCurrencyCNYQuery,
 } = topUpApiSlice;
