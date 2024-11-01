@@ -12,16 +12,19 @@ export default ReceiverAccountType;
 
 export const orderedReceiverAccountTypes = [
     {
+        key: 1,
         label: "WeChat",
         value: ReceiverAccountType.WECHAT_ACCOUNT,
         icon: <FontAwesomeIcon icon={faWeixin} style={{ color: '#07C160' }} />  // Green color for WeChat
     },
     {
+        key: 2,
         label: "Alipay",
         value: ReceiverAccountType.ALIPAY_ACCOUNT,
         icon: <FontAwesomeIcon icon={faAlipay} style={{ color: '#1677FF' }} />  // Alipay Blue
     },
     {
+        key: 3,
         label: "Bank",
         value: ReceiverAccountType.BANK_ACCOUNT,
         icon: <FontAwesomeIcon icon={faUniversity} style={{ color: '#FF4500' }} />  // Red-orange for Bank

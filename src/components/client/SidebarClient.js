@@ -2,7 +2,7 @@ import { selectSidebarCollapsed, selectIsDarkTheme } from '../../features/auth/a
 import { useSelector } from 'react-redux';
 import { Layout } from 'antd';
 import Logo from '../form-controls/Logo';
-import MenuListClient from './MenuListClient';
+import MenuListAdmin from "../admin/MenuListAdmin";
 
 const { Sider } = Layout;
 
@@ -25,7 +25,7 @@ const SidebarClient = () => {
                 <div className="logo-container">
                     <Logo />
                 </div>
-                <MenuListClient isDarkTheme={isDarkTheme} />
+                <MenuListAdmin/>
             </Sider>
             </>
     );

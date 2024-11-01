@@ -73,7 +73,7 @@ const ReceiverAccountsListAdmin = () => {
 
     // Dropdown options, including "All" for showing all accounts
     const icons = orderedReceiverAccountTypes.map((accountType) => (
-        <span style={{marginLeft: '20px'}}> {accountType.icon} </span>))
+        <span style={{marginLeft: '20px'}} key={accountType.key}> {accountType.icon} </span>))
     const accountTypeOptions = [
         {value: 'all', label: <>All {icons}</>},
         ...orderedReceiverAccountTypes.map((accountType) => ({
