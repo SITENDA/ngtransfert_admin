@@ -1,7 +1,7 @@
 import {apiSlice} from "../api/apiSlice";
 import {refreshRequestConfig} from "../api/apiSlice";
 import {backend} from "../../util/backend";
-import {setItem} from "../../features/auth/authSlice";
+import {setItem} from "./authSlice";
 
 export const authApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({

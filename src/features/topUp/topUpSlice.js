@@ -96,7 +96,6 @@ export const topUpApiSlice = apiSlice.injectEndpoints({
             },
 
             transformResponse: (responseData) => {
-                console.log("Response data is : ", responseData)
                 return responseData?.data || null;
             },
         }),

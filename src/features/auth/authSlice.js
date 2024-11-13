@@ -6,18 +6,6 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setCredentials: (state, action) => {
-            const {user, accessToken, persist, title} = action.payload
-            state.user = user
-            state.token = accessToken
-            state.persist = persist
-            state.title = title
-        },
-        resetAll: (state, action) => {
-            state = {
-                ...initialState
-            }
-        },
         setItem: (state, action) => {
             const {key, value} = action?.payload;
             const trimmedValue = trimIfString(value);
@@ -66,9 +54,7 @@ const authSlice = createSlice({
             inputName = trimIfString(inputName);
             const inputsObjectInState = getInputsObjectInState(state, objectName);
             inputsObjectInState[inputName] = eventValue;
-
             const validationResult = validateKey(state, objectName, inputName, regexString);
-
             state.eventProperties["isError"] = false;
             if ((inputName.toLowerCase() === "email" || inputName.toLowerCase() === "phonenumber") && validationResult) {
                 state.loginSpecifics["identifier"] = inputName;

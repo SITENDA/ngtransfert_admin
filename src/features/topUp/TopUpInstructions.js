@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import { Button, Grid } from '@mui/material';
 import TopUpMethodSelector from "../../components/form-controls/TopUpMethodSelector";
-import {darkColor, lightColor} from "../../util/initials";
+import {darkColor, initialTopUpInputs, lightColor} from "../../util/initials";
 import MainPageWrapper from "../../components/MainPageWrapper";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
@@ -11,7 +11,7 @@ import {
     handleValidation,
     selectIsDarkTheme, selectTopUpFocus,
     selectTopUpInputs, selectValidTopUp,
-    setItem
+    setItem,
 } from "../auth/authSlice";
 import CountrySelector from "../../components/form-controls/CountrySelector";
 import {adminPaths} from "../../util/frontend";
@@ -37,8 +37,12 @@ const TopUpInstructions = () => {
         if (!location?.state?.receiverAccount) {
             navigate(adminPaths.receiverAccountsPath, {replace: true})
         }
+        const resetPage = async () => {
+            await dispatch(setItem({key: 'topUpInputs', value: initialTopUpInputs}));
+        }
         dispatch(setItem({key: "title", value: "Top Up Instructions"}));
-    }, [dispatch]);
+        resetPage();
+    }, [dispatch, location?.state?.receiverAccount, navigate]);
 
 
     const handleGoToTopUp = () => {

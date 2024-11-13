@@ -58,7 +58,8 @@ const NewLogin = () => {
     const eventProperties = useSelector(selectEventProperties);
 
     useEffect(() => {
-        if (Boolean(user?.fullName) && hasRole && token?.length > 0 && token !== "nothing") {
+        console.log("hasRole is : ", hasRole, ", user : ", user)
+        if (user?.fullName && token?.length > 10) {
             navigate(adminPaths.homePath, {replace: true})
         } else {
             dispatch(setItem({key: 'title', value: 'Login to NGTransfert!'}));

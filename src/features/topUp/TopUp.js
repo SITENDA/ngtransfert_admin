@@ -6,6 +6,7 @@ import TickAnimation from "../../components/TickAnimation";
 import MainPageWrapper from "../../components/MainPageWrapper";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
+import debounce from "lodash.debounce";
 import {
     handleBlur,
     handleFocus,
@@ -37,12 +38,23 @@ const TopUp = () => {
     const dispatch = useDispatch();
     const location = useLocation();
 
+    // Store the debounced function in a ref
+    const amountInCNYDebounceTimerRef = useRef(null);
+    const amountInOtherCurrencyDebounceTimerRef = useRef(null);
+
     const receiverAccount = location?.state?.receiverAccount;
 
     const isDarkTheme = useSelector(selectIsDarkTheme);
     const topUpInputs = useSelector(selectTopUpInputs)
     const validTopUp = useSelector(selectValidTopUp)
     const topUpFocus = useSelector(selectTopUpFocus)
+
+    useEffect(() => {
+        dispatch(setItem({key: "title", value: "Top Up"}));
+        if (!(validTopUp.validCountryOfTopUpId && validTopUp.validTopUpMethod)) {
+            navigate(adminPaths.topUpInstructionsPath, {replace: true})
+        }
+    }, [dispatch, location.state.receiverAccount, navigate, validTopUp.validCountryOfTopUpId, validTopUp.validTopUpMethod]);
 
     const refs = {
         topUpMethodRef: useRef(null),
@@ -53,7 +65,7 @@ const TopUp = () => {
     }
 
     const [tickAnimationVisible, setTickAnimationVisible] = useState(false);
-    const [canSubmit, setCanSubmit] = useState(false);
+    // const [canSubmit, setCanSubmit] = useState(false);
     const [countryOfDeposit, setCountryOfDeposit] = useState(null);
     const [rateForCurrencyAndCountry, setRateForCurrencyAndCountry] = useState(null);
 
@@ -129,34 +141,68 @@ const TopUp = () => {
         }
     }, [countryData, countryFetched, countryOfDeposit, dispatch]);
 
-    const handleGetAmountInCNY = async () => {
-        if ((isValidNumber(topUpInputs.amountInOtherCurrency))) {
-            await getAmountInCNY({
-                countryName: selectedCountryName,
-                amountInOtherCurrency: topUpInputs.amountInOtherCurrency,
-            }).unwrap();
-            setCanSubmit(false);
-        } else {
-            console.error("handleGetAmountInCNY : Amount in other currency is invalid");
+    const handleAmountChange = async (e) => {
+        await dispatch(handleValidation({
+            objectName: "topUp",
+            eventValue: e.target.value,
+            inputName: e.target.id === "amountInCNY" ? "amountInCNY" : "amountInOtherCurrency",
+            regexPattern: "AMOUNT_REGEX"
+        }));
+
+        if (!isValidNumber(e.target.value)) {
+            await dispatch(handleValidation({
+                objectName: "topUp",
+                eventValue: '',
+                inputName: e.target.id === "amountInCNY" ? "amountInOtherCurrency" : "amountInCNY",
+                regexPattern: "AMOUNT_REGEX"
+            }));
         }
-    }
+    };
 
-    const handleGetAmountInOtherCurrency = async () => {
-        if ((isValidNumber(topUpInputs.amountInCNY))) {
-            await getAmountInOtherCurrency({
-                countryName: selectedCountryName,
-                amountInCNY: topUpInputs.amountInCNY,
-            }).unwrap();
-            setCanSubmit(false);
-        } else {
-            console.error("handleGetAmountInOtherCurrency : Amount in CNY is invalid");
+    const handleDebounceAmountInCNY = async () => {
+        // Create debounced function only once and store it in a ref
+        if (!amountInCNYDebounceTimerRef.current) {
+            amountInCNYDebounceTimerRef.current = debounce(async () => {
+                try {
+                    if (isValidNumber(refs.amountInCNYRef?.current?.value)) {
+                        await getAmountInOtherCurrency({
+                            countryName: selectedCountryName,
+                            amountInCNY: refs.amountInCNYRef?.current?.value,
+                        }).unwrap();
+                    } else {
+                    }
+
+                } catch (e) {
+                    console.error("Error: ", e);
+                }
+            }, 500);
         }
-    }
 
+        // Call the debounced function
+        amountInCNYDebounceTimerRef.current();
+    };
 
-    useEffect(() => {
-        dispatch(setItem({key: "title", value: "Top Up"}));
-    }, [dispatch]);
+    const handleDebounceAmountInOtherCurrency = async () => {
+        // Create debounced function only once and store it in a ref
+        if (!amountInOtherCurrencyDebounceTimerRef.current) {
+            amountInOtherCurrencyDebounceTimerRef.current = debounce(async () => {
+                try {
+                    if (isValidNumber(refs.amountInOtherCurrencyRef?.current?.value)) {
+                        await getAmountInCNY({
+                            countryName: selectedCountryName,
+                            amountInOtherCurrency: refs.amountInOtherCurrencyRef?.current?.value,
+                        }).unwrap();
+                    } else {
+                    }
+                } catch (e) {
+                    console.error("Error: ", e);
+                }
+            }, 500);
+        }
+
+        // Call the debounced function
+        amountInOtherCurrencyDebounceTimerRef.current();
+    };
 
     const handleConfirmTopUp = async () => {
         try {
@@ -257,48 +303,33 @@ const TopUp = () => {
                                     {validTopUp.validCountryOfTopUpId && validTopUp.validTopUpMethod &&
                                         <>
                                             <Divider sx={{mb: 2}}/>
-
                                             <Grid container spacing={2} alignItems="center">
-                                                {/* AmountInput for amount in other currency */}
+                                                {/* AmountInput for amount in CNY */}
                                                 <Grid item xs={12} sm={8}>
-                                                    {loadingAmountInOtherCurrency ? (
+                                                    {loadingAmountInCNY ? (
                                                         <CircularProgress size={15}/>
                                                     ) : (
                                                         <AmountInput
-                                                            ref={refs.amountInOtherCurrencyRef}
+                                                            ref={refs.amountInCNYRef}
                                                             changeHandler={(e) => {
-                                                                setCanSubmit(true);
-                                                                if (e.target.value === 0) {
-                                                                    dispatch(setObjectItem({
-                                                                        key: "topUpInputs",
-                                                                        innerKey: "amountInCNY",
-                                                                        value: 0
-                                                                    }));
-                                                                }
-                                                                return dispatch(handleValidation({
-                                                                    objectName: "topUp",
-                                                                    eventValue: e.target.value,
-                                                                    inputName: "amountInOtherCurrency",
-                                                                    regexPattern: "AMOUNT_REGEX"
-                                                                }));
+                                                                handleAmountChange(e);
+                                                                handleDebounceAmountInCNY();
                                                             }}
-                                                            validAmount={validTopUp.validAmountInOtherCurrency}
-                                                            value={topUpInputs.amountInOtherCurrency}
-                                                            label={countryOfDeposit?.currency?.currencyCode
-                                                                ? `Amount in ${countryOfDeposit?.currency?.currencyCode}`
-                                                                : "Amount"}
-                                                            isFocused={topUpFocus.amountInOtherCurrencyFocus}
+                                                            validAmount={validTopUp.validAmountInCNY}
+                                                            value={topUpInputs.amountInCNY}
+                                                            label="Amount in CNY"
+                                                            id="amountInCNY"
+                                                            isFocused={topUpFocus.amountInCNYFocus}
                                                             handleFocus={() =>
                                                                 dispatch(handleFocus({
                                                                     objectName: "topUp",
-                                                                    inputName: "amountInOtherCurrency"
+                                                                    inputName: "amountInCNY"
                                                                 }))
                                                             }
-                                                            handleGetAmountInCNY={handleGetAmountInCNY}
                                                             handleBlur={() =>
                                                                 dispatch(handleBlur({
                                                                     objectName: "topUp",
-                                                                    inputName: "amountInOtherCurrency",
+                                                                    inputName: "amountInCNY",
                                                                     regexPattern: "AMOUNT_REGEX"
                                                                 }))
                                                             }
@@ -312,42 +343,32 @@ const TopUp = () => {
                                             <Grid container spacing={2} alignItems="center">
                                                 {/* AmountInput for amount in other currency */}
                                                 <Grid item xs={12} sm={8}>
-                                                    {loadingAmountInCNY ? (
+                                                    {loadingAmountInOtherCurrency ? (
                                                         <CircularProgress size={15}/>
                                                     ) : (
                                                         <AmountInput
-                                                            ref={refs.amountInCNYRef}
+                                                            ref={refs.amountInOtherCurrencyRef}
                                                             changeHandler={(e) => {
-                                                                setCanSubmit(true);
-                                                                if (e.target.value === 0) {
-                                                                    dispatch(setObjectItem({
-                                                                        key: "topUpInputs",
-                                                                        innerKey: "amountInOtherCurrency",
-                                                                        value: 0
-                                                                    }));
-                                                                }
-                                                                return dispatch(handleValidation({
-                                                                    objectName: "topUp",
-                                                                    eventValue: e.target.value,
-                                                                    inputName: "amountInCNY",
-                                                                    regexPattern: "AMOUNT_REGEX"
-                                                                }));
+                                                                handleAmountChange(e)
+                                                                handleDebounceAmountInOtherCurrency()
                                                             }}
-                                                            validAmount={validTopUp.validAmountInCNY}
-                                                            value={topUpInputs.amountInCNY}
-                                                            label="Amount in CNY"
-                                                            isFocused={topUpFocus.amountInCNYFocus}
-                                                            handleGetAmountInOtherCurrency={handleGetAmountInOtherCurrency}
+                                                            validAmount={validTopUp.validAmountInOtherCurrency}
+                                                            value={topUpInputs.amountInOtherCurrency}
+                                                            id="amountInOtherCurrency"
+                                                            label={countryOfDeposit?.currency?.currencyCode
+                                                                ? `Amount in ${countryOfDeposit?.currency?.currencyCode}`
+                                                                : "Amount"}
+                                                            isFocused={topUpFocus.amountInOtherCurrencyFocus}
                                                             handleFocus={() =>
                                                                 dispatch(handleFocus({
                                                                     objectName: "topUp",
-                                                                    inputName: "amountInCNY"
+                                                                    inputName: "amountInOtherCurrency"
                                                                 }))
                                                             }
                                                             handleBlur={() =>
                                                                 dispatch(handleBlur({
                                                                     objectName: "topUp",
-                                                                    inputName: "amountInCNY",
+                                                                    inputName: "amountInOtherCurrency",
                                                                     regexPattern: "AMOUNT_REGEX"
                                                                 }))
                                                             }
