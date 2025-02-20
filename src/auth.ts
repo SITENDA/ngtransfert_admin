@@ -22,7 +22,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google,
     GitHub,
     Resend({
-      from: "no-reply@tutorial.codinginflow.com",
+      from: "anovic2023@gmail.com",
     }),
   ],
 });
