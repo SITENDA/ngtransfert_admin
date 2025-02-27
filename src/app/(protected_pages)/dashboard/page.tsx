@@ -12,6 +12,7 @@ export default async function DashboardPage() {
 
     const session = await auth();
     const user = session?.user;
+    console.log("User is : ", user)
 
     if (!user) { // Check if user is NOT logged in
         redirect("/"); // Redirect to the home page

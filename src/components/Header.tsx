@@ -6,7 +6,7 @@ import { ModeToggle } from "@/components/ModeToggle";
 import { auth } from "@/auth"; // Import the auth function
 import SignInButton from "@/components/SignInButton";
 import SignOutButton from "@/components/SignOutButton";
-import transparentIcon from "../app/favicon-transparent.png";
+import transparentIcon from "@/app/[locale]/favicon-transparent.png";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

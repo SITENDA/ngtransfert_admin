@@ -5,18 +5,14 @@ import * as React from "react";
 import {Carousel, CarouselContent, CarouselItem} from "@/components/ui/carousel";
 import SignInButton from "./SignInButton";
 
-const carouselItems = [
-    {
-        title: "Transfer Money Between Africa and China",
-        description: "We promptly deliver your money to your account in China, WeChat, Alipay, or a Bank Account.",
-    },
-    {
-        title: "Fast and Convenient Money Transfers",
-        description: "Discover the convenience and security of NG Transfert, your trusted partner for international money transfers. Fast, reliable, and secure.",
-    }
-];
+type Props = {
+    carouselItems: {
+        title: string, 
+        description: string
+    }[]
+}
 
-const CarouselSection = () => {
+const CarouselSection = ({ carouselItems }: Props) => {
     const [activeIndex, setActiveIndex] = React.useState(0);
 
     // Auto-change slides every 5 seconds
