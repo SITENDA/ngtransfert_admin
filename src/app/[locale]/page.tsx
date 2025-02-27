@@ -27,7 +27,7 @@ export default function Home() {
         <PublicWrapper>
             <CarouselSection carouselItems={carouselItems}/>
             <p className="mt-6 text-sm text-white">
-                <span className="italic">New at NG Transfert?</span><br/>
+                <span className="italic">{ t('newAtNGTransfert')}</span><br/>
                 {/*<Link href="/register" className="text-blue-400 hover:underline text-base">*/}
                 {/*    Register*/}
                 {/*</Link>*/}

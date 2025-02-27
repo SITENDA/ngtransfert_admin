@@ -15,6 +15,11 @@ import {
 export function ModeToggle() {
   const { setTheme } = useTheme()
 
+  //  TODO: Have to add useTranslations to this component, since it is a client component,
+  //   we'll follow the documentation as told in the youtube
+  //   video. We also have to change the Link to use the one from i18n in order to solve the issue I had with clicking links in the nav bar.
+
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

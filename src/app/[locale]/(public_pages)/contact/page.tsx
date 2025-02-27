@@ -1,6 +1,6 @@
 import * as React from "react";
 import PublicWrapper from "@/components/PublicWrapper";
-import ContactUsForm from "@/app/(public_pages)/contact/ContactUsForm";
+import ContactUsForm from "@/app/[locale]/(public_pages)/contact/ContactUsForm";
 
 export const metadata = {
     title: "Contact Us",

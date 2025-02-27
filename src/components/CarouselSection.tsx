@@ -8,7 +8,7 @@ import SignInButton from "./SignInButton";
 type Props = {
     carouselItems: {
         title: string, 
-        description: string
+        description: string,
     }[]
 }
 

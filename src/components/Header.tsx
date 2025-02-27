@@ -15,8 +15,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 // import Navbar from "@/components/Navbar";
+import {useTranslations} from 'next-intl';
+// import {Link} from '@/i18n/routing';
 
 export async function Header() {
+  const t = useTranslations('HomePage');
   const token = "valid_token"; // Replace with actual token state
   const handleLogout = () => {
     console.log("Logging out...");
@@ -48,7 +51,7 @@ export async function Header() {
               <NavButton href="/home" label="Dashboard" icon={User} />
               <button onClick={handleLogout} className="text-red-500 flex items-center gap-1">
                 <LogOut size={22} />
-                Sign out
+                { t('signOut') }
               </button>
             </>
           ) : (
