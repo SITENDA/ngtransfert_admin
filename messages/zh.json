@@ -17,5 +17,16 @@
     "system": "系统",
     "toggleTheme": "切换模式",
     "changeLanguage": "更改语言"
+  },
+  "ContactUsPage": {
+    "contactUs": "联系我们",
+    "readyToStart": "准备好与我们一起开始您的下一个项目了吗？向我们发送消息，我们将尽快回复您！",
+    "emailTitle": "电子邮件",
+    "emailPlaceholder": "nide@youjian.com",
+    "messageTitle": "信息",
+    "messagePlaceholder": "在这里写下你的信息...",
+    "sendButtonTitle": "发送",
+    "loadingLabel": "正在发送...",
+    "reset": "重置"
   }
 }

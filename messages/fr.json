@@ -17,5 +17,16 @@
     "system": "système",
     "toggleTheme": "Mode bascule",
     "changeLanguage": "Changer la langue"
+  },
+  "ContactUsPage": {
+    "contactUs": "Contactez-nous",
+    "readyToStart": "Prêt à démarrer votre prochain projet avec nous ? Envoyez-nous un message et nous vous répondrons dans les plus brefs délais !",
+    "emailTitle": "E-mail",
+    "emailPlaceholder": "votre@email.com",
+    "messageTitle": "Message",
+    "messagePlaceholder": "Votre message ici...",
+    "sendButtonTitle": "Envoyer",
+    "loadingLabel": "Envoi...",
+    "reset": "Réinitialiser"
   }
 }

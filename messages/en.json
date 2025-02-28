@@ -1,13 +1,13 @@
 {
-    "HomePage": {
-      "carouselTitle-1": "Transfer Money Between Africa and China",
-      "carouselDescription-1": "We promptly deliver your money to your account in China, WeChat, Alipay, or a Bank Account.",
-      "carouselTitle-2": "Fast and Convenient Money Transfers",
-      "carouselDescription-2": "Discover the convenience and security of NG Transfert, your trusted partner for international money transfers. Fast, reliable, and secure.",
-      "newAtNGTransfert" : "New at NG Transfert?",
-      "signIn": "Sign In",
-      "signOut": "Log Out"
-    },
+  "HomePage": {
+    "carouselTitle-1": "Transfer Money Between Africa and China",
+    "carouselDescription-1": "We promptly deliver your money to your account in China, WeChat, Alipay, or a Bank Account.",
+    "carouselTitle-2": "Fast and Convenient Money Transfers",
+    "carouselDescription-2": "Discover the convenience and security of NG Transfert, your trusted partner for international money transfers. Fast, reliable, and secure.",
+    "newAtNGTransfert": "New at NG Transfert?",
+    "signIn": "Sign In",
+    "signOut": "Log Out"
+  },
   "Header": {
     "signIn": "Sign In",
     "signOut": "Log Out",
@@ -17,5 +17,16 @@
     "system": "system",
     "toggleTheme": "Toggle Mode",
     "changeLanguage": "Change Language"
+  },
+  "ContactUsPage": {
+    "contactUs": "Contact Us",
+    "readyToStart": "Ready to start your next project with us? Send us a messages and we will get back to you as soon as possible!",
+    "emailTitle": "E-mail",
+    "emailPlaceholder": "your@email.com",
+    "messageTitle": "Message",
+    "messagePlaceholder": "Your message here...",
+    "sendButtonTitle": "Send",
+    "loadingLabel": "Sending...",
+    "reset": "Reset"
   }
 }

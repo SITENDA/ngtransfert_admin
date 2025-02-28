@@ -2,8 +2,6 @@ import CarouselSection from "@/components/CarouselSection";
 import PublicWrapper from "@/components/PublicWrapper";
 import * as React from "react";
 import {useTranslations} from 'next-intl';
-// import {Link} from '@/i18n/routing';
-// import Link from "next/link";
 
 export const metadata = {
     title: "Home Page | NG Transfert",

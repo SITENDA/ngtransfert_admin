@@ -14,8 +14,19 @@ import { LoaderCircle } from "lucide-react";
 import { DisplayServerActionResponse } from "@/components/DisplayServerActionResponse";
 import { useState } from "react";
 
+type Props = {
+    content: {
+        emailTitle: string,
+        emailPlaceholder: string,
+        messageTitle: string,
+        messagePlaceholder: string,
+        sendButtonTitle: string,
+        loadingLabel: string,
+        reset: string
+    }
+}
 
-export default function ContactUsForm() {
+export default function ContactUsForm({ content } : Props) {
     const { toast } = useToast();
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -68,17 +79,17 @@ export default function ContactUsForm() {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(submitForm)} className="flex flex-col gap-4">
                         <InputWithLabel<contactUsSchemaType>
-                            fieldTitle="Email"
+                            fieldTitle={ content.emailTitle }
                             nameInSchema="email"
-                            placeholder="your@email.com" // Add placeholder
+                            placeholder={ content.emailPlaceholder } // Add placeholder
                             type="email" // Specify input type
                         />
 
                         <TextAreaWithLabel<contactUsSchemaType>
-                            fieldTitle="Message"
+                            fieldTitle={content.messageTitle}
                             nameInSchema="message"
                             className="h-40"
-                            placeholder="Your message here..." // Add placeholder
+                            placeholder={content.messagePlaceholder}
                         />
 
                         <div className="flex gap-2">
@@ -86,26 +97,26 @@ export default function ContactUsForm() {
                                 type="submit"
                                 className="w-3/4"
                                 variant="default"
-                                title="Send"
+                                title={content.sendButtonTitle}
                                 disabled={isSending}
                             >
                                 {isSending ? (
                                     <>
-                                        <LoaderCircle className="animate-spin" /> Sending...
+                                        <LoaderCircle className="animate-spin" /> {content.loadingLabel}
                                     </>
-                                ) : "Send"}
+                                ) : content.sendButtonTitle}
                             </Button>
                             <Button
                                 type="button"
                                 variant="destructive"
-                                title="Reset"
+                                title={content.reset}
                                 onClick={() => {
                                     form.reset(emptyValues);
                                     resetSendAction();
                                     setSuccessMessage(null); // Clear success message on reset
                                 }}
                             >
-                                Reset
+                                {content.reset}
                             </Button>
                         </div>
                     </form>
