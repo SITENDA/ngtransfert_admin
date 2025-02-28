@@ -1,0 +1,72 @@
+"use client";
+
+import * as React from "react";
+import { usePathname, useRouter } from "next/navigation";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+
+type Props = {
+    label: string;
+}
+
+type LocaleType = {
+    label: string;
+    value: string;
+}[];
+
+export function LocaleToggle({ label }: Props): JSX.Element {
+    const locales: LocaleType = [
+        {
+            label: "English",
+            value: "en",
+        },
+        {
+            label: "Français",
+            value: "fr",
+        },
+        {
+            label: "简体中文",
+            value: "zh",
+        },
+    ];
+
+    const router = useRouter();
+    const pathname = usePathname();
+
+    const handleLocaleChange = (locale: string) => {
+        // Get the current path without the locale prefix
+        const currentPath = pathname.replace(/^\/(en|fr|zh)/, "");
+
+        // Construct the new path with the selected locale
+        const newPath = `/${locale}${currentPath}`;
+
+        // Navigate to the new path
+        router.push(newPath);
+    };
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-full" aria-label={label} title={label}>
+                    <span className="sr-only">{ label }</span>
+                    🌐
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                {locales.map((locale) => (
+                    <DropdownMenuItem
+                        key={locale.value}
+                        onClick={() => handleLocaleChange(locale.value)}
+                    >
+                        {locale.label}
+                    </DropdownMenuItem>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+}

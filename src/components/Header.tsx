@@ -1,5 +1,5 @@
-import { LogOut, User, Info, Mail } from "lucide-react";
-import Link from "next/link";
+import { LogOut, User, Mail } from "lucide-react"; //Info,
+// import Link from "next/link";
 import Image from "next/image";
 import { NavButton } from "@/components/NavButton";
 import { ModeToggle } from "@/components/ModeToggle";
@@ -16,11 +16,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 // import Navbar from "@/components/Navbar";
 import {useTranslations} from 'next-intl';
-// import {Link} from '@/i18n/routing';
+import { Link } from "@/i18n/navigation"
+import {LocaleToggle} from "@/components/LocaleToggle";
 
 export async function Header() {
-  const t = useTranslations('HomePage');
+
+  const t = useTranslations('Header');
   const token = "valid_token"; // Replace with actual token state
+
   const handleLogout = () => {
     console.log("Logging out...");
   };
@@ -32,7 +35,7 @@ export async function Header() {
       <div className="flex h-full items-center justify-between max-w-screen-xl mx-auto px-6">
         {/* Center Section - Logo */}
         <div className="flex items-center justify-center">
-          <Link href="/home" className="flex items-center gap-2" title="Home">
+          <Link href="/" className="flex items-center gap-2" title="Home">
             <Image
               src={transparentIcon}
               alt="NG Transfert Logo"
@@ -59,8 +62,9 @@ export async function Header() {
             // <NavButton href="/login" label="Sign in" icon={User} />
           )}
           {/* <NavButton href="/about" label="About" icon={Info} /> */}
-          <NavButton href="/contact" label="Contact Us" icon={Mail} />
-          <ModeToggle />
+          <NavButton href="/contact" label={t('contactUs')} icon={Mail} />
+          <ModeToggle label={t('toggleTheme')} themeNames={{ light: t('light'), dark: t('dark'), system: t('system') }} />
+          <LocaleToggle label={t('changeLanguage')}/>
 
           {!user ? (
     <SignInButton />

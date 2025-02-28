@@ -7,5 +7,15 @@
       "newAtNGTransfert" : "New at NG Transfert?",
       "signIn": "Sign In",
       "signOut": "Log Out"
-    }
+    },
+  "Header": {
+    "signIn": "Sign In",
+    "signOut": "Log Out",
+    "contactUs": "Contact Us",
+    "light": "light",
+    "dark": "dark",
+    "system": "system",
+    "toggleTheme": "Toggle Mode",
+    "changeLanguage": "Change Language"
   }
+}

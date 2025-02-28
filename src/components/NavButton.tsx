@@ -1,7 +1,8 @@
 import { LucideIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+// import Link from 'next/link';
+import { Link } from "@/i18n/navigation"
 
 type Props = {
   icon: LucideIcon,

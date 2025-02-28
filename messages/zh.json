@@ -7,5 +7,15 @@
       "newAtNGTransfert" : "刚来到 NG Transfert 吗?",
       "signIn": "登录",
       "signOut": "登出"
-    }
+    },
+  "Header": {
+    "signIn": "登录",
+    "signOut": "登出",
+    "contactUs": "联系我们",
+    "light": "灯光模式",
+    "dark": "暗模式",
+    "system": "系统",
+    "toggleTheme": "切换模式",
+    "changeLanguage": "更改语言"
+  }
 }

@@ -7,5 +7,15 @@
       "newAtNGTransfert" : "Nouveau chez NG Transfert?",
       "signIn": "Se Connecter",
       "signOut": "Se Déconnecter"
-    }
+    },
+  "Header": {
+    "signIn": "Se Connecter",
+    "signOut": "Se Déconnecter",
+    "contactUs": "Contactez-nous",
+    "light": "lumière",
+    "dark": "sombre",
+    "system": "système",
+    "toggleTheme": "Mode bascule",
+    "changeLanguage": "Changer la langue"
   }
+}
