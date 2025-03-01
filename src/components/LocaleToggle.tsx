@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
     DropdownMenu,
@@ -9,6 +9,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import {JSX} from "react";
 
 type Props = {
     label: string;
@@ -35,6 +36,8 @@ export function LocaleToggle({ label }: Props): JSX.Element {
         },
     ];
 
+    const [isPending, startTransition] = useTransition()
+
     const router = useRouter();
     const pathname = usePathname();
 
@@ -46,13 +49,15 @@ export function LocaleToggle({ label }: Props): JSX.Element {
         const newPath = `/${locale}${currentPath}`;
 
         // Navigate to the new path
-        router.push(newPath);
+        startTransition(() => {
+            router.push(newPath);
+        })
     };
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full" aria-label={label} title={label}>
+                <Button variant="ghost" size="icon" className="rounded-full" aria-label={label} title={label} disabled={isPending}>
                     <span className="sr-only">{ label }</span>
                     🌐
                 </Button>

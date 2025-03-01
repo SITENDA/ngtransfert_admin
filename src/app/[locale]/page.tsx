@@ -1,14 +1,29 @@
 import CarouselSection from "@/components/CarouselSection";
 import PublicWrapper from "@/components/PublicWrapper";
 import * as React from "react";
-import {useTranslations} from 'next-intl';
+import {getLocale, getTranslations} from "next-intl/server";
+import {auth} from "@/auth";
+
+import { redirect } from "next/navigation";
 
 export const metadata = {
     title: "Home Page | NG Transfert",
-}
+};
 
-export default function Home() {
-    const t = useTranslations('HomePage');
+export default async function Home({ }) {
+    const session = await auth();
+    const user = session?.user;
+    const locale = await getLocale() // Get the current locale
+
+    console.log("User is : ", user);
+
+    if (user) {
+        // Redirect to the dashboard with the current locale
+        redirect(`/${locale}/dashboard`);
+        return null;
+    }
+
+    const t = await getTranslations('HomePage');
 
     const carouselItems = [
         {
@@ -23,15 +38,10 @@ export default function Home() {
 
     return (
         <PublicWrapper>
-            <CarouselSection carouselItems={carouselItems}/>
+            <CarouselSection carouselItems={carouselItems} />
             <p className="mt-6 text-sm text-white">
-                <span className="italic">{ t('newAtNGTransfert')}</span><br/>
-                {/*<Link href="/register" className="text-blue-400 hover:underline text-base">*/}
-                {/*    Register*/}
-                {/*</Link>*/}
-                {/* <RegisterLink>Register</RegisterLink> */}
+                <span className="italic">{t('newAtNGTransfert')}</span><br />
             </p>
         </PublicWrapper>
-
     );
 }

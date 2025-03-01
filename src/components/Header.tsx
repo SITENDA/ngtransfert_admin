@@ -1,5 +1,4 @@
 import { LogOut, User, Mail } from "lucide-react"; //Info,
-// import Link from "next/link";
 import Image from "next/image";
 import { NavButton } from "@/components/NavButton";
 import { ModeToggle } from "@/components/ModeToggle";
@@ -15,13 +14,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 // import Navbar from "@/components/Navbar";
-import {useTranslations} from 'next-intl';
 import { Link } from "@/i18n/navigation"
+import {getTranslations} from "next-intl/server";
 import {LocaleToggle} from "@/components/LocaleToggle";
 
-export async function Header() {
+export default async function Header() {
 
-  const t = useTranslations('Header');
+  const t = await getTranslations('Header');
   const token = "valid_token"; // Replace with actual token state
 
   const handleLogout = () => {
