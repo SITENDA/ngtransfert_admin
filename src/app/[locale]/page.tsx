@@ -19,7 +19,7 @@ export default async function Home({ }) {
 
     if (user) {
         // Redirect to the dashboard with the current locale
-        redirect(`/${locale}/dashboard`);
+        redirect(`/dashboard/${locale}/dashboard`);
         return null;
     }
 

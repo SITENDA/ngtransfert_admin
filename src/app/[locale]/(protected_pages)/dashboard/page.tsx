@@ -1,67 +1,83 @@
 import * as React from "react";
 import { redirect } from 'next/navigation';
-import {Account, User} from "next-auth";
-import { Link } from "@/i18n/navigation"
+import { Account, User } from "next-auth";
+import { Link } from "@/i18n/navigation";
 
 import PublicWrapper from "@/components/PublicWrapper";
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export const metadata = {
     title: "Dashboard",
 };
 
-
 export default async function DashboardPage() {
     const session = await auth();
     const user = session?.user;
-    console.log("User is : ", user);
 
     if (!user) {
         redirect("/");
         return null;
     }
-    // Log the keys of the user object
-    if (user) {
-        console.log("User Keys:", Object.keys(user));
-    }
 
-    // Fetch users using Prisma
+    // Fetch users and accounts using Prisma
     let users: User[] = [];
     let accounts: Account[] = [];
     try {
         users = await prisma.user.findMany();
         accounts = await prisma.account.findMany();
-        console.log("Fetched Users:", users);
     } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching data:", error);
     }
 
     return (
         <PublicWrapper>
-            <h4 className="text-white text-2xl font-semibold mb-3">
-                Dashboard
-            </h4>
+            <Card className="w-[80%] mx-auto my-8 bg-background text-foreground">
+                <CardHeader className="flex justify-between">
+                    <CardTitle className="text-2xl font-semibold">Dashboard</CardTitle>
+                    <Link href="/dashboard/add-receiver-account">
+                        <Button variant="outline" size="sm">
+                            Add Receiver Account
+                        </Button>
+                    </Link>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-4">
+                        {users.length > 0 && (
+                            <div>
+                                <h5 className="text-lg font-semibold">Users:</h5>
+                                <ul className="space-y-2">
+                                    {users.map((u) => (
+                                        <li key={u.id} className="text-sm">
+                                            {u.name || "Unnamed"} - {u.email} - Role: {u.role}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
 
-            {/* Display fetched users */}
-
-            {users.length > 0 && (
-                <div>
-                    <h5 className="text-white font-semibold mt-4">Users:</h5>
-                    <ul>
-                        {users.map((u) => (
-                            <li key={u.id} className="text-white/80">
-                                {u.name || "Unnamed"} - {u.email} - Role: {u.role}
-                            </li>
-                        ))}
-                        {accounts.length > 0 && (accounts.map((u) => (
-                            <li key={u.userId} className="text-white/80">
-                                {u.provider}
-                            </li>
-                        )))}
-                    </ul>
-                </div>
-            )}
+                        {accounts.length > 0 && (
+                            <div>
+                                <h5 className="text-lg font-semibold">Accounts:</h5>
+                                <ul className="space-y-2">
+                                    {accounts.map((account) => (
+                                        <li key={account.id} className="text-sm flex items-center justify-between">
+                                            <span>{account.provider}</span>
+                                            <Link href={`/accounts/${account.id}`}>
+                                                <Button variant="outline" size="sm">
+                                                    View Details
+                                                </Button>
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+                </CardContent>
+            </Card>
         </PublicWrapper>
     );
 }

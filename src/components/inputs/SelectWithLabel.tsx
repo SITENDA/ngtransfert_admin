@@ -16,10 +16,17 @@ import {
     SelectTrigger,
     SelectValue
 } from '@/components/ui/select'
+import {ReactNode} from "react";
+
+// type DataObj = {
+//     id: string,
+//     description: string,
+// }
 
 type DataObj = {
-    id: string,
-    description: string,
+    label: string,
+    value: string,
+    icon: ReactNode,
 }
 
 type Props<S> = {   //Typescript generic, S may be T, we have used S to represent the schema that we pass in.
@@ -60,9 +67,12 @@ export function SelectWithLabel<S>({
                         <SelectContent>
                             {data.map(item => (
                                 <SelectItem
-                                    key={`${nameInSchema}_${item.id}`}
-                                    value={item.id}>
-                                    {item.description}
+                                    key={`${nameInSchema}_${item.value}`}
+                                    value={item.value}
+                                    className="flex items-center" // Add flex and alignment classes
+                                >
+                                    <span>{item.label}</span> {/* Wrap the label in a span */}
+                                    {item.icon && <span className="ml-2">{item.icon}</span>} {/* Add margin-left */}
                                 </SelectItem>
                             ))}
                         </SelectContent>
