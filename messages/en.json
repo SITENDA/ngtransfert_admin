@@ -6,7 +6,8 @@
     "carouselDescription-2": "Discover the convenience and security of NG Transfert, your trusted partner for international money transfers. Fast, reliable, and secure.",
     "newAtNGTransfert": "New at NG Transfert?",
     "signIn": "Sign In",
-    "signOut": "Log Out"
+    "signOut": "Log Out",
+    "signUpWithGoogle" : "Sign Up with Google"
   },
   "Header": {
     "signIn": "Sign In",

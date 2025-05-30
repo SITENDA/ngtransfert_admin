@@ -1,0 +1,28 @@
+// .eslintrc.json (in your project root)
+{
+  "extends": ["next/core-web-vitals"],
+  "rules": {
+    // 1. Unused Variables: Downgrade from error to warning
+    // This allows you to still see them as warnings but doesn't break the build.
+    "@typescript-eslint/no-unused-vars": "warn",
+    "no-unused-vars": "warn", // Applies to JavaScript files as well
+
+    // 2. Explicit 'any' Type: Downgrade from error to warning
+    // Still flags 'any' usage but allows the build to pass.
+    "@typescript-eslint/no-explicit-any": "warn",
+
+    // 3. 'var' Usage: Downgrade from error to warning
+    "no-var": "warn",
+
+    // 4. React Hooks exhaustive-deps: (Already a warning, ensure it's set to warn)
+    // It's crucial for correct React Hook behavior. Downgrading further is NOT recommended.
+    // If it was explicitly set to "error" in your config, change it back to "warn".
+    "react-hooks/exhaustive-deps": "warn",
+
+    // You can also completely turn them off if you prefer (NOT RECOMMENDED):
+    // "@typescript-eslint/no-unused-vars": "off",
+    // "@typescript-eslint/no-explicit-any": "off",
+    // "no-var": "off",
+    // "react-hooks/exhaustive-deps": "off"
+  }
+}

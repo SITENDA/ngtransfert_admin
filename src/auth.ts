@@ -3,6 +3,7 @@ import NextAuth from "next-auth";
 import { Adapter } from "next-auth/adapters";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
+import WeChat from "@auth/core/providers/wechat"
 import prisma from "./lib/prisma";
 import EmailProvider from "next-auth/providers/nodemailer";
 
@@ -64,6 +65,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 }
             },
             from: process.env.EMAIL_FROM
+        }),
+        WeChat({
+            clientId: process.env.AUTH_WECHAT_APP_ID,
+            clientSecret: process.env.AUTH_WECHAT_APP_SECRET,
+            platformType: "OfficialAccount",
         }),
         Google,
         GitHub,

@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 
 export default async function PublicLayout({
     children,
-    params
+    // params
 }: {
     children: React.ReactNode;
     params: Promise<{ locale: string }>;

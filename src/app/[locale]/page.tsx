@@ -5,6 +5,7 @@ import {getLocale, getTranslations} from "next-intl/server";
 import {auth} from "@/auth";
 
 import { redirect } from "next/navigation";
+import SignUpWithGoogleButton from "@/components/SignUpWithGoogleButton";
 
 export const metadata = {
     title: "Home Page | NG Transfert",
@@ -19,7 +20,7 @@ export default async function Home({ }) {
 
     if (user) {
         // Redirect to the dashboard with the current locale
-        redirect(`/dashboard/${locale}/dashboard`);
+        redirect(`/${locale}/dashboard`);
         return null;
     }
 
@@ -41,6 +42,7 @@ export default async function Home({ }) {
             <CarouselSection carouselItems={carouselItems} />
             <p className="mt-6 text-sm text-white">
                 <span className="italic">{t('newAtNGTransfert')}</span><br />
+                <SignUpWithGoogleButton/>
             </p>
         </PublicWrapper>
     );

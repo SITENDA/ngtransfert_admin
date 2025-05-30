@@ -6,6 +6,9 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound, } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import Header from "@/components/Header";
+import {Toaster} from "@/components/ui/toaster";
+import FooterAdmin from "@/components/ui/FooterAdmin";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -35,7 +38,7 @@ export default async function RootLayout({
   }) {
 
     const { locale } =  await params;
-    if (!routing.locales.includes(locale as any)) {
+    if (!routing.locales.includes(locale as "en" | "fr" | "zh")) {
         notFound();
     }
 
@@ -56,7 +59,13 @@ export default async function RootLayout({
                     disableTransitionOnChange
                 >
                     <NextIntlClientProvider messages={messages}>
-                    { children }
+                        <Header />
+                        <main className="flex-grow flex flex-col min-h-screen justify-center text-center max-w-5xl mx-auto w-full pt-10 bg-black bg-home-img bg-cover bg-center">
+                            {/*flex flex-col min-h-screen bg-black bg-home-img bg-cover bg-center*/}
+                            {children}
+                            <Toaster />
+                        </main>
+                        <FooterAdmin />
                     </NextIntlClientProvider>
                 </ThemeProvider>
             </body>

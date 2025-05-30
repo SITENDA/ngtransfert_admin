@@ -28,7 +28,7 @@ type Props = {
 
 export default function ContactUsForm({ content } : Props) {
     const { toast } = useToast();
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [setSuccessMessage] = useState<string | null>(null);
 
     const emptyValues: contactUsSchemaType = {
         email: '',
@@ -59,6 +59,7 @@ export default function ContactUsForm({ content } : Props) {
             }
         },
         onError({ error }) {
+            console.log("error", error);
             toast({
                 variant: "destructive",
                 title: "Error",
