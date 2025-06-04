@@ -29,5 +29,32 @@
     "sendButtonTitle": "Send",
     "loadingLabel": "Sending...",
     "reset": "Reset"
+  },
+  "Common": {
+    "signInButton": "Sign In",
+    "signUpButton": "Sign Up",
+    "login": "Login"
+  },
+  "LoginPage": {
+    "signInTitle": "Sign In",
+    "registerAccountTitle": "Register Account",
+    "usernameLabel": "Username",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "registerButton": "Register",
+    "signInButton": "Sign In",
+    "alreadyHaveAccount": "Already have an account? Sign In",
+    "needAccount": "Need an account? Register Here",
+    "loginWithGoogle": "Login with Google",
+    "loginWithFacebook": "Login with Facebook",
+    "registrationSuccess": "Registration successful! Please check your email for verification.",
+    "loginFailed": "Login failed: {message}",
+    "registrationFailed": "Registration failed: {message}",
+    "loginError": "An error occurred during login: {message}",
+    "registrationError": "An error occurred during registration: {message}",
+    "unknownError": "Unknown error, please try again.",
+    "tryAgain": "Please try again.",
+    "errorPrefix": "Error",
+    "oauthError": "Authentication failed with the external provider. Please try again."
   }
 }

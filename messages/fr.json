@@ -29,5 +29,32 @@
     "sendButtonTitle": "Envoyer",
     "loadingLabel": "Envoi...",
     "reset": "Réinitialiser"
+  },
+  "Common": {
+    "signInButton": "Se Connecter",
+    "signUpButton": "S'inscrire",
+    "login": "Connexion"
+  },
+  "LoginPage": {
+    "signInTitle": "Se Connecter",
+    "registerAccountTitle": "Créer un Compte",
+    "usernameLabel": "Nom d'utilisateur",
+    "emailLabel": "E-mail",
+    "passwordLabel": "Mot de passe",
+    "registerButton": "S'inscrire",
+    "signInButton": "Se Connecter",
+    "alreadyHaveAccount": "Vous avez déjà un compte ? Connectez-vous",
+    "needAccount": "Besoin d'un compte ? Inscrivez-vous ici",
+    "loginWithGoogle": "Se connecter avec Google",
+    "loginWithFacebook": "Se connecter avec Facebook",
+    "registrationSuccess": "Inscription réussie ! Veuillez vérifier votre e-mail pour la vérification.",
+    "loginFailed": "Échec de la connexion : {message}",
+    "registrationFailed": "Échec de l'inscription : {message}",
+    "loginError": "Une erreur est survenue lors de la connexion : {message}",
+    "registrationError": "Une erreur est survenue lors de l'inscription : {message}",
+    "unknownError": "Erreur inconnue, veuillez réessayer.",
+    "tryAgain": "Veuillez réessayer.",
+    "errorPrefix": "Erreur",
+    "oauthError": "L'authentification avec le fournisseur externe a échoué. Veuillez réessayer."
   }
 }

@@ -1,28 +1,19 @@
+// app/[locale]/page.tsx
 import CarouselSection from "@/components/CarouselSection";
 import PublicWrapper from "@/components/PublicWrapper";
 import * as React from "react";
-import {getLocale, getTranslations} from "next-intl/server";
-import {auth} from "@/auth";
+import {getTranslations} from "next-intl/server";
 
-import { redirect } from "next/navigation";
-import SignUpWithGoogleButton from "@/components/SignUpWithGoogleButton";
+// Import a new client component to handle redirection
+import AuthRedirector from "@/components/AuthRedirector"; // We will create this
 
 export const metadata = {
     title: "Home Page | NG Transfert",
 };
 
 export default async function Home({ }) {
-    const session = await auth();
-    const user = session?.user;
-    const locale = await getLocale() // Get the current locale
-
-    console.log("User is : ", user);
-
-    if (user) {
-        // Redirect to the dashboard with the current locale
-        redirect(`/${locale}/dashboard`);
-        return null;
-    }
+    // We remove the session check and redirect here.
+    // This logic will be handled by AuthRedirector on the client-side.
 
     const t = await getTranslations('HomePage');
 
@@ -39,11 +30,10 @@ export default async function Home({ }) {
 
     return (
         <PublicWrapper>
-            <CarouselSection carouselItems={carouselItems} />
-            <p className="mt-6 text-sm text-white">
-                <span className="italic">{t('newAtNGTransfert')}</span><br />
-                <SignUpWithGoogleButton/>
-            </p>
+            {/* Render the client component responsible for auth checking and redirection */}
+            <AuthRedirector>
+                <CarouselSection carouselItems={carouselItems} />
+            </AuthRedirector>
         </PublicWrapper>
     );
 }

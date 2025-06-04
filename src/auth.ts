@@ -49,6 +49,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           } else if (new URL(sanitizedUrl).origin === new URL(sanitizedBaseUrl).origin) {
               return sanitizedUrl; // If same origin, return url
           }
+
           return baseUrl; // Otherwise, redirect to the baseUrl (your dashboard)
       },
     },
