@@ -11,7 +11,7 @@ export const metadata = {
     title: "Dashboard",
 };
 
-export default async function DashboardPage() {
+export default async function ClientDashboardPage() {
     const session = await auth();
     const user = session?.user;
     console.log("User in dashboard is : ", user);
@@ -35,7 +35,7 @@ export default async function DashboardPage() {
         <PublicWrapper>
             <Card className="w-[80%] mx-auto my-8 bg-background text-foreground">
                 <CardHeader className="flex justify-between">
-                    <CardTitle className="text-2xl font-semibold">Clinet Dashboard</CardTitle>
+                    <CardTitle className="text-2xl font-semibold">Client Dashboard</CardTitle>
                     <Link href="/dashboard/add-receiver-account">
                         <Button variant="outline" size="sm">
                             Add Receiver Account

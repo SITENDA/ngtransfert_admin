@@ -17,6 +17,7 @@ interface UserDTO {
     enabled: boolean;
     registrationDate: string;
     roles: Array<{ id: number; roleName: string }>;
+    ekiddako: string;
 }
 
 // Define the props that this Client Component will receive from the Server Component
@@ -64,7 +65,7 @@ export default function OAuth2Handler({ token, fetchedUser, locale }: OAuth2Hand
                 console.log('Client Component: Next-Auth session established. Redirecting to dashboard...');
                 // --- Redirect the user to your main application dashboard ---
                 // Use router.replace to prevent going back to this redirect page with the back button
-                router.replace(`/${locale}/dashboard`, { scroll: false });
+                router.replace(`/${locale}/${fetchedUser.ekiddako}`, { scroll: false });
 
             } catch (err: any) {
                 console.error('Client Component: Error during Next-Auth session establishment:', err);

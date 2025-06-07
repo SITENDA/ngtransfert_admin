@@ -2,18 +2,28 @@
 import CarouselSection from "@/components/CarouselSection";
 import PublicWrapper from "@/components/PublicWrapper";
 import * as React from "react";
-import {getTranslations} from "next-intl/server";
+import {getTranslations, getLocale} from "next-intl/server"; // <--- Import getLocale
+import { auth } from "@/auth";
 
 // Import a new client component to handle redirection
-import AuthRedirector from "@/components/AuthRedirector"; // We will create this
+import AuthRedirector from "@/components/AuthRedirector";
+import {redirect} from "next/navigation";
 
 export const metadata = {
     title: "Home Page | NG Transfert",
 };
 
 export default async function Home({ }) {
-    // We remove the session check and redirect here.
-    // This logic will be handled by AuthRedirector on the client-side.
+    // Get the locale from next-intl/server
+    const locale = await getLocale(); // <--- Define locale here
+
+    const session = await auth();
+    const user = session?.user;
+
+    // Use the defined locale in the redirect
+    if (user?.ekiddako) {
+        redirect(`/${locale}/${user?.ekiddako}`);
+    }
 
     const t = await getTranslations('HomePage');
 
@@ -31,6 +41,7 @@ export default async function Home({ }) {
     return (
         <PublicWrapper>
             {/* Render the client component responsible for auth checking and redirection */}
+            {/* You might want to pass the locale to AuthRedirector if it needs it */}
             <AuthRedirector>
                 <CarouselSection carouselItems={carouselItems} />
             </AuthRedirector>
