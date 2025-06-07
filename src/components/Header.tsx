@@ -28,9 +28,10 @@ export default async function Header() {
   };
   const session = await auth(); // Use auth() to get the session
   const user = session?.user;
+  // console.log("User is : ", user);
 
   return (
-    <header className="animate-slide bg-background h-20 p-4 border-b sticky top-0 z-20 w-full shadow-md">
+    <header className="animate-slide bg-background h-20 p-4 border-b sticky top-0 z-20 w-full shadow-md ">
       <div className="flex h-full items-center justify-between max-w-screen-xl mx-auto px-6">
         {/* Center Section - Logo */}
         <div className="flex items-center justify-center">
@@ -71,17 +72,7 @@ export default async function Header() {
     <DropdownMenu>
         <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
-                {user?.image ? (
-                    <Image
-                        className="rounded-full"
-                        src={user.image}
-                        width={40}  // Adjust size as needed
-                        height={40} // Adjust size as needed
-                        alt="user profile avatar"
-                    />
-                ) : (
-                    <User className="h-[1.6rem] w-[1.6rem]" /> // Use User icon if no image
-                )}
+              <User className="h-[1.6rem] w-[1.6rem]" />
             </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">

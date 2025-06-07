@@ -49,7 +49,7 @@ export default function OAuth2Handler({ token, fetchedUser, locale }: OAuth2Hand
                 // Remove localStorage token handling, as NextAuth will manage the session via HTTP-only cookies
                 // localStorage.setItem('jwt_token', token); // REMOVE THIS LINE
 
-                console.log('Client Component: Attempting to establish Next-Auth session with fetched user:', fetchedUser.email);
+                console.log('Client Component: Attempting to establish Next-Auth session with fetched user:', fetchedUser);
 
                 // --- KEY CHANGE: Call Next-Auth's signIn with fetched data ---
                 // This must happen in a Client Component's useEffect or a Server Action/Route Handler
@@ -59,13 +59,7 @@ export default function OAuth2Handler({ token, fetchedUser, locale }: OAuth2Hand
                     redirect: false, // IMPORTANT: Prevents Next-Auth from doing its own redirect
                 });
 
-                // --- (Optional) Update your custom client-side AuthContext ---
-                // This is useful if you have client-side components that need immediate access
-                // to user data without waiting for a server round trip or full page refresh.
-                const userRoles = fetchedUser.roles ? fetchedUser.roles.map(r => r.roleName) : [];
-                const userPrimaryRole = userRoles.length > 0 ? userRoles[0] : null;
-                login(token, fetchedUser.email, fetchedUser.userId, fetchedUser.username, userPrimaryRole);
-
+                login(fetchedUser, token);
 
                 console.log('Client Component: Next-Auth session established. Redirecting to dashboard...');
                 // --- Redirect the user to your main application dashboard ---

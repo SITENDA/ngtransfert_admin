@@ -5,6 +5,7 @@ import PublicWrapper from "@/components/PublicWrapper";
 import { auth } from "@/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {redirect} from "next/navigation";
 
 export const metadata = {
     title: "Dashboard",
@@ -15,12 +16,12 @@ export default async function DashboardPage() {
     const user = session?.user;
     console.log("User in dashboard is : ", user);
 
-    // if (!user) {
-    //     redirect("/");
-    //     return null;
-    // }
-    //
-    // // Fetch users and accounts using Prisma
+    if (!user) {
+        redirect("/");
+        return null;
+    }
+
+    // Fetch users and accounts using Prisma
     // let users: User[] = [];
     // let accounts: Account[] = [];
     // try {

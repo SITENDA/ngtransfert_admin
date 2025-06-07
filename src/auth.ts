@@ -2,6 +2,11 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
+interface RoleDTO {
+    id: number;
+    roleName: string;
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
     trustHost: true,
     theme: {
@@ -41,22 +46,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         return null;
                     }
 
-                    // Map your Spring Boot user object to the NextAuth 'user' object.
-                    // This 'user' object will be passed to the `jwt` callback.
-                    return {
-                        // NextAuth's user.id MUST be a string
-                        id: userFromSpringBoot.userId.toString(),
+                    // Map your Spring Boot user object to the NextAuth 'User' object.
+                    // THIS IS THE CRUCIAL STEP for initial data transfer.
+                    const nextAuthUser = {
+                        id: userFromSpringBoot.userId.toString(), // NextAuth's user.id MUST be a string
                         email: userFromSpringBoot.email,
-                        // 'name' is often displayed in UIs, use full name or username
                         name: userFromSpringBoot.fullName || userFromSpringBoot.username || userFromSpringBoot.email,
-                        // Store your Spring Boot JWT access token directly here
-                        accessToken: accessToken,
-                        // Map other relevant fields from your UserDTO
+                        image: userFromSpringBoot.profileImageUrl, // Map profileImageUrl to NextAuth's default `image`
+                        accessToken: accessToken, // Your custom access token property
+
+                        // --- Pass all other UserDTO properties directly ---
+                        userId: userFromSpringBoot.userId, // Original userId
                         username: userFromSpringBoot.username,
                         fullName: userFromSpringBoot.fullName,
-                        // Assuming roles is an array and you want the first role name
-                        role: userFromSpringBoot.roles?.[0]?.roleName,
+                        profileImageUrl: userFromSpringBoot.profileImageUrl, // Your custom profileImageUrl property
+                        enabled: userFromSpringBoot.enabled,
+                        registrationDate: userFromSpringBoot.registrationDate,
+                        roles: userFromSpringBoot.roles, // Full roles array
+                        role: userFromSpringBoot.roles?.[0]?.roleName, // Primary role for convenience
+                        ekiddako: userFromSpringBoot.ekiddako, // Your new custom property
                     };
+
+                    console.log("Authorize: Returning user object to JWT callback:", nextAuthUser);
+                    return nextAuthUser;
                 } catch (e) {
                     console.error("Error processing user data in Credentials Provider:", e);
                     return null;
@@ -69,36 +81,58 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         async jwt({ token, user }) {
             // `user` is the object returned by the `authorize` function of the CredentialsProvider
             if (user) {
+                console.log("JWT Callback: Processing user object from authorize:", user);
+                // Copy all properties from `user` (which came from `authorize`) to the `token`
                 token.id = user.id;
                 token.email = user.email;
                 token.name = user.name;
-                // Store your Spring Boot JWT access token in the JWT token object
-                token.accessToken = (user as any).accessToken; // Cast to 'any' to access custom property
-                // Store other custom user properties
+                token.image = user.image; // Transfer the image URL
+                token.accessToken = user.accessToken;
+
+                // --- Transfer all custom properties from `User` to `JWT` token ---
+                token.userId = (user as any).userId; // Cast to any because TS might complain without explicit type for user
                 token.username = (user as any).username;
                 token.fullName = (user as any).fullName;
+                token.profileImageUrl = (user as any).profileImageUrl;
+                token.enabled = (user as any).enabled;
+                token.registrationDate = (user as any).registrationDate;
+                token.roles = (user as any).roles;
                 token.role = (user as any).role;
+                token.ekiddako = (user as any).ekiddako; // Transfer new property
             }
+            console.log("JWT Callback: Returning token:", token);
             return token;
         },
         // This callback is called whenever a session is accessed (e.g., via `await auth()`)
+        // This callback is called whenever a session is accessed (e.g., via `await auth()` or `useSession()`)
         async session({ session, token }) {
             // `token` is the object returned by the `jwt` callback
             // Populate the session object with properties from the JWT token
+            console.log("Session Callback: Processing token:", token);
+
             if (token.id) session.user.id = token.id as string;
             if (token.email) session.user.email = token.email as string;
             if (token.name) session.user.name = token.name as string;
-            // Expose the access token in the session object
-            if (token.accessToken) session.accessToken = token.accessToken as string;
-            // Expose other custom user properties
+            if (token.image) session.user.image = token.image as string; // Transfer image to session.user
+            if (token.accessToken) session.accessToken = token.accessToken as string; // Expose JWT in session root
+
+            // --- Expose all custom properties from `JWT` token to `Session.user` ---
+            if (token.userId) session.user.userId = token.userId as number;
             if (token.username) session.user.username = token.username as string;
             if (token.fullName) session.user.fullName = token.fullName as string;
+            if (token.profileImageUrl) session.user.profileImageUrl = token.profileImageUrl as string;
+            if (token.enabled !== undefined) session.user.enabled = token.enabled as boolean;
+            if (token.registrationDate) session.user.registrationDate = token.registrationDate as string;
+            if (token.roles) session.user.roles = token.roles as RoleDTO[];
             if (token.role) session.user.role = token.role as string;
+            if (token.ekiddako) session.user.ekiddako = token.ekiddako as string; // Transfer new property
+
+            console.log("Session Callback: Returning session object:", session);
             return session;
         },
         async redirect({ url, baseUrl }) {
             // Your existing redirect logic remains unchanged
-            console.log("URL is : ", url, "baseUrl is : ", baseUrl);
+            // console.log("URL is : ", url, "baseUrl is : ", baseUrl);
 
             const sanitizeURL = (urlString: string | null | undefined): string => {
                 if (!urlString) return ""; // Handle null or undefined

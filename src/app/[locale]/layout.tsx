@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "@/app/[locale]/globals.css";
 import { ThemeProvider } from '@/components/theme-provider';
 import { NextIntlClientProvider } from 'next-intl';
@@ -13,15 +13,120 @@ import { SessionProvider } from 'next-auth/react'; // From next-auth
 import { AuthProvider } from '@/context/AuthContext'; // Your custom AuthContext
 
 
-const geistSans = Geist({
+
+// --- Define your local Geist Sans font ---
+const geistSans = localFont({
+    src: [
+        // Adjust these paths based on the actual location of your layout.tsx
+        // relative to your `src/fonts/Geist/` directory.
+        // If layout.tsx is in `app/[locale]/`, and fonts are in `src/fonts/`,
+        // the path will be `../../../src/fonts/Geist/`.
+        {
+            path: '../../../src/fonts/Geist/Geist-Thin.ttf',
+            weight: '100',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/Geist/Geist-ExtraLight.ttf',
+            weight: '200',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/Geist/Geist-Light.ttf',
+            weight: '300',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/Geist/Geist-Regular.ttf',
+            weight: '400',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/Geist/Geist-Medium.ttf',
+            weight: '500',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/Geist/Geist-SemiBold.ttf',
+            weight: '600',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/Geist/Geist-Bold.ttf',
+            weight: '700',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/Geist/Geist-ExtraBold.ttf',
+            weight: '800',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/Geist/Geist-Black.ttf',
+            weight: '900',
+            style: 'normal',
+        },
+    ],
     variable: "--font-geist-sans",
-    subsets: ["latin"],
+    display: 'swap', // 'swap' is generally recommended for performance and user experience
 });
 
-const geistMono = Geist_Mono({
+
+// --- Define your local Geist Mono font ---
+const geistMono = localFont({
+    src: [
+        // Adjust these paths similarly to Geist Sans,
+        // relative to your `src/fonts/GeistMono/` directory.
+        {
+            path: '../../../src/fonts/GeistMono/GeistMono-Thin.ttf',
+            weight: '100',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/GeistMono/GeistMono-ExtraLight.ttf',
+            weight: '200',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/GeistMono/GeistMono-Light.ttf',
+            weight: '300',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/GeistMono/GeistMono-Regular.ttf',
+            weight: '400',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/GeistMono/GeistMono-Medium.ttf',
+            weight: '500',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/GeistMono/GeistMono-SemiBold.ttf',
+            weight: '600',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/GeistMono/GeistMono-Bold.ttf',
+            weight: '700',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/GeistMono/GeistMono-ExtraBold.ttf',
+            weight: '800',
+            style: 'normal',
+        },
+        {
+            path: '../../../src/fonts/GeistMono/GeistMono-Black.ttf',
+            weight: '900',
+            style: 'normal',
+        },
+    ],
     variable: "--font-geist-mono",
-    subsets: ["latin"],
+    display: 'swap',
 });
+
 
 export const metadata: Metadata = {
     title: {
@@ -64,7 +169,7 @@ export default async function RootLayout({
                     <SessionProvider>
                     <NextIntlClientProvider messages={messages}>
                         <Header />
-                        <main className="flex-grow flex flex-col min-h-screen justify-center text-center max-w-5xl mx-auto w-full pt-10 bg-black bg-home-img bg-cover bg-center">
+                        <main className="flex-grow flex flex-col min-h-screen justify-center text-center w-full pt-10 bg-black bg-home-img bg-cover bg-center">
                             {/*flex flex-col min-h-screen bg-black bg-home-img bg-cover bg-center*/}
                             <AuthProvider>
                             {children}

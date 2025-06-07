@@ -12,15 +12,32 @@ import { useSession, signOut } from 'next-auth/react'; // Import hooks from next
 import { useRouter } from 'next/navigation'; // For client-side navigation
 import { useLocale } from 'next-intl'; // Assuming next-intl for locale awareness
 
-// 1. Define the shape of your User data for the client context
-// This should mirror the key info you expect to frequently access client-side
-interface AuthUser {
-    id: number | string; // userId from your DTO
+// Re-define UserDTO here or import from a shared types file if available
+// This is the source structure for the data coming from your backend
+interface UserDTO {
+    userId: number;
     email: string;
-    username?: string;
-    role?: string; // Primary role
-    accessToken?: string; // The Spring Boot JWT. Be cautious storing this in client-side state
-    // Add other relevant user properties you need client-side
+    username: string;
+    fullName?: string;
+    profileImageUrl?: string;
+    enabled: boolean;
+    registrationDate: string;
+    roles: Array<{ id: number; roleName: string }>;
+}
+
+// 1. Define the shape of your AuthUser data for the client context
+// This will be the actual shape of the `user` state in your AuthContext
+interface AuthUser {
+    id: number | string; // Maps to UserDTO.userId
+    email: string;
+    username: string;
+    fullName?: string;
+    profileImageUrl?: string;
+    enabled: boolean;
+    registrationDate: string;
+    roles: Array<{ id: number; roleName: string }>;
+    role?: string; // Primary role derived from roles array
+    accessToken?: string; // The Spring Boot JWT
 }
 
 // 2. Define the shape of your AuthContext state
@@ -28,13 +45,8 @@ interface AuthContextType {
     user: AuthUser | null;
     isAuthenticated: boolean;
     loading: boolean; // True while session is being fetched/initialized
-    login: (
-        accessToken: string,
-        email: string,
-        userId: number | string,
-        username?: string,
-        role?: string
-    ) => void;
+    // Adjust login signature to accept full UserDTO and accessToken
+    login: (fetchedUserDto: UserDTO, accessToken: string) => void;
     logout: () => void;
     // Add other functions or states as needed, e.g., `updateProfile`
 }
@@ -48,10 +60,8 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    // `useSession` from next-auth/react allows us to access the session in client components
     const { data: session, status } = useSession();
-    const router = useRouter();
-    const currentLocale = useLocale(); // Get the current locale from next-intl
+    const currentLocale = useLocale();
 
     const [user, setUser] = useState<AuthUser | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -67,17 +77,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (status === 'authenticated' && session) {
             // Map the next-auth session user to your AuthUser type
             // Ensure properties match what you stored in next-auth's `session` callback
+            const userRoles = session.user.roles ? session.user.roles.map((r: any) => ({ id: r.id, roleName: r.roleName })) : [];
+            const userPrimaryRole = userRoles.length > 0 ? userRoles[0].roleName : undefined;
+
             const authUser: AuthUser = {
-                id: session.user.id || '', // Ensure id is always present or handle null
-                email: session.user.email || '', // Ensure email is always present
+                id: session.user.id || '',
+                email: session.user.email || '',
                 username: session.user.username || '',
-                role: session.user.role || '',
-                accessToken: session.accessToken || '', // Your Spring Boot JWT
+                fullName: session.user.fullName || undefined,
+                profileImageUrl: session.user.profileImageUrl || undefined,
+                enabled: session.user.enabled ?? false, // Default to false if undefined
+                registrationDate: session.user.registrationDate || '',
+                roles: userRoles,
+                role: userPrimaryRole,
+                accessToken: session.accessToken || undefined,
             };
             setUser(authUser);
             setIsAuthenticated(true);
             setLoading(false);
-            console.log('AuthContext: User authenticated from NextAuth session.');
+            console.log('AuthContext: User authenticated from NextAuth session with full data.');
         } else if (status === 'unauthenticated') {
             setUser(null);
             setIsAuthenticated(false);
@@ -89,23 +107,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Function to manually set client-side user data after a successful login (e.g., from OAuth2 redirect)
     // This is called by your `OAuth2Handler.tsx` after `signIn` is successful.
     const login = useCallback(
-        (
-            accessToken: string,
-            email: string,
-            userId: number | string,
-            username?: string,
-            role?: string
-        ) => {
+        (fetchedUserDto: UserDTO, accessToken: string) => {
+            const userPrimaryRole = fetchedUserDto.roles && fetchedUserDto.roles.length > 0
+                ? fetchedUserDto.roles[0].roleName
+                : undefined;
+
             const newUser: AuthUser = {
-                id: userId,
-                email,
-                username,
-                role,
-                accessToken,
+                id: fetchedUserDto.userId,
+                email: fetchedUserDto.email,
+                username: fetchedUserDto.username,
+                fullName: fetchedUserDto.fullName,
+                profileImageUrl: fetchedUserDto.profileImageUrl,
+                enabled: fetchedUserDto.enabled,
+                registrationDate: fetchedUserDto.registrationDate,
+                roles: fetchedUserDto.roles,
+                role: userPrimaryRole, // Set primary role here
+                accessToken: accessToken,
             };
             setUser(newUser);
             setIsAuthenticated(true);
-            console.log('AuthContext: Manual login successful.');
+            console.log('AuthContext: Manual login successful with full UserDTO.');
         },
         []
     );
@@ -113,13 +134,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Function to handle logout
     const logout = useCallback(async () => {
         setLoading(true);
-        // Call next-auth's signOut function, which clears the session cookie
-        // and can redirect to a specified page.
         await signOut({
-            redirect: true, // Let next-auth handle the redirect
-            callbackUrl: `/${currentLocale}/login`, // Redirect to your login page with current locale
+            redirect: true,
+            callbackUrl: `/${currentLocale}/login`,
         });
-        // State will be updated by the useEffect when next-auth status changes to 'unauthenticated'
         console.log('AuthContext: Logout initiated.');
     }, [currentLocale]);
 

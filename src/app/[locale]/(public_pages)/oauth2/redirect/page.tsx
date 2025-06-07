@@ -86,7 +86,7 @@ export default async function OAuth2RedirectPage({ params, searchParams }: OAuth
             throw new Error('User info from backend is incomplete or not in expected format.');
         }
 
-        console.log('Server Component: User info fetched successfully:', fetchedUser.email);
+        console.log('Server Component: User info fetched successfully:', fetchedUser);
 
     } catch (err: any) {
         console.error('Server Component: Error fetching user info from backend:', err);
