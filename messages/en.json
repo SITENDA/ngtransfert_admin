@@ -55,6 +55,13 @@
     "unknownError": "Unknown error, please try again.",
     "tryAgain": "Please try again.",
     "errorPrefix": "Error",
-    "oauthError": "Authentication failed with the external provider. Please try again."
+    "oauthError": "Authentication failed with the external provider. Please try again.",
+    "unexpectedError": "An unexpected error occurred.",
+    "authenticationFailedCredentials": "Authentication failed. Please check your credentials.",
+    "authenticationFailed": "Authentication failed.",
+    "errorMessage": "Error message",
+    "redirectingToLogin": "Redirecting to login page...",
+    "oauthProcessing": "Processing authentication...",
+    "pleaseWait": "Please wait while we log you in."
   }
 }

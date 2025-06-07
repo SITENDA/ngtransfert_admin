@@ -1,11 +1,8 @@
 import * as React from "react";
-import { redirect } from 'next/navigation';
-import { Account, User } from "next-auth";
 import { Link } from "@/i18n/navigation";
 
 import PublicWrapper from "@/components/PublicWrapper";
 import { auth } from "@/auth";
-import prisma from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -16,21 +13,22 @@ export const metadata = {
 export default async function DashboardPage() {
     const session = await auth();
     const user = session?.user;
+    console.log("User in dashboard is : ", user);
 
-    if (!user) {
-        redirect("/");
-        return null;
-    }
-
-    // Fetch users and accounts using Prisma
-    let users: User[] = [];
-    let accounts: Account[] = [];
-    try {
-        users = await prisma.user.findMany();
-        accounts = await prisma.account.findMany();
-    } catch (error) {
-        console.error("Error fetching data:", error);
-    }
+    // if (!user) {
+    //     redirect("/");
+    //     return null;
+    // }
+    //
+    // // Fetch users and accounts using Prisma
+    // let users: User[] = [];
+    // let accounts: Account[] = [];
+    // try {
+    //     users = await prisma.user.findMany();
+    //     accounts = await prisma.account.findMany();
+    // } catch (error) {
+    //     console.error("Error fetching data:", error);
+    // }
 
     return (
         <PublicWrapper>
@@ -43,40 +41,41 @@ export default async function DashboardPage() {
                         </Button>
                     </Link>
                 </CardHeader>
-                <CardContent>
-                    <div className="space-y-4">
-                        {users.length > 0 && (
-                            <div>
-                                <h5 className="text-lg font-semibold">Users:</h5>
-                                <ul className="space-y-2">
-                                    {users.map((u) => (
-                                        <li key={u.id} className="text-sm">
-                                            {u.name || "Unnamed"} - {u.email} - Role: {u.role}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
+                <CardContent>Testing dashboard</CardContent>
+                {/*<CardContent>*/}
+                {/*    <div className="space-y-4">*/}
+                {/*        {users.length > 0 && (*/}
+                {/*            <div>*/}
+                {/*                <h5 className="text-lg font-semibold">Users:</h5>*/}
+                {/*                <ul className="space-y-2">*/}
+                {/*                    {users.map((u) => (*/}
+                {/*                        <li key={u.id} className="text-sm">*/}
+                {/*                            {u.name || "Unnamed"} - {u.email} - Role: {u.role}*/}
+                {/*                        </li>*/}
+                {/*                    ))}*/}
+                {/*                </ul>*/}
+                {/*            </div>*/}
+                {/*        )}*/}
 
-                        {accounts.length > 0 && (
-                            <div>
-                                <h5 className="text-lg font-semibold">Accounts:</h5>
-                                <ul className="space-y-2">
-                                    {accounts.map((account) => (
-                                        <li key={account.id} className="text-sm flex items-center justify-between">
-                                            <span>{account.provider}</span>
-                                            <Link href={`/accounts/${account.id}`}>
-                                                <Button variant="outline" size="sm">
-                                                    View Details
-                                                </Button>
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-                    </div>
-                </CardContent>
+                {/*        {accounts.length > 0 && (*/}
+                {/*            <div>*/}
+                {/*                <h5 className="text-lg font-semibold">Accounts:</h5>*/}
+                {/*                <ul className="space-y-2">*/}
+                {/*                    {accounts.map((account) => (*/}
+                {/*                        <li key={account.id} className="text-sm flex items-center justify-between">*/}
+                {/*                            <span>{account.provider}</span>*/}
+                {/*                            <Link href={`/accounts/${account.id}`}>*/}
+                {/*                                <Button variant="outline" size="sm">*/}
+                {/*                                    View Details*/}
+                {/*                                </Button>*/}
+                {/*                            </Link>*/}
+                {/*                        </li>*/}
+                {/*                    ))}*/}
+                {/*                </ul>*/}
+                {/*            </div>*/}
+                {/*        )}*/}
+                {/*    </div>*/}
+                {/*</CardContent>*/}
             </Card>
         </PublicWrapper>
     );

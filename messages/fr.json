@@ -55,6 +55,14 @@
     "unknownError": "Erreur inconnue, veuillez réessayer.",
     "tryAgain": "Veuillez réessayer.",
     "errorPrefix": "Erreur",
-    "oauthError": "L'authentification avec le fournisseur externe a échoué. Veuillez réessayer."
+    "oauthError": "L'authentification avec le fournisseur externe a échoué. Veuillez réessayer.",
+    "unexpectedError": "Une erreur inattendue est survenue.",
+    "authenticationFailedCredentials": "Échec de l'authentification. Veuillez vérifier vos identifiants.",
+    "authenticationFailed": "Échec de l'authentification.",
+    "errorMessage": "Message d'erreur",
+    "redirectingToLogin": "Redirection vers la page de connexion...",
+    "oauthProcessing": "Traitement de l'authentification...",
+    "pleaseWait": "Veuillez patienter pendant que nous vous connectons."
+
   }
 }

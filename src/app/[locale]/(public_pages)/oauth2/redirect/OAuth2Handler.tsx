@@ -1,46 +1,111 @@
 // app/[locale]/(public_pages)/oauth2/redirect/OAuth2Handler.tsx
 'use client'; // This directive is essential for client-side hooks
 
-import { useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation'; // For App Router
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation'; // For App Router, use useRouter
+import { signIn } from "next-auth/react"; // Import Next-Auth's signIn for client-side
+import { useAuth } from '@/context/AuthContext'; // Assuming your AuthContext for client-side state
+import { useTranslations } from 'next-intl'; // For translations
 
-interface OAuth2HandlerProps {
-    locale: string; // Receive locale as a prop from the Server Component
+// Re-define UserDTO here or import from a shared types file if available
+interface UserDTO {
+    userId: number;
+    email: string;
+    username: string;
+    fullName?: string;
+    profileImageUrl?: string;
+    enabled: boolean;
+    registrationDate: string;
+    roles: Array<{ id: number; roleName: string }>;
 }
 
-export default function OAuth2Handler({ locale }: OAuth2HandlerProps) {
+// Define the props that this Client Component will receive from the Server Component
+interface OAuth2HandlerProps {
+    token: string;        // The access token passed from page.tsx
+    fetchedUser: UserDTO; // The fetched UserDTO passed from page.tsx
+    locale: string;       // The determined locale passed from page.tsx
+}
+
+export default function OAuth2Handler({ token, fetchedUser, locale }: OAuth2HandlerProps) {
     const router = useRouter();
-    const searchParams = useSearchParams();
+    const { login } = useAuth(); // Assuming you have a client-side AuthContext
+    const t = useTranslations('LoginPage'); // Assuming you use next-intl translations
+
+    const [isLoading, setIsLoading] = useState(true);
+    const [authError, setAuthError] = useState<string | null>(null);
 
     useEffect(() => {
-        const token = searchParams.get('token');
-        const error = searchParams.get('error');
+        const establishSession = async () => {
+            if (!token || !fetchedUser) {
+                // This scenario should ideally be caught by the Server Component,
+                // but as a fallback for client-side robustness.
+                setAuthError("Missing authentication data from server.");
+                router.replace(`/${locale}/login?error=${encodeURIComponent("Missing authentication data.")}`);
+                setIsLoading(false);
+                return;
+            }
 
-        if (token) {
-            // 1. Store the token securely
-            localStorage.setItem('jwt_token', token);
-            console.log('JWT Token received and stored.');
+            try {
+                // Remove localStorage token handling, as NextAuth will manage the session via HTTP-only cookies
+                // localStorage.setItem('jwt_token', token); // REMOVE THIS LINE
 
-            // 2. Redirect the user to your main application dashboard or home page
-            // Use router.replace to prevent going back to this redirect page with the back button
-            // IMPORTANT: Inject the locale into the redirect URL path
-            router.replace(`/${locale}/dashboard`); // E.g., /en/dashboard or /fr/dashboard
+                console.log('Client Component: Attempting to establish Next-Auth session with fetched user:', fetchedUser.email);
 
-        } else if (error) {
-            console.error('OAuth2 Error:', error);
-            // Handle the error (e.g., display a message, redirect to login with error)
-            router.replace(`/${locale}/login?error=${encodeURIComponent(error)}`);
-        } else {
-            // No token or error found, handle unexpected redirect
-            console.warn('Unexpected OAuth2 redirect without token or error.');
-            router.replace(`/${locale}/login?error=oauth_failed`); // Redirect to login, maybe with a generic error
-        }
-    }, [searchParams, router, locale]); // Add 'locale' to dependencies
+                // --- KEY CHANGE: Call Next-Auth's signIn with fetched data ---
+                // This must happen in a Client Component's useEffect or a Server Action/Route Handler
+                await signIn("credentials", {
+                    accessToken: token, // Pass the Spring Boot JWT
+                    userData: JSON.stringify(fetchedUser), // Pass the full UserDTO as a JSON string
+                    redirect: false, // IMPORTANT: Prevents Next-Auth from doing its own redirect
+                });
+
+                // --- (Optional) Update your custom client-side AuthContext ---
+                // This is useful if you have client-side components that need immediate access
+                // to user data without waiting for a server round trip or full page refresh.
+                const userRoles = fetchedUser.roles ? fetchedUser.roles.map(r => r.roleName) : [];
+                const userPrimaryRole = userRoles.length > 0 ? userRoles[0] : null;
+                login(token, fetchedUser.email, fetchedUser.userId, fetchedUser.username, userPrimaryRole);
+
+
+                console.log('Client Component: Next-Auth session established. Redirecting to dashboard...');
+                // --- Redirect the user to your main application dashboard ---
+                // Use router.replace to prevent going back to this redirect page with the back button
+                router.replace(`/${locale}/dashboard`, { scroll: false });
+
+            } catch (err: any) {
+                console.error('Client Component: Error during Next-Auth session establishment:', err);
+                let errorMessage = err.message || t('unexpectedError');
+                // You can add more specific error handling here based on `err.message`
+                if (errorMessage.includes("CredentialsSignin")) {
+                    errorMessage = t('authenticationFailedCredentials'); // A more specific message
+                }
+                setAuthError(errorMessage);
+               router.replace(`/${locale}/login?error=${encodeURIComponent(errorMessage)}`);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        // Execute the session establishment logic once the component mounts
+        // and if necessary props are available.
+        establishSession();
+    }, [token, fetchedUser, locale, router, login, t]); // Add all dependencies to useEffect
+
+    if (authError) {
+        return (
+            <div style={{ padding: '20px', textAlign: 'center', color: 'red' }}>
+                <h1>{t('authenticationFailed')}</h1>
+                <p>{t('errorMessage')}: {authError}</p>
+                <p>{t('redirectingToLogin')}</p>
+            </div>
+        );
+    }
 
     return (
         <div style={{ padding: '20px', textAlign: 'center' }}>
-            <h1>Processing authentication...</h1>
-            <p>Please wait while we log you in.</p>
+            <h1>{t('oauthProcessing')}</h1>
+            <p>{t('pleaseWait')}</p>
+            {isLoading && <p>Establishing user session...</p>}
             {/* You can add a spinner or loading animation here */}
         </div>
     );

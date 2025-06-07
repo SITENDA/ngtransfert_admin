@@ -37,6 +37,15 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
     const t = useTranslations('LoginPage'); // Use 'LoginPage' namespace for translations
     const searchParams = useSearchParams(); // To read error parameter from URL
 
+    // Effect to save the current locale to localStorage
+    useEffect(() => {
+        if (locale) {
+            localStorage.setItem('preferred_locale', locale);
+            console.log(`[LoginFormComponent] Current locale '${locale}' saved to localStorage.`);
+        }
+    }, [locale]); // Rerun this effect if the locale changes (e.g., via a language switcher)
+
+
     // Effect to check for OAuth2 errors in URL parameters
     useEffect(() => {
         const errorParam = searchParams.get('error');

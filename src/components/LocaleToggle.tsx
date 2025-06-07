@@ -44,6 +44,7 @@ export function LocaleToggle({ label }: Props): JSX.Element {
     const handleLocaleChange = (locale: string) => {
         // Get the current path without the locale prefix
         const currentPath = pathname.replace(/^\/(en|fr|zh)/, "");
+        localStorage.setItem('preferred_locale', locale);
 
         // Construct the new path with the selected locale
         const newPath = `/${locale}${currentPath}`;

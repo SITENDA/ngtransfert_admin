@@ -55,6 +55,13 @@
     "unknownError": "未知错误，请重试。",
     "tryAgain": "请重试。",
     "errorPrefix": "错误",
-    "oauthError": "外部提供商认证失败。请重试。"
+    "oauthError": "外部提供商认证失败。请重试。",
+    "unexpectedError": "发生了一个意外错误。",
+    "authenticationFailedCredentials": "认证失败。请检查您的凭据。",
+    "authenticationFailed": "认证失败。",
+    "errorMessage": "错误信息",
+    "redirectingToLogin": "正在重定向到登录页面...",
+    "oauthProcessing": "正在处理身份验证...",
+    "pleaseWait": "请稍候，我们正在为您登录。"
   }
 }
