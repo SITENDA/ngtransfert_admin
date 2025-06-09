@@ -1,11 +1,14 @@
+// app/[locale]/dashboard/page.tsx
 import * as React from "react";
 import { Link } from "@/i18n/navigation";
 
-import PublicWrapper from "@/components/PublicWrapper";
+import PublicWrapper from "@/components/PublicWrapper"; // Ensure this component allows its children to fill space
 import { auth } from "@/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {redirect} from "next/navigation";
+
+import { getLocale } from "next-intl/server";
 
 export const metadata = {
     title: "Dashboard",
@@ -15,34 +18,42 @@ export default async function ClientDashboardPage() {
     const session = await auth();
     const user = session?.user;
     console.log("User in dashboard is : ", user);
+    const locale = await getLocale();
 
     if (!user) {
-        redirect("/");
+        // Redirect to the login page specific to the current locale
+        redirect(`/${locale}/login`); // Changed redirect to /login
         return null;
     }
 
-    // Fetch users and accounts using Prisma
-    // let users: User[] = [];
-    // let accounts: Account[] = [];
-    // try {
-    //     users = await prisma.user.findMany();
-    //     accounts = await prisma.account.findMany();
-    // } catch (error) {
-    //     console.error("Error fetching data:", error);
+    // It's good practice to ensure `ekiddako` is also handled here if this page is specific to 'client'
+    // For example, if 'dashboard' is only for 'client' role, you might want this:
+    // if (user.ekiddako && user.ekiddako !== 'client') {
+    //     // If user is not 'client' but lands here, redirect to their correct dashboard
+    //     redirect(`/${locale}/${user.ekiddako}`);
+    //     return null;
     // }
 
+
     return (
+        // PublicWrapper should typically be h-full or min-h-screen to allow children to expand
+        // If PublicWrapper doesn't provide height, the Card won't expand vertically.
         <PublicWrapper>
-            <Card className="w-[80%] mx-auto my-8 bg-background text-foreground">
-                <CardHeader className="flex justify-between">
+            {/* Added 'h-full flex flex-col' to ensure it takes vertical space and allows children to grow */}
+            <Card className="w-full flex-grow mx-auto my-8 bg-background text-foreground flex flex-col h-full max-w-screen-lg">
+                <CardHeader className="flex flex-row justify-between items-center px-6 py-4"> {/* Adjusted for better alignment */}
                     <CardTitle className="text-2xl font-semibold">Client Dashboard</CardTitle>
-                    <Link href="/dashboard/add-receiver-account">
+                    {/* Corrected href - assuming 'kaasitoma' is a direct segment after locale */}
+                    <Link href={'/kaasitoma/add-receiver-account'} passHref>
                         <Button variant="outline" size="sm">
                             Add Receiver Account
                         </Button>
                     </Link>
                 </CardHeader>
-                <CardContent>Testing dashboard</CardContent>
+                {/* CardContent to take available space */}
+                <CardContent className="flex-grow p-6"> {/* Added flex-grow and padding */}
+                    Testing dashboard
+                </CardContent>
                 {/*<CardContent>*/}
                 {/*    <div className="space-y-4">*/}
                 {/*        {users.length > 0 && (*/}

@@ -1,7 +1,7 @@
 "use server";
 
 // import { z } from "zod";
-import { contactUsSchema } from "@/zod-schemas/contactUs";
+import { contactUsSchema } from "@/zod-schemas/contact-us";
 import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
 import { actionClient } from "@/lib/safe-action";

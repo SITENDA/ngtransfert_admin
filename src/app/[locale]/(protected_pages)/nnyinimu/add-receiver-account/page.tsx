@@ -7,15 +7,14 @@ import {
 import type {
     ReceiverAccount,
 } from "../../../../../../prisma/generated/zod";
-import ReceiverAccountIdentifier from "@/constants/ReceiverAccountIdentifier"
 
 import { orderedReceiverAccountTypes } from "@/constants/ReceiverAccountType";
-import ReceiverAccountType from "@/constants/ReceiverAccountType";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form"
 import {useSearchParams} from "next/navigation";
 import { Prisma } from "@prisma/client";
+import {ReceiverAccountCategoryEnum, ReceiverAccountIdentifierEnum} from "@/zod-schemas/receiver-account";
 // import { Button } from "@/components/ui/button";
 // import {z} from "zod";
 // import {Prisma} from "@prisma/client";
@@ -30,8 +29,8 @@ function AddReceiverAccount({ receiverAccount }: Props ) {
     const hasReceiverAccountId = searchParams.has("receiverAccountId")
 
     const emptyValues: ReceiverAccount = {
-        type: ReceiverAccountType.WECHAT_ACCOUNT,
-        identifier: ReceiverAccountIdentifier.EMAIL,
+        type: ReceiverAccountCategoryEnum.enum.WECHAT_ACCOUNT,
+        identifier: ReceiverAccountIdentifierEnum.enum.EMAIL,
         id: '',
         name: '',
         clientId: '',
@@ -46,8 +45,8 @@ function AddReceiverAccount({ receiverAccount }: Props ) {
     }
 
     const defaultValues: ReceiverAccount = hasReceiverAccountId ? {
-        type: receiverAccount.type?? ReceiverAccountType.WECHAT_ACCOUNT,
-        identifier: receiverAccount.identifier ?? ReceiverAccountIdentifier.PHONE_NUMBER,
+        type: receiverAccount.type?? ReceiverAccountCategoryEnum.enum.WECHAT_ACCOUNT,
+        identifier: receiverAccount.identifier ?? ReceiverAccountIdentifierEnum.enum.PHONE_NUMBER,
         id: receiverAccount.id?? 0,
         name: receiverAccount.name ?? '',
         clientId: receiverAccount.clientId ?? 0,

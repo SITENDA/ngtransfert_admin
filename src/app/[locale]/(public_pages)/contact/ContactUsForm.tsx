@@ -6,7 +6,7 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { InputWithLabel } from "@/components/inputs/InputWithLabel";
 import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
-import { contactUsSchema, type contactUsSchemaType } from "@/zod-schemas/contactUs"; // Create this schema
+import { contactUsSchema, type contactUsSchemaType } from "@/zod-schemas/contact-us"; // Create this schema
 import { useAction } from 'next-safe-action/hooks';
 import { sendContactUsEmailAction } from "@/app/actions/sendContactUsEmailAction"; // Create this action
 import { useToast } from "@/hooks/use-toast";
