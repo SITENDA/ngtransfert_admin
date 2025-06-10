@@ -116,7 +116,7 @@ function AddReceiverAccount({ receiverAccount }: Props ) {
                         <InputWithLabel<ReceiverAccountSchemaType>
                             fieldTitle="Receiver Account Name"
                             nameInSchema="receiverAccountName"
-                            // control={form.control}
+                            control={form.control}
                             placeholder="e.g., My Alipay Account"
                         />
 
@@ -125,7 +125,7 @@ function AddReceiverAccount({ receiverAccount }: Props ) {
                             <InputWithLabel<ReceiverAccountSchemaType>
                                 fieldTitle="Email"
                                 nameInSchema="email"
-                                // control={form.control}
+                                control={form.control}
                                 placeholder="receiver@example.com"
                             />
                         )}
@@ -134,7 +134,7 @@ function AddReceiverAccount({ receiverAccount }: Props ) {
                             <InputWithLabel<ReceiverAccountSchemaType>
                                 fieldTitle="Phone Number"
                                 nameInSchema="phoneNumber"
-                                // control={form.control}
+                                control={form.control}
                                 placeholder="e.g., +861234567890"
                             />
                         )}
@@ -146,19 +146,19 @@ function AddReceiverAccount({ receiverAccount }: Props ) {
                                 <InputWithLabel<ReceiverAccountSchemaType>
                                     fieldTitle="Bank Account Number"
                                     nameInSchema="bankAccountNumber"
-                                    // control={form.control}
+                                    control={form.control}
                                     placeholder="e.g., 1234567890"
                                 />
                                 <InputWithLabel<ReceiverAccountSchemaType>
                                     fieldTitle="Bank Name"
                                     nameInSchema="bankName"
-                                    // control={form.control}
+                                    control={form.control}
                                     placeholder="e.g., Industrial and Commercial Bank of China"
                                 />
                                 <InputWithLabel<ReceiverAccountSchemaType>
                                     fieldTitle="Card Holder Name"
                                     nameInSchema="cardHolderName"
-                                    // control={form.control}
+                                    control={form.control}
                                     placeholder="e.g., John Doe"
                                 />
                                 {/* Add inputs for bankId and countryId if needed */}
