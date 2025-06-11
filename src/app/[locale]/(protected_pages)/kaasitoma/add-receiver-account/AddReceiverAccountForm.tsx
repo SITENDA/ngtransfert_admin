@@ -12,29 +12,21 @@ import {
     ReceiverAccountSchemaType
 } from "@/zod-schemas/receiver-account";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { orderedReceiverAccountTypes } from "@/constants/ReceiverAccountType";
+import { useOrderedReceiverAccountTypes } from "@/constants/ReceiverAccountType";
 import { InputWithLabel } from "@/components/inputs/InputWithLabel";
 import { Button } from "@/components/ui/button";
 import { FileInputWithLabel } from "@/components/inputs/FileInputWithLabel";
 import {Bank} from "../../../../../../types/bank";
-import BankSelect from "@/components/BankSelect"; // Ensure this path is correct
-
-// Placeholder components
-const BankNameInput = ({ control, nameInSchema, ...props }: any) => (
-    <InputWithLabel fieldTitle="Bank Name" nameInSchema={nameInSchema} control={control} placeholder="e.g., Industrial and Commercial Bank of China" {...props} />
-);
-const CardHolderNameInput = ({ control, nameInSchema, ...props }: any) => (
-    <InputWithLabel fieldTitle="Card Holder Name" nameInSchema={nameInSchema} control={control} placeholder="e.g., John Doe" {...props} />
-);
-const BankAccountNumberInput = ({ control, nameInSchema, ...props }: any) => (
-    <InputWithLabel fieldTitle="Bank Account Number" nameInSchema={nameInSchema} control={control} placeholder="e.g., 1234567890" {...props} />
-);
+import BankSelect from "@/components/BankSelect";
+import { useTranslations } from 'next-intl';
 
 interface AddReceiverAccountFormProps {
     initialBanks: Bank[];
 }
 
 const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initialBanks }) => {
+    const t = useTranslations('AddReceiverAccountForm');
+
     const defaultEmptyValues: ReceiverAccountSchemaType = {
         receiverAccountName: '',
         receiverAccountCategory: null,
@@ -61,13 +53,11 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
     const watchedQrCodeImage = form.watch("qrCodeImage");
     const watchedBankId = form.watch("bankId");
     const watchedReceiverAccountName = form.watch("receiverAccountName");
-    const [categoryName, setCategoryName] = useState<string>('Receiver');
+    const [categoryName, setCategoryName] = useState<string>(''); // Initialize with empty string, will be set in useEffect
 
     const [qrCodePreview, setQrCodePreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    // --- ADD THIS STATE ---
     const [isBankSelectMenuOpen, setIsBankSelectMenuOpen] = useState(false);
-    // --- END ADDED STATE ---
 
     const currentUser = { userId: 123 };
 
@@ -76,6 +66,20 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
             form.setValue("clientId", currentUser.userId, { shouldValidate: true });
         }
     }, [currentUser?.userId, form]);
+
+    // NEW useEffect for translating and setting categoryName
+    useEffect(() => {
+        if (watchedCategory === ReceiverAccountCategoryEnum.enum.ALIPAY_ACCOUNT) {
+            setCategoryName(t('alipay'));
+        } else if (watchedCategory === ReceiverAccountCategoryEnum.enum.WECHAT_ACCOUNT) {
+            setCategoryName(t('wechat'));
+        } else if (watchedCategory === ReceiverAccountCategoryEnum.enum.BANK_ACCOUNT) {
+            setCategoryName(t('bank'));
+        } else {
+            setCategoryName(t('receiver')); // Default or unset state
+        }
+    }, [watchedCategory, t]); // Dependencies: watchedCategory and the translation function 't'
+
 
     useEffect(() => {
         if (watchedBankId !== null && watchedBankId !== undefined) {
@@ -94,22 +98,19 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
         }
     }, [watchedBankId, initialBanks, form]);
 
+    // Original useEffect for form logic and resets - REMOVE setCategoryName calls from here
     useEffect(() => {
         if (watchedCategory === ReceiverAccountCategoryEnum.enum.ALIPAY_ACCOUNT ||
             watchedCategory === ReceiverAccountCategoryEnum.enum.WECHAT_ACCOUNT) {
             form.setValue("receiverAccountIdentifier", ReceiverAccountIdentifierEnum.enum.QR_CODE_IMAGE, { shouldValidate: true });
-            if (watchedCategory === ReceiverAccountCategoryEnum.enum.ALIPAY_ACCOUNT) {
-                setCategoryName("Alipay");
-            } else if (watchedCategory === ReceiverAccountCategoryEnum.enum.WECHAT_ACCOUNT) {
-                setCategoryName("Wechat");
-            }
+            // Removed setCategoryName("Alipay"); and setCategoryName("Wechat");
             form.setValue("bankAccountNumber", "");
             form.setValue("bankId", null);
             form.setValue("countryId", null);
             form.setValue("cardHolderName", "");
             form.setValue("bankName", "");
         } else if (watchedCategory === ReceiverAccountCategoryEnum.enum.BANK_ACCOUNT) {
-            setCategoryName("Bank");
+            // Removed setCategoryName("Bank");
             form.setValue("receiverAccountIdentifier", ReceiverAccountIdentifierEnum.enum.NONE, { shouldValidate: true });
             form.setValue("email", "");
             form.setValue("phoneNumber", "");
@@ -126,9 +127,9 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
             form.setValue("countryId", null);
             form.setValue("cardHolderName", "");
             form.setValue("bankName", "");
-            setCategoryName('Receiver');
+            // Removed setCategoryName('Receiver');
         }
-    }, [watchedCategory, form]);
+    }, [watchedCategory, form]); // Keep 'form' as a dependency as it's used for setValue
 
     useEffect(() => {
         if (watchedQrCodeImage instanceof File) {
@@ -170,7 +171,7 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
 
         setTimeout(() => {
             setLoading(false);
-            alert("Form submitted successfully! (Mocked)");
+            alert(t('formSubmissionSuccess'));
             form.reset(defaultEmptyValues);
         }, 1500);
     };
@@ -180,158 +181,151 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-w-lg mx-auto p-4 border rounded-lg shadow-md">
-                {/* Receiver Account Type Selector */}
                 <SelectWithLabel<ReceiverAccountSchemaType>
-                    fieldTitle="Receiver Account Type"
+                    fieldTitle={t('receiverAccountType')}
                     nameInSchema="receiverAccountCategory"
-                    data={orderedReceiverAccountTypes}
+                    data={useOrderedReceiverAccountTypes()} // Call the hook here
                     control={form.control}
-                    placeholderHint="Select WeChat, Alipay, or Bank Account"
+                    placeholderHint={t('selectPlaceholder')}
                 />
                 {watchedCategory &&
-                <div>
-                    {/*className="space-y-4 border p-3 rounded-md"*/}
-                    {/*<h3 className="text-lg font-semibold">{categoryName} Account Details</h3>*/}
-                    {/* Receiver Account Name (always visible if category selected) */}
+                    <>
                         <InputWithLabel<ReceiverAccountSchemaType>
-                            fieldTitle={`${categoryName} Account Name`}
+                            fieldTitle={t('accountName', { categoryName })}
                             nameInSchema="receiverAccountName"
                             control={form.control}
-                            placeholder={`e.g., My ${categoryName} Account`}
+                            placeholder={t('accountNamePlaceholder', { categoryName })}
                         />
 
-                    {/* Conditional fields based on selected Category */}
-                    {(watchedCategory === ReceiverAccountCategoryEnum.enum.ALIPAY_ACCOUNT ||
-                        watchedCategory === ReceiverAccountCategoryEnum.enum.WECHAT_ACCOUNT) && (
-                        <div className="space-y-4 border p-3 rounded-md">
-                            <h3 className="text-lg font-semibold">Account Identification</h3>
-                            {watchedIdentifier === ReceiverAccountIdentifierEnum.enum.QR_CODE_IMAGE && (
-                                <FileInputWithLabel<ReceiverAccountSchemaType>
-                                    fieldTitle="QR Code Image"
-                                    nameInSchema="qrCodeImage"
-                                    control={form.control}
-                                    imagePreview={qrCodePreview}
-                                    accept=".jpg,.jpeg,.png,.webp"
-                                />
-                            )}
-                            {watchedIdentifier === ReceiverAccountIdentifierEnum.enum.EMAIL && (
-                                <InputWithLabel<ReceiverAccountSchemaType>
-                                    fieldTitle="Email"
-                                    nameInSchema="email"
-                                    control={form.control}
-                                    placeholder="receiver@example.com"
-                                />
-                            )}
-                            {watchedIdentifier === ReceiverAccountIdentifierEnum.enum.PHONE_NUMBER && (
-                                <InputWithLabel<ReceiverAccountSchemaType>
-                                    fieldTitle="Phone Number"
-                                    nameInSchema="phoneNumber"
-                                    control={form.control}
-                                    placeholder="e.g., +861234567890"
-                                />
-                            )}
-
-                            <div className="flex flex-col gap-2">
-                                {watchedIdentifier !== ReceiverAccountIdentifierEnum.enum.EMAIL && (
-                                    <Button
-                                        type="button"
-                                        variant="link"
-                                        onClick={() => {
-                                            form.setValue("receiverAccountIdentifier", ReceiverAccountIdentifierEnum.enum.EMAIL, { shouldValidate: true });
-                                            form.setValue("qrCodeImage", null);
-                                            setQrCodePreview(null);
-                                            form.setValue("phoneNumber", "");
-                                        }}
-                                        className="text-blue-500 hover:underline text-sm p-0 justify-start"
-                                    >
-                                        Use Email instead
-                                    </Button>
-                                )}
-                                {watchedIdentifier !== ReceiverAccountIdentifierEnum.enum.PHONE_NUMBER && (
-                                    <Button
-                                        type="button"
-                                        variant="link"
-                                        onClick={() => {
-                                            form.setValue("receiverAccountIdentifier", ReceiverAccountIdentifierEnum.enum.PHONE_NUMBER, { shouldValidate: true });
-                                            form.setValue("qrCodeImage", null);
-                                            setQrCodePreview(null);
-                                            form.setValue("email", "");
-                                        }}
-                                        className="text-blue-500 hover:underline text-sm p-0 justify-start"
-                                    >
-                                        Use Phone Number instead
-                                    </Button>
-                                )}
-                                {watchedIdentifier !== ReceiverAccountIdentifierEnum.enum.QR_CODE_IMAGE && (
-                                    <Button
-                                        type="button"
-                                        variant="link"
-                                        onClick={() => {
-                                            form.setValue("receiverAccountIdentifier", ReceiverAccountIdentifierEnum.enum.QR_CODE_IMAGE, { shouldValidate: true });
-                                            form.setValue("email", "");
-                                            form.setValue("phoneNumber", "");
-                                        }}
-                                        className="text-blue-500 hover:underline text-sm p-0 justify-start"
-                                    >
-                                        Use QR Code instead
-                                    </Button>
-                                )}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Bank Account Fields */}
-                    {watchedCategory === ReceiverAccountCategoryEnum.enum.BANK_ACCOUNT && watchedReceiverAccountName != null && watchedReceiverAccountName != '' && (
-                        <div>
-                            <Controller
-                                control={form.control}
-                                name="bankId"
-                                render={({ field }) => (
-                                    <BankSelect
-                                        {...field}
-                                        banks={initialBanks}
-                                        placeholderHint="Select a Bank"
-                                        // --- PASS THE NEW PROP ---
-                                        onMenuStateChange={setIsBankSelectMenuOpen}
-                                        // --- END NEW PROP ---
+                        {(watchedCategory === ReceiverAccountCategoryEnum.enum.ALIPAY_ACCOUNT ||
+                            watchedCategory === ReceiverAccountCategoryEnum.enum.WECHAT_ACCOUNT) && (
+                            <div className="space-y-4 border p-3 rounded-md">
+                                <h3 className="text-lg font-semibold">{t('accountIdentification')}</h3>
+                                {watchedIdentifier === ReceiverAccountIdentifierEnum.enum.QR_CODE_IMAGE && (
+                                    <FileInputWithLabel<ReceiverAccountSchemaType>
+                                        fieldTitle={t('qrCodeImage')}
+                                        nameInSchema="qrCodeImage"
+                                        control={form.control}
+                                        imagePreview={qrCodePreview}
+                                        accept=".jpg,.jpeg,.png,.webp"
                                     />
                                 )}
-                            />
-                            {/* --- CONDITIONAL RENDERING --- */}
-                            {!isBankSelectMenuOpen && ( // Only render if bank select menu is NOT open
-                                <>
-                                    {selectedBankIsOther && watchedBankId != null && (
-                                        <BankNameInput
-                                            nameInSchema="bankName"
-                                            control={form.control}
+                                {watchedIdentifier === ReceiverAccountIdentifierEnum.enum.EMAIL && (
+                                    <InputWithLabel<ReceiverAccountSchemaType>
+                                        fieldTitle={t('email')}
+                                        nameInSchema="email"
+                                        control={form.control}
+                                        placeholder={t('emailPlaceholder')}
+                                    />
+                                )}
+                                {watchedIdentifier === ReceiverAccountIdentifierEnum.enum.PHONE_NUMBER && (
+                                    <InputWithLabel<ReceiverAccountSchemaType>
+                                        fieldTitle={t('phoneNumber')}
+                                        nameInSchema="phoneNumber"
+                                        control={form.control}
+                                        placeholder={t('phoneNumberPlaceholder')}
+                                    />
+                                )}
+
+                                <div className="flex flex-col gap-2">
+                                    {watchedIdentifier !== ReceiverAccountIdentifierEnum.enum.EMAIL && (
+                                        <Button
+                                            type="button"
+                                            variant="link"
+                                            onClick={() => {
+                                                form.setValue("receiverAccountIdentifier", ReceiverAccountIdentifierEnum.enum.EMAIL, { shouldValidate: true });
+                                                form.setValue("qrCodeImage", null);
+                                                setQrCodePreview(null);
+                                                form.setValue("phoneNumber", "");
+                                            }}
+                                            className="text-blue-500 hover:underline text-sm p-0 justify-start"
+                                        >
+                                            {t('useEmailInstead')}
+                                        </Button>
+                                    )}
+                                    {watchedIdentifier !== ReceiverAccountIdentifierEnum.enum.PHONE_NUMBER && (
+                                        <Button
+                                            type="button"
+                                            variant="link"
+                                            onClick={() => {
+                                                form.setValue("receiverAccountIdentifier", ReceiverAccountIdentifierEnum.enum.PHONE_NUMBER, { shouldValidate: true });
+                                                form.setValue("qrCodeImage", null);
+                                                setQrCodePreview(null);
+                                                form.setValue("email", "");
+                                            }}
+                                            className="text-blue-500 hover:underline text-sm p-0 justify-start"
+                                        >
+                                            {t('usePhoneNumberInstead')}
+                                        </Button>
+                                    )}
+                                    {watchedIdentifier !== ReceiverAccountIdentifierEnum.enum.QR_CODE_IMAGE && (
+                                        <Button
+                                            type="button"
+                                            variant="link"
+                                            onClick={() => {
+                                                form.setValue("receiverAccountIdentifier", ReceiverAccountIdentifierEnum.enum.QR_CODE_IMAGE, { shouldValidate: true });
+                                                form.setValue("email", "");
+                                                form.setValue("phoneNumber", "");
+                                            }}
+                                            className="text-blue-500 hover:underline text-sm p-0 justify-start"
+                                        >
+                                            {t('useQrCodeInstead')}
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {watchedCategory === ReceiverAccountCategoryEnum.enum.BANK_ACCOUNT && watchedReceiverAccountName != null && watchedReceiverAccountName != '' && (
+                            <>
+                                <Controller
+                                    control={form.control}
+                                    name="bankId"
+                                    render={({ field }) => (
+                                        <BankSelect
+                                            {...field}
+                                            banks={initialBanks}
+                                            placeholderHint={t('selectBankPlaceholder')}
+                                            onMenuStateChange={setIsBankSelectMenuOpen}
                                         />
                                     )}
-                                    {
-                                        watchedBankId != null && <>
-                                            <CardHolderNameInput
-                                                nameInSchema="cardHolderName"
+                                />
+                                {!isBankSelectMenuOpen && (
+                                    <>
+                                        {selectedBankIsOther && watchedBankId != null && (
+                                            <InputWithLabel
+                                                fieldTitle={t('bankName')}
+                                                nameInSchema="bankName"
                                                 control={form.control}
+                                                placeholder={t('bankNamePlaceholder')}
                                             />
-                                            <BankAccountNumberInput
-                                                nameInSchema="bankAccountNumber"
-                                                control={form.control}
-                                            />
-                                        </>
-                                    }
-                                </>
-                            )}
-                        </div>
-                    )}
-                </div>
+                                        )}
+                                        {
+                                            watchedBankId != null && <>
+                                                <InputWithLabel
+                                                    fieldTitle={t('cardHolderName')}
+                                                    nameInSchema="cardHolderName"
+                                                    control={form.control}
+                                                    placeholder={t('cardHolderNamePlaceholder')}
+                                                />
+                                                <InputWithLabel
+                                                    fieldTitle={t('bankAccountNumber')}
+                                                    nameInSchema="bankAccountNumber"
+                                                    control={form.control}
+                                                    placeholder={t('bankAccountNumberPlaceholder')}
+                                                />
+                                            </>
+                                        }
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </>
                 }
 
-                {/* Submit Button */}
-                {/* --- CONDITIONAL RENDERING --- */}
-                {!isBankSelectMenuOpen && watchedBankId != null && ( // Only render if bank select menu is NOT open
-                    <Button type="submit" className="w-full" disabled={loading}>
-                        {loading ? 'Adding account...' : 'Add Account'}
-                    </Button>
-                )}
+                <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? t('addingAccountButton') : t('addAccountButton')}
+                </Button>
             </form>
         </Form>
     );

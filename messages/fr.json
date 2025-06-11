@@ -63,6 +63,41 @@
     "redirectingToLogin": "Redirection vers la page de connexion...",
     "oauthProcessing": "Traitement de l'authentification...",
     "pleaseWait": "Veuillez patienter pendant que nous vous connectons."
-
+  },
+  "AddReceiverAccountPage": {
+    "pageTitle": "Ajouter un compte bénéficiaire",
+    "loginRequiredMessage": "Veuillez vous connecter pour voir et ajouter des comptes bénéficiaires."
+  },
+  "AddReceiverAccountForm": {
+    "wechat": "WeChat",
+    "alipay": "Alipay",
+    "bank": "Banque",
+    "receiver": "Bénéficiaire",
+    "receiverAccountType": "Type de compte bénéficiaire",
+    "selectPlaceholder": "Sélectionnez WeChat, Alipay ou Compte bancaire",
+    "accountDetails": "Détails du compte {categoryName}",
+    "accountName": "Nom du compte {categoryName}",
+    "accountNamePlaceholder": "ex: Mon compte {categoryName}",
+    "accountIdentification": "Identification du compte",
+    "qrCodeImage": "Image du code QR",
+    "email": "E-mail",
+    "phoneNumber": "Numéro de téléphone",
+    "emailPlaceholder": "beneficiaire@exemple.com",
+    "phoneNumberPlaceholder": "ex: +861234567890",
+    "useEmailInstead": "Utiliser l'e-mail à la place",
+    "usePhoneNumberInstead": "Utiliser le numéro de téléphone à la place",
+    "useQrCodeInstead": "Utiliser le code QR à la place",
+    "bankName": "Nom de la banque",
+    "bankNamePlaceholder": "ex: Banque Industrielle et Commerciale de Chine",
+    "cardHolderName": "Nom du titulaire de la carte",
+    "cardHolderNamePlaceholder": "ex: Jean Dupont",
+    "bankAccountNumber": "Numéro de compte bancaire",
+    "bankAccountNumberPlaceholder": "ex: 1234567890",
+    "selectBankPlaceholder": "Sélectionnez une banque",
+    "addAccountButton": "Ajouter un compte",
+    "addingAccountButton": "Ajout du compte...",
+    "bankLabel": "Banque",
+    "searchBankPlaceholder": "Rechercher une banque...",
+    "selectedBankLogoAlt": "Logo de la banque sélectionnée"
   }
 }

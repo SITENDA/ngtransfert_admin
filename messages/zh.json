@@ -63,5 +63,41 @@
     "redirectingToLogin": "正在重定向到登录页面...",
     "oauthProcessing": "正在处理身份验证...",
     "pleaseWait": "请稍候，我们正在为您登录。"
+  },
+  "AddReceiverAccountPage": {
+    "pageTitle": "添加收款账户",
+    "loginRequiredMessage": "请登录以查看和添加收款账户。"
+  },
+  "AddReceiverAccountForm": {
+    "wechat": "微信",
+    "alipay": "支付宝",
+    "bank": "银行",
+    "receiver": "收款人",
+    "receiverAccountType": "收款账户类型",
+    "selectPlaceholder": "选择微信、支付宝或银行账户",
+    "accountDetails": "{categoryName} 账户详情",
+    "accountName": "{categoryName} 账户名称",
+    "accountNamePlaceholder": "例如: 我的{categoryName}账户",
+    "accountIdentification": "账户识别",
+    "qrCodeImage": "二维码图片",
+    "email": "电子邮件",
+    "phoneNumber": "电话号码",
+    "emailPlaceholder": "收款人@example.com",
+    "phoneNumberPlaceholder": "例如: +861234567890",
+    "useEmailInstead": "改用电子邮件",
+    "usePhoneNumberInstead": "改用电话号码",
+    "useQrCodeInstead": "改用二维码",
+    "bankName": "银行名称",
+    "bankNamePlaceholder": "例如: 中国工商银行",
+    "cardHolderName": "持卡人姓名",
+    "cardHolderNamePlaceholder": "例如: 张三",
+    "bankAccountNumber": "银行账号",
+    "bankAccountNumberPlaceholder": "例如: 1234567890",
+    "selectBankPlaceholder": "选择银行",
+    "addAccountButton": "添加账户",
+    "addingAccountButton": "正在添加账户...",
+    "bankLabel": "银行",
+    "searchBankPlaceholder": "搜索银行...",
+    "selectedBankLogoAlt": "所选银行标志"
   }
 }

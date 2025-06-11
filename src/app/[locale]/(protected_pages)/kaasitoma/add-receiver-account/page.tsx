@@ -6,7 +6,7 @@ import AddReceiverAccountForm from "./AddReceiverAccountForm";
 import PublicWrapper from "@/components/PublicWrapper"; // This should be a Client Component
 import { BackendHttpResponse, Bank, BankDataPayload } from "../../../../../../types/bank";
 import { headers } from 'next/headers'; // Import headers for Server Components
-// import { redirect } from 'next/navigation'; // Uncomment if you want to redirect to login on auth failure
+import { getTranslations } from 'next-intl/server'; // Import getTranslations
 
 type Props = {
     // If you have dynamic routes like [countryName] in the URL,
@@ -16,7 +16,11 @@ type Props = {
 
 const BACKEND_API_BASE_URL = process.env.BACKEND_API_BASE_URL || 'http://localhost:8080';
 
-async function AddReceiverAccount({}: Props) {
+async function AddReceiverAccountPage({}: Props) {
+    // Get translations for the current locale
+    // Pass the namespace(s) you need. 'AddReceiverAccountPage' for this component.
+    const t = await getTranslations('AddReceiverAccountPage');
+
     let banks: Bank[] = [];
     const countryName = "China"; // Example: can be made dynamic
 
@@ -45,10 +49,16 @@ async function AddReceiverAccount({}: Props) {
                     <div className="
                         w-full max-w-2xl mx-auto my-8 p-6 rounded-lg shadow-xl
                         bg-background/80 backdrop-blur-sm border border-border
-                        dark:bg-gray-800/80 dark:border-gray-700
+                        dark:bg-gray-800/80 dark:border-gray-700 min-h-[800px]
                     ">
-                        <h2 className="text-3xl font-bold mb-6 text-center text-foreground">Add Receiver Account</h2>
-                        <p className="text-red-500 text-center mb-4">Please log in to view and add receiver accounts.</p>
+                        {/* Use translated text for the heading */}
+                        <h2 className="text-3xl font-bold mb-6 text-center text-foreground">
+                            {t('pageTitle')}
+                        </h2>
+                        {/* Use translated text for the message */}
+                        <p className="text-red-500 text-center mb-4">
+                            {t('loginRequiredMessage')}
+                        </p>
                         {/* Pass an empty array if not authenticated, as the form expects `initialBanks` */}
                         <AddReceiverAccountForm initialBanks={banks} />
                     </div>
@@ -100,7 +110,10 @@ async function AddReceiverAccount({}: Props) {
                 bg-background/80 backdrop-blur-sm border border-border
                 dark:bg-gray-800/80 dark:border-gray-700 min-h-[800px]
             ">
-                <h2 className="text-3xl font-bold mb-6 text-center text-foreground">Add Receiver Account</h2>
+                {/* Use translated text for the heading */}
+                <h2 className="text-3xl font-bold mb-6 text-center text-foreground">
+                    {t('pageTitle')}
+                </h2>
                 {/* Pass the fetched banks data to the client component */}
                 <AddReceiverAccountForm initialBanks={banks}/>
             </div>
@@ -108,4 +121,4 @@ async function AddReceiverAccount({}: Props) {
     );
 }
 
-export default AddReceiverAccount;
+export default AddReceiverAccountPage;

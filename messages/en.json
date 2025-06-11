@@ -63,5 +63,41 @@
     "redirectingToLogin": "Redirecting to login page...",
     "oauthProcessing": "Processing authentication...",
     "pleaseWait": "Please wait while we log you in."
+  },
+  "AddReceiverAccountPage": {
+    "pageTitle": "Add Receiver Account",
+    "loginRequiredMessage": "Please log in to view and add receiver accounts."
+  },
+  "AddReceiverAccountForm": {
+    "wechat": "WeChat",
+    "alipay": "Alipay",
+    "bank": "Bank",
+    "receiver": "Receiver",
+    "receiverAccountType": "Receiver Account Type",
+    "selectPlaceholder": "Select WeChat, Alipay, or Bank Account",
+    "accountDetails": "{categoryName} Account Details",
+    "accountName": "{categoryName} Account Name",
+    "accountNamePlaceholder": "e.g., My {categoryName} Account",
+    "accountIdentification": "Account Identification",
+    "qrCodeImage": "QR Code Image",
+    "email": "Email",
+    "phoneNumber": "Phone Number",
+    "emailPlaceholder": "receiver@example.com",
+    "phoneNumberPlaceholder": "e.g., +861234567890",
+    "useEmailInstead": "Use Email instead",
+    "usePhoneNumberInstead": "Use Phone Number instead",
+    "useQrCodeInstead": "Use QR Code instead",
+    "bankName": "Bank Name",
+    "bankNamePlaceholder": "e.g., Industrial and Commercial Bank of China",
+    "cardHolderName": "Card Holder Name",
+    "cardHolderNamePlaceholder": "e.g., John Doe",
+    "bankAccountNumber": "Bank Account Number",
+    "bankAccountNumberPlaceholder": "e.g., 1234567890",
+    "selectBankPlaceholder": "Select a Bank",
+    "addAccountButton": "Add Account",
+    "addingAccountButton": "Adding account...",
+    "bankLabel": "Bank",
+    "searchBankPlaceholder": "Search for a bank...",
+    "selectedBankLogoAlt": "Selected bank logo"
   }
 }
