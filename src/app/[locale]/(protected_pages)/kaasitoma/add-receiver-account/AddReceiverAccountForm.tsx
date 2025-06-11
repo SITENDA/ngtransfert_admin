@@ -1,33 +1,30 @@
+// src/app/[locale]/(protected_pages)/kaasitoma/add-receiver-account/AddReceiverAccountForm.tsx
 "use client"
 
 import React, { useEffect, useState } from 'react';
 import { SelectWithLabel } from "@/components/inputs/SelectWithLabel";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form"; // Import Controller
 import { Form } from "@/components/ui/form";
 import {
     ReceiverAccountCategoryEnum,
     ReceiverAccountIdentifierEnum,
     ReceiverAccountSchema,
     ReceiverAccountSchemaType
-} from "@/zod-schemas/receiver-account"; // Updated path
+} from "@/zod-schemas/receiver-account";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { orderedReceiverAccountTypes } from "@/constants/ReceiverAccountType"; // Updated path
+import { orderedReceiverAccountTypes } from "@/constants/ReceiverAccountType";
 import { InputWithLabel } from "@/components/inputs/InputWithLabel";
 import { Button } from "@/components/ui/button";
-import { FileInputWithLabel } from "@/components/inputs/FileInputWithLabel"; // New import
-// import { useGetBankByIdQuery } from '@/services/banks'; // Assuming you have an RTK Query hook for banks
-// import { clientPaths } from '@/constants/frontend'; // Adjust path if needed
-// import { useRouter } from 'next/navigation'; // For Next.js navigation
+import { FileInputWithLabel } from "@/components/inputs/FileInputWithLabel";
+import {Bank} from "../../../../../../types/bank";
+import BankSelect from "@/components/BankSelect";
 
-// Assuming you have components for BankSelector, BankNameInput, CardHolderNameInput, BankAccountNumberInput
-// and they are adapted to use react-hook-form (i.e., accept control and nameInSchema)
-// Placeholder for BankSelector etc if they are not yet migrated to RHF pattern:
-const BankSelector = ({ control, nameInSchema, placeholderHint, ...props }: any) => (
-    <InputWithLabel fieldTitle="Select Bank" nameInSchema={nameInSchema} control={control} placeholder={placeholderHint} {...props} />
+// Placeholder components - these remain if they are used elsewhere
+// or are simple wrappers around InputWithLabel.
+// BankNameInput will be conditionally rendered based on selected bank.
+const BankNameInput = ({ control, nameInSchema, ...props }: any) => (
+    <InputWithLabel fieldTitle="Bank Name" nameInSchema={nameInSchema} control={control} placeholder="e.g., Industrial and Commercial Bank of China" {...props} />
 );
-// const BankNameInput = ({ control, nameInSchema, ...props }: any) => (
-//     <InputWithLabel fieldTitle="Bank Name" nameInSchema={nameInSchema} control={control} placeholder="e.g., Industrial and Commercial Bank of China" {...props} />
-// );
 const CardHolderNameInput = ({ control, nameInSchema, ...props }: any) => (
     <InputWithLabel fieldTitle="Card Holder Name" nameInSchema={nameInSchema} control={control} placeholder="e.g., John Doe" {...props} />
 );
@@ -35,15 +32,19 @@ const BankAccountNumberInput = ({ control, nameInSchema, ...props }: any) => (
     <InputWithLabel fieldTitle="Bank Account Number" nameInSchema={nameInSchema} control={control} placeholder="e.g., 1234567890" {...props} />
 );
 
+// Define the props for AddReceiverAccountForm, including initialBanks
+interface AddReceiverAccountFormProps {
+    initialBanks: Bank[]; // The banks data passed from the Server Component
+}
 
-const AddReceiverAccountForm = () => {
+const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initialBanks }) => {
     // const router = useRouter(); // For Next.js navigation
 
     const defaultEmptyValues: ReceiverAccountSchemaType = {
         receiverAccountName: '',
-        receiverAccountCategory: null, // Start with null to show the placeholder
-        clientId: undefined, // Will be set by useEffect, or remove if always server-side
-        receiverAccountIdentifier: null, // Will be set conditionally based on category
+        receiverAccountCategory: null,
+        clientId: undefined,
+        receiverAccountIdentifier: null,
         qrCodeImage: null,
         email: '',
         phoneNumber: '',
@@ -63,8 +64,8 @@ const AddReceiverAccountForm = () => {
     const watchedCategory = form.watch("receiverAccountCategory");
     const watchedIdentifier = form.watch("receiverAccountIdentifier");
     const watchedQrCodeImage = form.watch("qrCodeImage");
+    const watchedBankId = form.watch("bankId"); // Watch for changes in bankId
     const [categoryName, setCategoryName] = useState<string>('Receiver');
-    // const watchedBankId = form.watch("bankId");
 
     // State for image preview URL
     const [qrCodePreview, setQrCodePreview] = useState<string | null>(null);
@@ -73,11 +74,6 @@ const AddReceiverAccountForm = () => {
     // Simulate current user ID (replace with actual auth context)
     const currentUser = { userId: 123 }; // Replace with actual user context/store
 
-    // Fetch bank data using RTK Query based on selectedBankId from form
-    // const { data: bankData } = useGetBankByIdQuery(watchedBankId!, {
-    //     skip: !watchedBankId || watchedBankId <= 0, // Skip query if no bankId selected
-    // });
-
     // Effect to set clientId from currentUser
     useEffect(() => {
         if (currentUser?.userId) {
@@ -85,15 +81,27 @@ const AddReceiverAccountForm = () => {
         }
     }, [currentUser?.userId, form]);
 
-    // Effect to set bankName if a bank is fetched
-    // useEffect(() => {
-    //     if (bankData && watchedBankId && bankData.bankName !== "Other banks") {
-    //         form.setValue("bankName", bankData.bankName, { shouldValidate: true });
-    //     } else if (bankData?.bankName === "Other banks") {
-    //         // If "Other banks" is selected, clear bankName so user can type
-    //         form.setValue("bankName", "", { shouldValidate: true });
-    //     }
-    // }, [bankData, watchedBankId, form]);
+    // Effect to set bankName and countryId based on the selected bank from initialBanks
+    useEffect(() => {
+        if (watchedBankId !== null && watchedBankId !== undefined) {
+            const selectedBank = initialBanks.find(bank => bank.bankId === watchedBankId);
+            if (selectedBank) {
+                // If "Other banks" is selected, clear bankName so the user can type
+                form.setValue("bankName", selectedBank.bankName === "Other banks" ? "" : selectedBank.bankName, { shouldValidate: true });
+                // Set countryId from the selected bank's country object
+                if (selectedBank.country && selectedBank.country.countryId) {
+                    form.setValue("countryId", selectedBank.country.countryId, { shouldValidate: true });
+                } else {
+                    form.setValue("countryId", null, { shouldValidate: true });
+                }
+            }
+        } else {
+            // Clear bankName and countryId if no bank is selected or bankId is null/undefined
+            form.setValue("bankName", "", { shouldValidate: true });
+            form.setValue("countryId", null, { shouldValidate: true });
+        }
+    }, [watchedBankId, initialBanks, form]);
+
 
     // Effect to set default identifier when category changes to Alipay/WeChat
     useEffect(() => {
@@ -105,17 +113,22 @@ const AddReceiverAccountForm = () => {
             } else if (watchedCategory === ReceiverAccountCategoryEnum.enum.WECHAT_ACCOUNT) {
                 setCategoryName("Wechat");
             }
+            // Clear bank-related fields when switching to Alipay/WeChat
+            form.setValue("bankAccountNumber", "");
+            form.setValue("bankId", null);
+            form.setValue("countryId", null);
+            form.setValue("cardHolderName", "");
+            form.setValue("bankName", "");
         } else if (watchedCategory === ReceiverAccountCategoryEnum.enum.BANK_ACCOUNT) {
             setCategoryName("Bank");
             form.setValue("receiverAccountIdentifier", ReceiverAccountIdentifierEnum.enum.NONE, { shouldValidate: true });
-            // For bank, no identifier needed like QR/Email/Phone. Set to NONE or null
-            // You might want to clear other identifier fields here
+            // Clear QR, email, phone fields when switching to Bank Account
             form.setValue("email", "");
             form.setValue("phoneNumber", "");
             form.setValue("qrCodeImage", null);
             setQrCodePreview(null);
         } else {
-            // If category is null (placeholder state), reset identifier and related fields
+            // If category is null (placeholder state), reset all conditional fields
             form.setValue("receiverAccountIdentifier", null);
             form.setValue("email", "");
             form.setValue("phoneNumber", "");
@@ -126,6 +139,7 @@ const AddReceiverAccountForm = () => {
             form.setValue("countryId", null);
             form.setValue("cardHolderName", "");
             form.setValue("bankName", "");
+            setCategoryName('Receiver'); // Reset category name
         }
     }, [watchedCategory, form]);
 
@@ -151,43 +165,45 @@ const AddReceiverAccountForm = () => {
         // Append all fields to FormData, handling nulls/undefineds
         Object.keys(data).forEach(key => {
             const value = data[key as keyof ReceiverAccountSchemaType];
-            if (value !== null && value !== undefined && value !== "") { // Exclude null, undefined, empty string
+            // Exclude null, undefined, empty string for most fields
+            // For File inputs, specifically check instanceof File
+            if (value !== null && value !== undefined && (typeof value !== 'string' || value !== '')) {
                 if (value instanceof File) {
                     formData.append(key, value);
                 } else if (typeof value === 'number' || typeof value === 'boolean') {
                     formData.append(key, value.toString());
                 } else if (typeof value === 'object' && value !== null) {
-                    // Handle nested objects if any, though your schema doesn't have them
+                    // This handles potential nested objects, but ensure they are serializable if needed
+                    // For example, if 'countryId' was part of a 'country' object, you'd handle it.
+                    // For flat schema, this might not be strictly necessary, but good for robustness.
                     formData.append(key, JSON.stringify(value));
-                }
-                else {
+                } else {
                     formData.append(key, value as string);
                 }
             }
         });
 
         // Specific handling for receiverAccountIdentifier based on your Java DTO
-        // If bank, identifier is NONE. Otherwise, use selected.
+        // Ensure enum values are converted to string for FormData
         formData.set("receiverAccountIdentifier",
             watchedCategory === ReceiverAccountCategoryEnum.enum.BANK_ACCOUNT ?
-                ReceiverAccountIdentifierEnum.enum.NONE :
-                (watchedIdentifier || ReceiverAccountIdentifierEnum.enum.NONE)
+                ReceiverAccountIdentifierEnum.enum.NONE.toString() :
+                (watchedIdentifier?.toString() || ReceiverAccountIdentifierEnum.enum.NONE.toString())
         );
 
-        // Your createReceiverAccount mutation call
+        // Your createReceiverAccount mutation call would go here
         // try {
         //     const response = await createReceiverAccount(formData).unwrap();
         //     if (response?.statusCode === 200 && response?.message === "Receiver account created successfully") {
-        //         // setTickAnimationVisible(true); // You'd integrate this
-        //         form.reset(defaultEmptyValues); // Reset form to default empty values
-        //         // router.push(clientPaths.receiverAccountsPath); // Navigate
+        //         form.reset(defaultEmptyValues);
+        //         // router.push(clientPaths.receiverAccountsPath);
         //     }
         // } catch (error) {
         //     console.error('Error creating receiver account:', error);
-        //     // Handle error, e.g., show a toast
         // } finally {
         //     setLoading(false);
         // }
+
         // Mock success for now:
         setTimeout(() => {
             setLoading(false);
@@ -196,6 +212,9 @@ const AddReceiverAccountForm = () => {
             // router.push(clientPaths.receiverAccountsPath);
         }, 1500);
     };
+
+    // Find the "Other banks" option to determine if BankNameInput should be shown
+    const selectedBankIsOther = watchedBankId && initialBanks.find(bank => bank.bankId === watchedBankId)?.bankName === "Other banks";
 
     return (
         <Form {...form}>
@@ -210,7 +229,7 @@ const AddReceiverAccountForm = () => {
                 />
 
                 {/* Receiver Account Name (always visible if category selected) */}
-                {watchedCategory && ( // Only show if a category is selected
+                {watchedCategory && (
                     <InputWithLabel<ReceiverAccountSchemaType>
                         fieldTitle={`${categoryName} Account Name`}
                         nameInSchema="receiverAccountName"
@@ -255,11 +274,11 @@ const AddReceiverAccountForm = () => {
                         <div className="flex flex-col gap-2">
                             {watchedIdentifier !== ReceiverAccountIdentifierEnum.enum.EMAIL && (
                                 <Button
-                                    type="button" // Important: type="button" to prevent form submission
+                                    type="button"
                                     variant="link"
                                     onClick={() => {
                                         form.setValue("receiverAccountIdentifier", ReceiverAccountIdentifierEnum.enum.EMAIL, { shouldValidate: true });
-                                        form.setValue("qrCodeImage", null); // Clear other identifier fields
+                                        form.setValue("qrCodeImage", null);
                                         setQrCodePreview(null);
                                         form.setValue("phoneNumber", "");
                                     }}
@@ -274,7 +293,7 @@ const AddReceiverAccountForm = () => {
                                     variant="link"
                                     onClick={() => {
                                         form.setValue("receiverAccountIdentifier", ReceiverAccountIdentifierEnum.enum.PHONE_NUMBER, { shouldValidate: true });
-                                        form.setValue("qrCodeImage", null); // Clear other identifier fields
+                                        form.setValue("qrCodeImage", null);
                                         setQrCodePreview(null);
                                         form.setValue("email", "");
                                     }}
@@ -289,7 +308,7 @@ const AddReceiverAccountForm = () => {
                                     variant="link"
                                     onClick={() => {
                                         form.setValue("receiverAccountIdentifier", ReceiverAccountIdentifierEnum.enum.QR_CODE_IMAGE, { shouldValidate: true });
-                                        form.setValue("email", ""); // Clear other identifier fields
+                                        form.setValue("email", "");
                                         form.setValue("phoneNumber", "");
                                     }}
                                     className="text-blue-500 hover:underline text-sm p-0 justify-start"
@@ -305,19 +324,25 @@ const AddReceiverAccountForm = () => {
                 {watchedCategory === ReceiverAccountCategoryEnum.enum.BANK_ACCOUNT && (
                     <div className="space-y-4 border p-3 rounded-md">
                         <h3 className="text-lg font-semibold">Bank Account Details</h3>
-                        <BankSelector
-                            nameInSchema="bankId"
+                        {/* Use Controller for BankSelect */}
+                        <Controller
                             control={form.control}
-                            placeholderHint="Select a Bank" // Adjust as needed
-                            // You might need a `countryId` selector here too if your backend requires it
+                            name="bankId" // This matches the field in your Zod schema
+                            render={({ field }) => (
+                                <BankSelect
+                                    {...field} // Provides onChange, onBlur, value, ref
+                                    banks={initialBanks} // Pass the fetched banks here
+                                    placeholderHint="Select a Bank"
+                                />
+                            )}
                         />
-                        {/* Conditionally render BankNameInput if "Other banks" is selected from BankSelector */}
-                        {/*{bankData?.bankName === "Other banks" && (*/}
-                        {/*    <BankNameInput*/}
-                        {/*        nameInSchema="bankName"*/}
-                        {/*        control={form.control}*/}
-                        {/*    />*/}
-                        {/*)}*/}
+                        {/* Conditionally render BankNameInput if "Other banks" is selected */}
+                        {selectedBankIsOther && (
+                            <BankNameInput
+                                nameInSchema="bankName"
+                                control={form.control}
+                            />
+                        )}
                         <CardHolderNameInput
                             nameInSchema="cardHolderName"
                             control={form.control}
@@ -328,7 +353,6 @@ const AddReceiverAccountForm = () => {
                         />
                     </div>
                 )}
-
 
                 {/* Submit Button */}
                 <Button type="submit" className="w-full" disabled={loading}>

@@ -26,7 +26,7 @@ const storeToken = (token: string): void => {
     // Implement secure token storage here.
     // For development, localStorage might be used, but be aware of XSS risks.
     localStorage.setItem('jwtToken', token);
-    console.log("JWT Token received (mock store):", token);
+    // console.log("JWT Token received (mock store):", token);
     // In a real app, you'd probably send this token to your backend to get an HttpOnly cookie,
     // or set it directly if you're managing HttpOnly cookies from the frontend.
 };
@@ -43,7 +43,7 @@ export default function AuthRedirector({ children }: AuthRedirectorProps) {
         if (token) {
             // This is likely a redirect after a successful OAuth2 login
             storeToken(token); // Store the token
-            console.log("OAuth2 token detected in URL. Redirecting to dashboard.");
+            // console.log("OAuth2 token detected in URL. Redirecting to dashboard.");
             // Clear the token from the URL for cleaner URLs
             // Use router.replace to avoid adding the URL with token to history
             router.replace(`/${locale}/dashboard`);
@@ -52,7 +52,7 @@ export default function AuthRedirector({ children }: AuthRedirectorProps) {
 
         // For subsequent visits, check if a token already exists (e.g., from a previous manual login or OAuth2)
         if (checkJwtExistence()) {
-            console.log("Existing token found. Redirecting to dashboard.");
+            // console.log("Existing token found. Redirecting to dashboard.");
             router.replace(`/${locale}/dashboard`);
             return;
         }

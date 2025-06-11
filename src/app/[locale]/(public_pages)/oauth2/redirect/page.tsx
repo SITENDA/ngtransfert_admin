@@ -2,6 +2,7 @@
 // This is a Server Component
 import { redirect } from 'next/navigation';
 import OAuth2Handler from "@/app/[locale]/(public_pages)/oauth2/redirect/OAuth2Handler";
+import {User} from "next-auth";
 
 export const metadata = {
     title: "Processing Authentication...",
@@ -17,19 +18,6 @@ interface OAuth2RedirectPageProps {
         locale?: string; // Optional locale from Spring Boot
         error?: string; // Error message from Spring Boot (if any)
     };
-}
-
-// Define your UserDTO type based on what your Spring Boot /user/info endpoint returns
-interface UserDTO {
-    userId: number; // Or string (UUID), adjust based on your actual type
-    email: string;
-    username: string;
-    fullName?: string;
-    profileImageUrl?: string;
-    enabled: boolean;
-    registrationDate: string; // e.g., ISO string
-    roles: Array<{ id: number; roleName: string }>; // Adjust based on your Role entity/DTO structure
-    // Add any other fields you expect from your UserDTO
 }
 
 export default async function OAuth2RedirectPage({ params, searchParams }: OAuth2RedirectPageProps) {
@@ -54,7 +42,7 @@ export default async function OAuth2RedirectPage({ params, searchParams }: OAuth
         redirect(`/${currentLocale}/login?error=${encodeURIComponent("Authentication data missing.")}`);
     }
 
-    let fetchedUser: UserDTO | null = null;
+    let fetchedUser: User | null = null;
     let fetchError: string | null = null;
 
     try {
@@ -80,13 +68,13 @@ export default async function OAuth2RedirectPage({ params, searchParams }: OAuth
         }
 
         const result = await response.json();
-        fetchedUser = result.data.user as UserDTO; // Assuming HttpResponse nests user under 'data.user'
+        fetchedUser = result.data.user as User; // Assuming HttpResponse nests user under 'data.user'
 
         if (!fetchedUser || !fetchedUser.userId || !fetchedUser.email) {
             throw new Error('User info from backend is incomplete or not in expected format.');
         }
 
-        console.log('Server Component: User info fetched successfully:', fetchedUser);
+        // console.log('Server Component: User info fetched successfully:', fetchedUser);
 
     } catch (err: any) {
         console.error('Server Component: Error fetching user info from backend:', err);

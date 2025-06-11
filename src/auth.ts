@@ -67,7 +67,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         ekiddako: userFromSpringBoot.ekiddako, // Your new custom property
                     };
 
-                    console.log("Authorize: Returning user object to JWT callback:", nextAuthUser);
+                    // console.log("Authorize: Returning user object to JWT callback:", nextAuthUser);
                     return nextAuthUser;
                 } catch (e) {
                     console.error("Error processing user data in Credentials Provider:", e);
@@ -81,7 +81,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         async jwt({ token, user }) {
             // `user` is the object returned by the `authorize` function of the CredentialsProvider
             if (user) {
-                console.log("JWT Callback: Processing user object from authorize:", user);
+                // console.log("JWT Callback: Processing user object from authorize:", user);
                 // Copy all properties from `user` (which came from `authorize`) to the `token`
                 token.id = user.id;
                 token.email = user.email;
@@ -100,7 +100,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 token.role = (user as any).role;
                 token.ekiddako = (user as any).ekiddako; // Transfer new property
             }
-            console.log("JWT Callback: Returning token:", token);
+            // console.log("JWT Callback: Returning token:", token);
             return token;
         },
         // This callback is called whenever a session is accessed (e.g., via `await auth()`)
@@ -108,7 +108,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         async session({ session, token }) {
             // `token` is the object returned by the `jwt` callback
             // Populate the session object with properties from the JWT token
-            console.log("Session Callback: Processing token:", token);
+            // console.log("Session Callback: Processing token:", token);
 
             if (token.id) session.user.id = token.id as string;
             if (token.email) session.user.email = token.email as string;
@@ -127,7 +127,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             if (token.role) session.user.role = token.role as string;
             if (token.ekiddako) session.user.ekiddako = token.ekiddako as string; // Transfer new property
 
-            console.log("Session Callback: Returning session object:", session);
+            // console.log("Session Callback: Returning session object:", session);
             return session;
         },
         async redirect({ url, baseUrl }) {

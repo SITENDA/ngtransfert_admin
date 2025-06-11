@@ -5,25 +5,13 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation'; // For App Router, use useRouter
 import { signIn } from "next-auth/react"; // Import Next-Auth's signIn for client-side
 import { useAuth } from '@/context/AuthContext'; // Assuming your AuthContext for client-side state
-import { useTranslations } from 'next-intl'; // For translations
-
-// Re-define UserDTO here or import from a shared types file if available
-interface UserDTO {
-    userId: number;
-    email: string;
-    username: string;
-    fullName?: string;
-    profileImageUrl?: string;
-    enabled: boolean;
-    registrationDate: string;
-    roles: Array<{ id: number; roleName: string }>;
-    ekiddako: string;
-}
+import { useTranslations } from 'next-intl';
+import {User} from "next-auth"; // For translations
 
 // Define the props that this Client Component will receive from the Server Component
 interface OAuth2HandlerProps {
     token: string;        // The access token passed from page.tsx
-    fetchedUser: UserDTO; // The fetched UserDTO passed from page.tsx
+    fetchedUser: User; // The fetched UserDTO passed from page.tsx
     locale: string;       // The determined locale passed from page.tsx
 }
 
@@ -50,7 +38,7 @@ export default function OAuth2Handler({ token, fetchedUser, locale }: OAuth2Hand
                 // Remove localStorage token handling, as NextAuth will manage the session via HTTP-only cookies
                 // localStorage.setItem('jwt_token', token); // REMOVE THIS LINE
 
-                console.log('Client Component: Attempting to establish Next-Auth session with fetched user:', fetchedUser);
+                // console.log('Client Component: Attempting to establish Next-Auth session with fetched user:', fetchedUser);
 
                 // --- KEY CHANGE: Call Next-Auth's signIn with fetched data ---
                 // This must happen in a Client Component's useEffect or a Server Action/Route Handler
@@ -62,7 +50,7 @@ export default function OAuth2Handler({ token, fetchedUser, locale }: OAuth2Hand
 
                 login(fetchedUser, token);
 
-                console.log('Client Component: Next-Auth session established. Redirecting to dashboard...');
+                // console.log('Client Component: Next-Auth session established. Redirecting to dashboard...');
                 // --- Redirect the user to your main application dashboard ---
                 // Use router.replace to prevent going back to this redirect page with the back button
                 router.replace(`/${locale}/${fetchedUser.ekiddako}`, { scroll: false });

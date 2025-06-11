@@ -10,20 +10,8 @@ import React, {
 } from 'react';
 import { useSession, signOut } from 'next-auth/react'; // Import hooks from next-auth/react
 import { useRouter } from 'next/navigation'; // For client-side navigation
-import { useLocale } from 'next-intl'; // Assuming next-intl for locale awareness
-
-// Re-define UserDTO here or import from a shared types file if available
-// This is the source structure for the data coming from your backend
-interface UserDTO {
-    userId: number;
-    email: string;
-    username: string;
-    fullName?: string;
-    profileImageUrl?: string;
-    enabled: boolean;
-    registrationDate: string;
-    roles: Array<{ id: number; roleName: string }>;
-}
+import { useLocale } from 'next-intl';
+import {User} from "next-auth"; // Assuming next-intl for locale awareness
 
 // 1. Define the shape of your AuthUser data for the client context
 // This will be the actual shape of the `user` state in your AuthContext
@@ -46,7 +34,7 @@ interface AuthContextType {
     isAuthenticated: boolean;
     loading: boolean; // True while session is being fetched/initialized
     // Adjust login signature to accept full UserDTO and accessToken
-    login: (fetchedUserDto: UserDTO, accessToken: string) => void;
+    login: (fetchedUserDto: User, accessToken: string) => void;
     logout: () => void;
     // Add other functions or states as needed, e.g., `updateProfile`
 }
@@ -95,12 +83,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setUser(authUser);
             setIsAuthenticated(true);
             setLoading(false);
-            console.log('AuthContext: User authenticated from NextAuth session with full data.');
+            // console.log('AuthContext: User authenticated from NextAuth session with full data.');
         } else if (status === 'unauthenticated') {
             setUser(null);
             setIsAuthenticated(false);
             setLoading(false);
-            console.log('AuthContext: User unauthenticated by NextAuth session.');
+            // console.log('AuthContext: User unauthenticated by NextAuth session.');
         }
     }, [session, status]);
 
@@ -126,7 +114,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             };
             setUser(newUser);
             setIsAuthenticated(true);
-            console.log('AuthContext: Manual login successful with full UserDTO.');
+            // console.log('AuthContext: Manual login successful with full UserDTO.');
         },
         []
     );

@@ -14,7 +14,7 @@ export const metadata = {
 export default async function DashboardPage() {
     const session = await auth();
     const user = session?.user;
-    console.log("User in dashboard is : ", user);
+    // console.log("User in dashboard is : ", user);
 
     if (!user) {
         redirect("/");

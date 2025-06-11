@@ -41,7 +41,7 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
     useEffect(() => {
         if (locale) {
             localStorage.setItem('preferred_locale', locale);
-            console.log(`[LoginFormComponent] Current locale '${locale}' saved to localStorage.`);
+            // console.log(`[LoginFormComponent] Current locale '${locale}' saved to localStorage.`);
         }
     }, [locale]); // Rerun this effect if the locale changes (e.g., via a language switcher)
 
@@ -77,7 +77,7 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
             if (response.ok && data.status === 200 && data.message === "Successful login" && data.data?.token) {
                 const jwtToken = data.data.token;
                 localStorage.setItem('jwtToken', jwtToken); // Store token
-                console.log("Manual login successful, token:", jwtToken);
+                // console.log("Manual login successful, token:", jwtToken);
                 router.push(`/${locale}/dashboard`);
             } else {
                 console.error("Manual login failed:", data.message);
