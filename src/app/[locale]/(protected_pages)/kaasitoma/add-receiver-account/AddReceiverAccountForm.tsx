@@ -54,7 +54,7 @@ const AddReceiverAccountForm = () => {
                     fieldTitle="Receiver account type"
                     nameInSchema="receiverAccountCategory"
                     data={orderedReceiverAccountTypes}
-                    // control={form.control} {/* IMPORTANT: Uncommented this line */}
+                    control={form.control}
                 />
 
                 <InputWithLabel<ReceiverAccountSchemaType>

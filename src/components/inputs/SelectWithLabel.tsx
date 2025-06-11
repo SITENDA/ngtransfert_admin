@@ -1,6 +1,6 @@
 "use client"
 
-import { useFormContext } from "react-hook-form"
+import { FieldValues, FieldPath, Control } from "react-hook-form" // Import FieldValues here
 import {
     FormControl,
     FormField,
@@ -16,34 +16,31 @@ import {
     SelectTrigger,
     SelectValue
 } from '@/components/ui/select'
-import {ReactNode} from "react";
-
-// type DataObj = {
-//     id: string,
-//     description: string,
-// }
+import { ReactNode } from "react";
 
 type DataObj = {
     label: string,
     value: string,
-    icon: ReactNode,
+    icon?: ReactNode, // Make icon optional if it might not always be present
 }
 
-type Props<S> = {   //Typescript generic, S may be T, we have used S to represent the schema that we pass in.
+// --- IMPORTANT: Add `extends FieldValues` to the generic type S ---
+type Props<S extends FieldValues> = {   //Typescript generic, S may be T, we have used S to represent the schema that we pass in.
     fieldTitle: string,
-    nameInSchema: keyof S & string,
+    nameInSchema: FieldPath<S>, // Or FieldPath<S> for more precision, as in InputWithLabel
     data: DataObj[],
     className?: string,
+    control: Control<S>,
 }
 
-export function SelectWithLabel<S>({
-    fieldTitle, nameInSchema, data, className
-}: Props<S>) {
-    const form = useFormContext()
+// --- Add `extends FieldValues` to the function's generic parameter definition ---
+export function SelectWithLabel<S extends FieldValues>({
+                                                           fieldTitle, nameInSchema, data, className, control
+                                                       }: Props<S>) {
 
     return (
         <FormField
-            control={form.control}
+            control={control} // form.control is now correctly typed as Control<S>
             name={nameInSchema}
             render={({ field }) => (
                 <FormItem>
@@ -69,10 +66,10 @@ export function SelectWithLabel<S>({
                                 <SelectItem
                                     key={`${nameInSchema}_${item.value}`}
                                     value={item.value}
-                                    className="flex items-center" // Add flex and alignment classes
+                                    className="flex items-center"
                                 >
-                                    <span>{item.label}</span> {/* Wrap the label in a span */}
-                                    {item.icon && <span className="ml-2">{item.icon}</span>} {/* Add margin-left */}
+                                    <span>{item.label}</span>
+                                    {item.icon && <span className="ml-2">{item.icon}</span>}
                                 </SelectItem>
                             ))}
                         </SelectContent>
