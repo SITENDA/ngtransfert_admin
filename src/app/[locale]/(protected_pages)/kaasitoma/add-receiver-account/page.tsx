@@ -65,7 +65,7 @@ async function AddReceiverAccount({}: Props) {
             next: { revalidate: 3600 }, // Revalidate every hour
         });
 
-        console.log("Response is : ", response); // Log the full response object
+        // console.log("Response is : ", response); // Log the full response object
 
         if (!response.ok) {
             console.error(`Failed to fetch banks: ${response.status} ${response.statusText}`);
@@ -82,7 +82,7 @@ async function AddReceiverAccount({}: Props) {
             // Check if data and banks array exist and statusCode is 200
             if (backendResponse.statusCode === 200 && backendResponse.data && backendResponse.data.banks) {
                 banks = backendResponse.data.banks;
-                console.log("Banks fetched on server:", banks);
+                // console.log("Banks fetched on server:", banks);
             } else {
                 console.warn("Backend response was OK, but 'data' or 'banks' array was missing/empty:", backendResponse);
                 banks = []; // Ensure banks is an empty array if data structure is unexpected

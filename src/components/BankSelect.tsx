@@ -1,4 +1,4 @@
-// src/components/BankSelect.tsx (or wherever your BankSelect is)
+// src/components/BankSelect.tsx
 "use client";
 
 import React, { forwardRef, useMemo } from 'react';
@@ -6,12 +6,11 @@ import Select from 'react-select';
 import { useTheme } from 'next-themes';
 
 import CountryFlag from '@/components/CountryFlag';
-import ImageDisplay from '@/components/ImageDisplay';
+import ImageDisplay from '@/components/ImageDisplay'; // Assuming this is correct
 
-import BankLogo from "@/components/BankLogo";
+import BankLogo from "@/components/BankLogo"; // Assuming this is correct
 import {Bank} from "../../types/bank";
 
-// Define props for BankSelect to integrate with react-hook-form's Controller
 interface BankSelectProps {
     banks: Bank[];
     value?: number | null;
@@ -20,14 +19,13 @@ interface BankSelectProps {
     name: string;
     ref: React.Ref<any>;
     placeholderHint?: string;
-    // --- ADD THIS NEW PROP ---
     onMenuStateChange?: (isOpen: boolean) => void;
-    // --- END NEW PROP ---
 }
 
 // Helper component to render the custom option label
 const BankOptionLabel: React.FC<{ bank: Bank }> = ({ bank }) => (
     <div style={{ display: 'flex', alignItems: 'center' }}>
+        {/* BankLogo likely already handles path correction if it works in dropdown */}
         <BankLogo logoUrl={bank.bankLogoUrl} alt={bank.bankName} />
         {bank.bankName} ({bank.bankNameEng} - {bank.bankShortName})
         {bank.country?.countryFlagUrl && bank.country?.countryName && (
@@ -43,11 +41,10 @@ const BankSelect = forwardRef<any, BankSelectProps>(({
                                                          onBlur,
                                                          name,
                                                          placeholderHint,
-                                                         onMenuStateChange, // Destructure the new prop
+                                                         onMenuStateChange,
                                                          ...props
                                                      }, ref) => {
     const { theme } = useTheme();
-    const isDarkTheme = theme === 'dark';
 
     const options = useMemo(() => {
         const otherBanksOption = banks.find(bank => bank.bankName === "Other banks");
@@ -95,15 +92,33 @@ const BankSelect = forwardRef<any, BankSelectProps>(({
     const singleValueColor = 'var(--select-single-value-text)';
 
 
+    // --- NEW LOGIC HERE ---
+    const bankLogoUrlForDisplay = useMemo(() => {
+        if (currentBank?.bankLogoUrl) {
+            // Check if it's already an absolute URL (e.g., starts with http:// or https://)
+            // or if it already starts with a /
+            if (currentBank.bankLogoUrl.startsWith('http://') ||
+                currentBank.bankLogoUrl.startsWith('https://') ||
+                currentBank.bankLogoUrl.startsWith('/')) {
+                return currentBank.bankLogoUrl;
+            } else {
+                // Prepend a slash if it's a relative path assumed to be in /public
+                return `/${currentBank.bankLogoUrl}`;
+            }
+        }
+        return null;
+    }, [currentBank?.bankLogoUrl]);
+    // --- END NEW LOGIC ---
+
     return (
         <div className="mb-3" style={{ width: '100%' }}>
             <label htmlFor="bankSelector" className="form-label" style={{ color: controlTextColor }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <span style={{ marginRight: '5px' }}>Bank</span>
-                    {currentBank?.bankLogoUrl && (
+                    {bankLogoUrlForDisplay && ( // Use the new formatted URL
                         <ImageDisplay
-                            imageUrl={currentBank.bankLogoUrl}
-                            title={`${currentBank.bankName} logo`}
+                            imageUrl={bankLogoUrlForDisplay}
+                            title={`${currentBank?.bankName || 'Selected bank'} logo`}
                             style={{ marginLeft: '8px' }}
                         />
                     )}
@@ -121,10 +136,8 @@ const BankSelect = forwardRef<any, BankSelectProps>(({
                 placeholder={placeholderHint || "Search for a bank..."}
                 menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
                 menuPosition="fixed"
-                // --- ADD THESE PROPS ---
                 onMenuOpen={() => onMenuStateChange?.(true)}
                 onMenuClose={() => onMenuStateChange?.(false)}
-                // --- END ADDED PROPS ---
                 styles={{
                     control: (base, state) => ({
                         ...base,

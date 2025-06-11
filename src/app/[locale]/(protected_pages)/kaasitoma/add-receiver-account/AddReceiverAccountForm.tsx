@@ -189,8 +189,9 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
                     placeholderHint="Select WeChat, Alipay, or Bank Account"
                 />
                 {watchedCategory &&
-                <div className="space-y-4 border p-3 rounded-md">
-                    <h3 className="text-lg font-semibold">{categoryName} Account Details</h3>
+                <div>
+                    {/*className="space-y-4 border p-3 rounded-md"*/}
+                    {/*<h3 className="text-lg font-semibold">{categoryName} Account Details</h3>*/}
                     {/* Receiver Account Name (always visible if category selected) */}
                         <InputWithLabel<ReceiverAccountSchemaType>
                             fieldTitle={`${categoryName} Account Name`}
