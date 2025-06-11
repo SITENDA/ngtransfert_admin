@@ -1,6 +1,6 @@
 "use client"
 
-import { FieldValues, FieldPath, Control } from "react-hook-form" // Import FieldValues here
+import { FieldValues, FieldPath, Control } from "react-hook-form"
 import {
     FormControl,
     FormField,
@@ -24,23 +24,29 @@ type DataObj = {
     icon?: ReactNode, // Make icon optional if it might not always be present
 }
 
-// --- IMPORTANT: Add `extends FieldValues` to the generic type S ---
-type Props<S extends FieldValues> = {   //Typescript generic, S may be T, we have used S to represent the schema that we pass in.
+type Props<S extends FieldValues> = {
     fieldTitle: string,
-    nameInSchema: FieldPath<S>, // Or FieldPath<S> for more precision, as in InputWithLabel
+    nameInSchema: FieldPath<S>,
     data: DataObj[],
     className?: string,
     control: Control<S>,
+    placeholderHint?: string; // New prop for the placeholder hint
 }
 
-// --- Add `extends FieldValues` to the function's generic parameter definition ---
 export function SelectWithLabel<S extends FieldValues>({
-                                                           fieldTitle, nameInSchema, data, className, control
+                                                           fieldTitle,
+                                                           nameInSchema,
+                                                           data,
+                                                           className,
+                                                           control,
+                                                           placeholderHint = "Select an option", // Default placeholder hint
                                                        }: Props<S>) {
+
+    // No need for processedData or allOption logic here, as we're not adding an "All" item
 
     return (
         <FormField
-            control={control} // form.control is now correctly typed as Control<S>
+            control={control}
             name={nameInSchema}
             render={({ field }) => (
                 <FormItem>
@@ -53,12 +59,15 @@ export function SelectWithLabel<S extends FieldValues>({
                     <Select
                         {...field}
                         onValueChange={field.onChange}
+                        // Important: Ensure the value is correctly passed and null/undefined for placeholder
+                        value={field.value || ""} // If field.value is null/undefined, set it to "" for Select component
                     >
                         <FormControl>
                             <SelectTrigger
                                 id={nameInSchema}
                                 className={`w-full max-w-xs ${className}`}>
-                                <SelectValue placeholder="Select" />
+                                {/* Use the placeholderHint prop here */}
+                                <SelectValue placeholder={placeholderHint} />
                             </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -73,7 +82,6 @@ export function SelectWithLabel<S extends FieldValues>({
                                 </SelectItem>
                             ))}
                         </SelectContent>
-
                     </Select>
                     <FormMessage />
                 </FormItem>
