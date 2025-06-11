@@ -49,9 +49,9 @@ export function SelectWithLabel<S extends FieldValues>({
             control={control}
             name={nameInSchema}
             render={({ field }) => (
-                <FormItem>
+                <FormItem className="text-left">
                     <FormLabel
-                        className="text-xl"
+                        className="text-sm text-left"
                         htmlFor={nameInSchema}>
                         {fieldTitle}
                     </FormLabel>

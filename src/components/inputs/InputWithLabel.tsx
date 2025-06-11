@@ -29,9 +29,9 @@ export function InputWithLabel<S extends FieldValues>({ // S must extend FieldVa
             control={control}
             name={nameInSchema}
             render={({ field }) => (
-                <FormItem>
+                <FormItem className="text-left">
                     <FormLabel
-                        className="text-xl font-medium"
+                        className="text-left text-sm"
                         htmlFor={nameInSchema}>
                         {fieldTitle}
                     </FormLabel>

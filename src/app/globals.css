@@ -1,0 +1,50 @@
+/* src/app/globals.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Define your custom CSS properties for theming */
+:root {
+    /* Light Theme Colors */
+    --background: hsl(240 10% 3.9%); /* Example: A very light gray background */
+    --foreground: hsl(240 5.9% 10%); /* Example: A dark text color */
+
+    /* Light Theme Specific colors for react-select */
+    --select-control-bg: #ffffff;        /* Solid White */
+    --select-control-border: #d1d5db;     /* Light Gray Border */
+    --select-control-text: #1f2937;      /* Dark Gray Text */
+    --select-option-hover-bg: #e5e7eb;    /* Light Gray on Hover */
+    --select-option-active-bg: #d1d5db;   /* Slightly darker gray for selected */
+    --select-option-text: #1f2937;       /* Dark Gray Text for options */
+    --select-single-value-text: #1f2937; /* Dark Gray for selected value in input */
+
+    /* Other application colors */
+    --primary: hsl(222.2 47.4% 11.2%);
+    --primary-foreground: hsl(210 40% 98%);
+}
+
+.dark {
+    /* Dark Theme Colors */
+    --background: hsl(240 5.9% 10%);   /* Example: A dark background */
+    --foreground: hsl(210 40% 98%);    /* Example: A light text color */
+
+    /* Dark Theme Specific colors for react-select */
+    --select-control-bg: #374151;        /* Dark Gray (e.g., slate-700) */
+    --select-control-border: #4b5563;     /* Slightly lighter dark gray (slate-600) */
+    --select-control-text: #f9fafb;      /* Very Light Gray (zinc-50) */
+    --select-option-hover-bg: #4b5563;    /* Slightly lighter dark gray on Hover */
+    --select-option-active-bg: #6b7280;   /* Even lighter dark gray for selected */
+    --select-option-text: #f9fafb;       /* Very Light Gray Text for options */
+    --select-single-value-text: #f9fafb; /* Very Light Gray for selected value in input */
+
+    /* Other application colors for dark theme */
+    --primary: hsl(210 40% 98%);
+    --primary-foreground: hsl(222.2 47.4% 11.2%);
+}
+
+/* Make sure your body has a background color too, though react-select styles should override for its elements */
+body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+}

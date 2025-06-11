@@ -1,25 +1,28 @@
-// src/components/banks/BankSelect.tsx
+// src/components/BankSelect.tsx (or wherever your BankSelect is)
 "use client";
 
 import React, { forwardRef, useMemo } from 'react';
 import Select from 'react-select';
-import { useTheme } from 'next-themes'; // Import useTheme from next-themes
+import { useTheme } from 'next-themes';
 
-import CountryFlag from '@/components/CountryFlag'; // Adjust path as needed
-import ImageDisplay from '@/components/ImageDisplay'; // Adjust path as needed
+import CountryFlag from '@/components/CountryFlag';
+import ImageDisplay from '@/components/ImageDisplay';
 
 import BankLogo from "@/components/BankLogo";
-import {Bank} from "../../types/bank"; // Your Bank interface
+import {Bank} from "../../types/bank";
 
 // Define props for BankSelect to integrate with react-hook-form's Controller
 interface BankSelectProps {
-    banks: Bank[]; // The list of banks passed from the parent component
-    value?: number | null; // The selected bankId from react-hook-form
-    onChange: (bankId: number | null) => void; // Function to update react-hook-form value
-    onBlur: () => void; // Function to signal blur to react-hook-form
-    name: string; // The name of the field in the form schema (e.g., "bankId")
-    ref: React.Ref<any>; // Ref for the Select component
+    banks: Bank[];
+    value?: number | null;
+    onChange: (bankId: number | null) => void;
+    onBlur: () => void;
+    name: string;
+    ref: React.Ref<any>;
     placeholderHint?: string;
+    // --- ADD THIS NEW PROP ---
+    onMenuStateChange?: (isOpen: boolean) => void;
+    // --- END NEW PROP ---
 }
 
 // Helper component to render the custom option label
@@ -40,20 +43,20 @@ const BankSelect = forwardRef<any, BankSelectProps>(({
                                                          onBlur,
                                                          name,
                                                          placeholderHint,
+                                                         onMenuStateChange, // Destructure the new prop
                                                          ...props
                                                      }, ref) => {
-    const { theme } = useTheme(); // Use useTheme to get the current theme
-    const isDarkTheme = theme === 'dark'; // Determine if it's dark theme
+    const { theme } = useTheme();
+    const isDarkTheme = theme === 'dark';
 
-    // Prepare options for the Select component from the 'banks' prop
     const options = useMemo(() => {
         const otherBanksOption = banks.find(bank => bank.bankName === "Other banks");
         const filteredBanks = banks.filter(bank => bank.bankName !== "Other banks");
 
         let data = filteredBanks.map(bank => ({
             value: bank.bankId,
-            label: <BankOptionLabel bank={bank} />, // Using the helper component for rich label
-            bankDetails: bank // Store full bank object for easy lookup
+            label: <BankOptionLabel bank={bank} />,
+            bankDetails: bank
         }));
 
         if (otherBanksOption) {
@@ -66,20 +69,16 @@ const BankSelect = forwardRef<any, BankSelectProps>(({
         return data;
     }, [banks]);
 
-    // Find the currently selected option based on the 'value' prop from react-hook-form
     const selectedOption = options.find(option => option.value === value) || null;
-
-    // Determine the current bank to display logo beside label
     const currentBank = selectedOption?.bankDetails || null;
 
     const handleBankChange = (selected: any) => {
-        // Pass the selected value (bankId) back to react-hook-form
         onChange(selected ? selected.value : null);
     };
 
     const filterOption = (option: { data: { bankDetails: Bank; }; }, searchText: string) => {
         const searchRegex = new RegExp(searchText, 'i');
-        const bank = option.data.bankDetails; // Access the stored bankDetails
+        const bank = option.data.bankDetails;
         return (
             searchRegex.test(bank.bankName) ||
             searchRegex.test(bank.bankNameEng) ||
@@ -87,8 +86,6 @@ const BankSelect = forwardRef<any, BankSelectProps>(({
         );
     };
 
-    // Define colors using CSS variables for better theme integration
-    // These should be defined in your global CSS (e.g., globals.css or base.css)
     const controlBgColor = 'var(--select-control-bg)';
     const controlBorderColor = 'var(--select-control-border)';
     const controlTextColor = 'var(--select-control-text)';
@@ -122,15 +119,21 @@ const BankSelect = forwardRef<any, BankSelectProps>(({
                 isSearchable
                 filterOption={filterOption}
                 placeholder={placeholderHint || "Search for a bank..."}
+                menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
+                menuPosition="fixed"
+                // --- ADD THESE PROPS ---
+                onMenuOpen={() => onMenuStateChange?.(true)}
+                onMenuClose={() => onMenuStateChange?.(false)}
+                // --- END ADDED PROPS ---
                 styles={{
                     control: (base, state) => ({
                         ...base,
                         backgroundColor: controlBgColor,
                         color: controlTextColor,
                         border: `1px solid ${controlBorderColor}`,
-                        boxShadow: state.isFocused ? `0 0 0 1px ${controlBorderColor}` : 'none', // Add focus styling
+                        boxShadow: state.isFocused ? `0 0 0 1px ${controlBorderColor}` : 'none',
                         '&:hover': {
-                            borderColor: controlBorderColor, // Maintain border on hover
+                            borderColor: controlBorderColor,
                         },
                     }),
                     option: (provided, state) => ({
@@ -138,8 +141,8 @@ const BankSelect = forwardRef<any, BankSelectProps>(({
                         backgroundColor: state.isFocused
                             ? optionHoverBg
                             : state.isSelected
-                                ? optionActiveBg // Or a different color for selected
-                                : controlBgColor, // Default background
+                                ? optionActiveBg
+                                : controlBgColor,
                         color: optionTextColor,
                         cursor: 'pointer',
                     }),
@@ -149,22 +152,23 @@ const BankSelect = forwardRef<any, BankSelectProps>(({
                     }),
                     input: (provided) => ({
                         ...provided,
-                        color: controlTextColor, // Text color for the input area
+                        color: controlTextColor,
                     }),
                     placeholder: (provided) => ({
                         ...provided,
-                        color: controlTextColor + '80', // Lighter placeholder text
+                        color: controlTextColor + '80',
                     }),
                     menu: (provided) => ({
                         ...provided,
-                        backgroundColor: controlBgColor, // Background of the dropdown menu
+                        backgroundColor: controlBgColor,
                         border: `1px solid ${controlBorderColor}`,
                         boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                        zIndex: 9999,
                     }),
-                    noOptionsMessage: (provided) => ({
-                        ...provided,
-                        color: optionTextColor,
-                    }),
+                    menuPortal: (base) => ({
+                        ...base,
+                        zIndex: 9999
+                    })
                 }}
                 {...props}
             />
