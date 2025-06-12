@@ -39,7 +39,7 @@ export function InputWithLabel<S extends FieldValues>({ // S must extend FieldVa
                     <FormControl>
                         <Input
                             id={nameInSchema}
-                            className={`w-full max-w-xs disabled:text-blue-500 dark:disabled:text-yellow-300 disabled:opacity-75 text-base placeholder:text-base  ${className}`}
+                            className={`w-full max-w-xs disabled:text-blue-500 dark:disabled:text-yellow-300 disabled:opacity-75 text-base placeholder:text-sm  ${className}`}
                             {...props}
                             {...field}
                         />

@@ -15,7 +15,7 @@ type DataObj = {
 };
 
 // Export a function that returns the translated array
-export const useOrderedReceiverAccountTypes = (): DataObj[] => {
+export const useOrderedReceiverAccountCategories = (): DataObj[] => {
     // Get translations for the 'AddReceiverAccountForm' namespace
     const t = useTranslations('AddReceiverAccountForm');
 

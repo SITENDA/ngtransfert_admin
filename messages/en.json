@@ -74,7 +74,7 @@
     "bank": "Bank",
     "receiver": "Receiver",
     "receiverAccountType": "Receiver Account Type",
-    "selectPlaceholder": "Select WeChat, Alipay, or Bank Account",
+    "selectCategoryPlaceholder": "Select WeChat, Alipay, or Bank",
     "accountDetails": "{categoryName} Account Details",
     "accountName": "{categoryName} Account Name",
     "accountNamePlaceholder": "e.g., My {categoryName} Account",
@@ -101,6 +101,11 @@
     "selectedBankLogoAlt": "Selected bank logo",
     "qrCodePreviewAlt": "QR Code Image Preview",
     "chooseFile": "Choose File",
-    "noFileSelected": "No file selected"
+    "noFileSelected": "No file selected",
+    "receiverAccountIdentifier": "Identifier",
+    "qrcodeIdentifier": "QR Code",
+    "phoneIdentifier": "Phone Number",
+    "emailIdentifier": "Email Address",
+    "selectIdentifierPlaceholder": "Select QR code, phone number, or email"
   }
 }

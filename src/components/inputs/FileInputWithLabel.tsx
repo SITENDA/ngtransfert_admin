@@ -31,9 +31,9 @@ export function FileInputWithLabel<S extends FieldValues>({
             control={control}
             name={nameInSchema}
             render={({ field: { value, onChange, ...fieldProps } }) => (
-                <FormItem>
+                <FormItem className="text-left">
                     <FormLabel
-                        className="text-xl font-medium"
+                        className="text-sm text-left font-medium"
                         htmlFor={nameInSchema}>
                         {fieldTitle}
                     </FormLabel>
@@ -77,7 +77,7 @@ export function FileInputWithLabel<S extends FieldValues>({
                         >
                             {t('chooseFile')} {/* Translated button text */}
                         </Button>
-                        <span className="text-base text-gray-500">
+                        <span className="text-sm text-gray-500">
                             {/* Display selected file name or translated "No file selected" */}
                             {selectedFileName || t('noFileSelected')}
                         </span>
