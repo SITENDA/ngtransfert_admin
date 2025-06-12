@@ -108,5 +108,29 @@
     "emailIdentifier": "Email Address",
     "selectIdentifierPlaceholder": "Select QR code, phone number, or email",
     "reset" : "Reset"
+  },
+  "ReceiverAccountsPage": {
+    "pageTitle": "Manage Receiver Accounts"
+  },
+  "ReceiverAccountsForm": {
+    "noAccountsFound": "No receiver accounts found.",
+    "accountName": "Account Name",
+    "accountCategory": "Category",
+    "identifierType": "Identifier Type",
+    "identifierValue": "Identifier Value",
+    "bankName": "Bank Name",
+    "country": "Country",
+    "cardHolderName": "Card Holder Name",
+    "creationDate": "Creation Date",
+    "qrCodeLink": "QR Code Link",
+    "noQrCode": "No QR Code",
+    "notApplicable": "N/A",
+    "alipay_account": "Alipay Account",
+    "wechat_account": "WeChat Account",
+    "bank_account": "Bank Account",
+    "qr_code_image": "QR Code Image",
+    "email": "Email",
+    "phone_number": "Phone Number",
+    "none": "None"
   }
 }

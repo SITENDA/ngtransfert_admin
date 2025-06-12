@@ -108,5 +108,29 @@
     "selectIdentifierPlaceholder": "选择二维码、手机号码或电子邮件",
     "receiverAccountIdentifier": "识别码",
     "reset": "重置"
+  },
+  "ReceiverAccountsPage": {
+    "pageTitle": "管理收款账户"
+  },
+  "ReceiverAccountsForm": {
+    "noAccountsFound": "未找到收款账户。",
+    "accountName": "账户名称",
+    "accountCategory": "类别",
+    "identifierType": "标识类型",
+    "identifierValue": "标识值",
+    "bankName": "银行名称",
+    "country": "国家",
+    "cardHolderName": "持卡人姓名",
+    "creationDate": "创建日期",
+    "qrCodeLink": "二维码链接",
+    "noQrCode": "无二维码",
+    "notApplicable": "不适用",
+    "alipay_account": "支付宝账户",
+    "wechat_account": "微信账户",
+    "bank_account": "银行账户",
+    "qr_code_image": "二维码图片",
+    "email": "邮箱",
+    "phone_number": "电话号码",
+    "none": "无"
   }
 }

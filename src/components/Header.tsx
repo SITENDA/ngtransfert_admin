@@ -28,7 +28,8 @@ export default async function Header() {
   };
   const session = await auth(); // Use auth() to get the session
   const user = session?.user;
-  // console.log("User is : ", user);
+  const ekiddakoProp = user?.ekiddako || null;
+
 
   return (
     <header className="animate-slide bg-background h-20 p-4 border-b sticky top-0 z-20 w-full shadow-md ">
@@ -66,9 +67,7 @@ export default async function Header() {
           <ModeToggle label={t('toggleTheme')} themeNames={{ light: t('light'), dark: t('dark'), system: t('system') }} />
           <LocaleToggle label={t('changeLanguage')}/>
 
-          {!user ? (
-    <SignInButton />
-) : (
+          {!user?.fullName ? (<SignInButton hideOnPathSegment={ekiddakoProp} />) : (
     <DropdownMenu>
         <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">

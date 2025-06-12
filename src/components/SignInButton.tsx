@@ -1,28 +1,36 @@
 // components/SignInButton.tsx
 "use client";
 
-import Link from "next/link"; // Used for client-side navigation
-import { Button } from "@/components/ui/button"; // Assuming you have your UI button component here
-import { useTranslations, useLocale } from 'next-intl'; // Import useTranslations AND useLocale hook
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useTranslations, useLocale } from 'next-intl';
+import { usePathname } from 'next/navigation'; // <-- Import usePathname for client-side path access
 
 /**
- * Renders a button that navigates the user to the login/registration page.
- * The button text and the link path are translated/locale-aware using next-intl.
+ * Props for SignInButton component.
+ * @param {string | undefined | null} hideOnPathSegment - If the current client-side path contains this segment, the button will not render.
  */
-const SignInButton = () => {
-  // Get the translation function for the 'Common' namespace
-  const t = useTranslations('HomePage');
-  // Get the current locale from next-intl
-  const locale = useLocale();
+interface SignInButtonProps {
+    hideOnPathSegment?: string | null;
+}
 
-  return (
-      // The `Button` component wraps a `Link` component, allowing Next.js client-side navigation.
-      // `asChild` prop means the Button will render its child (the Link) without wrapping it in an extra DOM element.
-      <Button asChild className="px-6 py-3 text-lg font-bold">
-        {/* Construct the href dynamically with the current locale */}
-        <Link href={`/${locale}/login`}>{t('signIn')}</Link>
-      </Button>
-  );
+const SignInButton = ({ hideOnPathSegment }: SignInButtonProps) => {
+    const t = useTranslations('HomePage');
+    const locale = useLocale();
+    const pathname = usePathname(); // Get the current client-side URL pathname
+
+    // Check if `hideOnPathSegment` is provided and is a non-empty string,
+    // AND if the current pathname includes that segment.
+    if (hideOnPathSegment && pathname.includes(hideOnPathSegment)) {
+        return null; // If conditions met, render nothing
+    }
+
+    return (
+        <Button asChild className="px-6 py-3 text-lg font-bold">
+            {/* Construct the href dynamically with the current locale */}
+            <Link href={`/${locale}/login`}>{t('signIn')}</Link>
+        </Button>
+    );
 };
 
-export default SignInButton; // Export the component as a default export
+export default SignInButton;

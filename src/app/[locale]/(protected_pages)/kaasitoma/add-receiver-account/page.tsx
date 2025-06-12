@@ -3,103 +3,88 @@
 // No "use client" here!
 
 import AddReceiverAccountForm from "./AddReceiverAccountForm";
-import PublicWrapper from "@/components/PublicWrapper"; // This should be a Client Component
+import PublicWrapper from "@/components/PublicWrapper";
 import { BackendHttpResponse, Bank, BankDataPayload } from "../../../../../../types/bank";
-import { headers } from 'next/headers'; // Import headers for Server Components
-import { getTranslations } from 'next-intl/server'; // Import getTranslations
+import { getTranslations } from 'next-intl/server';
+import { auth } from "@/auth";
+import { User } from "next-auth"; // Import User type from next-auth
+import { redirect } from 'next/navigation'; // <-- Import redirect function
 
 type Props = {
-    // If you have dynamic routes like [countryName] in the URL,
-    // you would access it via `params`:
-    // params: { countryName: string; };
+    // Add params to the props to access the locale
+    params: { locale: string };
 };
 
 const BACKEND_API_BASE_URL = process.env.BACKEND_API_BASE_URL || 'http://localhost:8080';
 
-async function AddReceiverAccountPage({}: Props) {
+async function AddReceiverAccountPage({ params }: Props) { // Destructure params from props
     // Get translations for the current locale
-    // Pass the namespace(s) you need. 'AddReceiverAccountPage' for this component.
     const t = await getTranslations('AddReceiverAccountPage');
 
+    // Fetch the session. This is a Server Component, so `auth()` is appropriate.
+    const session = await auth();
+    // Safely get the user object. It can be null or undefined if not authenticated.
+    const user: User | undefined | null = session?.user;
+
+    // --- Authentication Guard and Redirection Logic ---
+    // If there's no session, or no user object in the session, or user.userId is missing,
+    // redirect to the login page for the current locale.
+    if (!session || !user || !user.userId) {
+        console.warn(`AddReceiverAccountPage: User is not authenticated or userId is missing. Redirecting to /${params.locale}/login`);
+        // Use params.locale to ensure the redirect is locale-aware
+        redirect(`/${params.locale}/login`);
+    }
+
+    // Now, `user` and `user.userId` are guaranteed to be defined because of the redirect above.
+    const clientId = user.userId;
+
     let banks: Bank[] = [];
-    const countryName = "China"; // Example: can be made dynamic
+    const countryName = "China"; // Example: can be made dynamic based on user or other context
 
     try {
-        const headersList = await headers(); // Get headers from the incoming request to the Next.js server
-        const cookieHeader = headersList.get('cookie'); // Get the raw 'Cookie' header string
+        // Since we are already authenticated via `auth()` helper,
+        // and assuming your `auth()` helper properly establishes sessions and potentially cookies,
+        // you might not need to manually parse `refreshToken` from cookies for this fetch,
+        // IF your backend already handles session cookies or your `session.accessToken` is sufficient.
+        // However, if your `BACKEND_API_BASE_URL` is a different origin and relies on the Authorization header,
+        // we'll explicitly use session.accessToken for this server-to-server fetch.
 
-        let authToken: string | null = null;
-        // Parse the cookie string to find your refresh token
-        // Assuming your refresh token is stored in an HttpOnly cookie named 'refreshToken'
-        if (cookieHeader) {
-            const cookies = cookieHeader.split(';').map((cookie: string) => cookie.trim());
-            const refreshTokenCookie = cookies.find((cookie: string) => cookie.startsWith('refreshToken='));
-            if (refreshTokenCookie) {
-                authToken = refreshTokenCookie.split('=')[1]; // Extract the token value
-            }
-        }
+        // Get accessToken from session for server-side fetch to backend
+        const accessToken = session.accessToken; // Assumes accessToken is populated in session via NextAuth.js callbacks
 
-        if (!authToken) {
-            console.warn("No authentication token found in cookies for server-side fetch. User might not be logged in or token expired.");
-            // If authentication is mandatory for this page, you might redirect the user:
-            // redirect('/login'); // Requires `import { redirect } from 'next/navigation';`
-            // For now, we'll return an empty array and let the UI handle the "not authenticated" state.
-            return (
-                <PublicWrapper>
-                    <div className="
-                        w-full max-w-2xl mx-auto my-8 p-6 rounded-lg shadow-xl
-                        bg-background/80 backdrop-blur-sm border border-border
-                        dark:bg-gray-800/80 dark:border-gray-700 min-h-[800px]
-                    ">
-                        {/* Use translated text for the heading */}
-                        <h2 className="text-3xl font-bold mb-6 text-center text-foreground">
-                            {t('pageTitle')}
-                        </h2>
-                        {/* Use translated text for the message */}
-                        <p className="text-red-500 text-center mb-4">
-                            {t('loginRequiredMessage')}
-                        </p>
-                        {/* Pass an empty array if not authenticated, as the form expects `initialBanks` */}
-                        <AddReceiverAccountForm initialBanks={banks} />
-                    </div>
-                </PublicWrapper>
-            );
+        if (!accessToken) {
+            console.warn("AddReceiverAccountPage: Access token not found in session for fetching banks. Redirecting to login.");
+            redirect(`/${params.locale}/login`); // Redirect if access token is unexpectedly missing
         }
 
         // Make the authenticated fetch request to your backend
         const response = await fetch(`${BACKEND_API_BASE_URL}/kaasitoma/banks/getAllBanksByCountryName?countryName=${countryName}`, {
             headers: {
-                'Authorization': `Bearer ${authToken}`, // Attach the token to the Authorization header
-                'Content-Type': 'application/json', // Essential for JSON APIs
+                'Authorization': `Bearer ${accessToken}`, // Use accessToken from NextAuth session
+                'Content-Type': 'application/json',
             },
             next: { revalidate: 3600 }, // Revalidate every hour
         });
 
-        // console.log("Response is : ", response); // Log the full response object
-
         if (!response.ok) {
-            console.error(`Failed to fetch banks: ${response.status} ${response.statusText}`);
-            // If the status is 401 (Unauthorized) or 403 (Forbidden), specifically log it
+            console.error(`AddReceiverAccountPage: Failed to fetch banks: ${response.status} ${response.statusText}`);
             if (response.status === 401 || response.status === 403) {
-                console.error("Server-side bank fetch failed: Authentication or Authorization issue.");
-                // You might trigger a client-side re-authentication or redirect here
-                // Note: Redirects from Server Components are handled differently than client-side redirects.
+                console.error("AddReceiverAccountPage: Server-side bank fetch failed due to Authentication or Authorization. Redirecting to login.");
+                redirect(`/${params.locale}/login`); // Redirect on auth/authz issues with bank fetch
             }
-            banks = [];
+            banks = []; // Fallback to empty banks on other errors
         } else {
             const backendResponse: BackendHttpResponse<BankDataPayload> = await response.json();
 
-            // Check if data and banks array exist and statusCode is 200
             if (backendResponse.statusCode === 200 && backendResponse.data && backendResponse.data.banks) {
                 banks = backendResponse.data.banks;
-                // console.log("Banks fetched on server:", banks);
             } else {
-                console.warn("Backend response was OK, but 'data' or 'banks' array was missing/empty:", backendResponse);
-                banks = []; // Ensure banks is an empty array if data structure is unexpected
+                console.warn("AddReceiverAccountPage: Backend response for banks was OK, but 'data' or 'banks' array was missing/empty:", backendResponse);
+                banks = [];
             }
         }
     } catch (error) {
-        console.error("Error fetching banks:", error);
+        console.error("AddReceiverAccountPage: Error fetching banks:", error);
         banks = []; // Handle network errors or JSON parsing errors
     }
 
@@ -110,12 +95,11 @@ async function AddReceiverAccountPage({}: Props) {
                 bg-background/80 backdrop-blur-sm border border-border
                 dark:bg-gray-800/80 dark:border-gray-700 min-h-[800px]
             ">
-                {/* Use translated text for the heading */}
                 <h2 className="text-3xl font-bold mb-6 text-center text-foreground">
                     {t('pageTitle')}
                 </h2>
-                {/* Pass the fetched banks data to the client component */}
-                <AddReceiverAccountForm initialBanks={banks}/>
+                {/* Pass the fetched banks data and the guaranteed clientId to the client component */}
+                <AddReceiverAccountForm initialBanks={banks} clientId={clientId} />
             </div>
         </PublicWrapper>
     );

@@ -108,5 +108,29 @@
     "selectIdentifierPlaceholder": "Sélectionnez un code QR, un numéro de téléphone ou un e-mail",
     "receiverAccountIdentifier": "Identifiant",
     "reset": "Réinitialiser"
+  },
+  "ReceiverAccountsPage": {
+    "pageTitle": "Gérer les comptes de bénéficiaires"
+  },
+  "ReceiverAccountsForm": {
+    "noAccountsFound": "Aucun compte de bénéficiaire trouvé.",
+    "accountName": "Nom du compte",
+    "accountCategory": "Catégorie",
+    "identifierType": "Type d'identifiant",
+    "identifierValue": "Valeur de l'identifiant",
+    "bankName": "Nom de la banque",
+    "country": "Pays",
+    "cardHolderName": "Nom du titulaire de la carte",
+    "creationDate": "Date de création",
+    "qrCodeLink": "Lien du code QR",
+    "noQrCode": "Pas de code QR",
+    "notApplicable": "N/A",
+    "alipay_account": "Compte Alipay",
+    "wechat_account": "Compte WeChat",
+    "bank_account": "Compte bancaire",
+    "qr_code_image": "Image du code QR",
+    "email": "E-mail",
+    "phone_number": "Numéro de téléphone",
+    "none": "Aucun"
   }
 }

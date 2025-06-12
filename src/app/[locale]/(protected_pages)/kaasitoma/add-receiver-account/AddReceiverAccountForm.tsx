@@ -18,25 +18,27 @@ import { Button } from "@/components/ui/button";
 import { FileInputWithLabel } from "@/components/inputs/FileInputWithLabel";
 import {Bank} from "../../../../../../types/bank";
 import BankSelect from "@/components/BankSelect";
-import { useTranslations } from 'next-intl';
+import {useLocale, useTranslations} from 'next-intl';
 import {useReceiverAccountIdentifiers} from "@/constants/ReceiverAccountIdentifier";
 import {createReceiverAccountAction} from "@/lib/actions/receiver-account";
 import { useRouter } from 'next/navigation';
 
 interface AddReceiverAccountFormProps {
     initialBanks: Bank[];
+    clientId: number;
 }
 
-const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initialBanks }) => {
+const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initialBanks, clientId }) => {
 
     const t = useTranslations('AddReceiverAccountForm');
     const receiverAccountIdentifiers = useReceiverAccountIdentifiers();
     const router = useRouter();
+    const locale = useLocale();
 
     const defaultEmptyValues: ReceiverAccountSchemaType = {
         receiverAccountName: '',
         receiverAccountCategory: null,
-        clientId: undefined,
+        clientId: clientId,
         receiverAccountIdentifier: null,
         qrCodeImage: null,
         email: '',
@@ -64,14 +66,6 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
     const [qrCodePreview, setQrCodePreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [isBankSelectMenuOpen, setIsBankSelectMenuOpen] = useState(false);
-
-    const currentUser = { userId: 123 }; // Mock current user
-
-    useEffect(() => {
-        if (currentUser?.userId) {
-            form.setValue("clientId", currentUser.userId, { shouldValidate: true });
-        }
-    }, [currentUser?.userId, form]);
 
     useEffect(() => {
         if (watchedCategory === ReceiverAccountCategoryEnum.enum.ALIPAY_ACCOUNT) {
@@ -159,7 +153,7 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
 
         formData.append("receiverAccountName", data.receiverAccountName);
         formData.append("receiverAccountType", data.receiverAccountCategory || ''); // Ensure enum value is a string
-        formData.append("clientId", data.clientId?.toString() || ''); // Convert number to string
+        formData.append("clientId", clientId.toString()); // Convert number to string
         formData.append("receiverAccountIdentifier", data.receiverAccountIdentifier || ''); // Ensure enum value is a string
 
         // Handle the QR code image (MultipartFile).
@@ -192,9 +186,9 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
             alert(result.message); // Display success message from the Server Action
             form.reset(defaultEmptyValues); // Reset all form fields to their initial empty states
             setQrCodePreview(null); // Clear the QR code preview image
-
+            const redirectPath = `/${locale}/kaasitoma/receiver-accounts`;
             // Optionally, navigate to a different page after successful submission
-            router.push('/kaasitoma/receiver-accounts'); // **Adjust this path** to your actual receiver accounts list route
+            router.push(redirectPath); // **Adjust this path** to your actual receiver accounts list route
         } else {
             // Handle submission errors: display a user-friendly message and log details.
             alert(`${t('submissionError')}: ${result.message}`); // Display error message

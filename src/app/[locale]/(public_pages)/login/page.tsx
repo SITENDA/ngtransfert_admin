@@ -21,13 +21,10 @@ export default async function LoginPage({ params }: LoginPageProps) {
     const session = await auth();
     const user: User | undefined = session?.user;
 
-    console.log("User in login component is: ", user);
-
     // Check if the user has a fullName AND a value for user.ekiddako
     if (user?.fullName && user?.ekiddako) {
         const locale = params.locale; // Get the current locale from params
-        const redirectPath = `/${locale}${user.ekiddako}`; // Construct the full path with locale
-        console.log(`Redirecting authenticated user to: ${redirectPath}`);
+        const redirectPath = `/${locale}/${user.ekiddako}`; // Construct the full path with locale
         redirect(redirectPath); // Perform the server-side redirect
     }
 
