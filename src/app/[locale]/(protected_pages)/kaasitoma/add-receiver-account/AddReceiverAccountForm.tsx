@@ -19,16 +19,19 @@ import { FileInputWithLabel } from "@/components/inputs/FileInputWithLabel";
 import {Bank} from "../../../../../../types/bank";
 import BankSelect from "@/components/BankSelect";
 import { useTranslations } from 'next-intl';
-import {useReceiverAccountIdentifiers} from "@/constants/ReceiverAccountIdentifier"; // Make sure this path is correct if moved
+import {useReceiverAccountIdentifiers} from "@/constants/ReceiverAccountIdentifier";
+import {createReceiverAccountAction} from "@/lib/actions/receiver-account";
+import { useRouter } from 'next/navigation';
 
 interface AddReceiverAccountFormProps {
     initialBanks: Bank[];
 }
 
 const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initialBanks }) => {
+
     const t = useTranslations('AddReceiverAccountForm');
-    // Ensure useReceiverAccountIdentifiers is imported from the correct place
     const receiverAccountIdentifiers = useReceiverAccountIdentifiers();
+    const router = useRouter();
 
     const defaultEmptyValues: ReceiverAccountSchemaType = {
         receiverAccountName: '',
@@ -145,47 +148,58 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
         }
     }, [watchedQrCodeImage]);
 
+    // Handle form submission using the Server Action
     const onSubmit = async (data: ReceiverAccountSchemaType) => {
-        setLoading(true);
-        console.log("Form submitted with data:", data);
+        setLoading(true); // Start loading state
+        console.log("Form data prepared for submission:", data);
 
+        // Manually construct FormData for the Server Action.
+        // Field names must match the `@RequestParam` names in your Spring Boot controller.
         const formData = new FormData();
-        Object.keys(data).forEach(key => {
-            const value = data[key as keyof ReceiverAccountSchemaType];
-            // Only append non-null, non-undefined, non-empty strings, and actual File objects
-            if (value !== null && value !== undefined && (typeof value !== 'string' || value !== '')) {
-                if (value instanceof File) {
-                    formData.append(key, value);
-                } else if (typeof value === 'number') {
-                    formData.append(key, value.toString());
-                } else if (typeof value === 'object' && value !== null) { // For objects that are not File
-                    // Make sure value is not an empty object that could be an issue
-                    if (Object.keys(value).length > 0) {
-                        formData.append(key, JSON.stringify(value));
-                    }
-                } else {
-                    formData.append(key, value as string);
-                }
-            }
-        });
 
-        // Ensure receiverAccountIdentifier is correctly set for submission
-        formData.set("receiverAccountIdentifier",
-            watchedCategory === ReceiverAccountCategoryEnum.enum.BANK_ACCOUNT ?
-                ReceiverAccountIdentifierEnum.enum.NONE.toString() :
-                (watchedIdentifier?.toString() || ReceiverAccountIdentifierEnum.enum.NONE.toString())
-        );
+        formData.append("receiverAccountName", data.receiverAccountName);
+        formData.append("receiverAccountType", data.receiverAccountCategory || ''); // Ensure enum value is a string
+        formData.append("clientId", data.clientId?.toString() || ''); // Convert number to string
+        formData.append("receiverAccountIdentifier", data.receiverAccountIdentifier || ''); // Ensure enum value is a string
 
-        // Simulate API call
-        setTimeout(() => {
-            setLoading(false);
-            alert(t('formSubmissionSuccess'));
-            form.reset(defaultEmptyValues);
-            // After reset, clear the selected file name from FileInputWithLabel
-            // This would typically involve a ref to the FileInputWithLabel if it needs external reset,
-            // but setting defaultEmptyValues for `qrCodeImage: null` should handle it via react-hook-form's reset.
-            // If you have a custom display for the filename within FileInputWithLabel, ensure its state is reset too.
-        }, 1500);
+        // Handle the QR code image (MultipartFile).
+        if (data.qrCodeImage instanceof File) {
+            formData.append("qrCodeImage", data.qrCodeImage);
+        } else {
+            // If `qrCodeImage` is not a File object, and your Spring Boot `@RequestParam`
+            // for `MultipartFile` is not optional (`@Nullable` or `Optional<MultipartFile>`),
+            // you might need to send an empty Blob as a placeholder to prevent a missing parameter error.
+            // If your backend handles missing `MultipartFile` parameters gracefully, this `else` block
+            // can be omitted, or you can send an empty Blob like below if needed:
+            // formData.append("qrCodeImage", new Blob([]), "empty.txt");
+        }
+
+        // Append other optional fields, converting null/undefined to empty strings for consistency
+        formData.append("email", data.email || '');
+        formData.append("phoneNumber", data.phoneNumber || '');
+        formData.append("bankAccountNumber", data.bankAccountNumber?.toString() || ''); // Convert number to string
+        formData.append("bankId", data.bankId?.toString() || ''); // Convert number to string
+        formData.append("countryId", data.countryId?.toString() || ''); // Convert number to string
+        formData.append("cardHolderName", data.cardHolderName || '');
+        formData.append("bankName", data.bankName || '');
+
+        // Call the `createReceiverAccountAction` Server Action
+        const result = await createReceiverAccountAction(formData);
+
+        setLoading(false); // End loading state
+
+        if (result.success) {
+            alert(result.message); // Display success message from the Server Action
+            form.reset(defaultEmptyValues); // Reset all form fields to their initial empty states
+            setQrCodePreview(null); // Clear the QR code preview image
+
+            // Optionally, navigate to a different page after successful submission
+            router.push('/kaasitoma/receiver-accounts'); // **Adjust this path** to your actual receiver accounts list route
+        } else {
+            // Handle submission errors: display a user-friendly message and log details.
+            alert(`${t('submissionError')}: ${result.message}`); // Display error message
+            console.error('Receiver account creation failed:', result.message);
+        }
     };
 
     const selectedBankIsOther = watchedBankId && initialBanks.find(bank => bank.bankId === watchedBankId)?.bankName === "Other banks";
