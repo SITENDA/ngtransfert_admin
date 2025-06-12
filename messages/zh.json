@@ -106,6 +106,7 @@
     "phoneIdentifier": "手机号码",
     "emailIdentifier": "电子邮件",
     "selectIdentifierPlaceholder": "选择二维码、手机号码或电子邮件",
-    "receiverAccountIdentifier": "识别码"
+    "receiverAccountIdentifier": "识别码",
+    "reset": "重置"
   }
 }

@@ -294,9 +294,14 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
                     </>
                 }
 
-                <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? t('addingAccountButton') : t('addAccountButton')}
-                </Button>
+                <div className="flex gap-2">
+                    <Button type="submit" className="w-3/4" variant="default" title={t('addAccountButton')} disabled={loading}>
+                        {loading ? t('addingAccountButton') : t('addAccountButton')}
+                    </Button>
+                    <Button type="button" className="w-1/2" variant="destructive" title={t('reset')} disabled={loading} onClick={() => form.reset(defaultEmptyValues)}>
+                        { t('reset') }
+                    </Button>
+                </div>
             </form>
         </Form>
     );

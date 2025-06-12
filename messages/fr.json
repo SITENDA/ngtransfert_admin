@@ -106,6 +106,7 @@
     "phoneIdentifier": "Numéro de Téléphone",
     "emailIdentifier": "Adresse E-mail",
     "selectIdentifierPlaceholder": "Sélectionnez un code QR, un numéro de téléphone ou un e-mail",
-    "receiverAccountIdentifier": "Identifiant"
+    "receiverAccountIdentifier": "Identifiant",
+    "reset": "Réinitialiser"
   }
 }

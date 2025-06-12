@@ -106,6 +106,7 @@
     "qrcodeIdentifier": "QR Code",
     "phoneIdentifier": "Phone Number",
     "emailIdentifier": "Email Address",
-    "selectIdentifierPlaceholder": "Select QR code, phone number, or email"
+    "selectIdentifierPlaceholder": "Select QR code, phone number, or email",
+    "reset" : "Reset"
   }
 }
