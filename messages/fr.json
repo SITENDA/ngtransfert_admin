@@ -98,6 +98,9 @@
     "addingAccountButton": "Ajout du compte...",
     "bankLabel": "Banque",
     "searchBankPlaceholder": "Rechercher une banque...",
-    "selectedBankLogoAlt": "Logo de la banque sélectionnée"
+    "selectedBankLogoAlt": "Logo de la banque sélectionnée",
+    "qrCodePreviewAlt": "Aperçu de l'image du code QR",
+    "chooseFile": "Choisir un fichier",
+    "noFileSelected": "Aucun fichier sélectionné"
   }
 }

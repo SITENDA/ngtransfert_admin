@@ -98,6 +98,9 @@
     "addingAccountButton": "正在添加账户...",
     "bankLabel": "银行",
     "searchBankPlaceholder": "搜索银行...",
-    "selectedBankLogoAlt": "所选银行标志"
+    "selectedBankLogoAlt": "所选银行标志",
+    "qrCodePreviewAlt": "二维码图片预览",
+    "chooseFile": "选择文件",
+    "noFileSelected": "未选择文件"
   }
 }
