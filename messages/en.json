@@ -112,7 +112,7 @@
   "ReceiverAccountsPage": {
     "pageTitle": "Manage Receiver Accounts"
   },
-  "ReceiverAccountsForm": {
+  "ReceiverAccountsTable": {
     "noAccountsFound": "No receiver accounts found.",
     "accountName": "Account Name",
     "accountCategory": "Category",
@@ -175,5 +175,38 @@
     "submittingTransfer": "Submitting...",
     "reset": "Reset",
     "submissionError": "Submission Error"
+  },
+  "ReceiverAccountDetailsPage": {
+    "pageTitle": "Receiver Account Details",
+    "errorLoadingAccountDetails": "Error loading account details. Please try again.",
+    "generalDetails": "General Details",
+    "receiverAccountId": "Account ID",
+    "receiverAccountName": "Account Name",
+    "receiverAccountCategory": "Account Category",
+    "receiverAccountIdentifier": "Identifier Type",
+    "identifierValue": "Identifier Value",
+    "notApplicable": "N/A",
+    "viewQrCode": "View QR Code",
+    "noQrCode": "No QR Code",
+    "qrCodeImage": "QR Code Image",
+    "viewImage": "View Image",
+    "email": "Email",
+    "phoneNumber": "Phone Number",
+    "bankDetails": "Bank Details",
+    "bankAccountNumber": "Bank Account Number",
+    "cardHolderName": "Card Holder Name",
+    "bankName": "Bank Name",
+    "bankLogo": "Bank Logo",
+    "bankCountry": "Bank Country",
+    "additionalInfo": "Additional Information",
+    "clientId": "Client ID",
+    "creationDate": "Creation Date",
+    "lastUpdatedDate": "Last Updated Date",
+    "alipay_account": "Alipay Account",
+    "wechat_account": "WeChat Account",
+    "bank_account": "Bank Account",
+    "qr_code_image": "QR Code Image",
+    "phone_number": "Phone Number",
+    "none": "None"
   }
 }

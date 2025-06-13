@@ -112,7 +112,7 @@
   "ReceiverAccountsPage": {
     "pageTitle": "管理收款账户"
   },
-  "ReceiverAccountsForm": {
+  "ReceiverAccountsTable": {
     "noAccountsFound": "未找到收款账户。",
     "accountName": "账户名称",
     "accountCategory": "类别",
@@ -155,5 +155,38 @@
   "ApplyForTransferPage": {
     "pageTitle": "申请转账",
     "applyForTransferButtonLabel": "申请转账"
+  },
+  "ReceiverAccountDetailsPage": {
+    "pageTitle": "收款账户详情",
+    "errorLoadingAccountDetails": "加载账户详情时出错。请重试。",
+    "generalDetails": "一般详情",
+    "receiverAccountId": "账户ID",
+    "receiverAccountName": "账户名称",
+    "receiverAccountCategory": "账户类别",
+    "receiverAccountIdentifier": "识别类型",
+    "identifierValue": "识别值",
+    "notApplicable": "不适用",
+    "viewQrCode": "查看二维码",
+    "noQrCode": "无二维码",
+    "qrCodeImage": "二维码图片",
+    "viewImage": "查看图片",
+    "email": "电子邮件",
+    "phoneNumber": "电话号码",
+    "bankDetails": "银行详情",
+    "bankAccountNumber": "银行账号",
+    "cardHolderName": "持卡人姓名",
+    "bankName": "银行名称",
+    "bankLogo": "银行标志",
+    "bankCountry": "银行国家",
+    "additionalInfo": "附加信息",
+    "clientId": "客户ID",
+    "creationDate": "创建日期",
+    "lastUpdatedDate": "最后更新日期",
+    "alipay_account": "支付宝账户",
+    "wechat_account": "微信账户",
+    "bank_account": "银行账户",
+    "qr_code_image": "二维码图片",
+    "phone_number": "电话号码",
+    "none": "无"
   }
 }

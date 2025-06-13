@@ -112,7 +112,7 @@
   "ReceiverAccountsPage": {
     "pageTitle": "Gérer les comptes de bénéficiaires"
   },
-  "ReceiverAccountsForm": {
+  "ReceiverAccountsTable": {
     "noAccountsFound": "Aucun compte de bénéficiaire trouvé.",
     "accountName": "Nom du compte",
     "accountCategory": "Catégorie",
@@ -155,5 +155,38 @@
   "ApplyForTransferPage": {
     "pageTitle": "Demander un Transfert",
     "applyForTransferButtonLabel": "Demander un transfert"
+  },
+  "ReceiverAccountDetailsPage": {
+    "pageTitle": "Détails du Compte Bénéficiaire",
+    "errorLoadingAccountDetails": "Erreur lors du chargement des détails du compte. Veuillez réessayer.",
+    "generalDetails": "Détails Généraux",
+    "receiverAccountId": "ID du Compte",
+    "receiverAccountName": "Nom du Compte",
+    "receiverAccountCategory": "Catégorie de Compte",
+    "receiverAccountIdentifier": "Type d'Identifiant",
+    "identifierValue": "Valeur de l'Identifiant",
+    "notApplicable": "N/A",
+    "viewQrCode": "Voir le Code QR",
+    "noQrCode": "Pas de Code QR",
+    "qrCodeImage": "Image du Code QR",
+    "viewImage": "Voir l'image",
+    "email": "E-mail",
+    "phoneNumber": "Numéro de Téléphone",
+    "bankDetails": "Détails Bancaires",
+    "bankAccountNumber": "Numéro de Compte Bancaire",
+    "cardHolderName": "Nom du Titulaire de la Carte",
+    "bankName": "Nom de la Banque",
+    "bankLogo": "Logo de la Banque",
+    "bankCountry": "Pays de la Banque",
+    "additionalInfo": "Informations Supplémentaires",
+    "clientId": "ID Client",
+    "creationDate": "Date de Création",
+    "lastUpdatedDate": "Date de Dernière Mise à Jour",
+    "alipay_account": "Compte Alipay",
+    "wechat_account": "Compte WeChat",
+    "bank_account": "Compte Bancaire",
+    "qr_code_image": "Image du Code QR",
+    "phone_number": "Numéro de Téléphone",
+    "none": "Aucun"
   }
 }

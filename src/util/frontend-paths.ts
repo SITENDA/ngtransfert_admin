@@ -1,5 +1,6 @@
 export const kaasitomaPaths = {
+    loginPath: "/login",
     addReceiverAccountPath: "/kaasitoma/receiver-accounts/add-receiver-account",
     applyForTransferPath: "/kaasitoma/transfer-requests/apply-for-transfer",
-    loginPath: "/login"
+    receiverAccountDetailsPath: "/kaasitoma/receiver-accounts/receiver-account-details?id=",
 }

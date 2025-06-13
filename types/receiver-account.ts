@@ -29,3 +29,7 @@ export interface ReceiverAccount {
 export interface ReceiverAccountsPayload {
     receiverAccounts: ReceiverAccount[];
 }
+
+export interface ReceiverAccountPayload {
+    receiverAccount: ReceiverAccount;
+}

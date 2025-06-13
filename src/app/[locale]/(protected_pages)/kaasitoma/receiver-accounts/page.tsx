@@ -7,7 +7,7 @@ import {getLocale, getTranslations} from 'next-intl/server';
 import { headers } from 'next/headers';
 import { User } from 'next-auth';
 
-import ReceiverAccountsForm from "./ReceiverAccountsForm";
+import ReceiverAccountsTable from "./ReceiverAccountsTable";
 import PublicWrapper from "@/components/PublicWrapper";
 import {
     ReceiverAccount,
@@ -98,7 +98,7 @@ export default async function ReceiverAccountsPage() {
                 <h2 className="text-3xl font-bold mb-6 text-center text-foreground">
                     {t('pageTitle')}
                 </h2>
-                <ReceiverAccountsForm initialReceiverAccounts={receiverAccounts} />
+                <ReceiverAccountsTable initialReceiverAccounts={receiverAccounts} />
             </div>
         </PublicWrapper>
     );
