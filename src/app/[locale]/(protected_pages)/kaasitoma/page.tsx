@@ -36,7 +36,8 @@ export default async function KaasitomaDashboardPage() {
         // Replaced PublicWrapper with a simple div for basic centering and background
         <div className="min-h-screen  flex items-center justify-center p-4 font-sans">
             {/* Main card container */}
-            <Card className="w-full flex-grow mx-auto my-8 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 flex flex-col h-full max-w-screen-lg rounded-xl shadow-lg">
+            <Card className="w-full flex-grow mx-auto my-8 bg-background/80 backdrop-blur-sm border border-border
+                dark:bg-gray-800/80 dark:border-gray-700 text-gray-900 dark:text-gray-100 flex flex-col h-full max-w-screen-lg rounded-xl shadow-lg">
                 <CardHeader className="flex flex-row justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <CardTitle className="text-3xl font-bold text-blue-700 dark:text-blue-300">Client Dashboard</CardTitle>
                     {/* Button for adding receiver account. Using onClick for demonstration. */}

@@ -21,7 +21,7 @@ const BASE_GET_RECEIVER_ACCOUNTS_PROXY_URL = `${process.env.NEXT_PUBLIC_APP_URL}
 
 export default async function ReceiverAccountsPage() {
     const t = await getTranslations('ReceiverAccountsPage');
-    const locale = getLocale();
+    const locale = await getLocale();
 
     // 1. Authentication Check (Server-side Guard)
     const session = await getSession();

@@ -6,7 +6,7 @@ import React from 'react';
 import getSession from "@/lib/getSession";
 import { User } from "next-auth";
 import { redirect } from 'next/navigation';
-import {getLocale} from "next-intl/server"; // <-- Import redirect
+import {getLocale, getTranslations} from "next-intl/server"; // <-- Import redirect
 
 export const metadata = {
     title: "Login / Register | NG Transfert",
@@ -16,7 +16,8 @@ export const metadata = {
 export default async function LoginPage() {
     const session = await getSession();
     const user: User | undefined = session?.user;
-    const locale = getLocale();
+    const locale = await getLocale();
+    const t = await getTranslations('Common');
 
     // Check if the user has a fullName AND a value for user.ekiddako
     if (user?.fullName && user?.ekiddako) {
@@ -29,7 +30,16 @@ export default async function LoginPage() {
     // then render the login form.
     return (
         <PublicWrapper>
-            <LoginFormComponent />
+            <div className="
+                w-full max-w-4xl mx-auto my-8 p-6 rounded-lg shadow-xl
+                bg-background/80 backdrop-blur-sm border border-border
+                dark:bg-gray-800/80 dark:border-gray-700
+            ">
+                <h2 className="text-3xl font-bold mb-6 text-center text-foreground">
+                    {t('login')}
+                </h2>
+                <LoginFormComponent />
+            </div>
         </PublicWrapper>
     );
 }

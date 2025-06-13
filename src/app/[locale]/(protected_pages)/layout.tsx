@@ -13,7 +13,7 @@ export default async function ProtectedLayout({
                                               }: ProtectedLayoutProps) {
     const session = await getSession();
     const user: User | undefined = session?.user;
-    const locale = getLocale();
+    const locale = await getLocale();
 
     if (!session || !user) {
         // console.warn(`Protected Layout: User is not authenticated for locale '${paramsToUse.locale}'. Redirecting to login.`);

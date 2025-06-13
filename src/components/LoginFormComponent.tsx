@@ -1,9 +1,9 @@
 // components/LoginFormComponent.tsx
 "use client";
 
-import React, { useState, FormEvent, ChangeEvent, useEffect } from 'react'; // Import useEffect for URL param error handling
-import { useRouter, useSearchParams } from 'next/navigation'; // Import useSearchParams
-import { useLocale, useTranslations } from 'next-intl'; // Import useTranslations hook
+import React, { useState, FormEvent, ChangeEvent, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -43,8 +43,7 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
             localStorage.setItem('preferred_locale', locale);
             // console.log(`[LoginFormComponent] Current locale '${locale}' saved to localStorage.`);
         }
-    }, [locale]); // Rerun this effect if the locale changes (e.g., via a language switcher)
-
+    }, [locale]);
 
     // Effect to check for OAuth2 errors in URL parameters
     useEffect(() => {
@@ -122,79 +121,84 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
     };
 
     return (
+        // Outer div for the entire page background (can be handled by a layout component)
         <div className="flex flex-col items-center justify-center p-4">
-            <h1 className="text-3xl font-bold mb-6 text-white">
-                {isRegistering ? t('registerAccountTitle') : t('signInTitle')}
-            </h1>
-
-            {formError && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    <strong className="font-bold">{t('errorPrefix')}: </strong>
-                    <span className="block sm:inline">{formError}</span>
-                </div>
-            )}
-
-            {/* Manual Form */}
-            <form onSubmit={isRegistering ? handleManualRegister : handleManualLogin} className="w-full max-w-sm bg-white p-6 rounded-lg shadow-md mb-6">
-                {isRegistering && (
-                    <div className="mb-4">
-                        <label htmlFor="username" className="block text-gray-700 text-sm font-bold mb-2">
-                            {t('usernameLabel')}:
-                        </label>
-                        <Input
-                            type="text"
-                            id="username"
-                            value={username}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
-                            required
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        />
+            {/* Inner div for the transparent, rounded content container */}
+            <div className="
+                w-full max-w-sm mx-auto my-8 p-6 rounded-lg shadow-xl
+                bg-background/80 backdrop-blur-sm border border-border
+                dark:bg-gray-800/80 dark:border-gray-700
+                flex flex-col items-center justify-center
+            ">
+                {formError && (
+                    <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded relative mb-4 w-full">
+                        <strong className="font-bold">{t('errorPrefix')}: </strong>
+                        <span className="block sm:inline">{formError}</span>
                     </div>
                 )}
-                <div className="mb-4">
-                    <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
-                        {t('emailLabel')}:
-                    </label>
-                    <Input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-                        required
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    />
-                </div>
-                <div className="mb-6">
-                    <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
-                        {t('passwordLabel')}:
-                    </label>
-                    <Input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-                        required
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                    />
-                </div>
-                <Button type="submit" className="w-full">
-                    {isRegistering ? t('registerButton') : t('signInButton')}
-                </Button>
-            </form>
 
-            {/* Toggle between login/register */}
-            <Button variant="link" onClick={() => setIsRegistering(!isRegistering)} className="text-white mb-6">
-                {isRegistering ? t('alreadyHaveAccount') : t('needAccount')}
-            </Button>
+                {/* Manual Form - Removed its own background and shadow as parent div handles it */}
+                <form onSubmit={isRegistering ? handleManualRegister : handleManualLogin} className="w-full mb-6">
+                    {isRegistering && (
+                        <div className="mb-4">
+                            <label htmlFor="username" className="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">
+                                {t('usernameLabel')}:
+                            </label>
+                            <Input
+                                type="text"
+                                id="username"
+                                value={username}
+                                onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+                                required
+                                className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-gray-800"
+                            />
+                        </div>
+                    )}
+                    <div className="mb-4">
+                        <label htmlFor="email" className="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">
+                            {t('emailLabel')}:
+                        </label>
+                        <Input
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                            required
+                            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-gray-800"
+                        />
+                    </div>
+                    <div className="mb-6">
+                        <label htmlFor="password" className="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">
+                            {t('passwordLabel')}:
+                        </label>
+                        <Input
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                            required
+                            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 mb-3 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-gray-800"
+                        />
+                    </div>
+                    <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white">
+                        {isRegistering ? t('registerButton') : t('signInButton')}
+                    </Button>
+                </form>
 
-            {/* OAuth2 Buttons */}
-            <div className="flex flex-col gap-4 w-full max-w-sm">
-                <Button onClick={() => handleOAuth2Login('google')} className="bg-red-600 hover:bg-red-700 text-white w-full">
-                    {t('loginWithGoogle')}
+                {/* Toggle between login/register */}
+                <Button variant="link" onClick={() => setIsRegistering(!isRegistering)} className="text-blue-600 dark:text-blue-400 mb-6 hover:underline">
+                    {isRegistering ? t('alreadyHaveAccount') : t('needAccount')}
                 </Button>
-                <Button onClick={() => handleOAuth2Login('facebook')} className="bg-blue-600 hover:bg-blue-700 text-white w-full">
-                    {t('loginWithFacebook')}
-                </Button>
+
+                {/* OAuth2 Buttons */}
+                <div className="flex flex-col gap-4 w-full max-w-sm">
+                    <Button onClick={() => handleOAuth2Login('google')} className="bg-red-600 hover:bg-red-700 text-white w-full dark:bg-red-700 dark:hover:bg-red-800">
+                        {t('loginWithGoogle')}
+                    </Button>
+                    <Button onClick={() => handleOAuth2Login('facebook')} className="bg-blue-600 hover:bg-blue-700 text-white w-full dark:bg-blue-700 dark:hover:bg-blue-800">
+                        {t('loginWithFacebook')}
+                    </Button>
+                </div>
             </div>
         </div>
     );

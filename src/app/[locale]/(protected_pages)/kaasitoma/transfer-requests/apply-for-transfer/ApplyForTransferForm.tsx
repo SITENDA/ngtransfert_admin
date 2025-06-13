@@ -2,22 +2,22 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { SelectWithLabel } from "@/components/inputs/SelectWithLabel"; // Assuming this path
-import { InputWithLabel } from "@/components/inputs/InputWithLabel"; // Assuming this path
-import { Button } from "@/components/ui/button"; // Assuming this path
-import { Form } from "@/components/ui/form"; // Assuming this path
+import { SelectWithLabel } from "@/components/inputs/SelectWithLabel";
+import { InputWithLabel } from "@/components/inputs/InputWithLabel";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 
-import { Country } from "../../../../../../../types/country"; // Assuming this path
-import { Currency } from "../../../../../../../types/currency"; // Assuming this path
-import { TransferRequestSchema, TransferRequestSchemaType } from "@/zod-schemas/transfer-request"; // New schema
-import { useOrderedCountries } from "@/hooks/useOrderedCountries"; // Hook for countries
-import { useOrderedCurrencies } from "@/hooks/useOrderedCurrencies"; // Hook for currencies
-import {useOrderedReceiverAccountCategories} from "@/hooks/ReceiverAccountType"; // For receiver account category data
+import { Country } from "../../../../../../../types/country";
+import { Currency } from "../../../../../../../types/currency";
+import { TransferRequestSchema, TransferRequestSchemaType } from "@/zod-schemas/transfer-request";
+import { useOrderedCountries } from "@/hooks/useOrderedCountries";
+import { useOrderedCurrencies } from "@/hooks/useOrderedCurrencies";
+import { useOrderedReceiverAccountCategories } from "@/hooks/ReceiverAccountType"; // For receiver account category data
 
 import { createTransferRequestAction } from "@/lib/actions/transfer-request"; // Server Action
 
@@ -28,20 +28,21 @@ interface ApplyForTransferFormProps {
 }
 
 const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCountries, initialCurrencies, clientId }) => {
-    const t = useTranslations('ApplyForTransferForm'); // Translations for this component
+    const t = useTranslations('ApplyForTransferForm');
     const router = useRouter();
     const locale = useLocale();
 
-    // Default form values, including clientId from props
+    // Default form values: Use 'undefined' for fields that are optional in Zod schema
+    // and should not be validated until they are visible/interacted with.
     const defaultEmptyValues: TransferRequestSchemaType = {
-        amount: 0,
-        currencyId: null as any, // Use null for select to allow placeholder, will be validated by zod.coerce.number
-        rate: 0,
-        remark: '',
-        receiverAccountCategory: null,
-        receiverAccountId: null as any, // Use null for select to allow placeholder
+        amount: undefined,
+        currencyId: undefined,
+        rate: undefined,
+        remark: undefined,
+        receiverAccountCategory: undefined,
+        receiverAccountId: undefined,
         clientId: clientId, // Pre-fill clientId from props
-        countryOfDepositId: null as any, // Use null for select to allow placeholder
+        countryOfDepositId: undefined,
     };
 
     const form = useForm<TransferRequestSchemaType>({
@@ -51,7 +52,7 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
     });
 
     const watchedCountryOfDepositId = form.watch("countryOfDepositId");
-    const watchedReceiverAccountCategory = form.watch("receiverAccountCategory");
+    const watchedCurrencyId = form.watch("currencyId"); // Watch currency selection for conditional rendering
 
     // State for the selected country object (needed for prioritizing its currency)
     const [selectedCountryObj, setSelectedCountryObj] = useState<Country | null>(null);
@@ -61,7 +62,6 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
     const countryOptions = useOrderedCountries(initialCountries);
     // Filter and order currencies, prioritizing the selected country's currency
     const currencyOptions = useOrderedCurrencies(initialCurrencies, selectedCountryObj);
-    const receiverAccountCategoryOptions = useOrderedReceiverAccountCategories(); // Reusing the hook for categories
 
     // Effect to update selectedCountryObj when watchedCountryOfDepositId changes
     useEffect(() => {
@@ -70,33 +70,53 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
             setSelectedCountryObj(country || null);
             // Optionally, set the currencyId if a country is selected and has a currency
             if (country && country.currency) {
-                form.setValue("currencyId", country.currency.currencyId, { shouldValidate: true });
+                // Only set value if it's different to avoid unnecessary re-renders/validation
+                if (form.getValues("currencyId") !== country.currency.currencyId) {
+                    form.setValue("currencyId", country.currency.currencyId, { shouldValidate: true, shouldDirty: true });
+                }
+            } else {
+                // If country is selected but has no currency, or country object is null/undefined
+                form.setValue("currencyId", undefined, { shouldValidate: true, shouldDirty: true }); // Clear currency
             }
         } else {
+            // Reset currency and all subsequent fields if country is unselected/reset
             setSelectedCountryObj(null);
-            form.setValue("currencyId", null as any, { shouldValidate: true }); // Clear currency if no country
+            form.setValue("currencyId", undefined, { shouldValidate: true, shouldDirty: true });
+            form.setValue("amount", undefined, { shouldValidate: true, shouldDirty: true });
+            form.setValue("rate", undefined, { shouldValidate: true, shouldDirty: true });
+            form.setValue("remark", undefined, { shouldValidate: true, shouldDirty: true });
+            form.setValue("receiverAccountCategory", undefined, { shouldValidate: true, shouldDirty: true });
+            form.setValue("receiverAccountId", undefined, { shouldValidate: true, shouldDirty: true });
         }
     }, [watchedCountryOfDepositId, initialCountries, form]);
 
+    // Effect to reset dependent fields when currency is unselected
+    useEffect(() => {
+        // This effect runs if watchedCurrencyId becomes undefined/null, but only if a country is still selected.
+        // If countryOfDepositId is also undefined, the previous useEffect handles the full reset.
+        if (!watchedCurrencyId && watchedCountryOfDepositId) {
+            form.setValue("amount", undefined, { shouldValidate: true, shouldDirty: true });
+            form.setValue("rate", undefined, { shouldValidate: true, shouldDirty: true });
+            form.setValue("remark", undefined, { shouldValidate: true, shouldDirty: true });
+            form.setValue("receiverAccountCategory", undefined, { shouldValidate: true, shouldDirty: true });
+            form.setValue("receiverAccountId", undefined, { shouldValidate: true, shouldDirty: true });
+        }
+    }, [watchedCurrencyId, watchedCountryOfDepositId, form]);
 
     const onSubmit = async (data: TransferRequestSchemaType) => {
         setLoading(true);
         console.log("Applying for transfer with data:", data);
 
-        // ClientId is already in `data` from defaultValues, but we should ensure it's correct
-        // For `RequestTransferRequestDTO` you send to backend, backend will likely overwrite clientId.
-        // But for client-side validation and consistent form data, it's good to include it.
+        // ClientId is pre-filled from defaultValues, and will be set securely by the backend
         data.clientId = clientId;
 
-        // Construct FormData for the server action if your action expects FormData,
-        // or just pass the data object if your action handles JSON body directly.
-        // Based on createTransferRequestAction, it expects JSON.
+        // Call the server action to create the transfer request
         const result = await createTransferRequestAction(data);
 
         setLoading(false);
 
         if (result.success) {
-            alert(result.message);
+            alert(t('transferSuccessMessage', { message: result.message }));
             form.reset(defaultEmptyValues); // Reset form to initial empty state
             const redirectPath = `/${locale}/kaasitoma/transfer-requests`; // Redirect to the list of transfer requests
             router.push(redirectPath);
@@ -109,7 +129,7 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-w-lg mx-auto p-4 border rounded-lg shadow-md">
-                {/* Country of Deposit Selector */}
+                {/* Country of Deposit Selector - Always Visible */}
                 <SelectWithLabel<TransferRequestSchemaType>
                     fieldTitle={t('countryOfDeposit')}
                     nameInSchema="countryOfDepositId"
@@ -118,63 +138,48 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
                     placeholderHint={t('selectCountryPlaceholder')}
                 />
 
-                {/* Currency Selector */}
-                <SelectWithLabel<TransferRequestSchemaType>
-                    fieldTitle={t('currency')}
-                    nameInSchema="currencyId"
-                    data={currencyOptions}
-                    control={form.control}
-                    placeholderHint={t('selectCurrencyPlaceholder')}
-                />
+                {/* Currency Selector - Conditional on Country Selection */}
+                {watchedCountryOfDepositId && (
+                    <SelectWithLabel<TransferRequestSchemaType>
+                        fieldTitle={t('currency')}
+                        nameInSchema="currencyId"
+                        data={currencyOptions}
+                        control={form.control}
+                        placeholderHint={t('selectCurrencyPlaceholder')}
+                    />
+                )}
 
-                {/* Amount Input */}
-                <InputWithLabel<TransferRequestSchemaType>
-                    fieldTitle={t('amount')}
-                    nameInSchema="amount"
-                    control={form.control}
-                    placeholder={t('amountPlaceholder')}
-                    type="number" // Ensure numeric keyboard on mobile
-                    step="0.01" // Allow decimal input
-                />
+                {/* Amount, Rate, Remark, Receiver Account Category, and Receiver Account ID Inputs
+                    - Conditional on Currency Selection */}
+                {watchedCurrencyId && (
+                    <>
+                        <InputWithLabel<TransferRequestSchemaType>
+                            fieldTitle={t('amount')}
+                            nameInSchema="amount"
+                            control={form.control}
+                            placeholder={t('amountPlaceholder')}
+                            type="number"
+                            step="0.01" // Allow decimal input
+                        />
 
-                {/* Rate Input (if applicable to be entered by user, otherwise remove) */}
-                <InputWithLabel<TransferRequestSchemaType>
-                    fieldTitle={t('rate')}
-                    nameInSchema="rate"
-                    control={form.control}
-                    placeholder={t('ratePlaceholder')}
-                    type="number"
-                    step="0.0001" // Allow more precise decimal input for rate
-                />
+                        <InputWithLabel<TransferRequestSchemaType>
+                            fieldTitle={t('rate')}
+                            nameInSchema="rate"
+                            control={form.control}
+                            placeholder={t('ratePlaceholder')}
+                            type="number"
+                            step="0.0001" // Allow more precise decimal input for rate
+                        />
 
-                {/* Remark Input */}
-                <InputWithLabel<TransferRequestSchemaType>
-                    fieldTitle={t('remark')}
-                    nameInSchema="remark"
-                    control={form.control}
-                    placeholder={t('remarkPlaceholder')}
-                    type="text"
-                />
-
-                {/* Receiver Account Category Selector */}
-                <SelectWithLabel<TransferRequestSchemaType>
-                    fieldTitle={t('receiverAccountCategory')}
-                    nameInSchema="receiverAccountCategory"
-                    data={receiverAccountCategoryOptions}
-                    control={form.control}
-                    placeholderHint={t('selectCategoryPlaceholder')}
-                />
-
-                {/* Receiver Account ID Input - NOTE: This typically would be another select,
-                    fetching accounts for the selected category/client from a different endpoint.
-                    For simplicity, it's an input here, but consider a dedicated ReceiverAccountSelect component. */}
-                <InputWithLabel<TransferRequestSchemaType>
-                    fieldTitle={t('receiverAccountId')}
-                    nameInSchema="receiverAccountId"
-                    control={form.control}
-                    placeholder={t('receiverAccountIdPlaceholder')}
-                    type="number"
-                />
+                        <InputWithLabel<TransferRequestSchemaType>
+                            fieldTitle={t('remark')}
+                            nameInSchema="remark"
+                            control={form.control}
+                            placeholder={t('remarkPlaceholder')}
+                            type="text"
+                        />
+                    </>
+                )}
 
                 <div className="flex gap-2">
                     <Button type="submit" className="w-3/4" variant="default" title={t('applyForTransferButton')} disabled={loading}>

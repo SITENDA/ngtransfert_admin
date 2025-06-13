@@ -3,15 +3,13 @@
 import { redirect } from 'next/navigation';
 import OAuth2Handler from "@/app/[locale]/(public_pages)/oauth2/redirect/OAuth2Handler";
 import {User} from "next-auth";
+import {getLocale} from "next-intl/server";
 
 export const metadata = {
     title: "Processing Authentication...",
 };
 
 interface OAuth2RedirectPageProps {
-    params: {
-        locale: string;
-    };
     searchParams: { // Query parameters from Spring Boot redirect
         token?: string; // The access token from Spring Boot
         email?: string; // User's email from Spring Boot
@@ -20,13 +18,14 @@ interface OAuth2RedirectPageProps {
     };
 }
 
-export default async function OAuth2RedirectPage({ params, searchParams }: OAuth2RedirectPageProps) {
+export default async function OAuth2RedirectPage({ searchParams }: OAuth2RedirectPageProps) {
     const { token, email, error: springBootError, locale: localeFromSpringBoot } = await searchParams;
 
     // Determine the effective locale using path params first, then Spring Boot's locale, then default to 'en'
 
-    const _params = await params;
-    const currentLocale = _params?.locale || localeFromSpringBoot || 'en';
+    const paramsLocale = await getLocale();
+
+    const currentLocale = paramsLocale || localeFromSpringBoot || 'en';
 
     // --- 1. Handle immediate errors from Spring Boot redirect ---
     if (springBootError) {

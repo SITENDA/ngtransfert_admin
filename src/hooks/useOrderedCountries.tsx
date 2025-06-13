@@ -6,6 +6,7 @@ import {useMemo} from "react";
 import {Country} from "../../types/country";
 import {DataObj} from "../../types/DataObj";
 import CountryFlag from "@/components/CountryFlag";
+import {undefined} from "zod";
 
 /**
  * A custom hook to transform an array of Country objects into the DataObj format
@@ -29,15 +30,18 @@ export const useOrderedCountries = (countries: Country[]): DataObj[] => {
         }
 
         return countries.map(country => ({
-            label: country.countryName,
+            label: <div className="flex items-center"> {/* Use flexbox to align items */}
+                <span>{country.countryName}</span> {/* Country name */}
+                {country.countryFlagUrl && country.countryName !== "Other countries" ? (
+                    <CountryFlag
+                        flagUrl={country.countryFlagUrl}
+                        alt={country.countryName}
+                        style={{ width: '20px', height: '15px', marginLeft: '8px' }} // Add margin for spacing
+                    />
+                ) : null} {/* Render nothing if no flag or "Other countries" */}
+            </div>,
             value: String(country.countryId), // Ensure value is a string, as required by DataObj
-            icon: (
-                // Only render the flag icon if a URL is available and it's not the "Other countries" placeholder
-                country.countryFlagUrl && country.countryName !== "Other countries" ? (
-                    <CountryFlag flagUrl={country.countryFlagUrl} alt={country.countryName}
-                                 style={{width: '20px', height: '15px'}}/>
-                ) : undefined
-            ),
+            icon: undefined
         }));
     }, [countries]);
 };

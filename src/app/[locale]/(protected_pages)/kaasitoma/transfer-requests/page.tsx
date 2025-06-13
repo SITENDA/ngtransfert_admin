@@ -26,7 +26,7 @@ export default async function TransferRequestsPage() {
     // 1. Authentication Check (Server-side Guard)
     const session = await getSession();
     const user: User | undefined | null = session?.user;
-    const locale = getLocale();
+    const locale = await getLocale();
 
     if (!session || !user || !user.userId || !session.accessToken) {
         console.warn(`TransferRequestsPage: User not authenticated or missing required session data. Redirecting to /${locale}/login`);
