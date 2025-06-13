@@ -6,11 +6,17 @@ import PublicWrapper from "@/components/PublicWrapper";
 import getSession from "@/lib/getSession"; // Assuming getSession is available
 import { redirect } from 'next/navigation';
 import { kaasitomaPaths } from "@/util/frontend-paths"; // Assuming kaasitomaPaths is available
-import {ReceiverAccount, ReceiverAccountPayload} from "../../../../../../../types/receiver-account"; // Import headers to access URL search params
-import { fetchBackendData } from "@/lib/backend-api-client"; // Import the fetch utility
+import {ReceiverAccount, ReceiverAccountPayload} from "../../../../../../../types/receiver-account"; // Import ReceiverAccountPayload
+import { fetchBackendData } from "@/lib/backend-api-client";
+import {CardHeader} from "@/components/ui/card";
+// Replaced Next.js Link from next-intl/navigation with a standard <a> tag
+// as it cannot be resolved in this environment.
+// import {Link} from "@/i18n/navigation";
+import {Button} from "@/components/ui/button";
+import {Link} from "@/i18n/navigation"; // Import the fetch utility
 
 // Modify the page component to accept searchParams as a prop
-async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { id?: string } }) {
+async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { receiverAccountId?: string } }) {
     // Hardcoded strings for demonstration as next-intl is not resolvable
     const getTranslation = (key: string) => {
         switch (key) {
@@ -36,12 +42,11 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { id
     }
 
     let receiverAccount: ReceiverAccount | null = null; // Initialize receiverAccount
+    const params = searchParams; // searchParams is already an object, no need for await
+    // Access receiverAccountId directly from the searchParams prop
+    const receiverAccountId = params.receiverAccountId;
 
     try {
-        const params = await searchParams;
-        // Access receiverAccountId directly from the searchParams prop
-        const receiverAccountId = params.id;
-
         if (receiverAccountId) {
             // Fetch receiver account details from the backend
             const response = await fetchBackendData<ReceiverAccountPayload>(
@@ -51,7 +56,7 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { id
                 3600 // Revalidate every hour
             );
 
-            if (response) {
+            if (response && response.receiverAccount) {
                 console.log("Response : ", response);
                 receiverAccount = response.receiverAccount;
                 console.log("ReceiverAccountDetailsPage: Successfully fetched receiver account from backend.");
@@ -59,7 +64,7 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { id
                 console.warn("ReceiverAccountDetailsPage: No receiver account data fetched or data structure unexpected from backend.");
             }
         } else {
-            console.warn("ReceiverAccountDetailsPage: No 'id' parameter found in URL for receiver account details.");
+            console.warn("ReceiverAccountDetailsPage: No 'receiverAccountId' parameter found in URL for receiver account details.");
             // Optionally redirect or show an error if data is missing
             // redirect(`/kaasitoma/receiver-accounts`); // Example redirect back to list
         }
@@ -98,6 +103,24 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { id
                 <h2 className="text-3xl font-bold mb-6 text-center text-foreground">
                     {getTranslation('pageTitle')}
                 </h2>
+                <CardHeader className="flex flex-row justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    {/* Updated Top Up button styling */}
+                    <Link href={`${kaasitomaPaths.topUpPath}${receiverAccountId}`} passHref>
+                        <Button variant="outline"
+                                size="sm"
+                                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                            Top Up
+                        </Button>
+                    </Link>
+                    {/* Updated Request for Transfer button styling */}
+                    <Link href={`${kaasitomaPaths.applyForTransferPath}${receiverAccountId}`} passHref>
+                        <Button variant="outline"
+                                size="sm"
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                            Request for Transfer
+                        </Button>
+                    </Link>
+                </CardHeader>
                 {/* Pass the parsed receiverAccount object to the client component */}
                 <ReceiverAccountDetailsForm receiverAccount={receiverAccount} />
             </div>
