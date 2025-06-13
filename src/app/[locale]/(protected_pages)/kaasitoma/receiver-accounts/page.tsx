@@ -1,7 +1,7 @@
 // src/app/[locale]/(protected_pages)/kaasitoma/receiver-accounts/page.tsx
 // This is a Server Component.
 
-import { auth } from "@/auth";
+import getSession from "@/lib/getSession";
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { headers } from 'next/headers';
@@ -27,7 +27,7 @@ export default async function ReceiverAccountsPage({ params }: Props) {
     const t = await getTranslations('ReceiverAccountsPage');
 
     // 1. Authentication Check (Server-side Guard)
-    const session = await auth();
+    const session = await getSession();
     const user: User | undefined | null = session?.user;
 
     if (!session || !user || !user.userId || !session.accessToken) {

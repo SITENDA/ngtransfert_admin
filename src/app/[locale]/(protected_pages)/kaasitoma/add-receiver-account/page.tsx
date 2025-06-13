@@ -6,7 +6,7 @@ import AddReceiverAccountForm from "./AddReceiverAccountForm";
 import PublicWrapper from "@/components/PublicWrapper";
 import { BackendHttpResponse, Bank, BankDataPayload } from "../../../../../../types/bank";
 import { getTranslations } from 'next-intl/server';
-import { auth } from "@/auth";
+import getSession from "@/lib/getSession";
 import { User } from "next-auth"; // Import User type from next-auth
 import { redirect } from 'next/navigation'; // <-- Import redirect function
 
@@ -22,7 +22,7 @@ async function AddReceiverAccountPage({ params }: Props) { // Destructure params
     const t = await getTranslations('AddReceiverAccountPage');
 
     // Fetch the session. This is a Server Component, so `auth()` is appropriate.
-    const session = await auth();
+    const session = await getSession();
     // Safely get the user object. It can be null or undefined if not authenticated.
     const user: User | undefined | null = session?.user;
 

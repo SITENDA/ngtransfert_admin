@@ -1,5 +1,5 @@
 // app/[locale]/(protected_pages)/layout.tsx
-import { auth } from "@/auth";
+import getSession from "@/lib/getSession";
 import { redirect } from "next/navigation";
 import { User } from "next-auth";
 import { headers } from 'next/headers'; // <-- Import headers here
@@ -13,7 +13,7 @@ export default async function ProtectedLayout({
                                                   children,
                                                   params,
                                               }: ProtectedLayoutProps) {
-    const session = await auth();
+    const session = await getSession();
     const user: User | undefined = session?.user;
 
     // --- CORRECTED WAY TO GET PATHNAME IN A SERVER COMPONENT ---
@@ -27,7 +27,7 @@ export default async function ProtectedLayout({
         : currentPathname;
     // --- END CORRECTION ---
 
-    console.log(`Protected Layout for locale '${paramsToUse.locale}': Checking authentication for path: /${pathWithoutLocale}. User:`, user ? user.email || user.id || 'Authenticated' : 'Unauthenticated');
+    // console.log(`Protected Layout for locale '${paramsToUse.locale}': Checking authentication for path: /${pathWithoutLocale}. User:`, user ? user.email || user.id || 'Authenticated' : 'Unauthenticated');
 
 
     if (!session || !user) {

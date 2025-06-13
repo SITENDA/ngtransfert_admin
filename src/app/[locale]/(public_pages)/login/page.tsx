@@ -3,7 +3,7 @@
 import PublicWrapper from "@/components/PublicWrapper";
 import LoginFormComponent from "@/components/LoginFormComponent"; // Import the client component
 import React from 'react';
-import { auth } from "@/auth";
+import getSession from "@/lib/getSession";
 import { User } from "next-auth";
 import { redirect } from 'next/navigation'; // <-- Import redirect
 
@@ -18,7 +18,7 @@ interface LoginPageProps {
 }
 
 export default async function LoginPage({ params }: LoginPageProps) {
-    const session = await auth();
+    const session = await getSession();
     const user: User | undefined = session?.user;
 
     // Check if the user has a fullName AND a value for user.ekiddako

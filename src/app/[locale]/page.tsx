@@ -3,7 +3,7 @@ import CarouselSection from "@/components/CarouselSection";
 import PublicWrapper from "@/components/PublicWrapper";
 import * as React from "react";
 import {getTranslations, getLocale} from "next-intl/server"; // <--- Import getLocale
-import { auth } from "@/auth";
+import getSession from "@/lib/getSession";
 
 // Import a new client component to handle redirection
 import AuthRedirector from "@/components/AuthRedirector";
@@ -17,7 +17,7 @@ export default async function Home({ }) {
     // Get the locale from next-intl/server
     const locale = await getLocale(); // <--- Define locale here
 
-    const session = await auth();
+    const session = await getSession();
     const user = session?.user;
 
     // Use the defined locale in the redirect

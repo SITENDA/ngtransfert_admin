@@ -2,17 +2,17 @@ import * as React from "react";
 import { Link } from "@/i18n/navigation";
 
 import PublicWrapper from "@/components/PublicWrapper";
-import { auth } from "@/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {redirect} from "next/navigation";
+import getSession from "@/lib/getSession";
 
 export const metadata = {
     title: "Dashboard",
 };
 
 export default async function DashboardPage() {
-    const session = await auth();
+    const session = await getSession();
     const user = session?.user;
     // console.log("User in dashboard is : ", user);
 

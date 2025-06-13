@@ -1,14 +1,14 @@
 // src/lib/actions/receiver-account.ts
 "use server"; // <-- IMPORTANT: This directive marks it as a Server Action
 
-import { auth } from "@/auth"; // Import the auth helper from your NextAuth config
+import getSession from "@/lib/getSession";
 // You might need other imports based on what this action previously did,
 // e.g., if it directly fetched from the backend before the proxy.
 
 export async function createReceiverAccountAction(formData: FormData) {
     try {
         // 1. Get the current session on the server-side
-        const session = await auth();
+        const session = await getSession();
 
         // 2. Check if the user is authenticated and if the accessToken is available
         if (!session || !session.accessToken) {

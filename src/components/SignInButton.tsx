@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useTranslations, useLocale } from 'next-intl';
-import { usePathname } from 'next/navigation'; // <-- Import usePathname for client-side path access
+import { usePathname, useRouter } from 'next/navigation'; // <-- Import usePathname for client-side path access
 
 /**
  * Props for SignInButton component.
@@ -18,11 +18,12 @@ const SignInButton = ({ hideOnPathSegment }: SignInButtonProps) => {
     const t = useTranslations('HomePage');
     const locale = useLocale();
     const pathname = usePathname(); // Get the current client-side URL pathname
+    const router = useRouter();
 
     // Check if `hideOnPathSegment` is provided and is a non-empty string,
     // AND if the current pathname includes that segment.
     if (hideOnPathSegment && pathname.includes(hideOnPathSegment)) {
-        return null; // If conditions met, render nothing
+        router.refresh();
     }
 
     return (

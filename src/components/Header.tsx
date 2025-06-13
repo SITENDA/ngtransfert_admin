@@ -2,7 +2,7 @@ import { LogOut, User, Mail } from "lucide-react"; //Info,
 import Image from "next/image";
 import { NavButton } from "@/components/NavButton";
 import { ModeToggle } from "@/components/ModeToggle";
-import { auth } from "@/auth"; // Import the auth function
+import getSession from "@/lib/getSession";
 import SignInButton from "@/components/SignInButton";
 import SignOutButton from "@/components/SignOutButton";
 import transparentIcon from "@/app/[locale]/favicon-transparent.png";
@@ -26,7 +26,7 @@ export default async function Header() {
   const handleLogout = () => {
     console.log("Logging out...");
   };
-  const session = await auth(); // Use auth() to get the session
+  const session = await getSession(); // Use auth() to get the session
   const user = session?.user;
   const ekiddakoProp = user?.ekiddako || null;
 
