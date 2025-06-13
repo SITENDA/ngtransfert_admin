@@ -11,9 +11,8 @@ import { fetchBackendData } from "@/lib/backend-api-client";
 import {CardHeader} from "@/components/ui/card";
 // Replaced Next.js Link from next-intl/navigation with a standard <a> tag
 // as it cannot be resolved in this environment.
-// import {Link} from "@/i18n/navigation";
-import {Button} from "@/components/ui/button";
-import {Link} from "@/i18n/navigation"; // Import the fetch utility
+import {Link} from "@/i18n/navigation"; // Import Link for navigation
+import {Button} from "@/components/ui/button"; // Import the fetch utility
 
 // Modify the page component to accept searchParams as a prop
 async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { receiverAccountId?: string } }) {
@@ -57,9 +56,22 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { re
             );
 
             if (response && response.receiverAccount) {
-                console.log("Response : ", response);
-                receiverAccount = response.receiverAccount;
-                console.log("ReceiverAccountDetailsPage: Successfully fetched receiver account from backend.");
+                // Destructure and filter out creationDate and lastUpdatedDate
+                const { creationDate, lastUpdatedDate, ...restOfAccount } = response.receiverAccount;
+
+                // Create a mutable copy to modify email/phoneNumber
+                const processedAccount: ReceiverAccount = { ...restOfAccount };
+
+                // Ignore email or phone number if they start with "rand_"
+                if (processedAccount.email && processedAccount.email.startsWith('rand_')) {
+                    processedAccount.email = undefined; // Set to undefined to ignore display
+                }
+                if (processedAccount.phoneNumber && processedAccount.phoneNumber.startsWith('rand_')) {
+                    processedAccount.phoneNumber = undefined; // Set to undefined to ignore display
+                }
+
+                receiverAccount = processedAccount;
+                console.log("ReceiverAccountDetailsPage: Successfully fetched and processed receiver account from backend.");
             } else {
                 console.warn("ReceiverAccountDetailsPage: No receiver account data fetched or data structure unexpected from backend.");
             }
@@ -121,7 +133,7 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { re
                         </Button>
                     </Link>
                 </CardHeader>
-                {/* Pass the parsed receiverAccount object to the client component */}
+                {/* Pass the processed receiverAccount object to the client component */}
                 <ReceiverAccountDetailsForm receiverAccount={receiverAccount} />
             </div>
         </PublicWrapper>
