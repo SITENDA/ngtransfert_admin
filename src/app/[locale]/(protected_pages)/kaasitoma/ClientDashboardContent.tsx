@@ -3,7 +3,7 @@
 
 import React from 'react';
 
-function ClientDashboardContent(props) {
+function ClientDashboardContent() {
     return (
         <div></div>
     );

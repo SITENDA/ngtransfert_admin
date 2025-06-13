@@ -8,7 +8,7 @@ import type {
     ReceiverAccount,
 } from "../../../../../../prisma/generated/zod";
 
-import { orderedReceiverAccountTypes } from "@/constants/ReceiverAccountType";
+import { orderedReceiverAccountTypes } from "@/hooks/ReceiverAccountType";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form"

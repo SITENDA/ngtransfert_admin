@@ -132,5 +132,28 @@
     "email": "E-mail",
     "phone_number": "Numéro de téléphone",
     "none": "Aucun"
+  },
+  "TransferRequestsPage": {
+    "pageTitle": "Demandes de Transfert",
+    "applyForTransferButtonLabel": "Demander un transfert"
+  },
+  "TransferRequestsForm": {
+    "noTransferRequestsFound": "Aucune demande de transfert trouvée.",
+    "amount": "Montant",
+    "currencyId": "ID de Devise",
+    "rate": "Taux",
+    "remark": "Remarque",
+    "receiverAccountCategory": "Catégorie de Compte Bénéficiaire",
+    "receiverAccountId": "ID de Compte Bénéficiaire",
+    "clientId": "ID Client",
+    "countryOfDepositId": "ID du Pays de Dépôt",
+    "noRemark": "N/A",
+    "alipay_account": "Compte Alipay",
+    "wechat_account": "Compte WeChat",
+    "bank_account": "Compte Bancaire"
+  },
+  "ApplyForTransferPage": {
+    "pageTitle": "Demander un Transfert",
+    "applyForTransferButtonLabel": "Demander un transfert"
   }
 }

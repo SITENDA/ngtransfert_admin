@@ -10,3 +10,7 @@ export interface Currency {
     currencySymbol: string;
     // Add any other properties your Java CurrencyDTO has
 }
+
+export interface CurrencyDataPayload {
+    currencies: Currency[];
+}

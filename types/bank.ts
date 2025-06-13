@@ -23,19 +23,6 @@ export interface BankDataPayload {
     banks: Bank[];
 }
 
-/**
- * Represents the standardized HTTP response wrapper from your backend.
- * `T` is a generic type for the actual data payload (e.g., `BankDataPayload` for banks).
- * Corresponds to your Java `HttpResponse` class.
- */
-export interface BackendHttpResponse<T> {
-    timeStamp: string;
-    statusCode: number;
-    status: string;
-    message: string;
-    data: T; // This will hold the specific payload (e.g., BankDataPayload)
-}
-
 export interface BankLogoProps {
     logoUrl?: string | null;
     alt: string;

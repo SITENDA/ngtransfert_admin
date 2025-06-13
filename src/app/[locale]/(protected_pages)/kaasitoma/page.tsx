@@ -9,6 +9,7 @@ import { redirect } from "next/navigation";
 import { getLocale } from "next-intl/server";
 import getSession from "@/lib/getSession";
 import {ClickableRow} from "@/components/ClickableRow";
+import {kaasitomaPaths} from "@/util/frontend-paths";
 
 export const metadata = {
     title: "Dashboard",
@@ -22,8 +23,7 @@ export default async function KaasitomaDashboardPage() {
 
     // --- Removed redirect logic for compilation in this environment ---
     if (!user) {
-        redirect(`/${locale}/login`);
-        return null;
+        redirect(`/${locale}${kaasitomaPaths.loginPath}`);
     }
 
     // Placeholder data for counts - replace with actual data fetching logic in a full app
@@ -41,7 +41,7 @@ export default async function KaasitomaDashboardPage() {
                     <CardTitle className="text-3xl font-bold text-blue-700 dark:text-blue-300">Client Dashboard</CardTitle>
                     {/* Button for adding receiver account. Using onClick for demonstration. */}
 
-                    <Link href={'/kaasitoma/add-receiver-account'} passHref>
+                    <Link href={kaasitomaPaths.addReceiverAccountPath} passHref>
                         <Button variant="outline"
                                 size="sm"
                                 className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
@@ -79,7 +79,7 @@ export default async function KaasitomaDashboardPage() {
                             </ClickableRow>
 
                             {/* Clickable row for Transfer Requests */}
-                            <ClickableRow href={`/${locale}/transfer-requests`} count={transferRequestsCount} className="hover:bg-yellow-50 dark:hover:bg-yellow-900">
+                            <ClickableRow href="/kaasitoma/transfer-requests" count={transferRequestsCount} className="hover:bg-yellow-50 dark:hover:bg-yellow-900">
                                 Transfer Requests
                             </ClickableRow>
 

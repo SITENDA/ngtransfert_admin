@@ -12,14 +12,14 @@ import {
     ReceiverAccountSchemaType
 } from "@/zod-schemas/receiver-account";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useOrderedReceiverAccountCategories } from "@/constants/ReceiverAccountType";
+import { useOrderedReceiverAccountCategories } from "@/hooks/ReceiverAccountType";
 import { InputWithLabel } from "@/components/inputs/InputWithLabel";
 import { Button } from "@/components/ui/button";
 import { FileInputWithLabel } from "@/components/inputs/FileInputWithLabel";
-import {Bank} from "../../../../../../types/bank";
+import {Bank} from "../../../../../../../types/bank";
 import BankSelect from "@/components/BankSelect";
 import {useLocale, useTranslations} from 'next-intl';
-import {useReceiverAccountIdentifiers} from "@/constants/ReceiverAccountIdentifier";
+import {useReceiverAccountIdentifiers} from "@/hooks/ReceiverAccountIdentifier";
 import {createReceiverAccountAction} from "@/lib/actions/receiver-account";
 import { useRouter } from 'next/navigation';
 

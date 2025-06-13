@@ -5,14 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // Import solid icons for QR code, phone, and envelope (email)
 import { faQrcode, faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { ReceiverAccountIdentifierEnum } from "@/zod-schemas/receiver-account";
-import { ReactNode } from "react";
 import { useTranslations } from 'next-intl';
+import {DataObj} from "../../types/DataObj";
 
-type DataObj = {
-    label: string;
-    value: string;
-    icon?: ReactNode;
-};
 
 // Export a function that returns the translated array
 export const useReceiverAccountIdentifiers = (): DataObj[] => {

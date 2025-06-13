@@ -132,5 +132,28 @@
     "email": "邮箱",
     "phone_number": "电话号码",
     "none": "无"
+  },
+  "TransferRequestsPage": {
+    "pageTitle": "转账请求",
+    "applyForTransferButtonLabel": "申请转账"
+  },
+  "TransferRequestsForm": {
+    "noTransferRequestsFound": "未找到转账请求。",
+    "amount": "金额",
+    "currencyId": "货币ID",
+    "rate": "汇率",
+    "remark": "备注",
+    "receiverAccountCategory": "收款账户类别",
+    "receiverAccountId": "收款账户ID",
+    "clientId": "客户ID",
+    "countryOfDepositId": "存款国家ID",
+    "noRemark": "不适用",
+    "alipay_account": "支付宝账户",
+    "wechat_account": "微信账户",
+    "bank_account": "银行账户"
+  },
+  "ApplyForTransferPage": {
+    "pageTitle": "申请转账",
+    "applyForTransferButtonLabel": "申请转账"
   }
 }

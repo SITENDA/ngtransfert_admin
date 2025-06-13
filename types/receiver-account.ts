@@ -25,18 +25,6 @@ export interface ReceiverAccount {
     country?: Country;
 }
 
-// Generic backend response structure (reusable)
-export interface BackendGenericResponse<T> {
-    timeStamp: string;
-    statusCode: number;
-    status: string; // e.g., "OK", "UNAUTHORIZED"
-    message: string;
-    developerMessage?: string;
-    path?: string;
-    requestMethod?: string;
-    data?: T; // The actual payload will be of type T
-}
-
 // Specific payload for fetching multiple receiver accounts
 export interface ReceiverAccountsPayload {
     receiverAccounts: ReceiverAccount[];

@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {redirect} from "next/navigation";
 import getSession from "@/lib/getSession";
+import {kaasitomaPaths} from "@/util/frontend-paths";
 
 export const metadata = {
     title: "Dashboard",
@@ -35,8 +36,8 @@ export default async function DashboardPage() {
         <PublicWrapper>
             <Card className="w-[80%] mx-auto my-8 bg-background text-foreground">
                 <CardHeader className="flex justify-between">
-                    <CardTitle className="text-2xl font-semibold">Clinet Dashboard</CardTitle>
-                    <Link href="/dashboard/add-receiver-account">
+                    <CardTitle className="text-2xl font-semibold">Client Dashboard</CardTitle>
+                    <Link href={kaasitomaPaths.addReceiverAccountPath}>
                         <Button variant="outline" size="sm">
                             Add Receiver Account
                         </Button>

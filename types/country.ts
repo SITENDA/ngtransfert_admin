@@ -20,3 +20,7 @@ export interface CountryFlagProps {
     alt: string;
     style?: React.CSSProperties;
 }
+
+export interface CountryDataPayload {
+    countries: Country[];
+}

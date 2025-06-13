@@ -3,7 +3,7 @@
 // import { z } from "zod";
 import { contactUsSchema } from "@/zod-schemas/contact-us";
 import { revalidatePath } from "next/cache";
-import prisma from "@/lib/prisma";
+// import prisma from "@/lib/prisma";
 import { actionClient } from "@/lib/safe-action";
 import getSession from "@/lib/getSession";
 
@@ -26,12 +26,12 @@ export const sendContactUsEmailAction = actionClient
         }
 
         try {
-            await prisma.contactMessage.create({
-                data: {
-                    email: data.parsedInput.email,
-                    message: data.parsedInput.message,
-                },
-            });
+            // await prisma.contactMessage.create({
+            //     data: {
+            //         email: data.parsedInput.email,
+            //         message: data.parsedInput.message,
+            //     },
+            // });
 
             revalidatePath('/contact-us');
 

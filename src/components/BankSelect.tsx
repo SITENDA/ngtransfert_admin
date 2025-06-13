@@ -3,7 +3,6 @@
 
 import React, { forwardRef, useMemo } from 'react';
 import Select from 'react-select';
-import { useTheme } from 'next-themes';
 import { useTranslations, useLocale } from 'next-intl'; // Import useTranslations and useLocale
 
 import CountryFlag from '@/components/CountryFlag';
@@ -75,7 +74,6 @@ const BankSelect = forwardRef<any, BankSelectProps>(({
                                                          onMenuStateChange,
                                                          ...props
                                                      }, ref) => {
-    const { theme } = useTheme();
     const t = useTranslations('AddReceiverAccountForm'); // Get translations for the relevant namespace
     const locale = useLocale(); // Get the current locale
 
@@ -102,7 +100,6 @@ const BankSelect = forwardRef<any, BankSelectProps>(({
     }, [banks, t, locale]); // Add 't' and 'locale' to dependencies for re-memoization if locale changes
 
     const selectedOption = options.find(option => option.value === value) || null;
-    const currentBank = selectedOption?.bankDetails || null;
 
     const handleBankChange = (selected: any) => {
         onChange(selected ? selected.value : null);
@@ -130,20 +127,6 @@ const BankSelect = forwardRef<any, BankSelectProps>(({
     const optionActiveBg = 'var(--select-option-active-bg)';
     const optionTextColor = 'var(--select-option-text)';
     const singleValueColor = 'var(--select-single-value-text)';
-
-
-    const bankLogoUrlForDisplay = useMemo(() => {
-        if (currentBank?.bankLogoUrl) {
-            if (currentBank.bankLogoUrl.startsWith('http://') ||
-                currentBank.bankLogoUrl.startsWith('https://') ||
-                currentBank.bankLogoUrl.startsWith('/')) {
-                return currentBank.bankLogoUrl;
-            } else {
-                return `/${currentBank.bankLogoUrl}`;
-            }
-        }
-        return null;
-    }, [currentBank?.bankLogoUrl]);
 
     return (
         <div className="mb-3" style={{ width: '100%' }}>

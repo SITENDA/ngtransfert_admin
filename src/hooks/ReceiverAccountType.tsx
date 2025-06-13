@@ -5,14 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWeixin, faAlipay } from '@fortawesome/free-brands-svg-icons';  // WeChat and Alipay icons
 import { faUniversity } from '@fortawesome/free-solid-svg-icons';
 import { ReceiverAccountCategoryEnum } from "@/zod-schemas/receiver-account";
-import { ReactNode } from "react";
-import { useTranslations } from 'next-intl'; // Import useTranslations
-
-type DataObj = {
-    label: string;
-    value: string;
-    icon?: ReactNode;
-};
+import { useTranslations } from 'next-intl';
+import {DataObj} from "../../types/DataObj"; // Import useTranslations
 
 // Export a function that returns the translated array
 export const useOrderedReceiverAccountCategories = (): DataObj[] => {

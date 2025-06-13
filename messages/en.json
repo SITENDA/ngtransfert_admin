@@ -132,5 +132,48 @@
     "email": "Email",
     "phone_number": "Phone Number",
     "none": "None"
+  },
+  "TransferRequestsPage": {
+    "pageTitle": "Transfer Requests",
+    "applyForTransferButtonLabel": "Apply for a transfer"
+  },
+  "TransferRequestsForm": {
+    "noTransferRequestsFound": "No transfer requests found.",
+    "amount": "Amount",
+    "currencyId": "Currency ID",
+    "rate": "Rate",
+    "remark": "Remark",
+    "receiverAccountCategory": "Receiver Account Category",
+    "receiverAccountId": "Receiver Account ID",
+    "clientId": "Client ID",
+    "countryOfDepositId": "Country of Deposit ID",
+    "noRemark": "N/A",
+    "alipay_account": "Alipay Account",
+    "wechat_account": "WeChat Account",
+    "bank_account": "Bank Account"
+  },
+  "ApplyForTransferPage": {
+    "pageTitle": "Apply for Transfer",
+    "applyForTransferButtonLabel": "Apply for a transfer"
+  },
+  "ApplyForTransferForm": {
+    "countryOfDeposit": "Country of Deposit",
+    "selectCountryPlaceholder": "Select country",
+    "currency": "Currency",
+    "selectCurrencyPlaceholder": "Select currency",
+    "amount": "Amount",
+    "amountPlaceholder": "Enter amount",
+    "rate": "Exchange Rate",
+    "ratePlaceholder": "Enter exchange rate",
+    "remark": "Remark (Optional)",
+    "remarkPlaceholder": "Add a remark...",
+    "receiverAccountCategory": "Receiver Account Category",
+    "selectCategoryPlaceholder": "Select category",
+    "receiverAccountId": "Receiver Account ID",
+    "receiverAccountIdPlaceholder": "Enter receiver account ID",
+    "applyForTransferButton": "Apply for Transfer",
+    "submittingTransfer": "Submitting...",
+    "reset": "Reset",
+    "submissionError": "Submission Error"
   }
 }

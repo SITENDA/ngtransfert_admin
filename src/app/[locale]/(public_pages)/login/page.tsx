@@ -5,25 +5,21 @@ import LoginFormComponent from "@/components/LoginFormComponent"; // Import the 
 import React from 'react';
 import getSession from "@/lib/getSession";
 import { User } from "next-auth";
-import { redirect } from 'next/navigation'; // <-- Import redirect
+import { redirect } from 'next/navigation';
+import {getLocale} from "next-intl/server"; // <-- Import redirect
 
 export const metadata = {
     title: "Login / Register | NG Transfert",
 };
 
-interface LoginPageProps {
-    // Assuming your route is app/[locale]/login/page.tsx,
-    // the locale will be available in params.
-    params: { locale: string };
-}
 
-export default async function LoginPage({ params }: LoginPageProps) {
+export default async function LoginPage() {
     const session = await getSession();
     const user: User | undefined = session?.user;
+    const locale = getLocale();
 
     // Check if the user has a fullName AND a value for user.ekiddako
     if (user?.fullName && user?.ekiddako) {
-        const locale = params.locale; // Get the current locale from params
         const redirectPath = `/${locale}/${user.ekiddako}`; // Construct the full path with locale
         redirect(redirectPath); // Perform the server-side redirect
     }
