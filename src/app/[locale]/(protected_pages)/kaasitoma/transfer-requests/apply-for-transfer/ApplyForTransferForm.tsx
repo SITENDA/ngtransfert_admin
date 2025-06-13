@@ -17,7 +17,6 @@ import { Currency } from "../../../../../../../types/currency";
 import { TransferRequestSchema, TransferRequestSchemaType } from "@/zod-schemas/transfer-request";
 import { useOrderedCountries } from "@/hooks/useOrderedCountries";
 import { useOrderedCurrencies } from "@/hooks/useOrderedCurrencies";
-import { useOrderedReceiverAccountCategories } from "@/hooks/ReceiverAccountType"; // For receiver account category data
 
 import { createTransferRequestAction } from "@/lib/actions/transfer-request"; // Server Action
 
@@ -72,21 +71,24 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
             if (country && country.currency) {
                 // Only set value if it's different to avoid unnecessary re-renders/validation
                 if (form.getValues("currencyId") !== country.currency.currencyId) {
-                    form.setValue("currencyId", country.currency.currencyId, { shouldValidate: true, shouldDirty: true });
+                    // Removed shouldValidate: true here
+                    form.setValue("currencyId", country.currency.currencyId, { shouldDirty: true });
                 }
             } else {
                 // If country is selected but has no currency, or country object is null/undefined
-                form.setValue("currencyId", undefined, { shouldValidate: true, shouldDirty: true }); // Clear currency
+                // Removed shouldValidate: true here
+                form.setValue("currencyId", undefined, { shouldDirty: true }); // Clear currency
             }
         } else {
             // Reset currency and all subsequent fields if country is unselected/reset
             setSelectedCountryObj(null);
-            form.setValue("currencyId", undefined, { shouldValidate: true, shouldDirty: true });
-            form.setValue("amount", undefined, { shouldValidate: true, shouldDirty: true });
-            form.setValue("rate", undefined, { shouldValidate: true, shouldDirty: true });
-            form.setValue("remark", undefined, { shouldValidate: true, shouldDirty: true });
-            form.setValue("receiverAccountCategory", undefined, { shouldValidate: true, shouldDirty: true });
-            form.setValue("receiverAccountId", undefined, { shouldValidate: true, shouldDirty: true });
+            // Removed shouldValidate: true from all these setValue calls
+            form.setValue("currencyId", undefined, { shouldDirty: true });
+            form.setValue("amount", undefined, { shouldDirty: true });
+            form.setValue("rate", undefined, { shouldDirty: true });
+            form.setValue("remark", undefined, { shouldDirty: true });
+            form.setValue("receiverAccountCategory", undefined, { shouldDirty: true });
+            form.setValue("receiverAccountId", undefined, { shouldDirty: true });
         }
     }, [watchedCountryOfDepositId, initialCountries, form]);
 
@@ -95,11 +97,12 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
         // This effect runs if watchedCurrencyId becomes undefined/null, but only if a country is still selected.
         // If countryOfDepositId is also undefined, the previous useEffect handles the full reset.
         if (!watchedCurrencyId && watchedCountryOfDepositId) {
-            form.setValue("amount", undefined, { shouldValidate: true, shouldDirty: true });
-            form.setValue("rate", undefined, { shouldValidate: true, shouldDirty: true });
-            form.setValue("remark", undefined, { shouldValidate: true, shouldDirty: true });
-            form.setValue("receiverAccountCategory", undefined, { shouldValidate: true, shouldDirty: true });
-            form.setValue("receiverAccountId", undefined, { shouldValidate: true, shouldDirty: true });
+            // Removed shouldValidate: true from all these setValue calls
+            form.setValue("amount", undefined, { shouldDirty: true });
+            form.setValue("rate", undefined, { shouldDirty: true });
+            form.setValue("remark", undefined, { shouldDirty: true });
+            form.setValue("receiverAccountCategory", undefined, { shouldDirty: true });
+            form.setValue("receiverAccountId", undefined, { shouldDirty: true });
         }
     }, [watchedCurrencyId, watchedCountryOfDepositId, form]);
 
