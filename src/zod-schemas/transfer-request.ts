@@ -3,12 +3,13 @@ import { z } from "zod";
 import { ReceiverAccountCategoryEnum } from "./receiver-account"; // Re-use the existing enum
 
 export const TransferRequestSchema = z.object({
-    // Country of Deposit: Always required as it's the first selection
-    countryOfDepositId: z.coerce.number().positive("Country of deposit is required."),
+    // Country of Deposit: Optional initially to allow `undefined` in default values.
+    // Its positive validation will be enforced by superRefine when a currency is selected.
+    countryOfDepositId: z.coerce.number().optional().nullable(),
 
     // Currency: Optional initially (to allow `undefined` in default values),
     // will be conditionally required later via superRefine once country is selected.
-    currencyId: z.coerce.number().optional().nullable(),
+    currencyId:  z.coerce.number().optional(),
 
     // Amount, Rate, Remark, Receiver Account Category, Receiver Account ID:
     // Optional initially, will be conditionally required later via superRefine
@@ -24,19 +25,25 @@ export const TransferRequestSchema = z.object({
 }).superRefine((data, ctx) => {
     // --- Conditional Validation Logic ---
 
-    // 1. If countryOfDepositId is selected, then currencyId becomes required.
-    // We check for null/undefined or a non-positive value after coercion.
-    if (data.countryOfDepositId && (data.currencyId === null || data.currencyId === undefined || data.currencyId <= 0)) {
+    // 1. Validate countryOfDepositId
+    if (data.countryOfDepositId === null || data.countryOfDepositId === undefined || data.countryOfDepositId <= 0) {
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: "Currency is required when country of deposit is selected.",
-            path: ["currencyId"], // Path points to the currencyId field
+            message: "Country of deposit is required.",
+            path: ["countryOfDepositId"],
+        });
+    } else if (data.countryOfDepositId && (!data.currencyId || data.currencyId <= 0)) {
+        // 2. If country selected, currency must also be valid
+        ctx.addIssue({
+            path: ['currencyId'],
+            code: z.ZodIssueCode.custom,
+            message: 'Currency is required when a country is selected.',
         });
     }
 
-    // 2. If currencyId is selected, then dependent fields become required.
-    if (data.currencyId) {
-        // Amount must be greater than 0
+    // 3. If currencyId is valid (positive), validate dependent fields
+    if (data.currencyId && data.currencyId > 0) {
+        // Amount validation
         if (data.amount === null || data.amount === undefined || data.amount <= 0) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
@@ -44,25 +51,15 @@ export const TransferRequestSchema = z.object({
                 path: ["amount"],
             });
         }
-        // Rate must be greater than 0 (or adjust to >= 0 if 0 is allowed)
+        // Rate validation
         if (data.rate === null || data.rate === undefined || data.rate <= 0) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: "Exchange Rate must be greater than 0 when currency is selected.",
+                message: "Rate must be greater than 0 when currency is selected.",
                 path: ["rate"],
             });
         }
-        // Remark can remain optional even if currency is selected, if that's your business logic.
-        // If remark becomes required here:
-        // if (data.remark === null || data.remark === undefined || data.remark.trim() === "") {
-        //     ctx.addIssue({
-        //         code: z.ZodIssueCode.custom,
-        //         message: "Remark is required when currency is selected.",
-        //         path: ["remark"],
-        //     });
-        // }
-
-        // Receiver Account Category is required
+        // ReceiverAccountCategory validation
         if (data.receiverAccountCategory === null || data.receiverAccountCategory === undefined) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
@@ -70,12 +67,11 @@ export const TransferRequestSchema = z.object({
                 path: ["receiverAccountCategory"],
             });
         }
-
-        // Receiver Account ID is required and positive
+        // ReceiverAccountId validation
         if (data.receiverAccountId === null || data.receiverAccountId === undefined || data.receiverAccountId <= 0) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: "Receiver account is required when currency is selected.",
+                message: "Receiver account ID must be provided when currency is selected.",
                 path: ["receiverAccountId"],
             });
         }

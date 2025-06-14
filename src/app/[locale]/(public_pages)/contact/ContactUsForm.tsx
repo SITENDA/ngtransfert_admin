@@ -8,7 +8,7 @@ import { InputWithLabel } from "@/components/inputs/InputWithLabel";
 import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
 import { contactUsSchema, type contactUsSchemaType } from "@/zod-schemas/contact-us"; // Create this schema
 import { useAction } from 'next-safe-action/hooks';
-import { sendContactUsEmailAction } from "@/app/actions/sendContactUsEmailAction"; // Create this action
+import { sendContactUsEmailAction } from "@/lib/actions/sendContactUsEmailAction"; // Create this action
 import { useToast } from "@/hooks/use-toast";
 import { LoaderCircle } from "lucide-react";
 import { DisplayServerActionResponse } from "@/components/DisplayServerActionResponse";

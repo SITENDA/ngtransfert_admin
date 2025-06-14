@@ -40,9 +40,9 @@ const ReceiverAccountDetailsForm: React.FC<ReceiverAccountDetailsFormProps> = ({
                     {t('generalDetails')}
                 </h3>
                 <DetailRow label={t('receiverAccountCategory')}>
-                    <div className="flex items-center gap-2">
+                    <div className=" items-center gap-2">
+                        <span>{t(receiverAccount.receiverAccountCategory.toLowerCase())}&nbsp; </span>
                         {getCategoryIcon(receiverAccount.receiverAccountCategory)}
-                        <span>{t(receiverAccount.receiverAccountCategory.toLowerCase())}</span>
                     </div>
                 </DetailRow>
                 <DetailRow label={t('receiverAccountIdentifier')} value={t(receiverAccount.receiverAccountIdentifier.toLowerCase())} />

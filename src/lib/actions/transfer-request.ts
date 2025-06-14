@@ -5,40 +5,28 @@
 "use server"; // This marks it as a Server Action
 
 import { revalidatePath } from "next/cache";
-import { getLocale } from "next-intl/server";
+import {TransferRequestSchemaType} from "@/zod-schemas/transfer-request";
 
 // Assuming your proxy for creating transfers is:
 // /api/kaasitoma/transferRequests/applyForTransfer
-const PROXY_APPLY_TRANSFER_URL = `${process.env.NEXT_PUBLIC_APP_URL}/api/kaasitoma/transferRequests/applyForTransfer`;
+const PROXY_APPLY_TRANSFER_URL = `${process.env.NEXT_PUBLIC_APP_URL || ''}/api/kaasitoma/transferRequests/applyForTransfer`;
+
 
 /**
  * Server Action to create a new transfer request.
- * Takes FormData and sends it to the backend proxy.
+ * Takes the structured TransferRequestSchemaType data and sends it to the backend proxy.
  *
- * @param {FormData} formData - The form data containing transfer request details.
+ * @param {TransferRequestSchemaType} transferRequestData - The structured data containing transfer request details.
  * @returns {Promise<{ success: boolean; message: string; data?: any }>} Result of the operation.
  */
-export async function createTransferRequestAction(formData: FormData) {
-    const locale = await getLocale();
+export async function createTransferRequestAction(transferRequestData: TransferRequestSchemaType) {
+    const locale = 'en'; // Hardcode locale as next-intl is not available
 
     try {
         console.log("Server Action: Creating transfer request...");
 
-        // Convert FormData to a plain object or JSON if your backend expects JSON
-        // If your backend @RequestBody expects a JSON DTO, you'll need to
-        // reconstruct the JSON from formData here.
-        // For now, assuming you might eventually send it as multipart or reconstruct JSON.
-        // Let's assume your backend expects JSON for RequestTransferRequestDTO.
-        const requestData = {
-            amount: parseFloat(formData.get("amount") as string),
-            currencyId: parseInt(formData.get("currencyId") as string),
-            rate: parseFloat(formData.get("rate") as string),
-            remark: formData.get("remark") as string,
-            receiverAccountCategory: formData.get("receiverAccountCategory") as string,
-            receiverAccountId: parseInt(formData.get("receiverAccountId") as string),
-            clientId: parseInt(formData.get("clientId") as string), // This will be overwritten by backend, but sent for type safety
-            countryOfDepositId: parseInt(formData.get("countryOfDepositId") as string),
-        };
+        // The transferRequestData is already a plain object, ready to be stringified to JSON
+        const requestBody = JSON.stringify(transferRequestData);
 
         const response = await fetch(PROXY_APPLY_TRANSFER_URL, {
             method: 'POST',
@@ -49,7 +37,7 @@ export async function createTransferRequestAction(formData: FormData) {
                 // called directly from a Server Component, you'd add `getSession` here.
                 // For a server action, the request context usually handles this.
             },
-            body: JSON.stringify(requestData),
+            body: requestBody,
         });
 
         const responseBody = await response.json();

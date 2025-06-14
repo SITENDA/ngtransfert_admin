@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { SelectWithLabel } from "@/components/inputs/SelectWithLabel";
 import { InputWithLabel } from "@/components/inputs/InputWithLabel";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import { Form } from "@/components/ui/form"; // Assuming this is a context provider for react-hook-form
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,15 +18,17 @@ import { TransferRequestSchema, TransferRequestSchemaType } from "@/zod-schemas/
 import { useOrderedCountries } from "@/hooks/useOrderedCountries";
 import { useOrderedCurrencies } from "@/hooks/useOrderedCurrencies";
 
-import { createTransferRequestAction } from "@/lib/actions/transfer-request"; // Server Action
+import { createTransferRequestAction } from "@/lib/actions/transfer-request";
+import {ReceiverAccount} from "../../../../../../../types/receiver-account"; // Server Action
 
 interface ApplyForTransferFormProps {
     initialCountries: Country[];
     initialCurrencies: Currency[];
+    receiverAccount: ReceiverAccount; // Ensure this prop is received
     clientId: number; // Client ID passed from the Server Component
 }
 
-const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCountries, initialCurrencies, clientId }) => {
+const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCountries, initialCurrencies, clientId, receiverAccount }) => { // Destructure receiverAccount
     const t = useTranslations('ApplyForTransferForm');
     const router = useRouter();
     const locale = useLocale();
@@ -38,8 +40,8 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
         currencyId: undefined,
         rate: undefined,
         remark: undefined,
-        receiverAccountCategory: undefined,
-        receiverAccountId: undefined,
+        receiverAccountCategory: undefined, // These will be populated from receiverAccount prop in onSubmit
+        receiverAccountId: undefined,       // These will be populated from receiverAccount prop in onSubmit
         clientId: clientId, // Pre-fill clientId from props
         countryOfDepositId: undefined,
     };
@@ -48,6 +50,7 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
         mode: 'onBlur',
         resolver: zodResolver(TransferRequestSchema),
         defaultValues: defaultEmptyValues,
+        shouldUnregister: true // Keep this as per your provided code
     });
 
     const watchedCountryOfDepositId = form.watch("countryOfDepositId");
@@ -64,74 +67,101 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
 
     // Effect to update selectedCountryObj when watchedCountryOfDepositId changes
     useEffect(() => {
-        if (watchedCountryOfDepositId) {
+        console.log('DEBUG (Effect 1): watchedCountryOfDepositId changed to:', watchedCountryOfDepositId);
+        if (watchedCountryOfDepositId !== undefined && watchedCountryOfDepositId !== null) { // Explicitly check for non-undefined/null
             const country = initialCountries.find(c => c.countryId === watchedCountryOfDepositId);
             setSelectedCountryObj(country || null);
             // Optionally, set the currencyId if a country is selected and has a currency
             if (country && country.currency) {
-                // Only set value if it's different to avoid unnecessary re-renders/validation
                 if (form.getValues("currencyId") !== country.currency.currencyId) {
-                    // Removed shouldValidate: true here
-                    form.setValue("currencyId", country.currency.currencyId, { shouldDirty: true });
+                    form.setValue("currencyId", country.currency.currencyId, { shouldDirty: true, shouldValidate: true }); // Add shouldValidate
+                    console.log('DEBUG (Effect 1): Setting currencyId to:', country.currency.currencyId);
                 }
             } else {
-                // If country is selected but has no currency, or country object is null/undefined
-                // Removed shouldValidate: true here
-                form.setValue("currencyId", undefined, { shouldDirty: true }); // Clear currency
+                form.setValue("currencyId", undefined, { shouldDirty: true, shouldValidate: true }); // Clear currency and validate
+                console.log('DEBUG (Effect 1): Clearing currencyId.');
             }
         } else {
-            // Reset currency and all subsequent fields if country is unselected/reset
             setSelectedCountryObj(null);
-            // Removed shouldValidate: true from all these setValue calls
-            form.setValue("currencyId", undefined, { shouldDirty: true });
-            form.setValue("amount", undefined, { shouldDirty: true });
-            form.setValue("rate", undefined, { shouldDirty: true });
-            form.setValue("remark", undefined, { shouldDirty: true });
-            form.setValue("receiverAccountCategory", undefined, { shouldDirty: true });
-            form.setValue("receiverAccountId", undefined, { shouldDirty: true });
+            // Reset currency and all subsequent fields if country is unselected/reset
+            form.setValue("currencyId", undefined, { shouldDirty: true, shouldValidate: true }); // Add shouldValidate
+            form.setValue("amount", undefined, { shouldDirty: true, shouldValidate: true }); // Add shouldValidate
+            form.setValue("rate", undefined, { shouldDirty: true, shouldValidate: true }); // Add shouldValidate
+            form.setValue("remark", undefined, { shouldDirty: true, shouldValidate: true }); // Add shouldValidate
+            form.setValue("receiverAccountCategory", undefined, { shouldDirty: true, shouldValidate: true }); // Add shouldValidate
+            form.setValue("receiverAccountId", undefined, { shouldDirty: true, shouldValidate: true }); // Add shouldValidate
+            console.log('DEBUG (Effect 1): Clearing all dependent fields due to country unselection/initial undefined.');
         }
     }, [watchedCountryOfDepositId, initialCountries, form]);
 
     // Effect to reset dependent fields when currency is unselected
     useEffect(() => {
-        // This effect runs if watchedCurrencyId becomes undefined/null, but only if a country is still selected.
-        // If countryOfDepositId is also undefined, the previous useEffect handles the full reset.
-        if (!watchedCurrencyId && watchedCountryOfDepositId) {
-            // Removed shouldValidate: true from all these setValue calls
-            form.setValue("amount", undefined, { shouldDirty: true });
-            form.setValue("rate", undefined, { shouldDirty: true });
-            form.setValue("remark", undefined, { shouldDirty: true });
-            form.setValue("receiverAccountCategory", undefined, { shouldDirty: true });
-            form.setValue("receiverAccountId", undefined, { shouldDirty: true });
+        console.log('DEBUG (Effect 2): watchedCurrencyId changed to:', watchedCurrencyId);
+        if (watchedCurrencyId === undefined && watchedCountryOfDepositId !== undefined && watchedCountryOfDepositId !== null) {
+            form.setValue("amount", undefined, { shouldDirty: true, shouldValidate: true }); // Add shouldValidate
+            form.setValue("rate", undefined, { shouldDirty: true, shouldValidate: true }); // Add shouldValidate
+            form.setValue("remark", undefined, { shouldDirty: true, shouldValidate: true }); // Add shouldValidate
+            form.setValue("receiverAccountCategory", undefined, { shouldDirty: true, shouldValidate: true }); // Add shouldValidate
+            form.setValue("receiverAccountId", undefined, { shouldDirty: true, shouldValidate: true }); // Add shouldValidate
+            console.log('DEBUG (Effect 2): Clearing dependent fields due to currency unselection.');
         }
     }, [watchedCurrencyId, watchedCountryOfDepositId, form]);
 
     const onSubmit = async (data: TransferRequestSchemaType) => {
+        console.log("DEBUG: 'onSubmit' function STARTED.");
+
+        // IMPORTANT: Log current form state and errors *before* setting loading or making API call
+        console.log("DEBUG: Form 'isValid' state BEFORE submission logic:", form.formState.isValid);
+        console.log("DEBUG: Form 'errors' state BEFORE submission logic (if any):", form.formState.errors);
+
+        // If form.formState.isValid is false here, it means Zod validation failed.
+        // The handleSubmit wrapper should prevent this 'onSubmit' from running if validation fails.
+        // If this log appears and isValid is false, it's an indication to check validation issues.
+        if (!form.formState.isValid) {
+            console.error("DEBUG: Form validation failed. Preventing submission. Check form.formState.errors for details.");
+            setLoading(false); // Ensure loading state is reset
+            return; // Explicitly stop if validation fails
+        }
+
+
         setLoading(true);
-        console.log("Applying for transfer with data:", data);
+        console.log("DEBUG: Applying for transfer with data (before final additions):", data);
 
         // ClientId is pre-filled from defaultValues, and will be set securely by the backend
         data.clientId = clientId;
+        // IMPORTANT FIX: Populate receiverAccountCategory and receiverAccountId from the prop
+        data.receiverAccountCategory = receiverAccount.receiverAccountCategory;
+        data.receiverAccountId = receiverAccount.receiverAccountId;
 
-        // Call the server action to create the transfer request
-        const result = await createTransferRequestAction(data);
+        console.log("DEBUG: Data prepared for transfer (final payload to action):", data);
 
-        setLoading(false);
+        try {
+            // Call the server action to create the transfer request
+            const result = await createTransferRequestAction(data);
+            console.log("DEBUG: Server action result:", result);
 
-        if (result.success) {
-            alert(t('transferSuccessMessage', { message: result.message }));
-            form.reset(defaultEmptyValues); // Reset form to initial empty state
-            const redirectPath = `/${locale}/kaasitoma/transfer-requests`; // Redirect to the list of transfer requests
-            router.push(redirectPath);
-        } else {
-            alert(`${t('submissionError')}: ${result.message}`);
-            console.error('Transfer request submission failed:', result.message);
+            if (result.success) {
+                alert(t('transferSuccessMessage', { message: result.message }));
+                form.reset(defaultEmptyValues); // Reset form to initial empty state
+                const redirectPath = `/${locale}/kaasitoma/transfer-requests`; // Redirect to the list of transfer requests
+                router.push(redirectPath);
+            } else {
+                alert(`${t('submissionError')}: ${result.message}`);
+                console.error('ERROR: Transfer request submission failed (Server Action reported error):', result.message);
+            }
+        } catch (error) {
+            console.error("CRITICAL ERROR: Exception caught when calling 'createTransferRequestAction':", error);
+            alert(`${t('submissionError')}: An unexpected error occurred while calling the server action.`);
+        } finally {
+            setLoading(false);
+            console.log("DEBUG: 'onSubmit' function FINISHED.");
         }
     };
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-w-lg mx-auto p-4 border rounded-lg shadow-md">
+            {/* The onSubmit prop belongs ONLY on the <form> element for react-hook-form */}
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-w-lg mx-auto p-4 border rounded-lg shadow-md bg-white dark:bg-gray-700">
                 {/* Country of Deposit Selector - Always Visible */}
                 <SelectWithLabel<TransferRequestSchemaType>
                     fieldTitle={t('countryOfDeposit')}
@@ -142,7 +172,8 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
                 />
 
                 {/* Currency Selector - Conditional on Country Selection */}
-                {watchedCountryOfDepositId && (
+                {/* Check for non-undefined/null on watchedCountryOfDepositId */}
+                {(watchedCountryOfDepositId !== undefined && watchedCountryOfDepositId !== null) && (
                     <SelectWithLabel<TransferRequestSchemaType>
                         fieldTitle={t('currency')}
                         nameInSchema="currencyId"
@@ -152,9 +183,9 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
                     />
                 )}
 
-                {/* Amount, Rate, Remark, Receiver Account Category, and Receiver Account ID Inputs
-                    - Conditional on Currency Selection */}
-                {watchedCurrencyId && (
+                {/* Amount, Rate, Remark Inputs - Conditional on Currency Selection */}
+                {/* Check for non-undefined/null on watchedCurrencyId */}
+                {(watchedCurrencyId !== undefined && watchedCurrencyId !== null) && (
                     <>
                         <InputWithLabel<TransferRequestSchemaType>
                             fieldTitle={t('amount')}
@@ -162,7 +193,7 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
                             control={form.control}
                             placeholder={t('amountPlaceholder')}
                             type="number"
-                            step="0.01" // Allow decimal input
+                            step="0.01"
                         />
 
                         <InputWithLabel<TransferRequestSchemaType>
@@ -171,7 +202,7 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
                             control={form.control}
                             placeholder={t('ratePlaceholder')}
                             type="number"
-                            step="0.0001" // Allow more precise decimal input for rate
+                            step="0.0001"
                         />
 
                         <InputWithLabel<TransferRequestSchemaType>

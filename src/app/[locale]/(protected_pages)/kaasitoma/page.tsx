@@ -63,7 +63,7 @@ export default async function KaasitomaDashboardPage() {
                         <h3 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Your Accounts</h3>
                         <div className="space-y-3">
                             {/* Clickable row for Receiver Accounts */}
-                            <ClickableRow href="/kaasitoma/receiver-accounts" count={receiverAccountsCount}>
+                            <ClickableRow href={kaasitomaPaths.receiverAccountsPath} count={receiverAccountsCount}>
                                 Receiver Accounts
                             </ClickableRow>
                             {/* You can add more account-related rows here if needed */}
@@ -75,17 +75,17 @@ export default async function KaasitomaDashboardPage() {
                         <h3 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Sending Records</h3>
                         <div className="space-y-3">
                             {/* Clickable row for Sending Records */}
-                            <ClickableRow href={`/${locale}/sending-records`} count={sendingRecordsCount} className="hover:bg-green-50 dark:hover:bg-green-900">
+                            <ClickableRow href={kaasitomaPaths.sendingRecordsPath} count={sendingRecordsCount} className="hover:bg-green-50 dark:hover:bg-green-900">
                                 All Sending Records
                             </ClickableRow>
 
                             {/* Clickable row for Transfer Requests */}
-                            <ClickableRow href="/kaasitoma/transfer-requests" count={transferRequestsCount} className="hover:bg-yellow-50 dark:hover:bg-yellow-900">
+                            <ClickableRow href={kaasitomaPaths.transferRequestsPath} count={transferRequestsCount} className="hover:bg-yellow-50 dark:hover:bg-yellow-900">
                                 Transfer Requests
                             </ClickableRow>
 
                             {/* Clickable row for Settled Transfers */}
-                            <ClickableRow href={`/${locale}/settled-transfers`} count={settledTransfersCount} className="hover:bg-purple-50 dark:hover:bg-purple-900">
+                            <ClickableRow href={kaasitomaPaths.settledTransfersPath} count={settledTransfersCount} className="hover:bg-purple-50 dark:hover:bg-purple-900">
                                 Settled Transfers
                             </ClickableRow>
                         </div>

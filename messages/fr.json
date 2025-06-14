@@ -188,5 +188,43 @@
     "qr_code_image": "Image du Code QR",
     "phone_number": "Numéro de Téléphone",
     "none": "Aucun"
+  },
+  "TopUpPage": {
+    "pageTitle": "Recharger le Compte"
+  },
+  "TopUpForm": {
+    "topUpSuccessMessage": "Recharge initiée avec succès : {message}",
+    "submissionError": "Erreur de soumission",
+    "receiverAccountName": "Nom du compte",
+    "category": "Catégorie",
+    "identifier": "Identifiant",
+    "currency": "Devise",
+    "amountInCNY": "Montant (CNY)",
+    "amountInCNYPlaceholder": "Saisir le montant en CNY",
+    "sendingFee": "Frais d'envoi",
+    "sendingFeePlaceholder": "Saisir les frais d'envoi",
+    "proofPicture": "Preuve Photo",
+    "submittingTopUp": "Envoi en cours...",
+    "submitTopUp": "Soumettre la Recharge",
+    "reset": "Réinitialiser",
+    "alipay": "Compte Alipay",
+    "wechat": "Compte WeChat",
+    "bank": "Compte Bancaire"
+  },
+  "TopUpRequestsPage": {
+    "pageTitle": "Demandes de Recharge"
+  },
+  "TopUpRequestsForm": {
+    "noTopUpRequestsFound": "Aucune demande de recharge trouvée.",
+    "topUpId": "ID de Recharge",
+    "accountCategory": "Catégorie de Compte",
+    "accountIdentifier": "Identifiant de Compte",
+    "accountId": "ID de Compte",
+    "amountInCNY": "Montant (CNY)",
+    "proofPicture": "Preuve Photo",
+    "currency": "Devise",
+    "alipay": "Compte Alipay",
+    "wechat": "Compte WeChat",
+    "bank": "Compte Bancaire"
   }
 }

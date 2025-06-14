@@ -30,18 +30,16 @@ export const useOrderedCountries = (countries: Country[]): DataObj[] => {
         }
 
         return countries.map(country => ({
-            label: <div className="flex items-center"> {/* Use flexbox to align items */}
-                <span>{country.countryName}</span> {/* Country name */}
-                {country.countryFlagUrl && country.countryName !== "Other countries" ? (
-                    <CountryFlag
-                        flagUrl={country.countryFlagUrl}
-                        alt={country.countryName}
-                        style={{ width: '20px', height: '15px', marginLeft: '8px' }} // Add margin for spacing
-                    />
-                ) : null} {/* Render nothing if no flag or "Other countries" */}
-            </div>,
-            value: String(country.countryId), // Ensure value is a string, as required by DataObj
-            icon: undefined
+            label: country.countryName, // simple string
+            value: String(country.countryId),
+            icon: country.countryFlagUrl && country.countryName !== "Other countries" ? (
+                <CountryFlag
+                    flagUrl={country.countryFlagUrl}
+                    alt={country.countryName}
+                    style={{ width: '20px', height: '15px', marginLeft: '8px' }}
+                />
+            ) : undefined
         }));
+
     }, [countries]);
 };

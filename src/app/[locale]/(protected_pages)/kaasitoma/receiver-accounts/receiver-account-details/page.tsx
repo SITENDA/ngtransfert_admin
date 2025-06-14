@@ -4,10 +4,10 @@ import ReceiverAccountDetailsForm from "./ReceiverAccountDetailsForm";
 import PublicWrapper from "@/components/PublicWrapper";
 // Removed next-intl imports as they are not resolvable in this environment
 import getSession from "@/lib/getSession"; // Assuming getSession is available
-import { redirect } from 'next/navigation';
-import { kaasitomaPaths } from "@/util/frontend-paths"; // Assuming kaasitomaPaths is available
+import {redirect} from 'next/navigation';
+import {kaasitomaPaths} from "@/util/frontend-paths"; // Assuming kaasitomaPaths is available
 import {ReceiverAccount, ReceiverAccountPayload} from "../../../../../../../types/receiver-account"; // Import ReceiverAccountPayload
-import { fetchBackendData } from "@/lib/backend-api-client";
+import {fetchBackendData} from "@/lib/backend-api-client";
 import {CardHeader} from "@/components/ui/card";
 // Replaced Next.js Link from next-intl/navigation with a standard <a> tag
 // as it cannot be resolved in this environment.
@@ -41,8 +41,9 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { re
     }
 
     let receiverAccount: ReceiverAccount | null = null; // Initialize receiverAccount
-    const params = searchParams; // searchParams is already an object, no need for await
+     // searchParams is already an object, no need for await
     // Access receiverAccountId directly from the searchParams prop
+    const params = await searchParams;
     const receiverAccountId = params.receiverAccountId;
 
     try {

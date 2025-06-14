@@ -8,7 +8,7 @@ import { headers } from 'next/headers';
 import { User } from 'next-auth';
 
 import PublicWrapper from "@/components/PublicWrapper";
-import TopUpRequestsForm from "@/app/[locale]/(protected_pages)/kaasitoma/topup-requests/TopUpRequestsForm";
+import TopUpRequestsForm from "@/app/[locale]/(protected_pages)/kaasitoma/top-up-requests/TopUpRequestsForm";
 import {BackendGenericResponse} from "../../../../../../types/BackendGenericResponse";
 import {TopUpRequest, TopUpRequestsPayload} from "../../../../../../types/topup-request";
 

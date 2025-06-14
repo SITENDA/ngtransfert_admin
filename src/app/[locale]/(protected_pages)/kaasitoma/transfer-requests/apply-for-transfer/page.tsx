@@ -6,28 +6,43 @@ import { redirect } from 'next/navigation';
 import { getTranslations, getLocale } from 'next-intl/server';
 import getSession from "@/lib/getSession"; // Assuming getSession is available
 import { kaasitomaPaths } from "@/util/frontend-paths"; // Assuming kaasitomaPaths is available
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // Import Card components
+import { CardContent } from "@/components/ui/card"; // Import Card components
 
 import ApplyForTransferForm from "@/app/[locale]/(protected_pages)/kaasitoma/transfer-requests/apply-for-transfer/ApplyForTransferForm";
 import { fetchBackendData } from "@/lib/backend-api-client"; // Import the new reusable fetch utility
 import { Country, CountryDataPayload } from "../../../../../../../types/country";
 import {Currency, CurrencyDataPayload} from "../../../../../../../types/currency";
+import {ReceiverAccountPayload} from "../../../../../../../types/receiver-account";
 
+interface ApplyForTransferPageProps {
+    searchParams: { // Query parameters from Spring Boot redirect
+        receiverAccountId?: string; // The access token from Spring Boot
+    };
+}
 
-async function ApplyForTransferPage() {
+async function ApplyForTransferPage({ searchParams }: ApplyForTransferPageProps) {
     const t = await getTranslations('ApplyForTransferPage');
     const locale = await getLocale();
+    const params = await searchParams
 
     const session = await getSession();
     const clientId = session?.user?.userId;
 
     if (!clientId) {
-        console.warn(`ApplyForTransferPage: Client ID not found after initial session check. Redirecting to /${locale}/${kaasitomaPaths.loginPath}`);
-        redirect(`/${locale}/${kaasitomaPaths.loginPath}`);
+        console.warn(`ApplyForTransferPage: Client ID not found after initial session check. Redirecting to /${kaasitomaPaths.loginPath}`);
+        redirect(kaasitomaPaths.loginPath);
+    }
+
+    const receiverAccountId = params.receiverAccountId
+
+    if (!receiverAccountId) {
+        console.warn(`ApplyForTransferPage: Receiver Account ID not found after initial session check. Redirecting to /${kaasitomaPaths.receiverAccountsPath}`);
+        redirect(kaasitomaPaths.receiverAccountsPath);
     }
 
     let countries: Country[] = [];
     let currencies: Currency[] = []; // Initialize currencies array
+    let receiverAccount;
 
     try {
         // Fetch countries
@@ -60,10 +75,30 @@ async function ApplyForTransferPage() {
             console.warn("ApplyForTransferPage: No currency data fetched or data structure unexpected from backend.");
         }
 
+        // Fetch Currencies
+        const receiverAccountPayload = await fetchBackendData<ReceiverAccountPayload>(
+            `/kaasitoma/receiverAccounts/getReceiverAccountByReceiverAccountId?receiverAccountId=${receiverAccountId}`, // Use the provided backend endpoint
+            'GET',
+            undefined,
+            3600 // Revalidate every hour
+        );
+
+        if (receiverAccountPayload && receiverAccountPayload.receiverAccount) {
+            receiverAccount = receiverAccountPayload.receiverAccount;
+            console.log(`ApplyForTransferPage: Successfully fetched receiver account ID ${receiverAccount.receiverAccountId}`);
+        } else {
+            console.warn("ApplyForTransferPage: No receiver account data fetched or data structure unexpected from backend.");
+        }
+
     } catch (error) {
         console.error("ApplyForTransferPage: Error during data fetching process (countries or currencies):", error);
         countries = []; // Ensure countries is an empty array on error
         currencies = []; // Ensure currencies is an empty array on error
+    }
+
+    if (receiverAccount?.receiverAccountId == undefined || receiverAccount == null) {
+        console.log(`ApplyForTransferPage: No account found for receiver account, redirecting to  ${kaasitomaPaths.receiverAccountsPath}.`);
+        redirect(kaasitomaPaths.receiverAccountsPath);
     }
 
     return (
@@ -81,7 +116,7 @@ async function ApplyForTransferPage() {
                 {/* CardContent to contain the form */}
                 <CardContent className="flex-grow p-6 space-y-8">
                     {/* Pass the fetched countries and currencies data, and the guaranteed clientId to the client component */}
-                    <ApplyForTransferForm initialCountries={countries} initialCurrencies={currencies} clientId={clientId} />
+                    <ApplyForTransferForm initialCountries={countries} initialCurrencies={currencies} clientId={clientId} receiverAccount={receiverAccount}/>
                 </CardContent>
             </div>
         </>

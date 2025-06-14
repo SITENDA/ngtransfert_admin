@@ -188,5 +188,43 @@
     "qr_code_image": "二维码图片",
     "phone_number": "电话号码",
     "none": "无"
+  },
+  "TopUpPage": {
+    "pageTitle": "充值账户"
+  },
+  "TopUpForm": {
+    "topUpSuccessMessage": "充值成功启动：{message}",
+    "submissionError": "提交错误",
+    "receiverAccountName": "账户名称",
+    "category": "类别",
+    "identifier": "识别码",
+    "currency": "货币",
+    "amountInCNY": "金额（人民币）",
+    "amountInCNYPlaceholder": "输入人民币金额",
+    "sendingFee": "手续费",
+    "sendingFeePlaceholder": "输入手续费",
+    "proofPicture": "凭证图片",
+    "submittingTopUp": "提交中...",
+    "submitTopUp": "提交充值",
+    "reset": "重置",
+    "alipay": "支付宝账户",
+    "wechat": "微信账户",
+    "bank": "银行账户"
+  },
+  "TopUpRequestsPage": {
+    "pageTitle": "充值请求"
+  },
+  "TopUpRequestsForm": {
+    "noTopUpRequestsFound": "未找到充值请求。",
+    "topUpId": "充值ID",
+    "accountCategory": "账户类别",
+    "accountIdentifier": "账户识别码",
+    "accountId": "账户ID",
+    "amountInCNY": "金额（人民币）",
+    "proofPicture": "凭证图片",
+    "currency": "货币",
+    "alipay": "支付宝账户",
+    "wechat": "微信账户",
+    "bank": "银行账户"
   }
 }

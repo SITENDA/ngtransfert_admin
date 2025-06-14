@@ -11,9 +11,7 @@ import {BackendGenericResponse} from "../../../../../../types/BackendGenericResp
 import TransferRequestsForm from "@/app/[locale]/(protected_pages)/kaasitoma/transfer-requests/TransferRequestsForm";
 import {TransferRequest, TransferRequestsPayload} from "../../../../../../types/transfer-requests";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {Link} from "@/i18n/navigation";
 import {kaasitomaPaths} from "@/util/frontend-paths";
-import {Button} from "@/components/ui/button";
 import React from "react";
 
 // URL for the Next.js API proxy that will fetch transfer requests from Spring Boot
@@ -96,15 +94,6 @@ export default async function TransferRequestsPage() {
             <Card className="w-full flex-grow mx-auto my-8 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 flex flex-col h-full max-w-screen-lg rounded-xl shadow-lg">
                 <CardHeader className="flex flex-row justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <CardTitle className="text-3xl font-bold text-blue-700 dark:text-blue-300">{t('pageTitle')}</CardTitle>
-                    {/* Button for adding receiver account. Using onClick for demonstration. */}
-
-                    <Link href={kaasitomaPaths.applyForTransferPath} passHref>
-                        <Button variant="outline"
-                                size="sm"
-                                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
-                            {t('applyForTransferButtonLabel')}
-                        </Button>
-                    </Link>
                 </CardHeader>
                 {/* CardContent to contain the form */}
                 <CardContent className="flex-grow p-6 space-y-8">

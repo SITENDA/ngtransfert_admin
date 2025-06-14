@@ -208,5 +208,43 @@
     "qr_code_image": "QR Code Image",
     "phone_number": "Phone Number",
     "none": "None"
+  },
+  "TopUpPage": {
+    "pageTitle": "Top Up Account"
+  },
+  "TopUpForm": {
+    "topUpSuccessMessage": "Top-up initiated successfully: {message}",
+    "submissionError": "Submission Error",
+    "receiverAccountName": "Account Name",
+    "category": "Category",
+    "identifier": "Identifier",
+    "currency": "Currency",
+    "amountInCNY": "Amount (CNY)",
+    "amountInCNYPlaceholder": "Enter amount in CNY",
+    "sendingFee": "Sending Fee",
+    "sendingFeePlaceholder": "Enter sending fee",
+    "proofPicture": "Proof Picture",
+    "submittingTopUp": "Submitting...",
+    "submitTopUp": "Submit Top Up",
+    "reset": "Reset",
+    "alipay": "Alipay Account",
+    "wechat": "WeChat Account",
+    "bank": "Bank Account"
+  },
+  "TopUpRequestsPage": {
+    "pageTitle": "Top Up Requests"
+  },
+  "TopUpRequestsForm": {
+    "noTopUpRequestsFound": "No top-up requests found.",
+    "topUpId": "Top-Up ID",
+    "accountCategory": "Account Category",
+    "accountIdentifier": "Account Identifier",
+    "accountId": "Account ID",
+    "amountInCNY": "Amount (CNY)",
+    "proofPicture": "Proof Picture",
+    "currency": "Currency",
+    "alipay": "Alipay Account",
+    "wechat": "WeChat Account",
+    "bank": "Bank Account"
   }
 }
