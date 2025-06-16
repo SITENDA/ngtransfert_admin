@@ -230,5 +230,12 @@
     "alipay": "Compte Alipay",
     "wechat": "Compte WeChat",
     "bank": "Compte Bancaire"
+  },
+  "TopUpMethod": {
+    "mobileMoney": "MTN Mobile Money",
+    "wave": "Wave",
+    "orangeMoney": "Orange Money",
+    "cash": "Espèces",
+    "bank": "Banque"
   }
 }

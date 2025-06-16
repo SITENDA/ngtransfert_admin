@@ -230,5 +230,12 @@
     "alipay": "支付宝账户",
     "wechat": "微信账户",
     "bank": "银行账户"
+  },
+  "TopUpMethod": {
+    "mobileMoney": "MTN 手机钱包",
+    "wave": "Wave",
+    "orangeMoney": "Orange 钱包",
+    "cash": "现金",
+    "bank": "银行"
   }
 }

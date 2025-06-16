@@ -26,7 +26,7 @@ export const RequestTopUpSchema = z.object({
 
     countryOfDepositId: z.coerce.number().int().positive("Country of Deposit ID must be a positive integer."),
 
-    topUpMethod: z.nativeEnum(TopUpMethodEnum), // ✅ Ensure it matches the enum values
+    topUpMethod: z.nativeEnum(TopUpMethodEnum).nullable(),
 });
 
 export type RequestTopUpSchemaType = z.infer<typeof RequestTopUpSchema>;

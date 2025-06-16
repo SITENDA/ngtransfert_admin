@@ -24,7 +24,7 @@ import {SelectWithLabel} from "@/components/inputs/SelectWithLabel";
 import {useOrderedCountries} from "@/hooks/useOrderedCountries";
 import {Country} from "../../../../../../../types/country";
 import {undefined} from "zod";
-import {TopUpMethodEnum} from "@/hooks/useOrderedTopUpMethods"; // Corrected import path for action
+import {TopUpMethodEnum, useOrderedTopUpMethods} from "@/hooks/useOrderedTopUpMethods"; // Corrected import path for action
 
 interface TopUpFormProps {
     initialCountries: Country[];
@@ -52,7 +52,7 @@ const TopUpForm: React.FC<TopUpFormProps> = ({ initialCountries, initialReceiver
 
     // Filter and order countries for the SelectWithLabel
     const countryOptions = useOrderedCountries(initialCountries);
-
+    const topUpMethodOptions = useOrderedTopUpMethods();
 
     // Determine the account identifier value based on the receiver account details
     const getAccountIdentifierValue = (account: ReceiverAccount): string => {
@@ -79,7 +79,7 @@ const TopUpForm: React.FC<TopUpFormProps> = ({ initialCountries, initialReceiver
         currency: 'CNY',
         proofPicture: null,
         countryOfDepositId: undefined as unknown as number, // tricky, see below
-        topUpMethod: TopUpMethodEnum.MOBILE_MONEY
+        topUpMethod: null
         // amountInCNY omitted when undefined
         // sendingFee omitted when undefined
     };
@@ -165,11 +165,11 @@ const TopUpForm: React.FC<TopUpFormProps> = ({ initialCountries, initialReceiver
                     placeholderHint={t('selectCountryPlaceholder')}
                 />
 
-                {/* Country of Deposit Selector - Always Visible */}
+                {/*Top Up Method Selector - Always Visible */}
                 <SelectWithLabel<RequestTopUpSchemaType>
                     fieldTitle={t('topUpMethod')}
                     nameInSchema="topUpMethod"
-                    data={countryOptions}
+                    data={topUpMethodOptions}
                     control={form.control}
                     placeholderHint={t('selectTopUpMethodPlaceholder')}
                 />
