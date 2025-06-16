@@ -231,7 +231,11 @@
     "reset": "Reset",
     "alipay": "Alipay Account",
     "wechat": "WeChat Account",
-    "bank": "Bank Account"
+    "bank": "Bank Account",
+    "countryOfDeposit": "Country of Deposit",
+    "selectCountryPlaceholder": "Select country of deposit",
+    "topUpMethod": "Top-Up Method",
+    "selectTopUpMethodPlaceholder": "Select top-up method"
   },
   "TopUpRequestsPage": {
     "pageTitle": "Top Up Requests"

@@ -1,7 +1,7 @@
-import {ReactNode} from "react";
+import {JSX} from "react";
 
 export interface DataObj {
     label: string;
     value: string;
-    icon?: ReactNode;
+    icon?: JSX.Element;
 }

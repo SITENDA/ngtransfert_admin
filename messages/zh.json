@@ -209,7 +209,11 @@
     "reset": "重置",
     "alipay": "支付宝账户",
     "wechat": "微信账户",
-    "bank": "银行账户"
+    "bank": "银行账户",
+    "countryOfDeposit": "存款国家",
+    "selectCountryPlaceholder": "选择存款国家",
+    "topUpMethod": "充值方式",
+    "selectTopUpMethodPlaceholder": "选择充值方式"
   },
   "TopUpRequestsPage": {
     "pageTitle": "充值请求"

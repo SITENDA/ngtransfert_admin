@@ -2,6 +2,7 @@
 
 import {Currency} from "./currency";
 import {ReceiverAccountCategoryType} from "@/zod-schemas/receiver-account";
+import {TopUpMethodEnum} from "@/hooks/useOrderedTopUpMethods";
 
 /**
  * Interface for TopUp Request Data Transfer Object.
@@ -16,6 +17,8 @@ export interface TopUpRequest {
     amountInCNY: number; // Using 'number' for BigDecimal, assuming frontend handles precision or it's displayed as-is
     proofPictureUrl: string;
     currency: Currency;
+    countryOfDepositId: number; // ✅ Newly added
+    topUpMethod: TopUpMethodEnum;   // ✅ Newly added
     // If `ResponseSendingFeeDTO` were to be included in `ResponseTopUpDTO`
     // it would be added here, e.g., `sendingFee?: SendingFeeDTO;`
 }

@@ -59,7 +59,7 @@ async function ApplyForTransferPage({ searchParams }: ApplyForTransferPageProps)
         }
 
 
-        // Fetch Currencies
+        // Fetch receiver account payload
         const receiverAccountPayload = await fetchBackendData<ReceiverAccountPayload>(
             `/kaasitoma/receiverAccounts/getReceiverAccountByReceiverAccountId?receiverAccountId=${receiverAccountId}`, // Use the provided backend endpoint
             'GET',
@@ -75,7 +75,7 @@ async function ApplyForTransferPage({ searchParams }: ApplyForTransferPageProps)
         }
 
     } catch (error) {
-        console.error("ApplyForTransferPage: Error during data fetching process (countries or currencies):", error);
+        console.error("ApplyForTransferPage: Error during data fetching process (countries or receiver account):", error);
         countries = []; // Ensure countries is an empty array on error
     }
 
@@ -98,7 +98,7 @@ async function ApplyForTransferPage({ searchParams }: ApplyForTransferPageProps)
 
                 {/* CardContent to contain the form */}
                 <CardContent className="flex-grow p-6 space-y-8">
-                    {/* Pass the fetched countries and currencies data, and the guaranteed clientId to the client component */}
+                    {/* Pass the fetched countries and receiver account data, and the guaranteed clientId to the client component */}
                     <ApplyForTransferForm initialCountries={countries} clientId={clientId} receiverAccount={receiverAccount}/>
                 </CardContent>
             </div>

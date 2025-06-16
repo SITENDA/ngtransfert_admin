@@ -209,7 +209,11 @@
     "reset": "Réinitialiser",
     "alipay": "Compte Alipay",
     "wechat": "Compte WeChat",
-    "bank": "Compte Bancaire"
+    "bank": "Compte Bancaire",
+    "countryOfDeposit": "Pays de dépôt",
+    "selectCountryPlaceholder": "Sélectionnez le pays de dépôt",
+    "topUpMethod": "Méthode de recharge",
+    "selectTopUpMethodPlaceholder": "Sélectionnez la méthode de recharge"
   },
   "TopUpRequestsPage": {
     "pageTitle": "Demandes de Recharge"

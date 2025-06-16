@@ -19,13 +19,19 @@ import {
     ReceiverAccountCategoryType,
     ReceiverAccountIdentifierEnum
 } from "@/zod-schemas/receiver-account"; // Import ReceiverAccountIdentifierEnum and ReceiverAccountCategoryEnum
-import {RequestTopUpSchema, RequestTopUpSchemaType} from "@/zod-schemas/request-top-up-schema"; // Corrected import path for action
+import {RequestTopUpSchema, RequestTopUpSchemaType} from "@/zod-schemas/request-top-up-schema";
+import {SelectWithLabel} from "@/components/inputs/SelectWithLabel";
+import {useOrderedCountries} from "@/hooks/useOrderedCountries";
+import {Country} from "../../../../../../../types/country";
+import {undefined} from "zod";
+import {TopUpMethodEnum} from "@/hooks/useOrderedTopUpMethods"; // Corrected import path for action
 
 interface TopUpFormProps {
+    initialCountries: Country[];
     initialReceiverAccount: ReceiverAccount;
 }
 
-const TopUpForm: React.FC<TopUpFormProps> = ({ initialReceiverAccount }) => {
+const TopUpForm: React.FC<TopUpFormProps> = ({ initialCountries, initialReceiverAccount }) => {
     const t = useTranslations('TopUpForm'); // Translations for this component
     const router = useRouter();
     const locale = useLocale();
@@ -43,6 +49,9 @@ const TopUpForm: React.FC<TopUpFormProps> = ({ initialReceiverAccount }) => {
                 return ReceiverAccountCategoryEnum.enum.BANK_ACCOUNT;
         }
     };
+
+    // Filter and order countries for the SelectWithLabel
+    const countryOptions = useOrderedCountries(initialCountries);
 
 
     // Determine the account identifier value based on the receiver account details
@@ -64,14 +73,17 @@ const TopUpForm: React.FC<TopUpFormProps> = ({ initialReceiverAccount }) => {
 
     // Default form values for RequestTopUpSchemaType
     const defaultEmptyValues: RequestTopUpSchemaType = {
-        receiverAccountCategory: initialReceiverAccount.receiverAccountCategory, // Pre-fill from prop
-        accountIdentifier: getAccountIdentifierValue(initialReceiverAccount), // Pre-fill from prop
-        accountId: initialReceiverAccount.receiverAccountId, // Pre-fill from prop
-        currency: 'CNY', // Fixed currency for top-up as per schema definition (amountInCNY)
-        amountInCNY: undefined,
-        sendingFee: undefined,
+        receiverAccountCategory: initialReceiverAccount.receiverAccountCategory,
+        accountIdentifier: getAccountIdentifierValue(initialReceiverAccount),
+        accountId: initialReceiverAccount.receiverAccountId,
+        currency: 'CNY',
         proofPicture: null,
+        countryOfDepositId: undefined as unknown as number, // tricky, see below
+        topUpMethod: TopUpMethodEnum.MOBILE_MONEY
+        // amountInCNY omitted when undefined
+        // sendingFee omitted when undefined
     };
+
 
     const form = useForm<RequestTopUpSchemaType>({
         mode: 'onBlur',
@@ -143,26 +155,24 @@ const TopUpForm: React.FC<TopUpFormProps> = ({ initialReceiverAccount }) => {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 {/* Display immutable receiver account details */}
-                <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg shadow-inner text-sm text-gray-700 dark:text-gray-200">
-                    <div className="flex justify-between items-center py-1">
-                        <strong className="text-gray-600 dark:text-gray-300">{t('receiverAccountName')}:</strong>
-                        <span className="text-gray-800 dark:text-gray-100">{initialReceiverAccount.receiverAccountName}</span>
-                    </div>
-                    <div className="flex justify-between items-center py-1">
-                        <strong className="text-gray-600 dark:text-gray-300">{t('category')}:</strong>
-                        <span className="text-gray-800 dark:text-gray-100">
-                            {t(getCategoryTranslationKey(initialReceiverAccount.receiverAccountCategory))}
-                        </span>
-                    </div>
-                    <div className="flex justify-between items-center py-1">
-                        <strong className="text-gray-600 dark:text-gray-300">{t('identifier')}:</strong>
-                        <span className="text-gray-800 dark:text-gray-100">{getAccountIdentifierValue(initialReceiverAccount)}</span>
-                    </div>
-                    <div className="flex justify-between items-center py-1">
-                        <strong className="text-gray-600 dark:text-gray-300">{t('currency')}:</strong>
-                        <span className="text-gray-800 dark:text-gray-100">CNY</span> {/* Currency is fixed for top-up */}
-                    </div>
-                </div>
+
+                {/* Country of Deposit Selector - Always Visible */}
+                <SelectWithLabel<RequestTopUpSchemaType>
+                    fieldTitle={t('countryOfDeposit')}
+                    nameInSchema="countryOfDepositId"
+                    data={countryOptions}
+                    control={form.control}
+                    placeholderHint={t('selectCountryPlaceholder')}
+                />
+
+                {/* Country of Deposit Selector - Always Visible */}
+                <SelectWithLabel<RequestTopUpSchemaType>
+                    fieldTitle={t('topUpMethod')}
+                    nameInSchema="topUpMethod"
+                    data={countryOptions}
+                    control={form.control}
+                    placeholderHint={t('selectTopUpMethodPlaceholder')}
+                />
 
                 {/* Amount in CNY */}
                 <InputWithLabel<RequestTopUpSchemaType>

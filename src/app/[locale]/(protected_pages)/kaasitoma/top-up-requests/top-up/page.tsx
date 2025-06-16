@@ -9,7 +9,8 @@ import { kaasitomaPaths } from "@/util/frontend-paths"; // Assuming kaasitomaPat
 import { CardContent } from "@/components/ui/card"; // Import Card components
 import { fetchBackendData } from "@/lib/backend-api-client"; // Import the new reusable fetch utility
 import {ReceiverAccountPayload, ReceiverAccount} from "../../../../../../../types/receiver-account"; // Import ReceiverAccountPayload and ReceiverAccount
-import TopUpForm from "./TopUpForm"; // Import the TopUpForm client component
+import TopUpForm from "./TopUpForm";
+import {Country, CountryDataPayload} from "../../../../../../../types/country"; // Import the TopUpForm client component
 
 interface TopUpPageProps {
     searchParams: { // Query parameters from URL
@@ -43,6 +44,7 @@ async function TopUpPage({ searchParams }: TopUpPageProps) {
     }
 
     let receiverAccount: ReceiverAccount | undefined; // Initialize receiverAccount
+    let countries: Country[] = [];
 
     try {
         // Fetch Receiver Account details from the backend
@@ -60,8 +62,23 @@ async function TopUpPage({ searchParams }: TopUpPageProps) {
             console.warn(`TopUpPage: No receiver account data fetched or unexpected structure for ID ${receiverAccountId}.`);
         }
 
+        // Fetch countries
+        const countryPayload = await fetchBackendData<CountryDataPayload>(
+            '/kaasitoma/countries/getPriorityCountries',
+            'GET',
+            undefined,
+            3600
+        );
+
+        if (countryPayload && countryPayload.countries) {
+            countries = countryPayload.countries;
+            console.log(`ApplyForTransferPage: Successfully fetched ${countries.length} countries.`);
+        } else {
+            console.warn("ApplyForTransferPage: No country data fetched or data structure unexpected from backend.");
+        }
+
     } catch (error) {
-        console.error(`TopUpPage: Error fetching receiver account details for ID ${receiverAccountId}:`, error);
+        console.error(`TopUpPage: Error fetching receiver account details for ID ${receiverAccountId}: or countries`, error);
     }
 
     // If receiverAccount is still not found after fetching, redirect to a safe page
@@ -82,7 +99,7 @@ async function TopUpPage({ searchParams }: TopUpPageProps) {
 
             <CardContent className="flex-grow p-6 space-y-8">
                 {/* Pass the fetched receiver account and clientId to the client component */}
-                <TopUpForm initialReceiverAccount={receiverAccount} />
+                <TopUpForm initialCountries={countries} initialReceiverAccount={receiverAccount} />
             </CardContent>
         </div>
     );
