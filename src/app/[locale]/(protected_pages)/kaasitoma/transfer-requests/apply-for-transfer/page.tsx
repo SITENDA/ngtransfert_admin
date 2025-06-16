@@ -11,7 +11,6 @@ import { CardContent } from "@/components/ui/card"; // Import Card components
 import ApplyForTransferForm from "@/app/[locale]/(protected_pages)/kaasitoma/transfer-requests/apply-for-transfer/ApplyForTransferForm";
 import { fetchBackendData } from "@/lib/backend-api-client"; // Import the new reusable fetch utility
 import { Country, CountryDataPayload } from "../../../../../../../types/country";
-import {Currency, CurrencyDataPayload} from "../../../../../../../types/currency";
 import {ReceiverAccountPayload} from "../../../../../../../types/receiver-account";
 
 interface ApplyForTransferPageProps {
@@ -23,7 +22,7 @@ interface ApplyForTransferPageProps {
 async function ApplyForTransferPage({ searchParams }: ApplyForTransferPageProps) {
     const t = await getTranslations('ApplyForTransferPage');
     const locale = await getLocale();
-    const params = await searchParams
+    const params = await searchParams;
 
     const session = await getSession();
     const clientId = session?.user?.userId;
@@ -41,7 +40,6 @@ async function ApplyForTransferPage({ searchParams }: ApplyForTransferPageProps)
     }
 
     let countries: Country[] = [];
-    let currencies: Currency[] = []; // Initialize currencies array
     let receiverAccount;
 
     try {
@@ -60,20 +58,6 @@ async function ApplyForTransferPage({ searchParams }: ApplyForTransferPageProps)
             console.warn("ApplyForTransferPage: No country data fetched or data structure unexpected from backend.");
         }
 
-        // Fetch Currencies
-        const currencyPayload = await fetchBackendData<CurrencyDataPayload>(
-            '/kaasitoma/currencies/getPriorityCurrencies', // Use the provided backend endpoint
-            'GET',
-            undefined,
-            3600 // Revalidate every hour
-        );
-
-        if (currencyPayload && currencyPayload.currencies) {
-            currencies = currencyPayload.currencies;
-            console.log(`ApplyForTransferPage: Successfully fetched ${currencies.length} currencies.`);
-        } else {
-            console.warn("ApplyForTransferPage: No currency data fetched or data structure unexpected from backend.");
-        }
 
         // Fetch Currencies
         const receiverAccountPayload = await fetchBackendData<ReceiverAccountPayload>(
@@ -93,7 +77,6 @@ async function ApplyForTransferPage({ searchParams }: ApplyForTransferPageProps)
     } catch (error) {
         console.error("ApplyForTransferPage: Error during data fetching process (countries or currencies):", error);
         countries = []; // Ensure countries is an empty array on error
-        currencies = []; // Ensure currencies is an empty array on error
     }
 
     if (receiverAccount?.receiverAccountId == undefined || receiverAccount == null) {
@@ -116,7 +99,7 @@ async function ApplyForTransferPage({ searchParams }: ApplyForTransferPageProps)
                 {/* CardContent to contain the form */}
                 <CardContent className="flex-grow p-6 space-y-8">
                     {/* Pass the fetched countries and currencies data, and the guaranteed clientId to the client component */}
-                    <ApplyForTransferForm initialCountries={countries} initialCurrencies={currencies} clientId={clientId} receiverAccount={receiverAccount}/>
+                    <ApplyForTransferForm initialCountries={countries} clientId={clientId} receiverAccount={receiverAccount}/>
                 </CardContent>
             </div>
         </>

@@ -75,13 +75,26 @@ export function SelectWithLabel<S extends FieldValues>({
                                 <SelectItem
                                     key={`${nameInSchema}_${item.value}`}
                                     value={item.value}
-                                    className="flex items-center"
                                 >
-                                    <span>{item.label}</span>
-                                    {item.icon && <span className="ml-2">{item.icon}</span>}
+                                    <div className="flex items-center space-x-2">
+                                        <span>{item.label}</span>
+                                        {item.icon && <span>{item.icon}</span>}
+                                    </div>
                                 </SelectItem>
                             ))}
                         </SelectContent>
+                        {/*<SelectContent>*/}
+                        {/*    {data.map(item => (*/}
+                        {/*        <SelectItem*/}
+                        {/*            key={`${nameInSchema}_${item.value}`}*/}
+                        {/*            value={item.value}*/}
+                        {/*            className="flex items-center"*/}
+                        {/*        >*/}
+                        {/*            <span>{item.label}</span>*/}
+                        {/*            {item.icon && <span className="ml-2">{item.icon}</span>}*/}
+                        {/*        </SelectItem>*/}
+                        {/*    ))}*/}
+                        {/*</SelectContent>*/}
                     </Select>
                     <FormMessage />
                 </FormItem>

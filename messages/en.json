@@ -174,7 +174,9 @@
     "applyForTransferButton": "Apply for Transfer",
     "submittingTransfer": "Submitting...",
     "reset": "Reset",
-    "submissionError": "Submission Error"
+    "submissionError": "Submission Error",
+    "sourceCurrency": "Source Currency",
+    "sourceCurrencyPlaceholder": "Automatically set based on country"
   },
   "ReceiverAccountDetailsPage": {
     "pageTitle": "Receiver Account Details",
