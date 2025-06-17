@@ -84,12 +84,13 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
         receiverAccountCategory: initialReceiverAccount.receiverAccountCategory,
         accountIdentifier: getAccountIdentifierValue(initialReceiverAccount),
         accountId: initialReceiverAccount.receiverAccountId,
-        countryOfDepositId: initialCountry.countryId,
-        topUpMethod: selectedTopUpMethod || null,
-        currency: 'CNY',
-        amountInCNY: undefined,
-        amountInDestinationCurrency: undefined,
+        countryOfDepositId: initialCountry.countryId, // Correctly pre-filled
+        topUpMethod: selectedTopUpMethod || null,     // Correctly pre-filled
+        currency: initialCountry.currency.currencyCode, // Changed to initialCountry.currency.currencyCode for destination
+        amountInCNY: undefined, // Start as undefined for user input
+        amountInDestinationCurrency: undefined, // Start as undefined for user input
         proofPicture: null,
+        sendingFee: undefined // If you want to include sendingFee as a potential form field, otherwise remove from schema/form
     };
 
     const form = useForm<RequestTopUpSchemaType>({

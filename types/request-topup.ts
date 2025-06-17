@@ -1,11 +1,16 @@
-import {ReceiverAccountCategoryType} from "@/zod-schemas/receiver-account";
+// src/types/request-top-up.ts
+import { ReceiverAccountCategoryType } from "@/zod-schemas/receiver-account";
+import { TopUpMethodEnum } from "@/enums/TopUpMethodEnum"; // Ensure path is correct
 
 export interface RequestTopUp {
-    receiverAccountCategory: ReceiverAccountCategoryType; // 'WECHAT_ACCOUNT' | 'ALIPAY_ACCOUNT' | 'BANK_ACCOUNT'
-    accountIdentifier: string; // General string, can be email, phone, QR code image name, etc.
-    accountId: number; // Must be a positive integer (Long in Java)
-    currency: string; // Example: 'CNY'
-    amountInCNY: number; // BigDecimal in Java maps to number in TypeScript
-    sendingFee: number; // BigDecimal in Java maps to number in TypeScript
-    proofPicture: File | null; // MultipartFile in Java maps to File in TS
+    receiverAccountCategory: ReceiverAccountCategoryType;
+    accountIdentifier: string;
+    accountId: number;
+    countryOfDepositId: number; // Added
+    topUpMethod: TopUpMethodEnum | null; // Added
+    currency: string; // Destination currency code
+    amountInCNY: number | null; // Nullable
+    amountInDestinationCurrency: number | null; // Added, Nullable
+    sendingFee: number | null; // Nullable
+    proofPicture: File | null;
 }
