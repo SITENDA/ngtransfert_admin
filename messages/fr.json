@@ -218,7 +218,7 @@
     "topUpMethod": {
       "alipay": "Alipay",
       "wechat": "WeChat",
-      "banktransfer": "Virement Bancaire",
+      "bank": "Virement Bancaire",
       "other": "Autre Méthode"
     },
     "currency": {
@@ -226,7 +226,8 @@
       "XAF": "FCFA",
       "USD": "$",
       "EUR": "€",
-      "GBP": "£"
+      "GBP": "£",
+      "XOF": "XOF"
     }
   },
   "TopUpRequestsPage": {
