@@ -215,28 +215,41 @@
     "pageTitle": "Top Up Account"
   },
   "TopUpDetailsForm": {
-    "topUpSuccessMessage": "Top-up initiated successfully: {message}",
-    "submissionError": "Submission Error",
-    "receiverAccountName": "Account Name",
-    "category": "Category",
-    "identifier": "Identifier",
-    "currency": "Currency",
-    "amountInCNY": "Amount (CNY)",
-    "amountInCNYPlaceholder": "Enter amount in CNY",
-    "sendingFee": "Sending Fee",
-    "sendingFeePlaceholder": "Enter sending fee",
+    "summaryDetails": "Summary Details",
+    "receiverAccountName": "Receiver Account Name",
+    "receiverAccountType": "Receiver Account Type",
+    "countryOfDeposit": "Country of Deposit",
+    "topUpMethodLabel": "Top Up Method",
+    "amountIn": "Amount in",
+    "amountInCNY": "Amount in CNY",
+    "amountInCNYPlaceholder": "e.g., 1000",
+    "amountInDestinationCurrency": "Amount in Destination Currency",
+    "amountInDestinationCurrencyPlaceholder": "e.g., 500",
     "proofPicture": "Proof Picture",
+    "submitTopUp": "Submit Top Up Request",
     "submittingTopUp": "Submitting...",
-    "submitTopUp": "Submit Top Up",
     "reset": "Reset",
+    "topUpSuccessMessage": "Top-up request submitted successfully: {message}",
+    "submissionError": "Submission Error",
+    "missingAmount": "Either CNY or Destination Currency amount must be provided.",
+    "proofPictureRequired": "Proof picture is required.",
     "alipay": "Alipay Account",
     "wechat": "WeChat Account",
     "bank": "Bank Account",
-    "countryOfDeposit": "Country of Deposit",
-    "selectCountryPlaceholder": "Select country of deposit",
-    "topUpMethod": "Top-Up Method",
-    "selectTopUpMethodPlaceholder": "Select top-up method",
-    "continueButton": "Continue"
+    "unknownCategory": "Unknown Account Category",
+    "topUpMethod": {
+      "alipay": "Alipay",
+      "wechat": "WeChat",
+      "banktransfer": "Bank Transfer",
+      "other": "Other Method"
+    },
+    "currency": {
+      "CNY": "¥",
+      "XAF": "FCFA",
+      "USD": "$",
+      "EUR": "€",
+      "GBP": "£"
+    }
   },
   "TopUpRequestsPage": {
     "pageTitle": "Top Up Requests"
@@ -265,6 +278,18 @@
     "pageTitle": "Select Top-Up Country and Method",
     "errorFetchingAccount": "Error fetching account details.",
     "errorFetchingCountries": "Error fetching countries."
+  },
+  "CountryAndMethodSelectorForm": {
+    "countryOfDeposit": "Country of Deposit",
+    "selectCountryPlaceholder": "Select the country for deposit",
+    "topUpMethod": "Top Up Method",
+    "selectTopUpMethodPlaceholder": "Select a top up method",
+    "continueButton": "Continue",
+    "topUpSuccessMessage": "Top-up request submitted successfully: {message}",
+    "submissionError": "Submission Error",
+    "selectionSuccessful": "Selection successful!",
+    "missingAmount": "Either CNY or Destination Currency amount must be provided.",
+    "proofPictureRequired": "Proof picture is required."
   },
   "InstructionsPage": {
     "pageTitle": "Top-Up Instructions",

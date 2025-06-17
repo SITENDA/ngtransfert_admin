@@ -253,7 +253,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
                         <p><strong>{t('receiverAccountName')}:</strong> {getReceiverAccountDisplayName(initialReceiverAccount)}</p>
                         <p><strong>{t('receiverAccountType')}:</strong> {t(getCategoryTranslationKey(initialReceiverAccount.receiverAccountCategory))}</p>
                         <p><strong>{t('countryOfDeposit')}:</strong> {initialCountry.countryName} ({initialCountry.currency.currencyCode})</p>
-                        <p><strong>{t('topUpMethod')}:</strong> {t(`topUpMethod.${selectedTopUpMethod?.toLowerCase()}`)}</p>
+                        <p><strong>{t('topUpMethodLabel')}:</strong> {t(`topUpMethod.${selectedTopUpMethod?.toLowerCase()}`)}</p>
                     </div>
                 </div>
 

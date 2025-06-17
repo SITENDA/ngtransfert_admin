@@ -193,28 +193,41 @@
     "pageTitle": "充值账户"
   },
   "TopUpDetailsForm": {
-    "topUpSuccessMessage": "充值成功启动：{message}",
-    "submissionError": "提交错误",
-    "receiverAccountName": "账户名称",
-    "category": "类别",
-    "identifier": "识别码",
-    "currency": "货币",
-    "amountInCNY": "金额（人民币）",
-    "amountInCNYPlaceholder": "输入人民币金额",
-    "sendingFee": "手续费",
-    "sendingFeePlaceholder": "输入手续费",
-    "proofPicture": "凭证图片",
+    "summaryDetails": "摘要详情",
+    "receiverAccountName": "收款账户名称",
+    "receiverAccountType": "收款账户类型",
+    "countryOfDeposit": "存款国家",
+    "topUpMethodLabel": "充值方式",
+    "amountIn": "金额（",
+    "amountInCNY": "人民币金额",
+    "amountInCNYPlaceholder": "例如, 1000",
+    "amountInDestinationCurrency": "目标货币金额",
+    "amountInDestinationCurrencyPlaceholder": "例如, 500",
+    "proofPicture": "支付凭证图片",
+    "submitTopUp": "提交充值请求",
     "submittingTopUp": "提交中...",
-    "submitTopUp": "提交充值",
     "reset": "重置",
+    "topUpSuccessMessage": "充值请求提交成功：{message}",
+    "submissionError": "提交错误",
+    "missingAmount": "必须提供人民币金额或目标货币金额。",
+    "proofPictureRequired": "支付凭证图片是必需的。",
     "alipay": "支付宝账户",
     "wechat": "微信账户",
     "bank": "银行账户",
-    "countryOfDeposit": "存款国家",
-    "selectCountryPlaceholder": "选择存款国家",
-    "topUpMethod": "充值方式",
-    "selectTopUpMethodPlaceholder": "选择充值方式",
-    "continueButton": "继续"
+    "unknownCategory": "未知账户类别",
+    "topUpMethod": {
+      "alipay": "支付宝",
+      "wechat": "微信",
+      "banktransfer": "银行转账",
+      "other": "其他方式"
+    },
+    "currency": {
+      "CNY": "¥",
+      "XAF": "法郎",
+      "USD": "$",
+      "EUR": "€",
+      "GBP": "£"
+    }
   },
   "TopUpRequestsPage": {
     "pageTitle": "充值请求"
@@ -243,6 +256,18 @@
     "pageTitle": "选择充值国家和方式",
     "errorFetchingAccount": "获取账户详情时出错。",
     "errorFetchingCountries": "获取国家时出错。"
+  },
+  "CountryAndMethodSelectorForm": {
+    "countryOfDeposit": "存款国家",
+    "selectCountryPlaceholder": "请选择存款国家",
+    "topUpMethod": "充值方式",
+    "selectTopUpMethodPlaceholder": "请选择充值方式",
+    "continueButton": "继续",
+    "topUpSuccessMessage": "充值请求提交成功：{message}",
+    "submissionError": "提交错误",
+    "selectionSuccessful": "选择成功！",
+    "missingAmount": "必须提供人民币金额或目标货币金额。",
+    "proofPictureRequired": "支付凭证图片是必需的。"
   },
   "InstructionsPage": {
     "instructionsTitle": "充值说明",

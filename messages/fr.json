@@ -193,28 +193,41 @@
     "pageTitle": "Recharger le Compte"
   },
   "TopUpDetailsForm": {
-    "topUpSuccessMessage": "Recharge initiée avec succès : {message}",
-    "submissionError": "Erreur de soumission",
-    "receiverAccountName": "Nom du compte",
-    "category": "Catégorie",
-    "identifier": "Identifiant",
-    "currency": "Devise",
-    "amountInCNY": "Montant (CNY)",
-    "amountInCNYPlaceholder": "Saisir le montant en CNY",
-    "sendingFee": "Frais d'envoi",
-    "sendingFeePlaceholder": "Saisir les frais d'envoi",
-    "proofPicture": "Preuve Photo",
+    "summaryDetails": "Détails Récapitulatifs",
+    "receiverAccountName": "Nom du Compte Bénéficiaire",
+    "receiverAccountType": "Type de Compte Bénéficiaire",
+    "countryOfDeposit": "Pays de Dépôt",
+    "topUpMethodLabel": "Méthode de Recharge",
+    "amountIn": "Montant en",
+    "amountInCNY": "Montant en CNY",
+    "amountInCNYPlaceholder": "ex., 1000",
+    "amountInDestinationCurrency": "Montant en Devise Locale",
+    "amountInDestinationCurrencyPlaceholder": "ex., 500",
+    "proofPicture": "Preuve de Paiement (Photo)",
+    "submitTopUp": "Soumettre la Demande de Recharge",
     "submittingTopUp": "Envoi en cours...",
-    "submitTopUp": "Soumettre la Recharge",
     "reset": "Réinitialiser",
+    "topUpSuccessMessage": "Demande de recharge soumise avec succès : {message}",
+    "submissionError": "Erreur de Soumission",
+    "missingAmount": "Le montant en CNY ou en devise locale doit être fourni.",
+    "proofPictureRequired": "La preuve de paiement (photo) est requise.",
     "alipay": "Compte Alipay",
     "wechat": "Compte WeChat",
     "bank": "Compte Bancaire",
-    "countryOfDeposit": "Pays de dépôt",
-    "selectCountryPlaceholder": "Sélectionnez le pays de dépôt",
-    "topUpMethod": "Méthode de recharge",
-    "selectTopUpMethodPlaceholder": "Sélectionnez la méthode de recharge",
-    "continueButton": "Continuer"
+    "unknownCategory": "Catégorie de Compte Inconnue",
+    "topUpMethod": {
+      "alipay": "Alipay",
+      "wechat": "WeChat",
+      "banktransfer": "Virement Bancaire",
+      "other": "Autre Méthode"
+    },
+    "currency": {
+      "CNY": "¥",
+      "XAF": "FCFA",
+      "USD": "$",
+      "EUR": "€",
+      "GBP": "£"
+    }
   },
   "TopUpRequestsPage": {
     "pageTitle": "Demandes de Recharge"
@@ -243,6 +256,18 @@
     "pageTitle": "Sélectionner le Pays et la Méthode de Recharge",
     "errorFetchingAccount": "Erreur lors de la récupération des détails du compte.",
     "errorFetchingCountries": "Erreur lors de la récupération des pays."
+  },
+  "CountryAndMethodSelectorForm": {
+    "countryOfDeposit": "Pays de Dépôt",
+    "selectCountryPlaceholder": "Sélectionnez le pays de dépôt",
+    "topUpMethod": "Méthode de Recharge",
+    "selectTopUpMethodPlaceholder": "Sélectionnez une méthode de recharge",
+    "continueButton": "Continuer",
+    "topUpSuccessMessage": "Demande de recharge soumise avec succès : {message}",
+    "submissionError": "Erreur de Soumission",
+    "selectionSuccessful": "Sélection réussie !",
+    "missingAmount": "Le montant en CNY ou en devise locale doit être fourni.",
+    "proofPictureRequired": "La preuve de paiement (photo) est requise."
   },
   "InstructionsPage": {
     "instructionsTitle": "Instructions de Recharge",

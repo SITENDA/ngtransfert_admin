@@ -24,7 +24,7 @@ interface CountryAndMethodSelectorFormProps {
 }
 
 const CountryAndMethodSelectorForm: React.FC<CountryAndMethodSelectorFormProps> = ({ initialCountries, initialReceiverAccount }) => {
-    const t = useTranslations('TopUpDetailsForm');
+    const t = useTranslations('CountryAndMethodSelectorForm');
     const router = useRouter();
 
     const countryOptions = useOrderedCountries(initialCountries);
