@@ -7,7 +7,7 @@ import {TopUpMethodEnum} from "@/hooks/useOrderedTopUpMethods";
 /**
  * Interface for TopUp Request Data Transfer Object.
  * Corresponds to the `ResponseTopUpDTO` in the backend.
- * This structure is used for the data related to a top-up transaction.
+ * This structure is used for the data related to a details transaction.
  */
 export interface TopUpRequest {
     topUpId: number;

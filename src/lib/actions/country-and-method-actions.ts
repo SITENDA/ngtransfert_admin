@@ -16,7 +16,7 @@ interface ServerActionResult {
 export async function handleCountryAndMethodSelection(
     formData: CountryAndMethodSchemaType // Accepts the validated object directly
 ): Promise<ServerActionResult> {
-    console.log("SERVER ACTION: handleCountryAndMethodSelection - Received data:", formData);
+    // console.log("SERVER ACTION: handleCountryAndMethodSelection - Received data:", formData);
 
     // 1. Validate the incoming data (important for server actions)
     const validationResult = CountryAndMethodSchema.safeParse(formData);
@@ -51,7 +51,7 @@ export async function handleCountryAndMethodSelection(
             accountIdentifier: accountIdentifier,
         }).toString();
 
-        const redirectUrl = `/${locale}${kaasitomaPaths.instructionsPath}${queryParams}`;
+        const redirectUrl = `/${locale}${kaasitomaPaths.topUpInstructionsPath}${queryParams}`;
 
         console.log("SERVER ACTION: Successfully processed selection. Redirecting to:", redirectUrl);
 

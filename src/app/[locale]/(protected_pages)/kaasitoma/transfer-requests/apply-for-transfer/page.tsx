@@ -10,7 +10,7 @@ import { CardContent } from "@/components/ui/card"; // Import Card components
 
 import ApplyForTransferForm from "@/app/[locale]/(protected_pages)/kaasitoma/transfer-requests/apply-for-transfer/ApplyForTransferForm";
 import { fetchBackendData } from "@/lib/backend-api-client"; // Import the new reusable fetch utility
-import { Country, CountryDataPayload } from "../../../../../../../types/country";
+import { Country, CountriesDataPayload } from "../../../../../../../types/country";
 import {ReceiverAccountPayload} from "../../../../../../../types/receiver-account";
 
 interface ApplyForTransferPageProps {
@@ -44,7 +44,7 @@ async function ApplyForTransferPage({ searchParams }: ApplyForTransferPageProps)
 
     try {
         // Fetch countries
-        const countryPayload = await fetchBackendData<CountryDataPayload>(
+        const countryPayload = await fetchBackendData<CountriesDataPayload>(
             '/kaasitoma/countries/getPriorityCountries',
             'GET',
             undefined,

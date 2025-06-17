@@ -189,10 +189,10 @@
     "phone_number": "Numéro de Téléphone",
     "none": "Aucun"
   },
-  "TopUpPage": {
+  "TopUpDetailsPage": {
     "pageTitle": "Recharger le Compte"
   },
-  "TopUpForm": {
+  "TopUpDetailsForm": {
     "topUpSuccessMessage": "Recharge initiée avec succès : {message}",
     "submissionError": "Erreur de soumission",
     "receiverAccountName": "Nom du compte",

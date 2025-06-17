@@ -9,7 +9,7 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import {DataObj} from "../../types/DataObj";
 import {TopUpMethodEnum} from "@/enums/TopUpMethodEnum";
 
-// Hook that returns the ordered list of top-up methods with translation and icons
+// Hook that returns the ordered list of details methods with translation and icons
 export const useOrderedTopUpMethods = (): DataObj[] => {
     const t = useTranslations('TopUpMethod'); // Translation namespace (adjust as needed)
 

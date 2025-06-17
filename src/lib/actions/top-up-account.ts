@@ -8,7 +8,7 @@ export async function topUpAccountBalanceAction(formData: FormData) {
 
         if (!session || !session.accessToken) {
             console.error("Server Action: Authentication failed. Session or Access Token missing.");
-            return { success: false, message: "Authentication required to top-up account." };
+            return { success: false, message: "Authentication required to details account." };
         }
 
         const accessToken = session.accessToken;
@@ -37,6 +37,6 @@ export async function topUpAccountBalanceAction(formData: FormData) {
 
     } catch (error) {
         console.error("Server Action: Unexpected error:", error);
-        return { success: false, message: "An unexpected error occurred during top-up." };
+        return { success: false, message: "An unexpected error occurred during details." };
     }
 }

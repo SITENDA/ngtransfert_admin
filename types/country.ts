@@ -21,6 +21,10 @@ export interface CountryFlagProps {
     style?: React.CSSProperties;
 }
 
-export interface CountryDataPayload {
+export interface CountriesDataPayload {
     countries: Country[];
+}
+
+export interface CountryDataPayload {
+    country: Country;
 }

@@ -1,33 +1,21 @@
-// src/app/[locale]/(protected_pages)/kaasitoma/top-up-requests/top-up/instructions/page.tsx
+// src/app/[locale]/(protected_pages)/kaasitoma/details-requests/details/instructions/page.tsx
 // This is a Server Component.
 import React from 'react';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server'; // For server component translations
 
 import { fetchBackendData } from "@/lib/backend-api-client"; // Assuming this is your utility for backend calls
-// import { TopUpMethodEnum } from "@/hooks/useOrderedTopUpMethods"; // Your enum for top-up methods
-import { CountryDataPayload } from "../../../../../../../types/country"; // Assuming this type is available
+import { CountriesDataPayload } from "../../../../../../../types/country"; // Assuming this type is available
 import { TopUpMethodEnum } from '@/enums/TopUpMethodEnum';
 import {CashDepositAddress, CashDepositAddressDataPayload} from "../../../../../../../types/cashDepositAddress";
 import {BankDepositAddress, BankDepositAddressDataPayload} from "../../../../../../../types/bankDepositAddress";
+import {CardContent, Divider} from "@mui/material";
+import {Button} from "@/components/ui/button";
+import {kaasitomaPaths} from "@/util/frontend-paths";
+import { Link } from '@/i18n/navigation';
 
 // --- UI Components (Simulated with HTML/Tailwind) ---
-// You would replace these with your actual UI components (e.g., from ShadCN UI or a custom library)
-const CardContent = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => (
-    <div className={`p-6 space-y-8 ${className}`}>{children}</div>
-);
-const Divider = ({ className = '' }: { className?: string }) => (
-    <hr className={`my-6 border-t border-gray-300 dark:border-gray-700 ${className}`} />
-);
-const Button = ({ children, onClick, className = '' }: { children: React.ReactNode, onClick?: () => void, className?: string }) => (
-    // This button will likely need to be a client component if it performs client-side routing or actions
-    // For a server component, you might just render a link or a form that triggers a server action.
-    // For now, it's just a placeholder for visual structure.
-    <button className={`bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${className}`} onClick={onClick}>
-        {children}
-    </button>
-);
-// --- End UI Components ---
+
 
 // Define the type for the query parameters expected by this page
 interface InstructionsPageProps {
@@ -42,7 +30,6 @@ interface InstructionsPageProps {
 
 export default async function InstructionsPage({ searchParams }: InstructionsPageProps) {
     const params = await searchParams;
-    console.log("Introduction page", params);
     const t = await getTranslations('InstructionsPage'); // Use server-side translations
 
     const { accountId, countryId, topUpMethod, receiverAccountCategory, accountIdentifier } = params;
@@ -74,7 +61,7 @@ export default async function InstructionsPage({ searchParams }: InstructionsPag
 
     try {
         // Fetch countries to get the selected country's name
-        const countryPayload = await fetchBackendData<CountryDataPayload>(
+        const countryPayload = await fetchBackendData<CountriesDataPayload>(
             '/kaasitoma/countries/getPriorityCountries',
             'GET',
             undefined,
@@ -208,6 +195,16 @@ export default async function InstructionsPage({ searchParams }: InstructionsPag
     };
 
     // --- 4. Render the component ---
+    // Reconstruct the search parameters for the next page
+    const nextSearchParams = new URLSearchParams({
+        receiverAccountId: String(numericAccountId),
+        countryId: String(numericCountryId),
+        topUpMethod: selectedMethodValue,
+    }).toString();
+
+    const topUpDetailsHref = `${kaasitomaPaths.topUpDetailsPath}?${nextSearchParams}`;
+
+
     return (
         <div className="
             w-full max-w-3xl mx-auto my-8 p-6 rounded-lg shadow-xl
@@ -292,18 +289,15 @@ export default async function InstructionsPage({ searchParams }: InstructionsPag
                     </>
                 )}
 
-                {/* This button needs to perform client-side navigation.
-                    You would typically wrap this in a client component or use a <Link> from next/link */}
+                {/* The Link component now passes all searchParams to the next page */}
                 <div className="text-center mt-8">
-                    <Button
-                        className="w-full sm:w-auto"
-                        // Since this is a Server Component, direct onClick for router.push won't work.
-                        // You'd typically wrap this button in a "use client" component
-                        // or use a <Link href="..."> from next/link
-                        // For demonstration, let's just make it a static button.
-                    >
-                        {t('continueToTopUpButton')}
-                    </Button>
+                    <Link href={topUpDetailsHref}>
+                        <Button
+                            className={`bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full sm:w-auto`}
+                        >
+                            {t('continueToTopUpButton')}
+                        </Button>
+                    </Link>
                 </div>
             </CardContent>
         </div>

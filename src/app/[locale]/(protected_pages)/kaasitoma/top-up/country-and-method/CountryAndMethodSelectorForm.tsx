@@ -1,4 +1,4 @@
-// src/app/[locale]/(protected_pages)/kaasitoma/top-up-requests/top-up/CountryAndMethodSelectorForm.tsx
+// src/app/[locale]/(protected_pages)/kaasitoma/details-requests/details/CountryAndMethodSelectorForm.tsx
 "use client";
 
 import React from 'react';
@@ -24,7 +24,7 @@ interface CountryAndMethodSelectorFormProps {
 }
 
 const CountryAndMethodSelectorForm: React.FC<CountryAndMethodSelectorFormProps> = ({ initialCountries, initialReceiverAccount }) => {
-    const t = useTranslations('TopUpForm');
+    const t = useTranslations('TopUpDetailsForm');
     const router = useRouter();
 
     const countryOptions = useOrderedCountries(initialCountries);

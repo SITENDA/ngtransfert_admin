@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
         const formData = await request.formData();
 
-        console.log('Proxy API: Forwarding top-up request to Spring Boot backend...');
+        console.log('Proxy API: Forwarding details request to Spring Boot backend...');
 
         const backendResponse = await fetch(`${BACKEND_API_BASE_URL}/kaasitoma/exchanges/topUpAccountBalance`, {
             method: 'POST',
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(responseData, { status: backendResponse.status });
 
     } catch (error) {
-        console.error('Proxy API: Unhandled error during top-up process:', error);
+        console.error('Proxy API: Unhandled error during details process:', error);
         return NextResponse.json({ message: 'An unexpected internal server error occurred.' }, { status: 500 });
     }
 }

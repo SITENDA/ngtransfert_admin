@@ -1,6 +1,6 @@
 // src/app/[locale]/(protected_pages)/kaasitoma/receiver-accounts/TopUpRequestsForm.tsx
 import React from 'react';
-import {ReceiverAccount} from "../../../../../../types/receiver-account";
+import {ReceiverAccount} from "../../../../../../../types/receiver-account";
 import {getLocale, getTranslations} from "next-intl/server"; // Ensure ReceiverAccountCategory is imported
 
 interface TopUpRequestsFormProps { // Renamed interface for clarity

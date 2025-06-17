@@ -1,4 +1,4 @@
-// src/zod-schemas/request-top-up-schema.ts
+// src/zod-schemas/request-details-schema.ts
 import { z } from "zod";
 import {ReceiverAccountCategoryEnum} from "@/zod-schemas/receiver-account";
 import {TopUpMethodEnum} from "@/enums/TopUpMethodEnum";

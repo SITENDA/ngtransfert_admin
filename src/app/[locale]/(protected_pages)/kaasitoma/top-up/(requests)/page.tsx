@@ -8,9 +8,9 @@ import { headers } from 'next/headers';
 import { User } from 'next-auth';
 
 import PublicWrapper from "@/components/PublicWrapper";
-import TopUpRequestsForm from "@/app/[locale]/(protected_pages)/kaasitoma/top-up-requests/TopUpRequestsForm";
-import {BackendGenericResponse} from "../../../../../../types/BackendGenericResponse";
-import {TopUpRequest, TopUpRequestsPayload} from "../../../../../../types/topup-request";
+import TopUpRequestsForm from "@/app/[locale]/(protected_pages)/kaasitoma/top-up/(requests)/TopUpRequestsForm";
+import {BackendGenericResponse} from "../../../../../../../types/BackendGenericResponse";
+import {TopUpRequest, TopUpRequestsPayload} from "../../../../../../../types/topup-request";
 
 // URL for the Next.js API proxy that will fetch receiver accounts from Spring Boot
 // Now, we'll construct this URL to include the clientId as a query parameter.

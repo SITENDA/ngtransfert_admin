@@ -1,4 +1,4 @@
-// src/app/[locale]/(protected_pages)/kaasitoma/top-up-requests/top-up/page.tsx
+// src/app/[locale]/(protected_pages)/kaasitoma/details-requests/details/page.tsx
 // This is a Server Component.
 
 import React from 'react';
@@ -10,7 +10,7 @@ import { CardContent } from "@/components/ui/card"; // Import Card components
 import { fetchBackendData } from "@/lib/backend-api-client"; // Import the new reusable fetch utility
 import {ReceiverAccountPayload, ReceiverAccount} from "../../../../../../../types/receiver-account"; // Import ReceiverAccountPayload and ReceiverAccount
 import CountryAndMethodSelectorForm from "./CountryAndMethodSelectorForm";
-import {Country, CountryDataPayload} from "../../../../../../../types/country"; // Import the TopUpForm client component
+import {Country, CountriesDataPayload} from "../../../../../../../types/country"; // Import the TopUpDetailsForm client component
 
 interface CountryAndMethodSelectorPageProps {
     searchParams: { // Query parameters from URL
@@ -63,7 +63,7 @@ async function CountryAndMethodSelectorPage({ searchParams }: CountryAndMethodSe
         }
 
         // Fetch countries
-        const countryPayload = await fetchBackendData<CountryDataPayload>(
+        const countryPayload = await fetchBackendData<CountriesDataPayload>(
             '/kaasitoma/countries/getPriorityCountries',
             'GET',
             undefined,

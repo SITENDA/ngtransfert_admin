@@ -189,10 +189,10 @@
     "phone_number": "电话号码",
     "none": "无"
   },
-  "TopUpPage": {
+  "TopUpDetailsPage": {
     "pageTitle": "充值账户"
   },
-  "TopUpForm": {
+  "TopUpDetailsForm": {
     "topUpSuccessMessage": "充值成功启动：{message}",
     "submissionError": "提交错误",
     "receiverAccountName": "账户名称",

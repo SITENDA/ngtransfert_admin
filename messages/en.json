@@ -211,10 +211,10 @@
     "phone_number": "Phone Number",
     "none": "None"
   },
-  "TopUpPage": {
+  "TopUpDetailsPage": {
     "pageTitle": "Top Up Account"
   },
-  "TopUpForm": {
+  "TopUpDetailsForm": {
     "topUpSuccessMessage": "Top-up initiated successfully: {message}",
     "submissionError": "Submission Error",
     "receiverAccountName": "Account Name",

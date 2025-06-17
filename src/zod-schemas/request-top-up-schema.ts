@@ -1,7 +1,7 @@
-// src/zod-schemas/request-top-up-schema.ts
+// src/zod-schemas/request-details-schema.ts
 import { z } from "zod";
 import {ReceiverAccountCategoryEnum} from "@/zod-schemas/receiver-account";
-import {TopUpMethodEnum} from "@/hooks/useOrderedTopUpMethods";
+import {TopUpMethodEnum} from "@/enums/TopUpMethodEnum";
 
 export const RequestTopUpSchema = z.object({
     receiverAccountCategory: z.nativeEnum(ReceiverAccountCategoryEnum.enum), // must be backend enum compatible
