@@ -1,4 +1,4 @@
-// src/app/[locale]/(protected_pages)/kaasitoma/receiver-account-details/page.tsx
+// src/app/[locale]/(protected_pages)/kaasitoma/details/page.tsx
 
 import ReceiverAccountDetailsForm from "./ReceiverAccountDetailsForm";
 import PublicWrapper from "@/components/PublicWrapper";
@@ -118,7 +118,7 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { re
                 </h2>
                 <CardHeader className="flex flex-row justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     {/* Updated Top Up button styling */}
-                    <Link href={`${kaasitomaPaths.topUpPath}${receiverAccountId}`} passHref>
+                    <Link href={`${kaasitomaPaths.countryAndMethodPath}${receiverAccountId}`} passHref>
                         <Button variant="outline"
                                 size="sm"
                                 className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">

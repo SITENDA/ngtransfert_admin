@@ -213,7 +213,8 @@
     "countryOfDeposit": "Pays de dépôt",
     "selectCountryPlaceholder": "Sélectionnez le pays de dépôt",
     "topUpMethod": "Méthode de recharge",
-    "selectTopUpMethodPlaceholder": "Sélectionnez la méthode de recharge"
+    "selectTopUpMethodPlaceholder": "Sélectionnez la méthode de recharge",
+    "continueButton": "Continuer"
   },
   "TopUpRequestsPage": {
     "pageTitle": "Demandes de Recharge"
@@ -237,5 +238,32 @@
     "orangeMoney": "Orange Money",
     "cash": "Espèces",
     "bank": "Banque"
+  },
+  "CountryAndMethodSelectorPage": {
+    "pageTitle": "Sélectionner le Pays et la Méthode de Recharge",
+    "errorFetchingAccount": "Erreur lors de la récupération des détails du compte.",
+    "errorFetchingCountries": "Erreur lors de la récupération des pays."
+  },
+  "InstructionsPage": {
+    "instructionsTitle": "Instructions de Recharge",
+    "forAccount": "Pour le Compte ID : {accountId}",
+    "selectedMethod": "Méthode sélectionnée : {method} en {country}",
+    "stepsHeading": "Étapes à Suivre",
+    "instructionsForTransfer": "Instructions pour votre Virement",
+    "step1Details": "Étape 1 : Vérifiez les détails du compte - Catégorie de compte : {accountCategory}, Identifiant : {accountIdentifier}, ID : {accountId}.",
+    "step2Method": "Étape 2 : Utilisez la méthode de recharge '{method}'.",
+    "step3Country": "Étape 3 : Assurez-vous que le dépôt provient du pays avec l'ID : {countryId}.",
+    "step4BankDetails": "Étape 4 : Les détails bancaires spécifiques ou les informations de paiement vous seront fournis sur l'écran suivant.",
+    "step5Reference": "Étape 5 : N'oubliez pas d'inclure tout numéro de référence fourni dans votre virement.",
+    "errorLoadingInstructions": "Erreur lors du chargement des instructions.",
+    "tryAgainMessage": "Veuillez réessayer ou contacter le support.",
+    "noInstructionsFound": "Aucune instruction trouvée pour cette sélection.",
+    "pleaseGoBack": "Veuillez revenir en arrière et réessayer."
+  },
+  "ZodMessages": {
+    "CountryAndMethodSchema": {
+      "countryOfDepositId": "Le pays de dépôt est requis.",
+      "topUpMethod": "La méthode de recharge est requise."
+    }
   }
 }

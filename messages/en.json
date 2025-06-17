@@ -235,7 +235,8 @@
     "countryOfDeposit": "Country of Deposit",
     "selectCountryPlaceholder": "Select country of deposit",
     "topUpMethod": "Top-Up Method",
-    "selectTopUpMethodPlaceholder": "Select top-up method"
+    "selectTopUpMethodPlaceholder": "Select top-up method",
+    "continueButton": "Continue"
   },
   "TopUpRequestsPage": {
     "pageTitle": "Top Up Requests"
@@ -259,5 +260,70 @@
     "orangeMoney": "Orange Money",
     "cash": "Cash",
     "bank": "Bank"
+  },
+  "CountryAndMethodSelectorPage": {
+    "pageTitle": "Select Top-Up Country and Method",
+    "errorFetchingAccount": "Error fetching account details.",
+    "errorFetchingCountries": "Error fetching countries."
+  },
+  "InstructionsPage": {
+    "pageTitle": "Top-Up Instructions",
+    "summaryInstructionsFor": "Below are the instructions for topping up account: {accountIdentifier} (ID: {accountId}) using the {topUpMethod} method for deposits in {countryName}.",
+    "errorLoadingInstructions": "Error loading instructions.",
+    "tryAgainMessage": "Please try again or contact support.",
+    "noInstructionsFound": "No instructions found for this selection.",
+    "pleaseGoBack": "Please go back and try again.",
+    "continueToTopUpButton": "Continue to Top Up",
+    "InstructionsContent": {
+      "instructionsHeading": "{methodName} Instructions",
+      "selectMethodHint": "Please select a method to see the instructions.",
+
+      "bankStep1Title": "Deposit to Any of the Branches Below:",
+      "bankStep1Desc": "The list below shows the banks in {countryName} in which NGTransfert has accounts, and the account information. Please feel free to visit the nearest to you of any of these banks to make your deposit.",
+      "bankStep2Title": "Take a Picture of the Receipt:",
+      "bankStep2Desc": "After making the deposit, please take a clear picture the receipt issued to you by the bank, confirming the deposit.",
+      "bankStep3Title": "Return Here to Continue:",
+      "bankStep3Desc": "After taking the picture, return to this page and click the “Continue to Top Up” button to enter the remaining details.",
+
+      "mobileMoneyDesc": "Send the top-up amount via Mobile Money to the number {mobileNumber} and provide the transaction ID.",
+
+      "waveStep1Title": "Our Wave Details:",
+      "waveStep1Desc": "Top up using Wave by sending to (#########).",
+      "waveStep2Title": "Account Number:",
+      "waveStep2Desc": "{accountNumber}",
+      "waveStep3Title": "Take a Picture (screenshot):",
+      "waveStep3Desc": "Please remember to take a screenshot (picture) as proof that your transaction has been successful on Wave.",
+      "waveStep4Title": "Return Here to Continue:",
+      "waveStep4Desc": "After taking the screenshot, return to this page and click the “Continue to Top Up” button to enter the remaining details.",
+
+      "orangeMoneyStep1Title": "Our Orange Money Details:",
+      "orangeMoneyStep1Desc": "Top up using Orange Money by sending to (#144#8*376385*amount*secret#).",
+      "orangeMoneyStep2Title": "Account Number:",
+      "orangeMoneyStep2Desc": "{accountNumber}",
+      "orangeMoneyStep3Title": "Take a Picture (screenshot):",
+      "orangeMoneyStep3Desc": "Please remember to take a screenshot (picture) as proof that your transaction has been successful on Orange Money.",
+      "orangeMoneyStep4Title": "Return Here to Continue:",
+      "orangeMoneyStep4Desc": "After taking the screenshot, return to this page and click the “Continue to Top Up” button to enter the remaining details.",
+
+      "cashStep1Title": "Visit Our Office:",
+      "cashStep1Desc": "Please visit our {countryName} office at the address provided below these instructions.",
+      "cashStep2Title": "Fill Out the Required Form:",
+      "cashStep2Desc": "Our agent will provide you with a form to fill out. Carefully complete all the required fields on the form.",
+      "cashStep3Title": "Form Should be Stamped:",
+      "cashStep3Desc": "Once you have filled in the form, please present it to our agent to be stamped.",
+      "cashStep4Title": "Take a Picture of the Completed Form:",
+      "cashStep4Desc": "Take a clear picture the stamped form with your phone.",
+      "cashStep5Title": "Return Here to Continue:",
+      "cashStep5Desc": "After taking the picture, return to this page and click the “Continue to Top Up” button to enter the remaining details.",
+
+      "cashAddressesHeading": "These are our cash addresses in {countryName}:",
+      "bankAddressesHeading": "These are our bank addresses in {countryName}:"
+    }
+  },
+  "ZodMessages": {
+    "CountryAndMethodSchema": {
+      "countryOfDepositId": "Country of Deposit is required.",
+      "topUpMethod": "Top Up Method is required."
+    }
   }
 }

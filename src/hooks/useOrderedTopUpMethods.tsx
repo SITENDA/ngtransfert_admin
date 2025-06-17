@@ -7,15 +7,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import {DataObj} from "../../types/DataObj";
-
-// TopUpMethod Enum
-export enum TopUpMethodEnum {
-    BANK = 'BANK',
-    MOBILE_MONEY = 'MOBILE_MONEY',
-    ORANGE_MONEY = 'ORANGE_MONEY',
-    WAVE = 'WAVE',
-    CASH = 'CASH'
-}
+import {TopUpMethodEnum} from "@/enums/TopUpMethodEnum";
 
 // Hook that returns the ordered list of top-up methods with translation and icons
 export const useOrderedTopUpMethods = (): DataObj[] => {

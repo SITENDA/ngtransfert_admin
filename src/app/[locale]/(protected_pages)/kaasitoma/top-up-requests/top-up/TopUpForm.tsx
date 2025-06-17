@@ -7,9 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 
-import { InputWithLabel } from "@/components/inputs/InputWithLabel"; // Assuming this path is correctly resolved
-import { FileInputWithLabel } from "@/components/inputs/FileInputWithLabel"; // Assuming this path is correctly resolved
-import { Button } from "@/components/ui/button"; // Assuming this path is correctly resolved
+// import { InputWithLabel } from "@/components/inputs/InputWithLabel"; // Assuming this path is correctly resolved
+// import { FileInputWithLabel } from "@/components/inputs/FileInputWithLabel"; // Assuming this path is correctly resolved
+// import { Button } from "@/components/ui/button"; // Assuming this path is correctly resolved
 import { Form } from "@/components/ui/form"; // Assuming this is a context provider for react-hook-form
 
 import { ReceiverAccount } from "../../../../../../../types/receiver-account"; // Import ReceiverAccount and its enums
@@ -91,26 +91,26 @@ const TopUpForm: React.FC<TopUpFormProps> = ({ initialCountries, initialReceiver
         defaultValues: defaultEmptyValues,
     });
 
-    const watchedProofPicture = form.watch("proofPicture"); // Watch for file input changes
-
-    const [proofPicturePreview, setProofPicturePreview] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
+    // const watchedProofPicture = form.watch("proofPicture"); // Watch for file input changes
+    //
+    // const [proofPicturePreview, setProofPicturePreview] = useState<string | null>(null);
+    // const [loading, setLoading] = useState(false);
 
     // Effect to create a preview URL for the selected proof picture
-    useEffect(() => {
-        if (watchedProofPicture instanceof File) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setProofPicturePreview(reader.result as string);
-            };
-            reader.readAsDataURL(watchedProofPicture);
-        } else {
-            setProofPicturePreview(null);
-        }
-    }, [watchedProofPicture]);
+    // useEffect(() => {
+    //     if (watchedProofPicture instanceof File) {
+    //         const reader = new FileReader();
+    //         reader.onloadend = () => {
+    //             setProofPicturePreview(reader.result as string);
+    //         };
+    //         reader.readAsDataURL(watchedProofPicture);
+    //     } else {
+    //         setProofPicturePreview(null);
+    //     }
+    // }, [watchedProofPicture]);
 
     const onSubmit = async (data: RequestTopUpSchemaType) => {
-        setLoading(true);
+        // setLoading(true);
         console.log("DEBUG: TopUpForm - Form data prepared for submission:", data);
 
         // Manually construct FormData for the Server Action, as it expects FormData for file uploads
@@ -136,7 +136,7 @@ const TopUpForm: React.FC<TopUpFormProps> = ({ initialCountries, initialReceiver
             if (result.success) {
                 alert(t('topUpSuccessMessage', { message: result.message }));
                 form.reset(defaultEmptyValues); // Reset form fields
-                setProofPicturePreview(null); // Clear image preview
+                // setProofPicturePreview(null); // Clear image preview
                 // Redirect to the list of top-up requests or a success page
                 router.push(`/${locale}/kaasitoma/top-up-requests`);
             } else {
@@ -147,7 +147,7 @@ const TopUpForm: React.FC<TopUpFormProps> = ({ initialCountries, initialReceiver
             console.error("CRITICAL ERROR: TopUpForm - Exception during server action call:", error);
             alert(`${t('submissionError')}: An unexpected error occurred during submission.`);
         } finally {
-            setLoading(false);
+            // setLoading(false);
         }
     };
 
@@ -174,46 +174,7 @@ const TopUpForm: React.FC<TopUpFormProps> = ({ initialCountries, initialReceiver
                     placeholderHint={t('selectTopUpMethodPlaceholder')}
                 />
 
-                {/* Amount in CNY */}
-                <InputWithLabel<RequestTopUpSchemaType>
-                    fieldTitle={t('amountInCNY')}
-                    nameInSchema="amountInCNY"
-                    control={form.control}
-                    placeholder={t('amountInCNYPlaceholder')}
-                    type="number"
-                    step="0.01"
-                />
 
-                {/* Sending Fee */}
-                <InputWithLabel<RequestTopUpSchemaType>
-                    fieldTitle={t('sendingFee')}
-                    nameInSchema="sendingFee"
-                    control={form.control}
-                    placeholder={t('sendingFeePlaceholder')}
-                    type="number"
-                    step="0.01"
-                />
-
-                {/* Proof Picture Upload */}
-                <FileInputWithLabel<RequestTopUpSchemaType>
-                    fieldTitle={t('proofPicture')}
-                    nameInSchema="proofPicture"
-                    control={form.control}
-                    imagePreview={proofPicturePreview}
-                    accept=".jpg,.jpeg,.png,.webp"
-                />
-
-                <div className="flex gap-2 justify-end">
-                    <Button type="submit" className="w-1/2" disabled={loading}>
-                        {loading ? t('submittingTopUp') : t('submitTopUp')}
-                    </Button>
-                    <Button type="button" variant="outline" className="w-1/2" disabled={loading} onClick={() => {
-                        form.reset(defaultEmptyValues);
-                        setProofPicturePreview(null); // Clear preview on reset
-                    }}>
-                        {t('reset')}
-                    </Button>
-                </div>
             </form>
         </Form>
     );

@@ -213,7 +213,8 @@
     "countryOfDeposit": "存款国家",
     "selectCountryPlaceholder": "选择存款国家",
     "topUpMethod": "充值方式",
-    "selectTopUpMethodPlaceholder": "选择充值方式"
+    "selectTopUpMethodPlaceholder": "选择充值方式",
+    "continueButton": "继续"
   },
   "TopUpRequestsPage": {
     "pageTitle": "充值请求"
@@ -237,5 +238,32 @@
     "orangeMoney": "Orange 钱包",
     "cash": "现金",
     "bank": "银行"
+  },
+  "CountryAndMethodSelectorPage": {
+    "pageTitle": "选择充值国家和方式",
+    "errorFetchingAccount": "获取账户详情时出错。",
+    "errorFetchingCountries": "获取国家时出错。"
+  },
+  "InstructionsPage": {
+    "instructionsTitle": "充值说明",
+    "forAccount": "账户ID：{accountId}",
+    "selectedMethod": "所选方式：{method} 在 {country}",
+    "stepsHeading": "操作步骤",
+    "instructionsForTransfer": "您的转账说明",
+    "step1Details": "步骤 1：核实账户详情 - 账户类别：{accountCategory}，识别码：{accountIdentifier}，ID：{accountId}。",
+    "step2Method": "步骤 2：使用“{method}”充值方式。",
+    "step3Country": "步骤 3：确保存款来自ID为：{countryId} 的国家。",
+    "step4BankDetails": "步骤 4：您将在下一屏幕上看到具体的银行详情或付款信息。",
+    "step5Reference": "步骤 5：请务必在转账中包含提供的任何参考号码。",
+    "errorLoadingInstructions": "加载说明时出错。",
+    "tryAgainMessage": "请重试或联系支持。",
+    "noInstructionsFound": "未找到此选择的说明。",
+    "pleaseGoBack": "请返回并重试。"
+  },
+  "ZodMessages": {
+    "CountryAndMethodSchema": {
+      "countryOfDepositId": "存款国家为必填项。",
+      "topUpMethod": "充值方式为必填项。"
+    }
   }
 }
