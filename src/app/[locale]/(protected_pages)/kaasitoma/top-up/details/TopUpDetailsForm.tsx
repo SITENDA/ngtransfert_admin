@@ -1,7 +1,7 @@
 // src/app/[locale]/(protected_pages)/kaasitoma/details-requests/details/TopUpDetailsForm.tsx
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react'; // Import useRef
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from 'next/navigation';
@@ -108,14 +108,13 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
 
     const [proofPicturePreview, setProofPicturePreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    // These states are no longer strictly needed if we always use form.setValue,
-    // but can be kept for debugging or if you have other logic depending on them.
+    // These states are only for debugging or if other logic specifically depends on them,
+    // as form.setValue directly updates the form state.
     const [calculatedAmountInDestinationCurrency, setCalculatedAmountInDestinationCurrency] = useState<number | undefined>(undefined);
     const [calculatedAmountInCNY, setCalculatedAmountInCNY] = useState<number | undefined>(undefined);
 
-    // Keep track of which input was last focused/edited by the user
-    // This is crucial for bidirectional input control
-    const [lastEditedField, setLastEditedField] = useState< 'CNY' | 'DEST' | null >(null);
+    // Ref to manage programmatic updates
+    const isProgrammaticUpdate = useRef(false);
 
     // Get the actual exchange rates from props
     const cnyToDestExchangeRate = initialExchangeRate.cnyToDestExchangeRate;
@@ -134,59 +133,76 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
         }
     }, [watchedProofPicture]);
 
-    // Effect for CNY input changes
+    // Effect for CNY input changes (drives Destination Currency)
     useEffect(() => {
-        // Only trigger conversion if the CNY field was the one last edited or if both are empty
-        if (lastEditedField === 'CNY' || (lastEditedField === null && watchedAmountInCNY !== undefined && watchedAmountInCNY !== null)) {
-            if (watchedAmountInCNY !== undefined && watchedAmountInCNY !== null && cnyToDestExchangeRate !== null && cnyToDestExchangeRate !== undefined) {
-                const destAmount = watchedAmountInCNY * cnyToDestExchangeRate;
-                const roundedDestAmount = parseFloat(destAmount.toFixed(2));
-                setCalculatedAmountInDestinationCurrency(roundedDestAmount); // Update state for potential external use
-                // Update the other field programmatically
-                form.setValue("amountInDestinationCurrency", roundedDestAmount, { shouldValidate: true });
-                form.clearErrors("amountInDestinationCurrency");
-            } else if (watchedAmountInCNY === undefined || watchedAmountInCNY === null) {
-                // Clear destination amount if CNY amount is cleared
-                setCalculatedAmountInDestinationCurrency(undefined);
-                form.setValue("amountInDestinationCurrency", undefined, { shouldValidate: true });
-                form.clearErrors("amountInDestinationCurrency");
-            }
+        // Only run if the change was NOT programmatic
+        if (isProgrammaticUpdate.current) {
+            isProgrammaticUpdate.current = false; // Reset flag
+            return;
         }
-    }, [watchedAmountInCNY, cnyToDestExchangeRate, form, lastEditedField]);
 
+        // If watchedAmountInCNY has a value, calculate and set Destination Currency
+        if (watchedAmountInCNY !== undefined && watchedAmountInCNY !== null && cnyToDestExchangeRate !== null && cnyToDestExchangeRate !== undefined) {
+            const destAmount = watchedAmountInCNY * cnyToDestExchangeRate;
+            const roundedDestAmount = parseFloat(destAmount.toFixed(2));
+            setCalculatedAmountInDestinationCurrency(roundedDestAmount);
 
-    // Effect for Destination Currency input changes
+            // Set flag before programmatic update
+            isProgrammaticUpdate.current = true;
+            form.setValue("amountInDestinationCurrency", roundedDestAmount, { shouldValidate: true });
+            form.clearErrors("amountInDestinationCurrency");
+        } else if (watchedAmountInCNY === undefined || watchedAmountInCNY === null) {
+            // If CNY is cleared, clear Destination Currency
+            setCalculatedAmountInDestinationCurrency(undefined);
+            // Set flag before programmatic update
+            isProgrammaticUpdate.current = true;
+            form.setValue("amountInDestinationCurrency", undefined, { shouldValidate: true });
+            form.clearErrors("amountInDestinationCurrency");
+        }
+    }, [watchedAmountInCNY, cnyToDestExchangeRate, form]); // Removed lastEditedField from deps
+
+    // Effect for Destination Currency input changes (drives CNY)
     useEffect(() => {
-        // Only trigger conversion if the DEST field was the one last edited or if both are empty
-        if (lastEditedField === 'DEST' || (lastEditedField === null && watchedAmountInDestinationCurrency !== undefined && watchedAmountInDestinationCurrency !== null)) {
-            if (watchedAmountInDestinationCurrency !== undefined && watchedAmountInDestinationCurrency !== null && destToCnyExchangeRate !== null && destToCnyExchangeRate !== undefined) {
-                const cnyAmount = watchedAmountInDestinationCurrency * destToCnyExchangeRate;
-                const roundedCnyAmount = parseFloat(cnyAmount.toFixed(2));
-                setCalculatedAmountInCNY(roundedCnyAmount); // Update state for potential external use
-                // Update the other field programmatically
-                form.setValue("amountInCNY", roundedCnyAmount, { shouldValidate: true });
-                form.clearErrors("amountInCNY");
-            } else if (watchedAmountInDestinationCurrency === undefined || watchedAmountInDestinationCurrency === null) {
-                // Clear CNY amount if destination amount is cleared
-                setCalculatedAmountInCNY(undefined);
-                form.setValue("amountInCNY", undefined, { shouldValidate: true });
-                form.clearErrors("amountInCNY");
-            }
+        // Only run if the change was NOT programmatic
+        if (isProgrammaticUpdate.current) {
+            isProgrammaticUpdate.current = false; // Reset flag
+            return;
         }
-    }, [watchedAmountInDestinationCurrency, destToCnyExchangeRate, form, lastEditedField]);
 
-    // Handlers to set which field was last edited
+        // If watchedAmountInDestinationCurrency has a value, calculate and set CNY
+        if (watchedAmountInDestinationCurrency !== undefined && watchedAmountInDestinationCurrency !== null && destToCnyExchangeRate !== null && destToCnyExchangeRate !== undefined) {
+            const cnyAmount = watchedAmountInDestinationCurrency * destToCnyExchangeRate;
+            const roundedCnyAmount = parseFloat(cnyAmount.toFixed(2));
+            setCalculatedAmountInCNY(roundedCnyAmount);
+
+            // Set flag before programmatic update
+            isProgrammaticUpdate.current = true;
+            form.setValue("amountInCNY", roundedCnyAmount, { shouldValidate: true });
+            form.clearErrors("amountInCNY");
+        } else if (watchedAmountInDestinationCurrency === undefined || watchedAmountInDestinationCurrency === null) {
+            // If Destination Currency is cleared, clear CNY
+            setCalculatedAmountInCNY(undefined);
+            // Set flag before programmatic update
+            isProgrammaticUpdate.current = true;
+            form.setValue("amountInCNY", undefined, { shouldValidate: true });
+            form.clearErrors("amountInCNY");
+        }
+    }, [watchedAmountInDestinationCurrency, destToCnyExchangeRate, form]); // Removed lastEditedField from deps
+
+    // Handlers for actual user input
+    // These now just update the form value directly and let the effects handle conversions
     const handleCnyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setLastEditedField('CNY');
         const value = e.target.value === '' ? undefined : parseFloat(e.target.value);
-        form.setValue("amountInCNY", value);
+        // Only set the field as dirty if the user manually changed it
+        form.setValue("amountInCNY", value, { shouldValidate: true, shouldDirty: true });
     };
 
     const handleDestChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setLastEditedField('DEST');
         const value = e.target.value === '' ? undefined : parseFloat(e.target.value);
-        form.setValue("amountInDestinationCurrency", value);
+        // Only set the field as dirty if the user manually changed it
+        form.setValue("amountInDestinationCurrency", value, { shouldValidate: true, shouldDirty: true });
     };
+
 
     const onSubmit = async (data: RequestTopUpSchemaType) => {
         setLoading(true);
@@ -207,19 +223,45 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
         const finalAmountInCNY = form.getValues("amountInCNY");
         const finalAmountInDestinationCurrency = form.getValues("amountInDestinationCurrency");
 
-        if (finalAmountInCNY !== undefined && finalAmountInCNY !== null) {
-            formData.append("amountInCNY", finalAmountInCNY.toFixed(2)); // Ensure consistent precision
+        // Determine which amount to use if only one was filled by the user
+        let amountToUseCNY: number | undefined;
+        let amountToUseDest: number | undefined;
+
+        // Logic: if only one field is dirty (user input), use that as the source of truth
+        // If both are dirty, prioritize the one that was last changed (though the effects handle this for display)
+        // If neither are dirty (e.g., initial state, or after a reset), then enforce input
+        const cnyDirty = form.formState.dirtyFields.amountInCNY;
+        const destDirty = form.formState.dirtyFields.amountInDestinationCurrency;
+
+        if (cnyDirty && finalAmountInCNY !== undefined && finalAmountInCNY !== null) {
+            amountToUseCNY = finalAmountInCNY;
+            amountToUseDest = finalAmountInCNY * cnyToDestExchangeRate;
+        } else if (destDirty && finalAmountInDestinationCurrency !== undefined && finalAmountInDestinationCurrency !== null) {
+            amountToUseDest = finalAmountInDestinationCurrency;
+            amountToUseCNY = finalAmountInDestinationCurrency * destToCnyExchangeRate;
         } else {
-            console.error("Final amountInCNY is missing, cannot submit.");
+            // Neither field was directly edited, or both are empty.
+            // This case should ideally be caught by validation, but as a fallback:
+            console.error("Neither CNY nor Destination Currency field was directly edited by the user, and no calculated values exist.");
             setLoading(false);
             alert(`${t('submissionError')}: ${t('missingAmount')}`);
             return;
         }
 
-        if (finalAmountInDestinationCurrency !== undefined && finalAmountInDestinationCurrency !== null) {
-            formData.append("amountInDestinationCurrency", finalAmountInDestinationCurrency.toFixed(2)); // Ensure consistent precision
+        // Final check and append to FormData
+        if (amountToUseCNY !== undefined && amountToUseCNY !== null) {
+            formData.append("amountInCNY", amountToUseCNY.toFixed(2));
         } else {
-            console.error("Final amountInDestinationCurrency is missing, cannot submit.");
+            console.error("Final amountInCNY is missing after determination, cannot submit.");
+            setLoading(false);
+            alert(`${t('submissionError')}: ${t('missingAmount')}`);
+            return;
+        }
+
+        if (amountToUseDest !== undefined && amountToUseDest !== null) {
+            formData.append("amountInDestinationCurrency", amountToUseDest.toFixed(2));
+        } else {
+            console.error("Final amountInDestinationCurrency is missing after determination, cannot submit.");
             setLoading(false);
             alert(`${t('submissionError')}: ${t('missingAmount')}`);
             return;
@@ -227,7 +269,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
 
 
         // 3. Handle the proof picture
-        if (data.proofPicture instanceof File && data.proofPicture.size > 0) { // Check size > 0 too
+        if (data.proofPicture instanceof File && data.proofPicture.size > 0) {
             formData.append("proofPicture", data.proofPicture);
         } else {
             setLoading(false);
@@ -245,7 +287,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
                 alert(t('topUpSuccessMessage', { message: result.message }));
                 form.reset(defaultFormValues);
                 setProofPicturePreview(null);
-                setLastEditedField(null); // Reset the last edited field
+                isProgrammaticUpdate.current = false; // Ensure flag is reset
                 router.push(`/${locale}/kaasitoma/top-up-requests`);
             } else {
                 alert(`${t('submissionError')}: ${result.message}`);
@@ -302,7 +344,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
                     placeholder={`e.g., 1000 ${t('currency.CNY')}`}
                     type="number"
                     step="0.01"
-                    onChange={handleCnyChange} // Use custom handler
+                    onChange={handleCnyChange}
                 />
 
                 {/* Amount in Destination Currency */}
@@ -313,7 +355,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
                     placeholder={`e.g., 500 ${t(`currency.${initialCountry.currency.currencyCode}`)}`}
                     type="number"
                     step="0.01"
-                    onChange={handleDestChange} // Use custom handler
+                    onChange={handleDestChange}
                 />
 
                 {/* Proof Picture Upload */}
@@ -332,7 +374,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
                     <Button type="button" variant="outline" className="w-1/2" disabled={loading} onClick={() => {
                         form.reset(defaultFormValues);
                         setProofPicturePreview(null);
-                        setLastEditedField(null); // Reset the last edited field
+                        isProgrammaticUpdate.current = false; // Ensure flag is reset
                     }}>
                         {t('reset')}
                     </Button>
