@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
         try {
             // Parse the successful response as JSON.
             const responseData = JSON.parse(responseBodyText);
-            console.log('Proxy API (getAllTransferRequests): Backend response data (first 200 chars):', JSON.stringify(responseData).substring(0, 200));
+            // console.log('Proxy API (getAllTransferRequests): Backend response data (first 200 chars):', JSON.stringify(responseData).substring(0, 200));
             return NextResponse.json(responseData, { status: backendResponse.status });
         } catch (jsonParseError) {
             // Log an error if JSON parsing fails despite an OK status.

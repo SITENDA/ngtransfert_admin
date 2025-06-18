@@ -64,7 +64,7 @@ export async function fetchBackendData<T>(
     }
 
     try {
-        console.log(`fetchBackendData: Attempting to fetch from ${fullUrl} using method ${method}...`);
+        // console.log(`fetchBackendData: Attempting to fetch from ${fullUrl} using method ${method}...`);
         const response = await fetch(fullUrl, fetchOptions);
 
         if (!response.ok) {
@@ -84,7 +84,7 @@ export async function fetchBackendData<T>(
 
         // Check the backend's custom status code and data presence
         if (backendResponse.statusCode === 200 && backendResponse.data !== undefined && backendResponse.data !== null) {
-            console.log(`fetchBackendData: Successfully received data from ${fullUrl}.`);
+            // console.log(`fetchBackendData: Successfully received data from ${fullUrl}.`);
             return backendResponse.data; // Return the actual data payload
         } else {
             console.warn(`fetchBackendData: Backend response for ${fullUrl} was OK (HTTP 200), but 'data' was missing/null or custom statusCode not 200:`, backendResponse);

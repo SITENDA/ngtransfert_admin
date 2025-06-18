@@ -2,7 +2,10 @@
 
 import {Currency} from "./currency";
 import {ReceiverAccountCategoryType} from "@/zod-schemas/receiver-account";
-import {TopUpMethodEnum} from "@/hooks/useOrderedTopUpMethods";
+import {ReceiverAccount} from "./receiver-account";
+import {TopUpMethodEnum} from "@/enums/TopUpMethodEnum";
+import {Country} from "./country";
+import {ExchangeRateResult} from "./exchangeRateResult";
 
 /**
  * Interface for TopUp Request Data Transfer Object.
@@ -29,4 +32,10 @@ export interface TopUpRequest {
  */
 export interface TopUpRequestsPayload {
     topUpRequests: TopUpRequest[];
+}
+
+export interface TopUpDetailsPayload {
+    country: Country
+    receiverAccount: ReceiverAccount;
+    exchangeRate: ExchangeRateResult;
 }

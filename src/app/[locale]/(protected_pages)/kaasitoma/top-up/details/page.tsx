@@ -8,9 +8,11 @@ import getSession from "@/lib/getSession";
 import { kaasitomaPaths } from "@/util/frontend-paths";
 import { CardContent } from "@/components/ui/card";
 import { fetchBackendData } from "@/lib/backend-api-client";
-import { ReceiverAccountPayload, ReceiverAccount } from "../../../../../../../types/receiver-account";
-import {Country, CountryDataPayload} from "../../../../../../../types/country"; // Import Country and its payload
+import { ReceiverAccount } from "../../../../../../../types/receiver-account";
+import {Country} from "../../../../../../../types/country"; // Import Country and its payload
 import TopUpDetailsForm from "./TopUpDetailsForm";
+import {TopUpDetailsPayload} from "../../../../../../../types/topup-request";
+import {ExchangeRate} from "../../../../../../../types/exchangeRateResult";
 
 interface TopUpDetailsPageProps {
     searchParams: { // Query parameters from URL
@@ -48,47 +50,44 @@ async function TopUpDetailsPage({ searchParams }: TopUpDetailsPageProps) {
     const numericCountryId = parseInt(countryId, 10);
 
     let receiverAccount: ReceiverAccount | undefined;
-    let country: Country | undefined; // Declare the country object
+    let country: Country | undefined;
+    let exchangeRate: ExchangeRate | undefined; // Make sure ExchangeRateResult is correctly imported
 
     try {
-        // --- 2. Fetch Receiver Account details ---
-        const receiverAccountPayload = await fetchBackendData<ReceiverAccountPayload>(
-            `/kaasitoma/receiverAccounts/getReceiverAccountByReceiverAccountId?receiverAccountId=${numericReceiverAccountId}`,
+        // --- 2. Fetch Receiver Account details, Country, and Exchange Rate ---
+        const topUpDetailsPayload = await fetchBackendData<TopUpDetailsPayload>(
+            `/kaasitoma/exchanges/getTopUpDetails?receiverAccountId=${numericReceiverAccountId}&countryId=${numericCountryId}`, // FIXED HERE
             'GET',
             undefined,
             3600
         );
 
-        if (receiverAccountPayload && receiverAccountPayload.receiverAccount) {
-            receiverAccount = receiverAccountPayload.receiverAccount;
-            console.log(`TopUpDetailsPage: Successfully fetched receiver account : ${receiverAccount}`);
-        } else {
-            console.warn(`TopUpDetailsPage: No receiver account data fetched or unexpected structure for ID ${numericReceiverAccountId}.`);
-        }
+        if (topUpDetailsPayload && topUpDetailsPayload.receiverAccount && topUpDetailsPayload.country && topUpDetailsPayload.exchangeRate) { // Ensure exchangeRate is checked here
+            receiverAccount = topUpDetailsPayload.receiverAccount;
+            country = topUpDetailsPayload.country;
+            exchangeRate = topUpDetailsPayload.exchangeRate;
 
-        // --- 3. Fetch Country details ---
-        const countryPayload = await fetchBackendData<CountryDataPayload>(
-            `/kaasitoma/countries/getCountryByCountryId?countryId=${countryId}`, // Or a specific endpoint to get country by ID if available
-            'GET',
-            undefined,
-            3600
-        );
+            console.log("ExchangeRate: ", exchangeRate);
 
-        if (countryPayload && countryPayload.country) {
-            country = countryPayload.country;
-            console.log(`TopUpDetailsPage: Successfully fetched receiver account ID ${country.countryId}`);
+            console.log(`TopUpDetailsPage: Successfully fetched top up details for receiverAccountId: ${receiverAccount.receiverAccountId}`);
         } else {
-            console.warn(`TopUpDetailsPage: No receiver account data fetched or unexpected structure for ID ${numericCountryId}.`);
+            console.warn(`TopUpDetailsPage: No top up details fetched or unexpected structure for Receiver Account ID ${numericReceiverAccountId} and CountryId ${countryId}.`);
         }
 
         if (!country) {
-            console.warn(`TopUpDetailsPage: Country with ID ${numericCountryId} not found.`);
+            console.warn(`TopUpDetailsPage: Country with ID ${numericCountryId} not found after fetch.`);
             // Redirect if the country cannot be found
             redirect(`/${locale}/${kaasitomaPaths.receiverAccountsPath}`);
         }
 
+        if (!exchangeRate) {
+            console.warn(`TopUpDetailsPage: Exchange Rate for Country ID ${numericCountryId} not found after fetch.`);
+            // Redirect if the exchange rate cannot be found
+            redirect(`/${locale}/${kaasitomaPaths.receiverAccountsPath}`);
+        }
+
     } catch (error) {
-        console.error(`TopUpDetailsPage: Error fetching required details for Receiver Account ID ${numericReceiverAccountId} or Country ID ${numericCountryId}: `, error);
+        console.error(`TopUpDetailsPage: Error fetching required top up details for Receiver Account ID ${numericReceiverAccountId} or Country ID ${numericCountryId}: `, error);
         // Fallback or redirect on fetch error
         redirect(`/${locale}/${kaasitomaPaths.receiverAccountsPath}`);
     }
@@ -98,6 +97,7 @@ async function TopUpDetailsPage({ searchParams }: TopUpDetailsPageProps) {
         console.log(`TopUpDetailsPage: Missing essential data after fetch (receiverAccount or country). Redirecting to /${locale}/${kaasitomaPaths.receiverAccountsPath}.`);
         redirect(`/${locale}/${kaasitomaPaths.receiverAccountsPath}`);
     }
+
 
     return (
         <div className="
@@ -112,8 +112,9 @@ async function TopUpDetailsPage({ searchParams }: TopUpDetailsPageProps) {
             <CardContent className="flex-grow p-6 space-y-8">
                 <TopUpDetailsForm
                     initialReceiverAccount={receiverAccount}
-                    initialCountry={country} // Pass the fetched Country object
-                    initialSearchParams={{ topUpMethod: topUpMethod }} // Pass only topUpMethod in searchParams
+                    initialCountry={country}
+                    initialExchangeRate={exchangeRate}
+                    initialSearchParams={{ topUpMethod: topUpMethod }}
                 />
             </CardContent>
         </div>

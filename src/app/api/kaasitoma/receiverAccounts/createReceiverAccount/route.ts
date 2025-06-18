@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
         // If you want the body, parse it first.
 
         const responseData = await backendResponse.json();
-        console.log('Proxy API: Backend response data:', responseData);
+        // console.log('Proxy API: Backend response data:', responseData);
 
         return NextResponse.json(responseData, { status: backendResponse.status });
 

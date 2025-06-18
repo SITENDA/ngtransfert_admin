@@ -198,6 +198,8 @@
     "receiverAccountType": "Type de Compte Bénéficiaire",
     "countryOfDeposit": "Pays de Dépôt",
     "topUpMethodLabel": "Méthode de Recharge",
+    "exchangeRateCnyToDestLabel": "Taux CNY vers Devise Locale",
+    "exchangeRateDestToCnyLabel": "Taux Devise Locale vers CNY",
     "amountIn": "Montant en",
     "amountInCNY": "Montant en CNY",
     "amountInCNYPlaceholder": "ex., 1000",

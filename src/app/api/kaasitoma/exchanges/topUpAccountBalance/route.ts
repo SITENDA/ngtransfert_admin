@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
         }
 
         const responseData = await backendResponse.json();
-        console.log('Proxy API: Backend response data:', responseData);
+        // console.log('Proxy API: Backend response data:', responseData);
 
         return NextResponse.json(responseData, { status: backendResponse.status });
 

@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
         // Handle successful responses
         try {
             const responseData = JSON.parse(responseBodyText);
-            console.log('DEBUG: Proxy API (applyForTransfer): Backend response data (first 200 chars):', JSON.stringify(responseData).substring(0, 200));
+            // console.log('DEBUG: Proxy API (applyForTransfer): Backend response data (first 200 chars):', JSON.stringify(responseData).substring(0, 200));
             return NextResponse.json(responseData, { status: backendResponse.status });
         } catch (jsonParseError) {
             console.error('ERROR: Proxy API (applyForTransfer): Failed to parse backend response as JSON despite OK status:', jsonParseError);

@@ -220,6 +220,8 @@
     "receiverAccountType": "Receiver Account Type",
     "countryOfDeposit": "Country of Deposit",
     "topUpMethodLabel": "Top Up Method",
+    "exchangeRateCnyToDestLabel": "CNY to Destination Rate",
+    "exchangeRateDestToCnyLabel": "Destination to CNY Rate",
     "amountIn": "Amount in",
     "amountInCNY": "Amount in CNY",
     "amountInCNYPlaceholder": "e.g., 1000",

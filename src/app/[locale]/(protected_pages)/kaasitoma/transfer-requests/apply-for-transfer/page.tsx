@@ -53,7 +53,7 @@ async function ApplyForTransferPage({ searchParams }: ApplyForTransferPageProps)
 
         if (countryPayload && countryPayload.countries) {
             countries = countryPayload.countries;
-            console.log(`ApplyForTransferPage: Successfully fetched ${countries.length} countries.`);
+            // console.log(`ApplyForTransferPage: Successfully fetched ${countries.length} countries.`);
         } else {
             console.warn("ApplyForTransferPage: No country data fetched or data structure unexpected from backend.");
         }
@@ -69,7 +69,7 @@ async function ApplyForTransferPage({ searchParams }: ApplyForTransferPageProps)
 
         if (receiverAccountPayload && receiverAccountPayload.receiverAccount) {
             receiverAccount = receiverAccountPayload.receiverAccount;
-            console.log(`ApplyForTransferPage: Successfully fetched receiver account ID ${receiverAccount.receiverAccountId}`);
+            // console.log(`ApplyForTransferPage: Successfully fetched receiver account ID ${receiverAccount.receiverAccountId}`);
         } else {
             console.warn("ApplyForTransferPage: No receiver account data fetched or data structure unexpected from backend.");
         }

@@ -72,7 +72,7 @@ async function CountryAndMethodSelectorPage({ searchParams }: CountryAndMethodSe
 
         if (countryPayload && countryPayload.countries) {
             countries = countryPayload.countries;
-            console.log(`ApplyForTransferPage: Successfully fetched ${countries.length} countries.`);
+            // console.log(`ApplyForTransferPage: Successfully fetched ${countries.length} countries.`);
         } else {
             console.warn("ApplyForTransferPage: No country data fetched or data structure unexpected from backend.");
         }

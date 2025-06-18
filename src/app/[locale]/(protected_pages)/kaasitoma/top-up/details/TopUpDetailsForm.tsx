@@ -21,6 +21,7 @@ import { FileInputWithLabel } from "@/components/inputs/FileInputWithLabel";
 import { Button } from "@/components/ui/button";
 import { Country } from "../../../../../../../types/country";
 import {TopUpMethodEnum} from "@/enums/TopUpMethodEnum";
+import {ExchangeRate} from "../../../../../../../types/exchangeRateResult";
 
 
 interface TopUpDetailsFormSearchParams {
@@ -30,12 +31,14 @@ interface TopUpDetailsFormSearchParams {
 interface TopUpDetailsFormProps {
     initialReceiverAccount: ReceiverAccount;
     initialCountry: Country;
+    initialExchangeRate: ExchangeRate;
     initialSearchParams: TopUpDetailsFormSearchParams;
 }
 
 const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
                                                                initialReceiverAccount,
                                                                initialCountry,
+                                                               initialExchangeRate,
                                                                initialSearchParams
                                                            }) => {
     const t = useTranslations('TopUpDetailsForm');
@@ -120,51 +123,39 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
         }
     }, [watchedProofPicture]);
 
-    // TODO: Integrate real exchange rate from an API
-    // For demonstration, these are static exchange rates.
-    const getExchangeRateCNYToDest = () => {
-        // Replace with actual API call or context-provided exchange rate
-        // Example: if initialCountry.currency.currencyCode is "XAF"
-        if (initialCountry.currency.currencyCode === "XAF") return 0.5; // 1 CNY = 0.5 XAF
-        return 1.0; // Default or fallback
-    };
-
-    const getExchangeRateDestToCNY = () => {
-        // Replace with actual API call or context-provided exchange rate
-        // Example: if initialCountry.currency.currencyCode is "XAF"
-        if (initialCountry.currency.currencyCode === "XAF") return 2.0; // 1 XAF = 2 CNY
-        return 1.0; // Default or fallback
-    };
+    // Use the actual exchange rates from props
+    const cnyToDestExchangeRate = initialExchangeRate.cnyToDestExchangeRate;
+    const destToCnyExchangeRate = initialExchangeRate.destToCnyExchangeRate;
 
 
     // Effect to calculate Destination Currency amount based on CNY input
     useEffect(() => {
-        const exchangeRate = getExchangeRateCNYToDest();
         if (watchedAmountInCNY !== undefined && watchedAmountInCNY !== null) {
-            const destAmount = watchedAmountInCNY * exchangeRate;
+            const destAmount = watchedAmountInCNY * cnyToDestExchangeRate;
             setCalculatedAmountInDestinationCurrency(parseFloat(destAmount.toFixed(2))); // Round to 2 decimal places
-            form.setValue("amountInDestinationCurrency", parseFloat(destAmount.toFixed(2)), { shouldValidate: true, shouldDirty: true });
-            form.clearErrors("amountInDestinationCurrency"); // Clear error if calculation makes it valid
-        } else if (!form.formState.dirtyFields.amountInDestinationCurrency) {
-            // Only clear if destination field hasn't been directly edited
+            if (!form.formState.dirtyFields.amountInDestinationCurrency) { // Only update if not manually edited
+                form.setValue("amountInDestinationCurrency", parseFloat(destAmount.toFixed(2)), { shouldValidate: true, shouldDirty: true });
+                form.clearErrors("amountInDestinationCurrency");
+            }
+        } else if (!form.formState.dirtyFields.amountInDestinationCurrency) { // Only clear if not manually edited
             form.setValue("amountInDestinationCurrency", undefined, { shouldValidate: true, shouldDirty: true });
         }
-    }, [watchedAmountInCNY, initialCountry.currency.currencyCode, form.setValue, form.clearErrors, form.formState.dirtyFields.amountInDestinationCurrency]);
+    }, [watchedAmountInCNY, cnyToDestExchangeRate, form.setValue, form.clearErrors, form.formState.dirtyFields.amountInDestinationCurrency]);
 
 
     // Effect to calculate CNY amount based on Destination Currency input
     useEffect(() => {
-        const exchangeRate = getExchangeRateDestToCNY();
         if (watchedAmountInDestinationCurrency !== undefined && watchedAmountInDestinationCurrency !== null) {
-            const cnyAmount = watchedAmountInDestinationCurrency * exchangeRate;
+            const cnyAmount = watchedAmountInDestinationCurrency * destToCnyExchangeRate;
             setCalculatedAmountInCNY(parseFloat(cnyAmount.toFixed(2))); // Round to 2 decimal places
-            form.setValue("amountInCNY", parseFloat(cnyAmount.toFixed(2)), { shouldValidate: true, shouldDirty: true });
-            form.clearErrors("amountInCNY"); // Clear error if calculation makes it valid
-        } else if (!form.formState.dirtyFields.amountInCNY) {
-            // Only clear if CNY field hasn't been directly edited
+            if (!form.formState.dirtyFields.amountInCNY) { // Only update if not manually edited
+                form.setValue("amountInCNY", parseFloat(cnyAmount.toFixed(2)), { shouldValidate: true, shouldDirty: true });
+                form.clearErrors("amountInCNY");
+            }
+        } else if (!form.formState.dirtyFields.amountInCNY) { // Only clear if not manually edited
             form.setValue("amountInCNY", undefined, { shouldValidate: true, shouldDirty: true });
         }
-    }, [watchedAmountInDestinationCurrency, initialCountry.currency.currencyCode, form.setValue, form.clearErrors, form.formState.dirtyFields.amountInCNY]);
+    }, [watchedAmountInDestinationCurrency, destToCnyExchangeRate, form.setValue, form.clearErrors, form.formState.dirtyFields.amountInCNY]);
 
 
     const onSubmit = async (data: RequestTopUpSchemaType) => {
@@ -186,26 +177,29 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
         let finalAmountInCNY: number | undefined = data.amountInCNY;
         let finalAmountInDestinationCurrency: number | undefined = data.amountInDestinationCurrency;
 
-        if (finalAmountInCNY === undefined || finalAmountInCNY === null) {
+        // If user only provided destination currency, use the calculated CNY
+        if ((finalAmountInCNY === undefined || finalAmountInCNY === null) && calculatedAmountInCNY !== undefined && calculatedAmountInCNY !== null) {
             finalAmountInCNY = calculatedAmountInCNY;
         }
-        if (finalAmountInDestinationCurrency === undefined || finalAmountInDestinationCurrency === null) {
+        // If user only provided CNY, use the calculated destination currency
+        if ((finalAmountInDestinationCurrency === undefined || finalAmountInDestinationCurrency === null) && calculatedAmountInDestinationCurrency !== undefined && calculatedAmountInDestinationCurrency !== null) {
             finalAmountInDestinationCurrency = calculatedAmountInDestinationCurrency;
         }
 
+
         if (finalAmountInCNY !== undefined && finalAmountInCNY !== null) {
-            formData.append("amountInCNY", finalAmountInCNY.toString());
+            formData.append("amountInCNY", finalAmountInCNY.toFixed(2)); // Ensure consistent precision
         } else {
-            console.error("Final amountInCNY is missing.");
+            console.error("Final amountInCNY is missing, cannot submit.");
             setLoading(false);
             alert(`${t('submissionError')}: ${t('missingAmount')}`);
             return;
         }
 
         if (finalAmountInDestinationCurrency !== undefined && finalAmountInDestinationCurrency !== null) {
-            formData.append("amountInDestinationCurrency", finalAmountInDestinationCurrency.toString());
+            formData.append("amountInDestinationCurrency", finalAmountInDestinationCurrency.toFixed(2)); // Ensure consistent precision
         } else {
-            console.error("Final amountInDestinationCurrency is missing.");
+            console.error("Final amountInDestinationCurrency is missing, cannot submit.");
             setLoading(false);
             alert(`${t('submissionError')}: ${t('missingAmount')}`);
             return;
@@ -213,7 +207,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
 
 
         // 3. Handle the proof picture
-        if (data.proofPicture instanceof File) {
+        if (data.proofPicture instanceof File && data.proofPicture.size > 0) { // Check size > 0 too
             formData.append("proofPicture", data.proofPicture);
         } else {
             setLoading(false);
@@ -251,10 +245,31 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
                 <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md border border-gray-200 dark:border-gray-600">
                     <h3 className="font-semibold text-lg mb-3 text-gray-900 dark:text-gray-100">{t('summaryDetails')}</h3>
                     <div className="space-y-2 text-gray-700 dark:text-gray-300">
-                        <p><strong>{t('receiverAccountName')}:</strong> {getReceiverAccountDisplayName(initialReceiverAccount)}</p>
-                        <p><strong>{t('receiverAccountType')}:</strong> {t(getCategoryTranslationKey(initialReceiverAccount.receiverAccountCategory))}</p>
-                        <p><strong>{t('countryOfDeposit')}:</strong> {initialCountry.countryName} ({initialCountry.currency.currencyCode})</p>
-                        <p><strong>{t('topUpMethodLabel')}:</strong> {t(`topUpMethod.${selectedTopUpMethod?.toLowerCase()}`)}</p>
+                        {/* Aligned details using grid */}
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-left">
+                            <strong className="text-gray-800 dark:text-gray-200">{t('receiverAccountName')}:</strong>
+                            <span>{getReceiverAccountDisplayName(initialReceiverAccount)}</span>
+
+                            <strong className="text-gray-800 dark:text-gray-200">{t('receiverAccountType')}:</strong>
+                            <span>{t(getCategoryTranslationKey(initialReceiverAccount.receiverAccountCategory))}</span>
+
+                            <strong className="text-gray-800 dark:text-gray-200">{t('countryOfDeposit')}:</strong>
+                            <span>{initialCountry.countryName} ({initialCountry.currency.currencyCode})</span>
+
+                            <strong className="text-gray-800 dark:text-gray-200">{t('topUpMethodLabel')}:</strong>
+                            <span>{t(`topUpMethod.${selectedTopUpMethod?.toLowerCase()}`)}</span>
+
+                            {/* Exchange Rate Section - Now with new labels for clarity */}
+                            <strong className="text-gray-800 dark:text-gray-200">{t('exchangeRateCnyToDestLabel')}:</strong>
+                            <span>
+                                {`1 ${t('currency.CNY')} = ${initialExchangeRate.cnyToDestExchangeRate} ${t(`currency.${initialCountry.currency.currencyCode}`)}`}
+                            </span>
+
+                            <strong className="text-gray-800 dark:text-gray-200">{t('exchangeRateDestToCnyLabel')}:</strong>
+                            <span>
+                                {`1 ${t(`currency.${initialCountry.currency.currencyCode}`)} = ${initialExchangeRate.destToCnyExchangeRate} ${t('currency.CNY')}`}
+                            </span>
+                        </div>
                     </div>
                 </div>
 

@@ -77,7 +77,7 @@ export default async function ReceiverAccountsPage() {
 
             if (backendResponse.statusCode === 200 && backendResponse.data && backendResponse.data.receiverAccounts) {
                 receiverAccounts = backendResponse.data.receiverAccounts;
-                console.log(`ReceiverAccountsPage: Successfully fetched ${receiverAccounts.length} receiver accounts.`);
+                // console.log(`ReceiverAccountsPage: Successfully fetched ${receiverAccounts.length} receiver accounts.`);
             } else {
                 console.warn("ReceiverAccountsPage: Backend response for accounts was OK, but 'data' or 'receiverAccounts' array was missing/empty:", backendResponse);
                 receiverAccounts = [];

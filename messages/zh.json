@@ -198,6 +198,8 @@
     "receiverAccountType": "收款账户类型",
     "countryOfDeposit": "存款国家",
     "topUpMethodLabel": "充值方式",
+    "exchangeRateCnyToDestLabel": "人民币到目标货币汇率",
+    "exchangeRateDestToCnyLabel": "目标货币到人民币汇率",
     "amountIn": "金额（",
     "amountInCNY": "人民币金额",
     "amountInCNYPlaceholder": "例如, 1000",
@@ -227,7 +229,7 @@
       "USD": "$",
       "EUR": "€",
       "GBP": "£",
-      "XOF": "XOF"
+      "XOF": "西非法郎"
     }
   },
   "TopUpRequestsPage": {
