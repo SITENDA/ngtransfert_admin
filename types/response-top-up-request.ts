@@ -1,18 +1,15 @@
-// src/types/topup-request.ts
+// src/types/response-top-up-request.ts
 
 import {Currency} from "./currency";
 import {ReceiverAccountCategoryType} from "@/zod-schemas/receiver-account";
-import {ReceiverAccount} from "./receiver-account";
 import {TopUpMethodEnum} from "@/enums/TopUpMethodEnum";
-import {Country} from "./country";
-import {ExchangeRateResult} from "./exchangeRateResult";
 
 /**
  * Interface for TopUp Request Data Transfer Object.
  * Corresponds to the `ResponseTopUpDTO` in the backend.
  * This structure is used for the data related to a details transaction.
  */
-export interface TopUpRequest {
+export interface ResponseTopUpRequest {
     topUpId: number;
     receiverAccountCategory: ReceiverAccountCategoryType;
     accountIdentifier: string;
@@ -31,11 +28,5 @@ export interface TopUpRequest {
  * This would typically be used within `BackendGenericResponse<TopUpRequestsPayload>`.
  */
 export interface TopUpRequestsPayload {
-    topUpRequests: TopUpRequest[];
-}
-
-export interface TopUpDetailsPayload {
-    country: Country
-    receiverAccount: ReceiverAccount;
-    exchangeRate: ExchangeRateResult;
+    topUpRequests: ResponseTopUpRequest[];
 }

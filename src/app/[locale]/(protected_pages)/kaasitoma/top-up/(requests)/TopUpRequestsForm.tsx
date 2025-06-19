@@ -47,7 +47,7 @@ const TopUpRequestsForm: React.FC<TopUpRequestsFormProps> = async ({ initialRece
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         {t('currency')}
                     </th>
-                    {/* No more headers based on TopUpRequest structure */}
+                    {/* No more headers based on ResponseTopUpRequest structure */}
                 </tr>
                 </thead>
                 <tbody className="bg-background divide-y divide-border">

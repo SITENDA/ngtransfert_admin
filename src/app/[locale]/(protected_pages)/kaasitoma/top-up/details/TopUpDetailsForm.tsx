@@ -1,7 +1,7 @@
 // src/app/[locale]/(protected_pages)/kaasitoma/details-requests/details/TopUpDetailsForm.tsx
 "use client";
 
-import React, { useEffect, useState, useRef } from 'react'; // Import useRef
+import React, { useEffect, useState, useRef } from 'react';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from 'next/navigation';
@@ -15,7 +15,7 @@ import {
     ReceiverAccountCategoryType,
     ReceiverAccountIdentifierEnum
 } from "@/zod-schemas/receiver-account";
-import { RequestTopUpSchema, RequestTopUpSchemaType } from "@/zod-schemas/request-top-up-schema";
+import { RequestTopUpRequestSchema, RequestTopUpSchemaType } from "@/zod-schemas/request-top-up-request-schema";
 import { InputWithLabel } from "@/components/inputs/InputWithLabel";
 import { FileInputWithLabel } from "@/components/inputs/FileInputWithLabel";
 import { Button } from "@/components/ui/button";
@@ -33,13 +33,17 @@ interface TopUpDetailsFormProps {
     initialCountry: Country;
     initialExchangeRate: ExchangeRate;
     initialSearchParams: TopUpDetailsFormSearchParams;
+    // Add the new prop for sendingFeePercentage
+    sendingFeePercentage: number;
 }
 
 const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
                                                                initialReceiverAccount,
                                                                initialCountry,
                                                                initialExchangeRate,
-                                                               initialSearchParams
+                                                               initialSearchParams,
+                                                               // Destructure sendingFeePercentage from props
+                                                               sendingFeePercentage
                                                            }) => {
     const t = useTranslations('TopUpDetailsForm');
     const router = useRouter();
@@ -84,21 +88,20 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
     };
 
     const defaultFormValues: RequestTopUpSchemaType = {
-        receiverAccountCategory: initialReceiverAccount.receiverAccountCategory,
-        accountIdentifier: getAccountIdentifierValue(initialReceiverAccount),
-        accountId: initialReceiverAccount.receiverAccountId,
+        receiverAccountId               : initialReceiverAccount.receiverAccountId,
+        amountInCNY                     : undefined,
+        destinationCurrencyCode         : initialCountry.currency.currencyCode,
+        amountInDestinationCurrency     : undefined,
+        sendingFee                      : undefined, // Will be set by effect
+        sendingFeeCurrencyCode          : initialCountry.currency.currencyCode, // Use destination currency for sending fee by default, adjust if it's always USD
+        proofPicture                    : null,
         countryOfDepositId: initialCountry.countryId,
         topUpMethod: selectedTopUpMethod || null,
-        currency: initialCountry.currency.currencyCode,
-        amountInCNY: undefined,
-        amountInDestinationCurrency: undefined,
-        proofPicture: null,
-        sendingFee: undefined
     };
 
     const form = useForm<RequestTopUpSchemaType>({
         mode: 'onBlur',
-        resolver: zodResolver(RequestTopUpSchema),
+        resolver: zodResolver(RequestTopUpRequestSchema),
         defaultValues: defaultFormValues,
     });
 
@@ -112,6 +115,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
     // as form.setValue directly updates the form state.
     const [calculatedAmountInDestinationCurrency, setCalculatedAmountInDestinationCurrency] = useState<number | undefined>(undefined);
     const [calculatedAmountInCNY, setCalculatedAmountInCNY] = useState<number | undefined>(undefined);
+    const [displayedSendingFee, setDisplayedSendingFee] = useState<number | undefined>(undefined); // New state for display
 
     // Ref to manage programmatic updates
     const isProgrammaticUpdate = useRef(false);
@@ -159,7 +163,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
             form.setValue("amountInDestinationCurrency", undefined, { shouldValidate: true });
             form.clearErrors("amountInDestinationCurrency");
         }
-    }, [watchedAmountInCNY, cnyToDestExchangeRate, form]); // Removed lastEditedField from deps
+    }, [watchedAmountInCNY, cnyToDestExchangeRate, form]);
 
     // Effect for Destination Currency input changes (drives CNY)
     useEffect(() => {
@@ -187,10 +191,30 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
             form.setValue("amountInCNY", undefined, { shouldValidate: true });
             form.clearErrors("amountInCNY");
         }
-    }, [watchedAmountInDestinationCurrency, destToCnyExchangeRate, form]); // Removed lastEditedField from deps
+    }, [watchedAmountInDestinationCurrency, destToCnyExchangeRate, form]);
+
+    // NEW EFFECT: Calculate and display sending fee
+    useEffect(() => {
+        // Only calculate if the country is "DR Congo"
+        if (initialCountry.countryName === "DR Congo" && sendingFeePercentage !== undefined && sendingFeePercentage !== null) {
+            if (watchedAmountInDestinationCurrency !== undefined && watchedAmountInDestinationCurrency !== null) {
+                const fee = watchedAmountInDestinationCurrency * (sendingFeePercentage / 100);
+                const roundedFee = parseFloat(fee.toFixed(2));
+                setDisplayedSendingFee(roundedFee);
+                // Also update the form field for submission
+                form.setValue("sendingFee", roundedFee, { shouldValidate: true });
+            } else {
+                setDisplayedSendingFee(undefined);
+                form.setValue("sendingFee", undefined);
+            }
+        } else {
+            setDisplayedSendingFee(undefined);
+            form.setValue("sendingFee", undefined); // Ensure it's cleared if not DR Congo
+        }
+    }, [watchedAmountInDestinationCurrency, initialCountry.countryName, sendingFeePercentage, form]);
+
 
     // Handlers for actual user input
-    // These now just update the form value directly and let the effects handle conversions
     const handleCnyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value === '' ? undefined : parseFloat(e.target.value);
         // Only set the field as dirty if the user manually changed it
@@ -211,25 +235,22 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
         const formData = new FormData();
 
         // 1. Append fixed details from props/initial values
-        formData.append("receiverAccountCategory", initialReceiverAccount.receiverAccountCategory);
-        formData.append("accountIdentifier", getAccountIdentifierValue(initialReceiverAccount));
         formData.append("receiverAccountId", initialReceiverAccount.receiverAccountId.toString());
         formData.append("countryOfDepositId", initialCountry.countryId.toString());
         formData.append("topUpMethod", selectedTopUpMethod || '');
-        formData.append("currency", initialCountry.currency.currencyCode);
+        formData.append("destinationCurrencyCode", initialCountry.currency.currencyCode);
+        formData.append("sendingFeeCurrencyCode", initialCountry.currency.currencyCode); // Use destination currency for sending fee currency code
 
         // 2. Append amounts from form data. `form.watch` ensures we get the latest values,
         // which now will be consistent thanks to the `useEffect` logic.
         const finalAmountInCNY = form.getValues("amountInCNY");
         const finalAmountInDestinationCurrency = form.getValues("amountInDestinationCurrency");
+        const sendingFeeFromForm = form.getValues("sendingFee"); // Get the calculated sending fee from form state
 
         // Determine which amount to use if only one was filled by the user
         let amountToUseCNY: number | undefined;
         let amountToUseDest: number | undefined;
 
-        // Logic: if only one field is dirty (user input), use that as the source of truth
-        // If both are dirty, prioritize the one that was last changed (though the effects handle this for display)
-        // If neither are dirty (e.g., initial state, or after a reset), then enforce input
         const cnyDirty = form.formState.dirtyFields.amountInCNY;
         const destDirty = form.formState.dirtyFields.amountInDestinationCurrency;
 
@@ -240,8 +261,6 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
             amountToUseDest = finalAmountInDestinationCurrency;
             amountToUseCNY = finalAmountInDestinationCurrency * destToCnyExchangeRate;
         } else {
-            // Neither field was directly edited, or both are empty.
-            // This case should ideally be caught by validation, but as a fallback:
             console.error("Neither CNY nor Destination Currency field was directly edited by the user, and no calculated values exist.");
             setLoading(false);
             alert(`${t('submissionError')}: ${t('missingAmount')}`);
@@ -250,7 +269,8 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
 
         // Final check and append to FormData
         if (amountToUseCNY !== undefined && amountToUseCNY !== null) {
-            formData.append("amountInCNY", amountToUseCNY.toFixed(2));
+            console.log("amountToUseCNY : ", amountToUseCNY);
+            formData.append("amountInCNY", Number(amountToUseCNY).toFixed(2));
         } else {
             console.error("Final amountInCNY is missing after determination, cannot submit.");
             setLoading(false);
@@ -266,6 +286,14 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
             alert(`${t('submissionError')}: ${t('missingAmount')}`);
             return;
         }
+
+        // Append sending fee if it was calculated
+        if (sendingFeeFromForm !== undefined && sendingFeeFromForm !== null) {
+            formData.append("sendingFee", sendingFeeFromForm.toFixed(2));
+        }
+        else formData.append("sendingFee", 0);
+        // Note: If sendingFee is always required for DR Congo, you might need validation.
+        // For now, it will be undefined if not DR Congo or no destination amount.
 
 
         // 3. Handle the proof picture
@@ -288,6 +316,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
                 form.reset(defaultFormValues);
                 setProofPicturePreview(null);
                 isProgrammaticUpdate.current = false; // Ensure flag is reset
+                setDisplayedSendingFee(undefined); // Reset displayed sending fee
                 router.push(`/${locale}/kaasitoma/top-up-requests`);
             } else {
                 alert(`${t('submissionError')}: ${result.message}`);
@@ -300,6 +329,8 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
             setLoading(false);
         }
     };
+
+    const isDRCongo = initialCountry.countryName === "DR Congo";
 
     return (
         <Form {...form}>
@@ -332,6 +363,16 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
                             <span>
                                 {`1 ${t(`currency.${initialCountry.currency.currencyCode}`)} = ${initialExchangeRate.destToCnyExchangeRate} ${t('currency.CNY')}`}
                             </span>
+
+                            {/* Conditional Sending Fee Display */}
+                            {isDRCongo && displayedSendingFee !== undefined && displayedSendingFee !== null && (
+                                <>
+                                    <strong className="text-gray-800 dark:text-gray-200">{t('sendingFee')}:</strong>
+                                    <span>
+                                        {displayedSendingFee.toFixed(2)} {initialCountry.currency.currencyCode}
+                                    </span>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -375,6 +416,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
                         form.reset(defaultFormValues);
                         setProofPicturePreview(null);
                         isProgrammaticUpdate.current = false; // Ensure flag is reset
+                        setDisplayedSendingFee(undefined); // Reset displayed sending fee
                     }}>
                         {t('reset')}
                     </Button>

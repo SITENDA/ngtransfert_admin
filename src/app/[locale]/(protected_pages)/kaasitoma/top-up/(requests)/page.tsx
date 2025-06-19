@@ -10,7 +10,7 @@ import { User } from 'next-auth';
 import PublicWrapper from "@/components/PublicWrapper";
 import TopUpRequestsForm from "@/app/[locale]/(protected_pages)/kaasitoma/top-up/(requests)/TopUpRequestsForm";
 import {BackendGenericResponse} from "../../../../../../../types/BackendGenericResponse";
-import {TopUpRequest, TopUpRequestsPayload} from "../../../../../../../types/topup-request";
+import {ResponseTopUpRequest, TopUpRequestsPayload} from "../../../../../../../types/response-top-up-request";
 
 // URL for the Next.js API proxy that will fetch receiver accounts from Spring Boot
 // Now, we'll construct this URL to include the clientId as a query parameter.
@@ -32,7 +32,7 @@ export default async function TopUpRequestsPage() {
     const accessToken = session.accessToken;
     const clientId = user.userId; // Get clientId from authenticated user
 
-    let topUpRequests: TopUpRequest[] = [];
+    let topUpRequests: ResponseTopUpRequest[] = [];
 
     try {
         console.log(`TopUpRequestsPage (Server Component): Fetching receiver accounts for clientId: ${clientId} via proxy...`);

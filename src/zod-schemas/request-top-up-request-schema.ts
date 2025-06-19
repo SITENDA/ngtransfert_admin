@@ -1,22 +1,14 @@
-// src/zod-schemas/request-top-up-schema.ts
+// src/zod-schemas/request-top-up-request-schema.ts
 import { z } from "zod";
-import { ReceiverAccountCategoryEnum } from "@/zod-schemas/receiver-account";
 import { TopUpMethodEnum } from "@/enums/TopUpMethodEnum"; // Ensure this path is correct
 
-export const RequestTopUpSchema = z.object({
-    receiverAccountCategory: z.nativeEnum(ReceiverAccountCategoryEnum.enum), // Must be backend enum compatible
-    accountIdentifier: z.string().min(1, "Account Identifier is required."),
-    accountId: z.coerce.number().int().positive("Account ID must be a positive integer."),
-    countryOfDepositId: z.coerce.number().int().positive("Country of Deposit ID must be a positive integer."),
-    topUpMethod: z.nativeEnum(TopUpMethodEnum).nullable(), // Made nullable as per defaultFormValues
-
-    currency: z.string().min(1, "Currency is required."), // This should be the destination currency code, e.g., 'XAF'
-
+export const RequestTopUpRequestSchema = z.object({
+    receiverAccountId: z.coerce.number().int().positive("Account ID must be a positive integer."),
     amountInCNY: z.coerce.number().positive("Amount in CNY must be greater than zero.").optional().nullable(),
+    destinationCurrencyCode: z.string().min(1, "Currency used in the country of deposit is required."), // This should be the destination currency code, e.g., 'XAF'
     amountInDestinationCurrency: z.coerce.number().positive("Amount in destination currency must be greater than zero.").optional().nullable(),
-
     sendingFee: z.coerce.number().nonnegative("Sending Fee cannot be negative.").optional().nullable(),
-
+    sendingFeeCurrencyCode: z.string().min(1, "Currency of the sending fee is required."),
     proofPicture: z
         .instanceof(File, { message: "Proof picture is required." }) // Changed message for required proof
         .nullable() // Allow null if the field can be empty before validation
@@ -32,6 +24,9 @@ export const RequestTopUpSchema = z.object({
             (file) => file === null || ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
             'Only JPG, JPEG, PNG, and WEBP formats are allowed for proof picture.'
         ),
+    countryOfDepositId: z.coerce.number().int().positive("Country of Deposit ID must be a positive integer."),
+    topUpMethod: z.nativeEnum(TopUpMethodEnum).nullable(), // Made nullable as per defaultFormValues
+
 }).refine(
     (data) => {
         // At least one of amountInCNY or amountInDestinationCurrency must be present and not null
@@ -53,4 +48,4 @@ export const RequestTopUpSchema = z.object({
     }
 );
 
-export type RequestTopUpSchemaType = z.infer<typeof RequestTopUpSchema>;
+export type RequestTopUpSchemaType = z.infer<typeof RequestTopUpRequestSchema>;

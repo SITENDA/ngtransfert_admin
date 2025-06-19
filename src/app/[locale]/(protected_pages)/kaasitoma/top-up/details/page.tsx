@@ -11,8 +11,8 @@ import { fetchBackendData } from "@/lib/backend-api-client";
 import { ReceiverAccount } from "../../../../../../../types/receiver-account";
 import {Country} from "../../../../../../../types/country"; // Import Country and its payload
 import TopUpDetailsForm from "./TopUpDetailsForm";
-import {TopUpDetailsPayload} from "../../../../../../../types/topup-request";
 import {ExchangeRate} from "../../../../../../../types/exchangeRateResult";
+import {TopUpDetailsPayload} from "../../../../../../../types/request-top-up-request";
 
 interface TopUpDetailsPageProps {
     searchParams: { // Query parameters from URL
