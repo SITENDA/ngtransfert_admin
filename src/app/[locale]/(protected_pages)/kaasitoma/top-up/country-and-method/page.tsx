@@ -91,7 +91,7 @@ async function CountryAndMethodSelectorPage({ searchParams }: CountryAndMethodSe
         <div className="
             w-full max-w-2xl mx-auto my-8 p-6 rounded-lg shadow-xl
             bg-background/80 backdrop-blur-sm border border-border
-            dark:bg-gray-800/80 dark:border-gray-700 min-h-[800px]
+            dark:bg-gray-800/80 dark:border-gray-700 min-h-[400px]
         ">
             <h2 className="text-3xl font-bold mb-6 text-center text-foreground">
                 {t('pageTitle')}

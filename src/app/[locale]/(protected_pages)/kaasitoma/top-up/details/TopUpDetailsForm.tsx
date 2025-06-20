@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Country } from "../../../../../../../types/country";
 import {TopUpMethodEnum} from "@/enums/TopUpMethodEnum";
 import {ExchangeRate} from "../../../../../../../types/exchangeRateResult";
+import {kaasitomaPaths} from "@/util/frontend-paths";
 
 
 interface TopUpDetailsFormSearchParams {
@@ -113,8 +114,8 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
     const [loading, setLoading] = useState(false);
     // These states are only for debugging or if other logic specifically depends on them,
     // as form.setValue directly updates the form state.
-    const [calculatedAmountInDestinationCurrency, setCalculatedAmountInDestinationCurrency] = useState<number | undefined>(undefined);
-    const [calculatedAmountInCNY, setCalculatedAmountInCNY] = useState<number | undefined>(undefined);
+    // const [calculatedAmountInDestinationCurrency, setCalculatedAmountInDestinationCurrency] = useState<number | undefined>(undefined);
+    // const [calculatedAmountInCNY, setCalculatedAmountInCNY] = useState<number | undefined>(undefined);
     const [displayedSendingFee, setDisplayedSendingFee] = useState<number | undefined>(undefined); // New state for display
 
     // Ref to manage programmatic updates
@@ -149,7 +150,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
         if (watchedAmountInCNY !== undefined && watchedAmountInCNY !== null && cnyToDestExchangeRate !== null && cnyToDestExchangeRate !== undefined) {
             const destAmount = watchedAmountInCNY * cnyToDestExchangeRate;
             const roundedDestAmount = parseFloat(destAmount.toFixed(2));
-            setCalculatedAmountInDestinationCurrency(roundedDestAmount);
+            // setCalculatedAmountInDestinationCurrency(roundedDestAmount);
 
             // Set flag before programmatic update
             isProgrammaticUpdate.current = true;
@@ -157,7 +158,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
             form.clearErrors("amountInDestinationCurrency");
         } else if (watchedAmountInCNY === undefined || watchedAmountInCNY === null) {
             // If CNY is cleared, clear Destination Currency
-            setCalculatedAmountInDestinationCurrency(undefined);
+            // setCalculatedAmountInDestinationCurrency(undefined);
             // Set flag before programmatic update
             isProgrammaticUpdate.current = true;
             form.setValue("amountInDestinationCurrency", undefined, { shouldValidate: true });
@@ -177,7 +178,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
         if (watchedAmountInDestinationCurrency !== undefined && watchedAmountInDestinationCurrency !== null && destToCnyExchangeRate !== null && destToCnyExchangeRate !== undefined) {
             const cnyAmount = watchedAmountInDestinationCurrency * destToCnyExchangeRate;
             const roundedCnyAmount = parseFloat(cnyAmount.toFixed(2));
-            setCalculatedAmountInCNY(roundedCnyAmount);
+            // setCalculatedAmountInCNY(roundedCnyAmount);
 
             // Set flag before programmatic update
             isProgrammaticUpdate.current = true;
@@ -185,7 +186,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
             form.clearErrors("amountInCNY");
         } else if (watchedAmountInDestinationCurrency === undefined || watchedAmountInDestinationCurrency === null) {
             // If Destination Currency is cleared, clear CNY
-            setCalculatedAmountInCNY(undefined);
+            // setCalculatedAmountInCNY(undefined);
             // Set flag before programmatic update
             isProgrammaticUpdate.current = true;
             form.setValue("amountInCNY", undefined, { shouldValidate: true });
@@ -279,7 +280,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
         }
 
         if (amountToUseDest !== undefined && amountToUseDest !== null) {
-            formData.append("amountInDestinationCurrency", amountToUseDest.toFixed(2));
+            formData.append("amountInDestinationCurrency", Number(amountToUseDest).toFixed(2));
         } else {
             console.error("Final amountInDestinationCurrency is missing after determination, cannot submit.");
             setLoading(false);
@@ -291,7 +292,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
         if (sendingFeeFromForm !== undefined && sendingFeeFromForm !== null) {
             formData.append("sendingFee", sendingFeeFromForm.toFixed(2));
         }
-        else formData.append("sendingFee", 0);
+        else formData.append("sendingFee", "0");
         // Note: If sendingFee is always required for DR Congo, you might need validation.
         // For now, it will be undefined if not DR Congo or no destination amount.
 
@@ -317,7 +318,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
                 setProofPicturePreview(null);
                 isProgrammaticUpdate.current = false; // Ensure flag is reset
                 setDisplayedSendingFee(undefined); // Reset displayed sending fee
-                router.push(`/${locale}/kaasitoma/top-up-requests`);
+                router.push(`/${locale}${kaasitomaPaths.topUpRequestsPath}`);
             } else {
                 alert(`${t('submissionError')}: ${result.message}`);
                 console.error('ERROR: Top-up request submission failed:', result.message);

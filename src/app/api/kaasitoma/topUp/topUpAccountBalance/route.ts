@@ -1,4 +1,4 @@
-// app/api/kaasitoma/exchanges/topUpAccountBalance/route.ts
+// app/api/kaasitoma/topUp/topUpAccountBalance/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 
 const BACKEND_API_BASE_URL = process.env.BACKEND_API_BASE_URL;
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
         console.log('Proxy API: Forwarding details request to Spring Boot backend...');
 
-        const backendResponse = await fetch(`${BACKEND_API_BASE_URL}/kaasitoma/exchanges/topUpAccountBalance`, {
+        const backendResponse = await fetch(`${BACKEND_API_BASE_URL}/kaasitoma/topUp/topUpAccountBalance`, {
             method: 'POST',
             body: formData,
             headers: {

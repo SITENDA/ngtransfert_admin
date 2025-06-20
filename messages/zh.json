@@ -9,6 +9,18 @@
       "signOut": "登出",
       "signUpWithGoogle" : "使用 Google 注册"
     },
+  "DashboardPage": {
+    "clientDashboardTitle": "客户控制面板",
+    "addReceiverAccountButton": "添加收款账户",
+    "welcomeMessage": "欢迎回来，{userName}！",
+    "yourAccountsSectionTitle": "我的账户",
+    "receiverAccountsLink": "收款账户",
+    "sendingRecordsSectionTitle": "发送记录",
+    "topUpRequestsLink": "充值请求",
+    "transferRequestsLink": "转账请求",
+    "settledTransfersLink": "已结算转账",
+    "allSendingRecordsLink": "所有发送记录"
+  },
   "Header": {
     "signIn": "登录",
     "signOut": "登出",
@@ -233,20 +245,32 @@
     }
   },
   "TopUpRequestsPage": {
-    "pageTitle": "充值请求"
+    "pageTitle": "我的充值请求"
   },
-  "TopUpRequestsForm": {
-    "noTopUpRequestsFound": "未找到充值请求。",
+  "TopUpRequestsTable": {
     "topUpId": "充值ID",
-    "accountCategory": "账户类别",
-    "accountIdentifier": "账户识别码",
-    "accountId": "账户ID",
-    "amountInCNY": "金额（人民币）",
-    "proofPicture": "凭证图片",
-    "currency": "货币",
-    "alipay": "支付宝账户",
-    "wechat": "微信账户",
-    "bank": "银行账户"
+    "receiverAccountId": "收款账户ID",
+    "amountInCNY": "金额 (人民币)",
+    "amountInDestinationCurrency": "金额 (目标货币)",
+    "destinationCurrency": "目标货币",
+    "sendingFee": "手续费",
+    "sendingFeeCurrency": "手续费货币",
+    "countryOfDeposit": "存款国家",
+    "topUpMethodLabel": "充值方式",
+    "proofPicture": "证明图片",
+    "status": "状态",
+    "viewProof": "查看证明",
+    "noProof": "无证明",
+    "approved": "已批准",
+    "pending": "待处理",
+    "noTopUpRequestsFound": "未找到充值请求。",
+    "topUpMethod": {
+      "mobileMoney": "MTN 手机钱包",
+      "wave": "Wave",
+      "orangeMoney": "Orange 钱包",
+      "cash": "现金",
+      "bank": "银行"
+    }
   },
   "TopUpMethod": {
     "mobileMoney": "MTN 手机钱包",

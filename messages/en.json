@@ -9,6 +9,18 @@
     "signOut": "Log Out",
     "signUpWithGoogle" : "Sign Up with Google"
   },
+  "DashboardPage": {
+    "clientDashboardTitle": "Client Dashboard",
+    "addReceiverAccountButton": "Add Receiver Account",
+    "welcomeMessage": "Welcome back, {userName}!",
+    "yourAccountsSectionTitle": "Your Accounts",
+    "receiverAccountsLink": "Receiver Accounts",
+    "sendingRecordsSectionTitle": "Sending Records",
+    "topUpRequestsLink": "Top Up Requests",
+    "transferRequestsLink": "Transfer Requests",
+    "settledTransfersLink": "Settled Transfers",
+    "allSendingRecordsLink": "All Sending Records"
+  },
   "Header": {
     "signIn": "Sign In",
     "signOut": "Log Out",
@@ -255,9 +267,9 @@
     }
   },
   "TopUpRequestsPage": {
-    "pageTitle": "Top Up Requests"
+    "pageTitle": "My Top-Up Requests"
   },
-  "TopUpRequestsForm": {
+  "TopUpRequestsTable": {
     "noTopUpRequestsFound": "No top-up requests found.",
     "topUpId": "Top-Up ID",
     "accountCategory": "Account Category",
@@ -268,7 +280,26 @@
     "currency": "Currency",
     "alipay": "Alipay Account",
     "wechat": "WeChat Account",
-    "bank": "Bank Account"
+    "bank": "Bank Account",
+    "receiverAccountId": "Receiver Account ID",
+    "amountInDestinationCurrency": "Amount (Dest. Currency)",
+    "destinationCurrency": "Dest. Currency",
+    "sendingFee": "Sending Fee",
+    "sendingFeeCurrency": "Fee Currency",
+    "countryOfDeposit": "Country of Deposit",
+    "topUpMethodLabel": "Top-Up Method",
+    "status": "Status",
+    "viewProof": "View Proof",
+    "noProof": "No Proof",
+    "approved": "Approved",
+    "pending": "Pending",
+    "topUpMethod": {
+      "mobileMoney": "MTN Mobile Money",
+      "wave": "Wave",
+      "orangeMoney": "Orange Money",
+      "cash": "Cash",
+      "bank": "Bank"
+    }
   },
   "TopUpMethod": {
     "mobileMoney": "MTN Mobile Money",

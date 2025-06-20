@@ -40,22 +40,16 @@ export default async function ReceiverAccountsPage() {
     try {
         console.log(`ReceiverAccountsPage (Server Component): Fetching receiver accounts for clientId: ${clientId} via proxy...`);
 
-        // Construct the full URL with the clientId query parameter
-        const GET_RECEIVER_ACCOUNTS_PROXY_URL = `${BASE_GET_RECEIVER_ACCOUNTS_PROXY_URL}?clientId=${clientId}`;
-
-
         // Get headers from the incoming client request to this server component
         const headersList = await headers();
         headersList.get('authorization');
         const cookieHeader = headersList.get('cookie');
 
-        const response = await fetch(GET_RECEIVER_ACCOUNTS_PROXY_URL, {
+        const response = await fetch(BASE_GET_RECEIVER_ACCOUNTS_PROXY_URL, {
             method: 'GET',
             headers: {
-                // Ensure the Authorization header comes from the NextAuth session.
-                // The proxy will then forward this to the Spring Boot backend.
                 'Authorization': `Bearer ${accessToken}`,
-                ...(cookieHeader && { 'Cookie': cookieHeader }), // Forward cookies if needed for session/refresh
+                ...(cookieHeader && { 'Cookie': cookieHeader }),
             },
             next: {
                 revalidate: 60

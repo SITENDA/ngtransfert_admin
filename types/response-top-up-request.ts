@@ -1,8 +1,8 @@
 // src/types/response-top-up-request.ts
 
 import {Currency} from "./currency";
-import {ReceiverAccountCategoryType} from "@/zod-schemas/receiver-account";
 import {TopUpMethodEnum} from "@/enums/TopUpMethodEnum";
+import { Country } from "./country";
 
 /**
  * Interface for TopUp Request Data Transfer Object.
@@ -10,17 +10,17 @@ import {TopUpMethodEnum} from "@/enums/TopUpMethodEnum";
  * This structure is used for the data related to a details transaction.
  */
 export interface ResponseTopUpRequest {
-    topUpId: number;
-    receiverAccountCategory: ReceiverAccountCategoryType;
-    accountIdentifier: string;
-    accountId: number;
-    amountInCNY: number; // Using 'number' for BigDecimal, assuming frontend handles precision or it's displayed as-is
-    proofPictureUrl: string;
-    currency: Currency;
-    countryOfDepositId: number; // ✅ Newly added
-    topUpMethod: TopUpMethodEnum;   // ✅ Newly added
-    // If `ResponseSendingFeeDTO` were to be included in `ResponseTopUpDTO`
-    // it would be added here, e.g., `sendingFee?: SendingFeeDTO;`
+    topUpId                     : number;
+    receiverAccountId           : number;
+    amountInCNY                 : number;
+    destinationCurrency         : Currency;
+    amountInDestinationCurrency : number;
+    sendingFee                  : number;
+    sendingFeeCurrency          : Currency;
+    proofPictureUrl             : string;
+    countryOfDeposit            : Country;
+    topUpMethod                 : TopUpMethodEnum;
+    isApproved                  : boolean;
 }
 
 /**

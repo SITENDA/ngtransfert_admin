@@ -9,6 +9,18 @@
       "signOut": "Se Déconnecter",
       "signUpWithGoogle" : "Inscrivez-vous avec Google"
     },
+  "DashboardPage": {
+    "clientDashboardTitle": "Tableau de Bord Client",
+    "addReceiverAccountButton": "Ajouter un Compte Bénéficiaire",
+    "welcomeMessage": "Bienvenue, {userName} !",
+    "yourAccountsSectionTitle": "Vos Comptes",
+    "receiverAccountsLink": "Comptes Bénéficiaires",
+    "sendingRecordsSectionTitle": "Historique des Envois",
+    "topUpRequestsLink": "Demandes de Recharge",
+    "transferRequestsLink": "Demandes de Transfert",
+    "settledTransfersLink": "Transferts Réglés",
+    "allSendingRecordsLink": "Tous les Historiques d'Envoi"
+  },
   "Header": {
     "signIn": "Se Connecter",
     "signOut": "Se Déconnecter",
@@ -233,20 +245,32 @@
     }
   },
   "TopUpRequestsPage": {
-    "pageTitle": "Demandes de Recharge"
+    "pageTitle": "Mes Demandes de Recharge"
   },
-  "TopUpRequestsForm": {
-    "noTopUpRequestsFound": "Aucune demande de recharge trouvée.",
-    "topUpId": "ID de Recharge",
-    "accountCategory": "Catégorie de Compte",
-    "accountIdentifier": "Identifiant de Compte",
-    "accountId": "ID de Compte",
+  "TopUpRequestsTable": {
+    "topUpId": "ID Recharge",
+    "receiverAccountId": "ID Compte Bénéficiaire",
     "amountInCNY": "Montant (CNY)",
+    "amountInDestinationCurrency": "Montant (Devise Dest.)",
+    "destinationCurrency": "Devise Dest.",
+    "sendingFee": "Frais d'envoi",
+    "sendingFeeCurrency": "Devise Frais",
+    "countryOfDeposit": "Pays de Dépôt",
+    "topUpMethodLabel": "Méthode de Recharge",
     "proofPicture": "Preuve Photo",
-    "currency": "Devise",
-    "alipay": "Compte Alipay",
-    "wechat": "Compte WeChat",
-    "bank": "Compte Bancaire"
+    "status": "Statut",
+    "viewProof": "Voir Preuve",
+    "noProof": "Pas de Preuve",
+    "approved": "Approuvée",
+    "pending": "En Attente",
+    "noTopUpRequestsFound": "Aucune demande de recharge trouvée.",
+    "topUpMethod": {
+      "mobileMoney": "MTN Mobile Money",
+      "wave": "Wave",
+      "orangeMoney": "Orange Money",
+      "cash": "Espèces",
+      "bank": "Banque"
+    }
   },
   "TopUpMethod": {
     "mobileMoney": "MTN Mobile Money",

@@ -11,4 +11,5 @@ export const kaasitomaPaths = {
     topUpDetailsPath: "/kaasitoma/top-up/details",
     topUpCountryAndMethodPath: "/kaasitoma/top-up/country-and-method?receiverAccountId=",
     topUpInstructionsPath: "/kaasitoma/top-up/instructions?",
+    topUpRequestDetailsPath: "/kaasitoma/top-up/request-details",
 }

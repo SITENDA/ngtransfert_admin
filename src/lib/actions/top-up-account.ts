@@ -14,7 +14,7 @@ export async function topUpAccountBalanceAction(formData: FormData) {
         const accessToken = session.accessToken;
         console.log("Server Action: Using Access Token from session:", accessToken.substring(0, 10) + '...');
 
-        const proxyApiUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/kaasitoma/exchanges/topUpAccountBalance`;
+        const proxyApiUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/kaasitoma/topUp/topUpAccountBalance`;
 
         const response = await fetch(proxyApiUrl, {
             method: 'POST',

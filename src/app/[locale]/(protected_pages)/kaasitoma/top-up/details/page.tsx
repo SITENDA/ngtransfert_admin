@@ -52,11 +52,12 @@ async function TopUpDetailsPage({ searchParams }: TopUpDetailsPageProps) {
     let receiverAccount: ReceiverAccount | undefined;
     let country: Country | undefined;
     let exchangeRate: ExchangeRate | undefined; // Make sure ExchangeRateResult is correctly imported
+    let sendingFeePercentage: number | undefined;
 
     try {
         // --- 2. Fetch Receiver Account details, Country, and Exchange Rate ---
         const topUpDetailsPayload = await fetchBackendData<TopUpDetailsPayload>(
-            `/kaasitoma/exchanges/getTopUpDetails?receiverAccountId=${numericReceiverAccountId}&countryId=${numericCountryId}`, // FIXED HERE
+            `/kaasitoma/topUp/getTopUpDetails?receiverAccountId=${numericReceiverAccountId}&countryId=${numericCountryId}`, // FIXED HERE
             'GET',
             undefined,
             3600
@@ -66,6 +67,8 @@ async function TopUpDetailsPage({ searchParams }: TopUpDetailsPageProps) {
             receiverAccount = topUpDetailsPayload.receiverAccount;
             country = topUpDetailsPayload.country;
             exchangeRate = topUpDetailsPayload.exchangeRate;
+            sendingFeePercentage = topUpDetailsPayload.sendingFeePercentage;
+
 
             console.log("ExchangeRate: ", exchangeRate);
 
@@ -82,6 +85,12 @@ async function TopUpDetailsPage({ searchParams }: TopUpDetailsPageProps) {
 
         if (!exchangeRate) {
             console.warn(`TopUpDetailsPage: Exchange Rate for Country ID ${numericCountryId} not found after fetch.`);
+            // Redirect if the exchange rate cannot be found
+            redirect(`/${locale}/${kaasitomaPaths.receiverAccountsPath}`);
+        }
+
+        if (sendingFeePercentage == undefined || sendingFeePercentage < 0) {
+            console.warn(`TopUpDetailsPage: Sending fee for Country ID ${numericCountryId} not found after fetch.`);
             // Redirect if the exchange rate cannot be found
             redirect(`/${locale}/${kaasitomaPaths.receiverAccountsPath}`);
         }
@@ -115,6 +124,7 @@ async function TopUpDetailsPage({ searchParams }: TopUpDetailsPageProps) {
                     initialCountry={country}
                     initialExchangeRate={exchangeRate}
                     initialSearchParams={{ topUpMethod: topUpMethod }}
+                    sendingFeePercentage={sendingFeePercentage}
                 />
             </CardContent>
         </div>
