@@ -1,10 +1,10 @@
 import Image from "next/image";
 import SignInButton from "@/components/SignInButton";
 import SignOutButton from "@/components/SignOutButton";
-import { auth } from "@/auth"; // Import the auth function
+import getSession from "@/lib/getSession";
 
 export default async function Navbar() {
-  const session = await auth(); // Use auth() to get the session
+  const session = await getSession(); // Use auth() to get the session
   const user = session?.user;
 
   return (

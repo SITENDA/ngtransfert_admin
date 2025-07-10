@@ -1,12 +1,11 @@
-import { LogOut, User, Info, Mail } from "lucide-react";
-import Link from "next/link";
+import { LogOut, User, Mail } from "lucide-react"; //Info,
 import Image from "next/image";
 import { NavButton } from "@/components/NavButton";
 import { ModeToggle } from "@/components/ModeToggle";
-import { auth } from "@/auth"; // Import the auth function
+import getSession from "@/lib/getSession";
 import SignInButton from "@/components/SignInButton";
 import SignOutButton from "@/components/SignOutButton";
-import transparentIcon from "../app/favicon-transparent.png";
+import transparentIcon from "@/app/[locale]/favicon-transparent.png";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,21 +14,29 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 // import Navbar from "@/components/Navbar";
+import { Link } from "@/i18n/navigation"
+import {getTranslations} from "next-intl/server";
+import {LocaleToggle} from "@/components/LocaleToggle";
 
-export async function Header() {
+export default async function Header() {
+
+  const t = await getTranslations('Header');
   const token = "valid_token"; // Replace with actual token state
+
   const handleLogout = () => {
     console.log("Logging out...");
   };
-  const session = await auth(); // Use auth() to get the session
+  const session = await getSession(); // Use auth() to get the session
   const user = session?.user;
+  const ekiddakoProp = user?.ekiddako || null;
+
 
   return (
-    <header className="animate-slide bg-background h-20 p-4 border-b sticky top-0 z-20 w-full shadow-md">
+    <header className="animate-slide bg-background h-20 p-4 border-b sticky top-0 z-20 w-full shadow-md ">
       <div className="flex h-full items-center justify-between max-w-screen-xl mx-auto px-6">
         {/* Center Section - Logo */}
         <div className="flex items-center justify-center">
-          <Link href="/home" className="flex items-center gap-2" title="Home">
+          <Link href="/" className="flex items-center gap-2" title="Home">
             <Image
               src={transparentIcon}
               alt="NG Transfert Logo"
@@ -48,7 +55,7 @@ export async function Header() {
               <NavButton href="/home" label="Dashboard" icon={User} />
               <button onClick={handleLogout} className="text-red-500 flex items-center gap-1">
                 <LogOut size={22} />
-                Sign out
+                { t('signOut') }
               </button>
             </>
           ) : (
@@ -56,26 +63,15 @@ export async function Header() {
             // <NavButton href="/login" label="Sign in" icon={User} />
           )}
           {/* <NavButton href="/about" label="About" icon={Info} /> */}
-          <NavButton href="/contact" label="Contact Us" icon={Mail} />
-          <ModeToggle />
+          <NavButton href="/contact" label={t('contactUs')} icon={Mail} />
+          <ModeToggle label={t('toggleTheme')} themeNames={{ light: t('light'), dark: t('dark'), system: t('system') }} />
+          <LocaleToggle label={t('changeLanguage')}/>
 
-          {!user ? (
-    <SignInButton />
-) : (
+          {!user?.fullName ? (<SignInButton hideOnPathSegment={ekiddakoProp} />) : (
     <DropdownMenu>
         <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
-                {user?.image ? (
-                    <Image
-                        className="rounded-full"
-                        src={user.image}
-                        width={40}  // Adjust size as needed
-                        height={40} // Adjust size as needed
-                        alt="user profile avatar"
-                    />
-                ) : (
-                    <User className="h-[1.6rem] w-[1.6rem]" /> // Use User icon if no image
-                )}
+              <User className="h-[1.6rem] w-[1.6rem]" />
             </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">

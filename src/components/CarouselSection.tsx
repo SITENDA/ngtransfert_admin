@@ -1,23 +1,22 @@
 "use client";
 
 import * as React from "react";
-// import Link from "next/link";
-import {Carousel, CarouselContent, CarouselItem} from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import SignInButton from "./SignInButton";
 
-const carouselItems = [
-    {
-        title: "Transfer Money Between Africa and China",
-        description: "We promptly deliver your money to your account in China, WeChat, Alipay, or a Bank Account.",
-    },
-    {
-        title: "Fast and Convenient Money Transfers",
-        description: "Discover the convenience and security of NG Transfert, your trusted partner for international money transfers. Fast, reliable, and secure.",
-    }
-];
+// Define the type for each item in the carouselItems array
+type CarouselItemType = {
+    title: string;
+    description: string;
+};
 
-const CarouselSection = () => {
-    const [activeIndex, setActiveIndex] = React.useState(0);
+// Define the Props type for the CarouselSection component
+type CarouselSectionProps = {
+    carouselItems: CarouselItemType[]; // Use the defined CarouselItemType array
+};
+
+const CarouselSection = ({ carouselItems }: CarouselSectionProps) => { // Apply the Props type here
+    const [activeIndex, setActiveIndex] = React.useState<number>(0); // Explicitly type useState for clarity
 
     // Auto-change slides every 5 seconds
     React.useEffect(() => {
@@ -26,7 +25,7 @@ const CarouselSection = () => {
         }, 5000);
 
         return () => clearInterval(interval); // Cleanup interval on unmount
-    }, []);
+    }, [carouselItems.length]); // Add carouselItems.length to the dependency array
 
     return (
         <>
@@ -35,6 +34,7 @@ const CarouselSection = () => {
                     {carouselItems.map((item, index) => (
                         <CarouselItem
                             key={index}
+                            // Using a ternary operator for conditional class names
                             className={`transition-opacity duration-1000 ${
                                 index === activeIndex ? "opacity-100" : "opacity-0 absolute"
                             }`}
@@ -50,11 +50,7 @@ const CarouselSection = () => {
                 </CarouselContent>
             </Carousel>
             <div className="mt-6">
-                {/*<Link href="/login">Sign In</Link>*/}
-                {/* <Button asChild className="px-6 py-3 text-lg font-bold">
-                    <LoginLink>Sign In</LoginLink>
-                </Button> */}
-                <SignInButton/>
+                <SignInButton />
             </div>
         </>
     );
