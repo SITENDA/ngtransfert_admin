@@ -14,7 +14,7 @@ export default async function ProtectedLayout({
     const session = await getSession();
     const user: User | undefined = session?.user;
     const accessToken: string | undefined = session?.accessToken;
-    // console.log("Token is : ", token)
+    console.log("Token is : ", accessToken, "\n\n User is : ", user);
     const locale = await getLocale();
 
     if (!session || !user) {
