@@ -1,24 +1,23 @@
 // app/[locale]/(public_pages)/oauth2/redirect/OAuth2Handler.tsx
-'use client'; // This directive is essential for client-side hooks
+'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // For App Router, use useRouter
-import { signIn } from "next-auth/react"; // Import Next-Auth's signIn for client-side
-import { useAuth } from '@/context/AuthContext'; // Assuming your AuthContext for client-side state
+import { useRouter } from 'next/navigation';
+import { signIn } from "next-auth/react";
+// import { useAuth } from '@/context/AuthContext'; // No longer need to import useAuth here
 import { useTranslations } from 'next-intl';
-import {User} from "next-auth"; // For translations
+import {UserDTO} from "../../../../../../types/next-auth";
 
-// Define the props that this Client Component will receive from the Server Component
 interface OAuth2HandlerProps {
-    token: string;        // The access token passed from page.tsx
-    fetchedUser: User; // The fetched UserDTO passed from page.tsx
-    locale: string;       // The determined locale passed from page.tsx
+    token: string;
+    fetchedUser: UserDTO; // Ensure this is UserDTO from your backend, not NextAuth.js User
+    locale: string;
 }
 
 export default function OAuth2Handler({ token, fetchedUser, locale }: OAuth2HandlerProps) {
     const router = useRouter();
-    const { login } = useAuth(); // Assuming you have a client-side AuthContext
-    const t = useTranslations('LoginPage'); // Assuming you use next-intl translations
+    // const { login } = useAuth(); // <<< REMOVE THIS LINE
+    const t = useTranslations('LoginPage');
 
     const [isLoading, setIsLoading] = useState(true);
     const [authError, setAuthError] = useState<string | null>(null);
@@ -26,8 +25,6 @@ export default function OAuth2Handler({ token, fetchedUser, locale }: OAuth2Hand
     useEffect(() => {
         const establishSession = async () => {
             if (!token || !fetchedUser) {
-                // This scenario should ideally be caught by the Server Component,
-                // but as a fallback for client-side robustness.
                 setAuthError("Missing authentication data from server.");
                 router.replace(`/${locale}/login?error=${encodeURIComponent("Missing authentication data.")}`);
                 setIsLoading(false);
@@ -35,44 +32,33 @@ export default function OAuth2Handler({ token, fetchedUser, locale }: OAuth2Hand
             }
 
             try {
-                // Remove localStorage token handling, as NextAuth will manage the session via HTTP-only cookies
-                // localStorage.setItem('jwt_token', token); // REMOVE THIS LINE
-
-                // console.log('Client Component: Attempting to establish Next-Auth session with fetched user:', fetchedUser);
-
-                // --- KEY CHANGE: Call Next-Auth's signIn with fetched data ---
-                // This must happen in a Client Component's useEffect or a Server Action/Route Handler
+                // This `signIn` call is what ultimately populates the NextAuth.js session
+                // which your AuthContext will then react to.
                 await signIn("credentials", {
-                    accessToken: token, // Pass the Spring Boot JWT
-                    userData: JSON.stringify(fetchedUser), // Pass the full UserDTO as a JSON string
-                    redirect: false, // IMPORTANT: Prevents Next-Auth from doing its own redirect
+                    accessToken: token,
+                    userData: JSON.stringify(fetchedUser),
+                    redirect: false,
                 });
 
-                login(fetchedUser, token);
+                // No manual `login()` call needed for AuthContext anymore!
 
-                // console.log('Client Component: Next-Auth session established. Redirecting to dashboard...');
-                // --- Redirect the user to your main application dashboard ---
-                // Use router.replace to prevent going back to this redirect page with the back button
                 router.replace(`/${locale}/${fetchedUser.ekiddako}`, { scroll: false });
 
             } catch (err: any) {
                 console.error('Client Component: Error during Next-Auth session establishment:', err);
                 let errorMessage = err.message || t('unexpectedError');
-                // You can add more specific error handling here based on `err.message`
                 if (errorMessage.includes("CredentialsSignin")) {
-                    errorMessage = t('authenticationFailedCredentials'); // A more specific message
+                    errorMessage = t('authenticationFailedCredentials');
                 }
                 setAuthError(errorMessage);
-               router.replace(`/${locale}/login?error=${encodeURIComponent(errorMessage)}`);
+                router.replace(`/${locale}/login?error=${encodeURIComponent(errorMessage)}`);
             } finally {
                 setIsLoading(false);
             }
         };
 
-        // Execute the session establishment logic once the component mounts
-        // and if necessary props are available.
         establishSession();
-    }, [token, fetchedUser, locale, router, login, t]); // Add all dependencies to useEffect
+    }, [token, fetchedUser, locale, router, t]);
 
     if (authError) {
         return (
@@ -89,7 +75,6 @@ export default function OAuth2Handler({ token, fetchedUser, locale }: OAuth2Hand
             <h1>{t('oauthProcessing')}</h1>
             <p>{t('pleaseWait')}</p>
             {isLoading && <p>Establishing user session...</p>}
-            {/* You can add a spinner or loading animation here */}
         </div>
     );
 }

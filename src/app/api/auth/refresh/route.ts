@@ -1,5 +1,6 @@
 // src/app/api/auth/refresh/route.ts
-import { NextRequest, NextResponse } from 'next/server'; // Correct imports for App Router
+import { NextRequest, NextResponse } from 'next/server';
+import {ErrorBody} from "../../../../../types/BackendHttpResponse"; // Correct imports for App Router
 
 // Export a named function for the POST method
 export async function POST(req: NextRequest) {
@@ -13,7 +14,7 @@ export async function POST(req: NextRequest) {
         // Grab the cookie header from *the browser’s* request to Next.js
         // In App Router's NextRequest, headers are accessed via .get()
         const cookieHeader = req.headers.get('cookie');
-        console.log("Next.js API Route: cookieHeader: ", cookieHeader);
+        // console.log("Next.js API Route: cookieHeader: ", cookieHeader);
 
         const response = await fetch(refreshEndpointUrl, {
             method: 'POST',
@@ -30,10 +31,10 @@ export async function POST(req: NextRequest) {
 
 
         if (!response.ok) {
-            const errorBody = await response.json().catch(() => ({ message: 'Unknown error from backend refresh' }));
-            console.error("Next.js API Route: Backend refresh failed:", response.status, errorBody);
+            const errorBody: ErrorBody = await response.json().catch(() => ({ message: 'Unknown error from backend refresh' }));
+            console.error("Next.js API Route: Backend refresh failed:", response.status, errorBody.error_message);
             // Return a NextResponse with appropriate status and JSON body
-            return NextResponse.json({ error: 'Refresh failed', details: errorBody }, { status: 401 });
+            return NextResponse.json({ error: 'Refresh failed', details: errorBody }, { status: response.status });
         }
 
         const newTokens = await response.json(); // or however your backend returns them

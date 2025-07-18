@@ -1,5 +1,3 @@
-import {Country} from "./country";
-
 /**
  * Represents the standardized HTTP response wrapper from your backend.
  * `T` is a generic type for the actual data payload (e.g., `BankDataPayload` for banks).
@@ -16,4 +14,8 @@ export interface BackendHttpResponse<T> {
 export interface ErrorResponse {
     error: string;
     statusCode: number;
+}
+
+export interface ErrorBody {
+    error_message: string;
 }

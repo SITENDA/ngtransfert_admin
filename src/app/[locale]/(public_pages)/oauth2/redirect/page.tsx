@@ -1,9 +1,8 @@
 // app/[locale]/(public_pages)/oauth2/redirect/page.tsx
 // This is a Server Component
 import { redirect } from 'next/navigation';
-import OAuth2Handler from "@/app/[locale]/(public_pages)/oauth2/redirect/OAuth2Handler";
-import {User} from "next-auth";
-import {getLocale} from "next-intl/server";
+import { getLocale } from "next-intl/server";
+import { kaasitomaPaths } from "@/util/frontend-paths";
 
 export const metadata = {
     title: "Processing Authentication...",
@@ -21,73 +20,35 @@ interface OAuth2RedirectPageProps {
 export default async function OAuth2RedirectPage({ searchParams }: OAuth2RedirectPageProps) {
     const { token, email, error: springBootError, locale: localeFromSpringBoot } = await searchParams;
 
-    // Determine the effective locale using path params first, then Spring Boot's locale, then default to 'en'
-
+    // Determine the effective locale
     const paramsLocale = await getLocale();
-
     const currentLocale = paramsLocale || localeFromSpringBoot || 'en';
 
-    // --- 1. Handle immediate errors from Spring Boot redirect ---
-    if (springBootError) {
-        console.error('OAuth2 Error from Spring Boot:', springBootError);
-        // Server-side redirect to login page with the error message
-        redirect(`/${currentLocale}/login?error=${encodeURIComponent(springBootError)}`);
-    }
+    // Determine the expected redirect path (e.g., 'kaasitoma' or 'dashboard')
+    // This assumes your Spring Boot redirect already provides `ekiddako` or you have a default
+    // For simplicity, if `ekiddako` is not in searchParams, we'll assume a default.
+    // However, if your backend determines `ekiddako`, it should ideally pass it.
+    // For now, let's pass a placeholder and assume the /api/auth/oauth2-callback will fetch the user and determine it.
+    // Or, if you can get `ekiddako` from the token/email here, do so.
+    // For now, let's pass the default dashboard path and let the Route Handler handle the final `ekiddako` redirect.
+    const defaultRedirectPath = kaasitomaPaths.receiverAccountsPath; // e.g., 'dashboard' or 'kaasitoma'
 
-    // --- 2. Validate essential parameters received from redirect ---
-    if (!token || !email) {
-        console.warn('OAuth2 redirect missing token or email.');
-        // Server-side redirect for missing essential authentication data
-        redirect(`/${currentLocale}/login?error=${encodeURIComponent("Authentication data missing.")}`);
-    }
+    // Construct the URL to the new Route Handler
+    const callbackUrl = new URL(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/oauth2-callback`);
+    if (token) callbackUrl.searchParams.set('token', token);
+    if (email) callbackUrl.searchParams.set('email', email);
+    callbackUrl.searchParams.set('locale', currentLocale);
+    if (springBootError) callbackUrl.searchParams.set('error', springBootError);
+    // Pass the determined redirect path to the Route Handler
+    callbackUrl.searchParams.set('ekiddakoPath', defaultRedirectPath); // Pass the path the user should go to
 
-    let fetchedUser: User | null = null;
-    let fetchError: string | null = null;
+    console.log(`OAuth2RedirectPage: Redirecting to Route Handler: ${callbackUrl.toString()}`);
+    redirect(callbackUrl.toString());
 
-    try {
-        // --- THIS IS THE KEY CHANGE: Fetch user data directly in the Server Component ---
-        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080';
-        const userQueryParams = new URLSearchParams({
-            identifierType: 'EMAIL', // Assuming 'EMAIL' is a valid UserIdentifier type
-            identifierValue: email,
-        }).toString();
-
-        const response = await fetch(`${backendUrl}/kaasitoma/users/getUserByIdentifier?${userQueryParams}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`, // Authenticate with the access token
-            },
-            cache: 'no-store', // Ensures the fetch is always fresh and not cached by Next.js
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to retrieve user information from backend.');
-        }
-
-        const result = await response.json();
-        fetchedUser = result.data.user as User; // Assuming HttpResponse nests user under 'data.user'
-
-        if (!fetchedUser || !fetchedUser.userId || !fetchedUser.email) {
-            throw new Error('User info from backend is incomplete or not in expected format.');
-        }
-
-        // console.log('Server Component: User info fetched successfully:', fetchedUser);
-
-    } catch (err: any) {
-        console.error('Server Component: Error fetching user info from backend:', err);
-        fetchError = err.message || 'An unexpected error occurred during user profile retrieval.';
-        // If there's an error during fetch, redirect back to login
-        redirect(`/${currentLocale}/login?error=${encodeURIComponent(fetchError)}`);
-    }
-
-    // Pass the fetched data to the Client Component
+    // This part of the code should technically not be reached as `redirect` throws an error.
     return (
-        <OAuth2Handler
-            token={token}
-            fetchedUser={fetchedUser}
-            locale={currentLocale}
-        />
+        <div>
+            <p>Redirecting to authentication handler...</p>
+        </div>
     );
 }
