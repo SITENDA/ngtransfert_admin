@@ -1,3 +1,5 @@
+//src/lib/getSession.ts
+
 import { auth } from "@/auth";
 import { cache } from "react";
 

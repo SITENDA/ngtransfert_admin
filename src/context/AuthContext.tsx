@@ -1,3 +1,5 @@
+//  src/context/AuthContext.tsx
+
 'use client'; // This context will be used by client components
 
 import React, {
@@ -9,9 +11,9 @@ import React, {
     ReactNode
 } from 'react';
 import { useSession, signOut } from 'next-auth/react'; // Import hooks from next-auth/react
-import { useRouter } from 'next/navigation'; // For client-side navigation
 import { useLocale } from 'next-intl';
-import {User} from "next-auth"; // Assuming next-intl for locale awareness
+import {User} from "next-auth";
+import {UserDTO} from "../../types/next-auth"; // Assuming next-intl for locale awareness
 
 // 1. Define the shape of your AuthUser data for the client context
 // This will be the actual shape of the `user` state in your AuthContext

@@ -90,15 +90,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 token.accessToken = user.accessToken;
 
                 // --- Transfer all custom properties from `User` to `JWT` token ---
-                token.userId = (user as any).userId; // Cast to any because TS might complain without explicit type for user
-                token.username = (user as any).username;
-                token.fullName = (user as any).fullName;
-                token.profileImageUrl = (user as any).profileImageUrl;
-                token.enabled = (user as any).enabled;
-                token.registrationDate = (user as any).registrationDate;
-                token.roles = (user as any).roles;
-                token.role = (user as any).role;
-                token.ekiddako = (user as any).ekiddako; // Transfer new property
+                token.userId = user.userId; // Cast to any because TS might complain without explicit type for user
+                token.username = user.username;
+                token.fullName = user.fullName;
+                token.profileImageUrl = user.profileImageUrl;
+                token.enabled = user.enabled;
+                token.registrationDate = user.registrationDate;
+                token.roles = user.roles;
+                token.role = user.role;
+                token.ekiddako = user.ekiddako; // Transfer new property
             }
             // console.log("JWT Callback: Returning token:", token);
             return token;

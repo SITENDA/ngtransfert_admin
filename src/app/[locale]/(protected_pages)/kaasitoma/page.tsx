@@ -1,14 +1,15 @@
-// app/[locale]/dashboard/page.tsx
+// src/app/[locale]/(protected_pages)/kaasitoma/page.tsx
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server"; // Keep getTranslations for server component
+import {getLocale, getTranslations} from "next-intl/server"; // Keep getTranslations for server component
 import getSession from "@/lib/getSession";
 import {ClickableRow} from "@/components/ClickableRow";
 import {kaasitomaPaths} from "@/util/frontend-paths";
 import {fetchBackendData} from "@/lib/backend-api-client";
 import {DashboardDataPayload} from "../../../../../types/dashboardContent";
+import {isRedirectObject} from "@/util/typeguards";
 
 export const metadata = {
     title: "Dashboard", // This could also use t('dashboardTitle') if you want
@@ -18,6 +19,7 @@ export default async function KaasitomaDashboardPage() {
     const t = await getTranslations('DashboardPage'); // <-- ADD THIS LINE
     const session = await getSession();
     const user = session?.user;
+    const locale = await getLocale();
 
     if (!user) {
         redirect(`/<span class="math-inline">\{locale\}</span>{kaasitomaPaths.loginPath}`);
@@ -29,7 +31,6 @@ export default async function KaasitomaDashboardPage() {
     let topUpRequestsCount      : number | undefined;
 
     try {
-        // Use the refactored fetchBackendData for fetching banks
         const dashboardDataPayload = await fetchBackendData<DashboardDataPayload>(
             '/kaasitoma/getDashboardContent',
             'GET',
@@ -37,15 +38,18 @@ export default async function KaasitomaDashboardPage() {
             3600
         );
 
-        if (dashboardDataPayload && dashboardDataPayload.receiverAccountsCount >=0 && dashboardDataPayload.transferRequestsCount >=0 && dashboardDataPayload.settledTransfersCount >=0 && dashboardDataPayload.topUpRequestsCount >=0) {
-            receiverAccountsCount = dashboardDataPayload.receiverAccountsCount;
-            transferRequestsCount = dashboardDataPayload.transferRequestsCount;
-            settledTransfersCount = dashboardDataPayload.settledTransfersCount;
-            topUpRequestsCount = dashboardDataPayload.topUpRequestsCount;
-            console.log('AddReceiverAccountPage: Successfully fetched dashboard content.');
-        } else {
-            console.warn("AddReceiverAccountPage: No bank data fetched or data structure unexpected from backend.");
+        // Check if redirect was returned
+        if (!dashboardDataPayload || isRedirectObject(dashboardDataPayload)) {
+            redirect(dashboardDataPayload?.redirectTo || `/${locale}/login`);
         }
+
+        // Now it's safe to access the properties
+        receiverAccountsCount = dashboardDataPayload.receiverAccountsCount;
+        transferRequestsCount = dashboardDataPayload.transferRequestsCount;
+        settledTransfersCount = dashboardDataPayload.settledTransfersCount;
+        topUpRequestsCount = dashboardDataPayload.topUpRequestsCount;
+
+        console.log('AddReceiverAccountPage: Successfully fetched dashboard content.');
     } catch (error) {
         console.error("AddReceiverAccountPage: Error during bank data fetching process:", error);
     }

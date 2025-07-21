@@ -10,3 +10,12 @@ export interface BackendHttpResponse<T> {
     message: string;
     data: T; // This will hold the specific payload (e.g., BankDataPayload)
 }
+
+export interface ErrorResponse {
+    error: string;
+    statusCode: number;
+}
+
+export interface ErrorBody {
+    error_message: string;
+}
