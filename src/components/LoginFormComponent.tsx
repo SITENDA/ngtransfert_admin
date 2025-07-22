@@ -2,18 +2,13 @@
 "use client";
 
 import React, { useState, FormEvent, ChangeEvent, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {signIn} from "next-auth/react";
-
-// Define the structure of the HttpResponse from your backend
-interface HttpResponse<T> {
-    status: number;
-    message: string;
-    data?: T; // Data field can be generic
-}
+import {signIn, useSession} from "next-auth/react";
+import {kaasitomaPaths} from "@/util/frontend-paths";
+import {useRouter} from "@/i18n/navigation";
 
 // Define the props for this client component
 type LoginFormComponentProps = object
@@ -22,8 +17,13 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [username, setUsername] = useState<string>('');
+    const [phoneNumber, setPhoneNumber] = useState<string>('');
     const [isRegistering, setIsRegistering] = useState<boolean>(false);
     const [formError, setFormError] = useState<string | null>(null); // State for displaying form errors
+    // State for input type
+    const [loginWithPhone, setLoginWithPhone] = useState<boolean>(false);
+    const { data: session, status } = useSession();
+
 
     const router = useRouter();
     const locale = useLocale();
@@ -37,6 +37,12 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
             // console.log(`[LoginFormComponent] Current locale '${locale}' saved to localStorage.`);
         }
     }, [locale]);
+
+    useEffect(() => {
+        if (status === "authenticated" && session?.user?.ekiddako) {
+            router.replace(`/${session.user.ekiddako}`, { scroll: false });
+        }
+    }, [status, session, router]);
 
     // Effect to check for OAuth2 errors in URL parameters
     useEffect(() => {
@@ -56,19 +62,31 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
         e.preventDefault();
         setFormError(null);
 
+        const identifier = loginWithPhone ? "phoneNumber" : "email";
+        const payload = {
+            identifier,
+            email: loginWithPhone ? '' : email,
+            phoneNumber: loginWithPhone ? phoneNumber : '',
+            password
+        };
+
         const result = await signIn("credentials", {
             redirect: false,
-            email,
-            password
+            ...payload
         });
 
+        console.log("Result from backend :", result);
+
         if (result?.ok) {
-            router.push(`/${locale}/dashboard`);
+            if (status === "authenticated" && session?.user?.ekiddako) {
+                router.replace(`/${session.user.ekiddako}`, { scroll: false });
+            }
+            router.push(kaasitomaPaths.homePath);
+
         } else {
             setFormError(t('loginFailed', { message: result?.error || t('unknownError') }));
         }
     };
-
 
 
     const handleManualRegister = async (e: FormEvent) => {
@@ -138,17 +156,28 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
                         </div>
                     )}
                     <div className="mb-4">
-                        <label htmlFor="email" className="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">
-                            {t('emailLabel')}:
+                        <label htmlFor={loginWithPhone ? "phoneNumber" : "email"} className="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">
+                            {loginWithPhone ? t('phoneNumberLabel') : t('emailLabel')}:
                         </label>
                         <Input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                            type={loginWithPhone ? "tel" : "email"}
+                            id={loginWithPhone ? "phoneNumber" : "email"}
+                            value={loginWithPhone ? phoneNumber : email}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                loginWithPhone ? setPhoneNumber(e.target.value) : setEmail(e.target.value)
+                            }
                             required
                             className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-gray-800"
                         />
+                    </div>
+                    <div className="text-sm text-blue-600 dark:text-blue-400 mb-4">
+                        <button
+                            type="button"
+                            onClick={() => setLoginWithPhone(prev => !prev)}
+                            className="hover:underline focus:outline-none"
+                        >
+                            {t('loginWith')} {loginWithPhone ? t('emailLabel').toLowerCase() : t('phoneNumberLabel').toLowerCase()}
+                        </button>
                     </div>
                     <div className="mb-6">
                         <label htmlFor="password" className="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">

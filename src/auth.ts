@@ -23,37 +23,45 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             // Not used when calling signIn programmatically
             credentials: {
                 email: { label: "Email", type: "text" },
+                phoneNumber: { label: "Phone Number", type: "text" },
                 password: { label: "Password", type: "password" },
+                identifier: { label: "Identifier", type: "text" },
             },
 
             async authorize(
-                credentials: Partial<Record<"email" | "password" | "accessToken" | "userData" | "accessTokenExpires", unknown>>,
+                credentials: Partial<Record<"email" | "phoneNumber" | "password" | "identifier" |  "accessToken" | "userData" | "accessTokenExpires", unknown>>,
             ): Promise<User | null> {
                 if (!credentials) return null;
 
+
                 const email = credentials.email as string | undefined;
+                const phoneNumber = credentials.phoneNumber as string | undefined;
                 const password = credentials.password as string | undefined;
+                const identifier = credentials.identifier as string | undefined;
                 const accessToken = credentials.accessToken as string | undefined;
                 const userDataString = credentials.userData as string | undefined;
                 const rawAccessTokenExpires = credentials.accessTokenExpires as string | undefined;
 
                 // Optional: Add a type guard here
-                if (email && password) {
+                if ((email || phoneNumber) && password && identifier) {
+                    try {
                     // Perform email/password login via Spring Boot
                     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signin`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ email, password }),
+                        body: JSON.stringify({ email, phoneNumber, password, identifier }),
                     });
 
                     const responseData = await backendResponse.json();
 
+                    const user = responseData?.data?.user;
+                    const token = responseData?.data?.token;
+
                     if (
                         backendResponse.ok &&
-                        responseData.status === 200 &&
-                        responseData.message === "Successful login" &&
-                        responseData.data?.token &&
-                        responseData.data?.user
+                        responseData.statusCode === 200 &&
+                        user &&
+                        token
                     ) {
                         const user = responseData.data.user;
                         const accessToken = responseData.data.token;
@@ -77,8 +85,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                             ekiddako: user.ekiddako,
                         };
                     }
-
+                    else {
+                        console.warn("Login failed with backend response:", responseData);
+                    }
                     return null;
+
+                    } catch (err) {
+                        console.error("authorize() error during login request:", err);
+                        return null;
+                    }
                 }
 
                 // If OAuth2-like login with token + user data
@@ -103,7 +118,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                             profileImageUrl: user.profileImageUrl,
                             enabled: user.enabled,
                             registrationDate: user.registrationDate,
-                            roles: user.roles,
+                            roles: user.roles || [],
                             role: user.roles?.[0]?.roleName,
                             ekiddako: user.ekiddako,
                         };
@@ -124,8 +139,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         async jwt({ token, user }) {
             // `user` is the object returned by the `authorize` function of the CredentialsProvider
             if (user) {
-                // console.log("JWT Callback: Processing user object from authorize:", user);
-                // Copy all properties from `user` (which came from `authorize`) to the `token`
                 token.id = user.id;
                 token.email = user.email;
                 token.name = user.name;
@@ -143,7 +156,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 token.role = user.role;
                 token.ekiddako = user.ekiddako; // Transfer new property
             }
-            // console.log("JWT Callback: Returning token:", token);
             return token;
         },
         // This callback is called whenever a session is accessed (e.g., via `await auth()`)
@@ -151,7 +163,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         async session({ session, token }) {
             // `token` is the object returned by the `jwt` callback
             // Populate the session object with properties from the JWT token
-            // console.log("Session Callback: Processing token:", token);
 
             if (token.id) session.user.id = token.id as string;
             if (token.email) session.user.email = token.email as string;
@@ -173,12 +184,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             if (token.accessTokenExpires) {
                 session.accessTokenExpires = token.accessTokenExpires as number; // ✅ Add this
             }
-            // console.log("Session Callback: Returning session object:", session);
             return session;
         },
         async redirect({ url, baseUrl }) {
             // Your existing redirect logic remains unchanged
-            // console.log("URL is : ", url, "baseUrl is : ", baseUrl);
 
             const sanitizeURL = (urlString: string | null | undefined): string => {
                 if (!urlString) return ""; // Handle null or undefined

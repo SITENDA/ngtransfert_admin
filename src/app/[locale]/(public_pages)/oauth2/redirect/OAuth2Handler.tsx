@@ -2,11 +2,12 @@
 'use client'; // This directive is essential for client-side hooks
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // For App Router, use useRouter
 import { signIn } from "next-auth/react"; // Import Next-Auth's signIn for client-side
 import { useAuth } from '@/context/AuthContext'; // Assuming your AuthContext for client-side state
 import { useTranslations } from 'next-intl';
-import {User} from "next-auth"; // For translations
+import {User} from "next-auth";
+import {useRouter} from "@/i18n/navigation";
+import {kaasitomaPaths} from "@/util/frontend-paths"; // For translations
 
 // Define the props that this Client Component will receive from the Server Component
 interface OAuth2HandlerProps {
@@ -29,7 +30,7 @@ export default function OAuth2Handler({ token, fetchedUser, locale }: OAuth2Hand
                 // This scenario should ideally be caught by the Server Component,
                 // but as a fallback for client-side robustness.
                 setAuthError("Missing authentication data from server.");
-                router.replace(`/${locale}/login?error=${encodeURIComponent("Missing authentication data.")}`);
+                router.replace(`/${kaasitomaPaths.loginPath}/?error=${encodeURIComponent("Missing authentication data.")}`);
                 setIsLoading(false);
                 return;
             }
@@ -58,7 +59,7 @@ export default function OAuth2Handler({ token, fetchedUser, locale }: OAuth2Hand
                 // console.log('Client Component: Next-Auth session established. Redirecting to dashboard...');
                 // --- Redirect the user to your main application dashboard ---
                 // Use router.replace to prevent going back to this redirect page with the back button
-                router.replace(`/${locale}/${fetchedUser.ekiddako}`, { scroll: false });
+                router.replace(`/${fetchedUser.ekiddako}`, { scroll: false });
 
             } catch (err: any) {
                 console.error('Client Component: Error during Next-Auth session establishment:', err);

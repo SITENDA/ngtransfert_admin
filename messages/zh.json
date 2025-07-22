@@ -74,7 +74,9 @@
     "errorMessage": "错误信息",
     "redirectingToLogin": "正在重定向到登录页面...",
     "oauthProcessing": "正在处理身份验证...",
-    "pleaseWait": "请稍候，我们正在为您登录。"
+    "pleaseWait": "请稍候，我们正在为您登录。",
+    "loginWith": "使用以下方式登录",
+    "phoneNumberLabel": "电话号码"
   },
   "AddReceiverAccountPage": {
     "pageTitle": "添加收款账户",

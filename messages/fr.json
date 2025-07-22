@@ -74,7 +74,9 @@
     "errorMessage": "Message d'erreur",
     "redirectingToLogin": "Redirection vers la page de connexion...",
     "oauthProcessing": "Traitement de l'authentification...",
-    "pleaseWait": "Veuillez patienter pendant que nous vous connectons."
+    "pleaseWait": "Veuillez patienter pendant que nous vous connectons.",
+    "loginWith": "Se connecter avec",
+    "phoneNumberLabel": "Numéro de téléphone"
   },
   "AddReceiverAccountPage": {
     "pageTitle": "Ajouter un compte bénéficiaire",

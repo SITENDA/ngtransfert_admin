@@ -74,7 +74,9 @@
     "errorMessage": "Error message",
     "redirectingToLogin": "Redirecting to login page...",
     "oauthProcessing": "Processing authentication...",
-    "pleaseWait": "Please wait while we log you in."
+    "pleaseWait": "Please wait while we log you in.",
+    "loginWith": "Login using",
+    "phoneNumberLabel": "Phone Number"
   },
   "AddReceiverAccountPage": {
     "pageTitle": "Add Receiver Account",
