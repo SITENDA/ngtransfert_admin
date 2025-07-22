@@ -1,4 +1,4 @@
-// next-auth.d.ts
+// types/next-auth.d.ts
 import { DefaultSession, DefaultUser } from "next-auth";
 
 // IMPORTANT: Define UserDTO here or import from a shared types file
@@ -22,6 +22,7 @@ declare module "next-auth" {
    */
   interface Session {
     accessToken: string; // Your JWT from Spring Boot
+    accessTokenExpires?: number;
     user: {
       id: string; // NextAuth's user.id is string
       email: string;
@@ -47,6 +48,7 @@ declare module "next-auth" {
    */
   interface User extends DefaultUser {
     accessToken: string; // Your JWT from Spring Boot
+    accessTokenExpires?: number;
     // --- Add ALL UserDTO properties here ---
     userId: number; // Original userId from DTO
     username: string;
@@ -67,6 +69,7 @@ declare module "next-auth/jwt" {
    */
   interface JWT {
     accessToken: string; // Your JWT from Spring Boot
+    accessTokenExpires?: number;
     // --- Add ALL UserDTO properties here ---
     userId: number; // Original userId from DTO
     username: string;

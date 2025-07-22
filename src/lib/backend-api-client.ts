@@ -4,17 +4,7 @@ import { headers } from 'next/headers';
 import {BackendHttpResponse, ErrorBody, ErrorResponse} from "../../types/BackendHttpResponse";
 import getSession from "@/lib/getSession";
 import {RefreshApiResponse} from "../../types/RefreshApiResponse";
-
-type FetchBackendResult<T> = T | { redirectTo: string } | null;
-
-function getFullLogoutRedirect(locale: string): { redirectTo: string } {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || '';
-    const signoutUrl = `${baseUrl}/api/auth/signout?callbackUrl=/${locale}/login?forceSignOut=true`;
-    return { redirectTo: signoutUrl };
-}
-
-
-
+import {FetchBackendResult} from "../../types/fetchBackendResult";
 
 /**
  * Fetches data from the backend API with authentication headers and robust error handling.
@@ -37,7 +27,7 @@ export async function fetchBackendData<T>(
     const session = await getSession();
     const locale = await getLocale();
 
-    let accessToken: string | null = session?.accessToken;
+    let accessToken: string | { redirectTo: string } | null | undefined = session?.accessToken;
 
     const backendApiBaseUrl = process.env.BACKEND_API_BASE_URL || 'http://localhost:8080';
     const fullUrl = `${backendApiBaseUrl}${endpoint}`;
@@ -45,40 +35,28 @@ export async function fetchBackendData<T>(
     const headersList = await headers();
     const cookieHeader = headersList.get('cookie');
 
-    const makeFetchRequest = async (token: string | null): Promise<Response> => {
+    const makeFetchRequest = async (token: string): Promise<Response> => {
         const fetchOptions: RequestInit = {
             method,
             headers: {
                 'Content-Type': 'application/json',
                 ...(cookieHeader && { 'Cookie': cookieHeader }),
+                'Authorization': `Bearer ${token}`,
             },
             next: { revalidate: revalidateSeconds }
         };
 
-        if (token) {
-            fetchOptions.headers = {
-                ...fetchOptions.headers,
-                'Authorization': `Bearer ${token}`,
-            };
-        }
-
-        if (body && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
+        if (body && ['POST', 'PUT', 'PATCH'].includes(method)) {
             fetchOptions.body = JSON.stringify(body);
         }
 
-        return await fetch(fullUrl, fetchOptions);
+        return fetch(fullUrl, fetchOptions);
     };
 
-    const refreshAccessToken = async (): Promise<string | null> => {
-        console.info('fetchBackendData: Attempting to refresh access token...');
+    const refreshAccessToken = async (): Promise<string | { redirectTo: string } | null> => {
         const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
         const host = headersList.get('host');
-        const currentHost = host || (process.env.NODE_ENV === 'development' ? 'localhost:3000' : null);
-        if (!currentHost) {
-            console.error('fetchBackendData: Host header missing and no fallback for refresh endpoint.');
-            return null;
-        }
-
+        const currentHost = host || 'localhost:3000';
         const refreshEndpoint = `${protocol}://${currentHost}/api/auth/refresh`;
 
         try {
@@ -92,90 +70,85 @@ export async function fetchBackendData<T>(
             });
 
             if (!refreshResponse.ok) {
-                const refreshErrorBody: ErrorBody = await refreshResponse.json().catch(() => ({ message: 'Error during refresh parse' }));
-                console.error('fetchBackendData: Token refresh failed:', refreshResponse.status, refreshErrorBody.error_message);
+                const errorBody: ErrorBody = await refreshResponse.json().catch(() => ({ message: 'Error parsing refresh response' }));
+                console.error('Refresh failed:', errorBody);
                 return null;
             }
 
             const refreshData: RefreshApiResponse = await refreshResponse.json();
+            const newToken = refreshData.tokens.data?.token;
 
-            const newAccessToken = refreshData.tokens.data?.token; // ✅ Correct path
+            if (!newToken) return null;
 
-            if (!newAccessToken) {
-                console.error('fetchBackendData: No access token in refresh response.');
-                return null;
-            }
+            const encodedToken = encodeURIComponent(newToken);
+            const encodedUser = encodeURIComponent(JSON.stringify(refreshData.tokens.data.user));
+            return { redirectTo: `/${locale}/auth/session/update?token=${encodedToken}&user=${encodedUser}` };
 
-            console.info('fetchBackendData: Token refresh successful.');
-            return newAccessToken;
-        } catch (refreshError) {
-            console.error('fetchBackendData: Network error or other unhandled error during token refresh:', refreshError);
+        } catch (error) {
+            console.error('Token refresh error:', error);
             return null;
         }
     };
 
     let response: Response;
 
-    // 1. Initial access token check and refresh attempt
+    // Step 1: No access token? Try to refresh.
     if (!accessToken) {
-        console.warn('fetchBackendData: No access token in session. Trying to get one via refresh.');
-        accessToken = await refreshAccessToken();
-        if (!accessToken) {
+        const refreshed = await refreshAccessToken();
 
+        if (typeof refreshed === 'object' && refreshed?.redirectTo) {
+            return refreshed;
+        }
+
+        if (!refreshed || typeof refreshed !== 'string') {
             return { redirectTo: `/${locale}/login?forceSignOut=true` };
         }
-        response = await makeFetchRequest(accessToken);
-    } else {
-        response = await makeFetchRequest(accessToken);
+
+        accessToken = refreshed;
     }
 
-    // 2. Handle 401/403 responses and second refresh attempt
-    if (response.status === 401 || response.status === 403) {
-        console.log("fetchBackendData: Received 401/403. About to attempt refreshing if token is expired.");
-        let errorResponse: ErrorResponse | undefined;
+    // Step 2: Try the actual request
+    response = await makeFetchRequest(accessToken as string);
+
+    // Step 3: Handle token expiration
+    if ([401, 403].includes(response.status)) {
+        let errorData: ErrorResponse | undefined;
+
         try {
-            errorResponse = await response.json();
-        } catch (e) {
-            console.error("fetchBackendData: Failed to parse error response JSON on 401/403.", e);
+            errorData = await response.json();
+        } catch {
+            console.warn("Unable to parse error JSON");
         }
 
-        const isAccessTokenExpired = errorResponse?.error?.includes("expired") || false;
+        const isExpired = errorData?.error?.includes("expired") ?? false;
 
-        if (isAccessTokenExpired) {
-            console.warn(`fetchBackendData: Access token expired. Retrying refresh...`);
-            accessToken = await refreshAccessToken();
-            if (!accessToken) {
-                // If second refresh fails after expiration, force full logout
-                await getFullLogoutRedirect(locale);
+        if (isExpired) {
+            const refreshed = await refreshAccessToken();
+
+            if (typeof refreshed === 'object' && refreshed?.redirectTo) {
+                return refreshed;
             }
+
+            if (!refreshed || typeof refreshed !== 'string') {
+                return { redirectTo: `/${locale}/login?forceSignOut=true` };
+            }
+
+            accessToken = refreshed;
             response = await makeFetchRequest(accessToken);
         } else {
-            // Not expired, but still unauthorized/forbidden - likely insufficient permissions or invalid token.
-            // Force full logout
-            const finalErrorBody: ErrorResponse = errorResponse || (await response.json().catch(() => ({ message: 'Error parsing response' })));
-            console.error(`fetchBackendData: Final fetch error: ${response.status}`, finalErrorBody);
-            await getFullLogoutRedirect(locale);
+            return { redirectTo: `/${locale}/login?forceSignOut=true` };
         }
     }
 
-    // 3. Final check of response status after all attempts
     if (!response.ok) {
         return { redirectTo: `/${locale}/login?forceSignOut=true` };
     }
 
     const backendResponse: BackendHttpResponse<T> = await response.json();
 
-    if (backendResponse.statusCode === 200 && backendResponse.data !== undefined && backendResponse.data !== null) {
+    if (backendResponse.statusCode === 200 && backendResponse.data != null) {
         return backendResponse.data;
-    } else {
-        console.warn(`fetchBackendData: Backend responded but data/status invalid`, backendResponse);
-        // If backend indicates a non-200 status code or missing data, force full logout.
-        await getFullLogoutRedirect(locale);
     }
 
-    if (backendResponse.statusCode !== 200 || !backendResponse.data) {
-        return { redirectTo: `/${locale}/login?forceSignOut=true` };
-    }
-
-    return backendResponse.data;
+    return { redirectTo: `/${locale}/login?forceSignOut=true` };
 }

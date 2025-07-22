@@ -55,6 +55,8 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
             (method) => method === initialSearchParams.topUpMethod
         ) as TopUpMethodEnum | undefined;
 
+    const topUpKey = Object.keys(TopUpMethodEnum).find((method) => method === initialSearchParams.topUpMethod);
+
 
     const getCategoryTranslationKey = (category: ReceiverAccountCategoryType): string => {
         switch (category) {
@@ -352,7 +354,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
                             <span>{initialCountry.countryName} ({initialCountry.currency.currencyCode})</span>
 
                             <strong className="text-gray-800 dark:text-gray-200">{t('topUpMethodLabel')}:</strong>
-                            <span>{t(`topUpMethod.${selectedTopUpMethod?.toLowerCase()}`)}</span>
+                            <span>{topUpKey ? t(`topUpMethod.${topUpKey}`) : initialSearchParams.topUpMethod}</span>
 
                             {/* Exchange Rate Section - Now with new labels for clarity */}
                             <strong className="text-gray-800 dark:text-gray-200">{t('exchangeRateCnyToDestLabel')}:</strong>

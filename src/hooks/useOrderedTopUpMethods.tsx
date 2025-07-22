@@ -15,29 +15,29 @@ export const useOrderedTopUpMethods = (): DataObj[] => {
 
     return [
         {
-            label: t('mobileMoney'), // Example key: 'mobileMoney': 'MTN Mobile Money'
+            label: t('MOBILE_MONEY'),
             value: TopUpMethodEnum.MOBILE_MONEY,
             icon: <MobileFriendlyIcon sx={{ color: '#FFA500' }} />
-},
-    {
-        label: t('wave'), // Example key: 'wave': 'Wave'
+        },
+        {
+            label: t('WAVE'),
             value: TopUpMethodEnum.WAVE,
-        icon: <MonetizationOnIcon sx={{ color: '#1E90FF' }} />
-    },
-    {
-        label: t('orangeMoney'), // Example key: 'orangeMoney': 'Orange Money'
+            icon: <MonetizationOnIcon sx={{ color: '#1E90FF' }} />
+        },
+        {
+            label: t('ORANGE_MONEY'),
             value: TopUpMethodEnum.ORANGE_MONEY,
-        icon: <LocalAtmIcon sx={{ color: '#FF4500' }} />
-    },
-    {
-        label: t('cash'), // Example key: 'cash': 'Cash'
+            icon: <LocalAtmIcon sx={{ color: '#FF4500' }} />
+        },
+        {
+            label: t('CASH'),
             value: TopUpMethodEnum.CASH,
-        icon: <AttachMoneyIcon sx={{ color: '#4CAF50' }} />
-    },
-    {
-        label: t('bank'), // Example key: 'bank': 'Bank'
+            icon: <AttachMoneyIcon sx={{ color: '#4CAF50' }} />
+        },
+        {
+            label: t('BANK'),
             value: TopUpMethodEnum.BANK,
-        icon: <AccountBalanceIcon sx={{ color: '#008000' }} />
-    }
+            icon: <AccountBalanceIcon sx={{ color: '#008000' }} />
+        }
 ];
 };

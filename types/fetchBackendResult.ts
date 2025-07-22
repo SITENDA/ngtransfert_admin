@@ -1,0 +1,1 @@
+export type FetchBackendResult<T> = T | { redirectTo: string } | null;

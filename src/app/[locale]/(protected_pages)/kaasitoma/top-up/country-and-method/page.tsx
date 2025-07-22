@@ -10,7 +10,8 @@ import { CardContent } from "@/components/ui/card"; // Import Card components
 import { fetchBackendData } from "@/lib/backend-api-client"; // Import the new reusable fetch utility
 import {ReceiverAccountPayload, ReceiverAccount} from "../../../../../../../types/receiver-account"; // Import ReceiverAccountPayload and ReceiverAccount
 import CountryAndMethodSelectorForm from "./CountryAndMethodSelectorForm";
-import {Country, CountriesDataPayload} from "../../../../../../../types/country"; // Import the TopUpDetailsForm client component
+import {Country, CountriesDataPayload} from "../../../../../../../types/country";
+import {isRedirectObject} from "@/util/typeguards"; // Import the TopUpDetailsForm client component
 
 interface CountryAndMethodSelectorPageProps {
     searchParams: { // Query parameters from URL
@@ -54,6 +55,9 @@ async function CountryAndMethodSelectorPage({ searchParams }: CountryAndMethodSe
             undefined, // No request body for GET
             3600 // Revalidate every hour (cache control)
         );
+        if (isRedirectObject(receiverAccountPayload)) {
+            redirect(receiverAccountPayload.redirectTo);
+        }
 
         if (receiverAccountPayload && receiverAccountPayload.receiverAccount) {
             receiverAccount = receiverAccountPayload.receiverAccount;
@@ -69,6 +73,9 @@ async function CountryAndMethodSelectorPage({ searchParams }: CountryAndMethodSe
             undefined,
             3600
         );
+        if (isRedirectObject(countryPayload)) {
+            redirect(countryPayload.redirectTo);
+        }
 
         if (countryPayload && countryPayload.countries) {
             countries = countryPayload.countries;

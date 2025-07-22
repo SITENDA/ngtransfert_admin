@@ -1,6 +1,7 @@
-// auth.ts
+// src/auth.ts
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import {decodeJwtExpiry} from "@/util/decodeJwtExpiry";
 
 interface RoleDTO {
     id: number;
@@ -20,57 +21,53 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             name: "Spring Boot Credentials",
             // Define the fields that will be passed to the authorize function
             credentials: {
-                // The actual JWT token from Spring Boot
                 accessToken: { label: "Access Token", type: "text" },
-                // The JSON string of the UserDTO fetched from Spring Boot
                 userData: { label: "User Data (JSON)", type: "text" },
+                accessTokenExpires: { label: "Access Token Expiry (ms)", type: "text" }, // ✅ ADD THIS
             },
             async authorize(credentials) {
-                // This function is called when `signIn('credentials', { ... })` is invoked.
-                // It receives the data you passed into the signIn call.
+                if (!credentials) return null;
+
                 const accessToken = credentials.accessToken as string;
                 const userDataString = credentials.userData as string;
+                const rawAccessTokenExpires = credentials.accessTokenExpires as string | undefined;
 
                 if (!accessToken || !userDataString) {
-                    // If no token or user data, authentication failed
-                    return null;
+                    return null; // Essential data missing
                 }
 
+                // Parse the expiry timestamp (in milliseconds)
+                const accessTokenExpires = rawAccessTokenExpires
+                    ? parseInt(rawAccessTokenExpires, 10)
+                    : decodeJwtExpiry(accessToken);
+
                 try {
-                    // Parse the user data JSON string back into an object
                     const userFromSpringBoot = JSON.parse(userDataString);
 
-                    // Perform basic validation on the user data from Spring Boot
-                    if (!userFromSpringBoot || !userFromSpringBoot.userId || !userFromSpringBoot.email) {
+                    if (!userFromSpringBoot?.userId || !userFromSpringBoot?.email) {
                         console.error("Invalid user data received in Credentials Provider:", userFromSpringBoot);
                         return null;
                     }
 
-                    // Map your Spring Boot user object to the NextAuth 'User' object.
-                    // THIS IS THE CRUCIAL STEP for initial data transfer.
-                    const nextAuthUser = {
-                        id: userFromSpringBoot.userId.toString(), // NextAuth's user.id MUST be a string
+                    return {
+                        id: userFromSpringBoot.userId.toString(),
                         email: userFromSpringBoot.email,
                         name: userFromSpringBoot.fullName || userFromSpringBoot.username || userFromSpringBoot.email,
-                        image: userFromSpringBoot.profileImageUrl, // Map profileImageUrl to NextAuth's default `image`
-                        accessToken: accessToken, // Your custom access token property
-
-                        // --- Pass all other UserDTO properties directly ---
-                        userId: userFromSpringBoot.userId, // Original userId
+                        image: userFromSpringBoot.profileImageUrl,
+                        accessToken,
+                        accessTokenExpires,
+                        userId: userFromSpringBoot.userId,
                         username: userFromSpringBoot.username,
                         fullName: userFromSpringBoot.fullName,
-                        profileImageUrl: userFromSpringBoot.profileImageUrl, // Your custom profileImageUrl property
+                        profileImageUrl: userFromSpringBoot.profileImageUrl,
                         enabled: userFromSpringBoot.enabled,
                         registrationDate: userFromSpringBoot.registrationDate,
-                        roles: userFromSpringBoot.roles, // Full roles array
-                        role: userFromSpringBoot.roles?.[0]?.roleName, // Primary role for convenience
-                        ekiddako: userFromSpringBoot.ekiddako, // Your new custom property
+                        roles: userFromSpringBoot.roles,
+                        role: userFromSpringBoot.roles?.[0]?.roleName,
+                        ekiddako: userFromSpringBoot.ekiddako,
                     };
-
-                    // console.log("Authorize: Returning user object to JWT callback:", nextAuthUser);
-                    return nextAuthUser;
                 } catch (e) {
-                    console.error("Error processing user data in Credentials Provider:", e);
+                    console.error("Error parsing user data in Credentials Provider:", e);
                     return null;
                 }
             },
@@ -88,7 +85,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 token.name = user.name;
                 token.image = user.image; // Transfer the image URL
                 token.accessToken = user.accessToken;
-
+                token.accessTokenExpires = user.accessTokenExpires;
                 // --- Transfer all custom properties from `User` to `JWT` token ---
                 token.userId = user.userId; // Cast to any because TS might complain without explicit type for user
                 token.username = user.username;
@@ -127,6 +124,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             if (token.role) session.user.role = token.role as string;
             if (token.ekiddako) session.user.ekiddako = token.ekiddako as string; // Transfer new property
 
+            if (token.accessTokenExpires) {
+                session.accessTokenExpires = token.accessTokenExpires as number; // ✅ Add this
+            }
             // console.log("Session Callback: Returning session object:", session);
             return session;
         },

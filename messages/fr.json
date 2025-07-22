@@ -230,10 +230,11 @@
     "bank": "Compte Bancaire",
     "unknownCategory": "Catégorie de Compte Inconnue",
     "topUpMethod": {
-      "alipay": "Alipay",
-      "wechat": "WeChat",
-      "bank": "Virement Bancaire",
-      "other": "Autre Méthode"
+      "MOBILE_MONEY": "MTN Mobile Money",
+      "WAVE": "Wave",
+      "ORANGE_MONEY": "Orange Money",
+      "CASH": "Espèces",
+      "BANK": "Banque"
     },
     "currency": {
       "CNY": "¥",
@@ -265,19 +266,19 @@
     "pending": "En Attente",
     "noTopUpRequestsFound": "Aucune demande de recharge trouvée.",
     "topUpMethod": {
-      "mobileMoney": "MTN Mobile Money",
-      "wave": "Wave",
-      "orangeMoney": "Orange Money",
-      "cash": "Espèces",
-      "bank": "Banque"
+      "MOBILE_MONEY": "MTN Mobile Money",
+      "WAVE": "Wave",
+      "ORANGE_MONEY": "Orange Money",
+      "CASH": "Espèces",
+      "BANK": "Banque"
     }
   },
   "TopUpMethod": {
-    "mobileMoney": "MTN Mobile Money",
-    "wave": "Wave",
-    "orangeMoney": "Orange Money",
-    "cash": "Espèces",
-    "bank": "Banque"
+    "MOBILE_MONEY": "MTN Mobile Money",
+    "WAVE": "Wave",
+    "ORANGE_MONEY": "Orange Money",
+    "CASH": "Espèces",
+    "BANK": "Banque"
   },
   "CountryAndMethodSelectorPage": {
     "pageTitle": "Sélectionner le Pays et la Méthode de Recharge",

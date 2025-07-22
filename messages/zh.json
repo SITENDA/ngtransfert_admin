@@ -230,10 +230,11 @@
     "bank": "银行账户",
     "unknownCategory": "未知账户类别",
     "topUpMethod": {
-      "alipay": "支付宝",
-      "wechat": "微信",
-      "bank": "银行转账",
-      "other": "其他方式"
+      "MOBILE_MONEY": "MTN 移动支付",
+      "WAVE": "Wave",
+      "ORANGE_MONEY": "Orange 钱包",
+      "CASH": "现金",
+      "BANK": "银行"
     },
     "currency": {
       "CNY": "¥",
@@ -265,19 +266,19 @@
     "pending": "待处理",
     "noTopUpRequestsFound": "未找到充值请求。",
     "topUpMethod": {
-      "mobileMoney": "MTN 手机钱包",
-      "wave": "Wave",
-      "orangeMoney": "Orange 钱包",
-      "cash": "现金",
-      "bank": "银行"
+      "MOBILE_MONEY": "MTN 移动支付",
+      "WAVE": "Wave",
+      "ORANGE_MONEY": "Orange 钱包",
+      "CASH": "现金",
+      "BANK": "银行"
     }
   },
   "TopUpMethod": {
-    "mobileMoney": "MTN 手机钱包",
-    "wave": "Wave",
-    "orangeMoney": "Orange 钱包",
-    "cash": "现金",
-    "bank": "银行"
+    "MOBILE_MONEY": "MTN 移动支付",
+    "WAVE": "Wave",
+    "ORANGE_MONEY": "Orange 钱包",
+    "CASH": "现金",
+    "BANK": "银行"
   },
   "CountryAndMethodSelectorPage": {
     "pageTitle": "选择充值国家和方式",

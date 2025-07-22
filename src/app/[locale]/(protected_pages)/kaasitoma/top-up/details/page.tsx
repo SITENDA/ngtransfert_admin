@@ -13,6 +13,7 @@ import {Country} from "../../../../../../../types/country"; // Import Country an
 import TopUpDetailsForm from "./TopUpDetailsForm";
 import {ExchangeRate} from "../../../../../../../types/exchangeRateResult";
 import {TopUpDetailsPayload} from "../../../../../../../types/request-top-up-request";
+import {isRedirectObject} from "@/util/typeguards";
 
 interface TopUpDetailsPageProps {
     searchParams: { // Query parameters from URL
@@ -62,6 +63,10 @@ async function TopUpDetailsPage({ searchParams }: TopUpDetailsPageProps) {
             undefined,
             3600
         );
+
+        if (isRedirectObject(topUpDetailsPayload)) {
+            redirect(topUpDetailsPayload.redirectTo);
+        }
 
         if (topUpDetailsPayload && topUpDetailsPayload.receiverAccount && topUpDetailsPayload.country && topUpDetailsPayload.exchangeRate) { // Ensure exchangeRate is checked here
             receiverAccount = topUpDetailsPayload.receiverAccount;

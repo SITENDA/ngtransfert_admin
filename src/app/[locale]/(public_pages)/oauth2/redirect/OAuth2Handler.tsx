@@ -42,11 +42,16 @@ export default function OAuth2Handler({ token, fetchedUser, locale }: OAuth2Hand
 
                 // --- KEY CHANGE: Call Next-Auth's signIn with fetched data ---
                 // This must happen in a Client Component's useEffect or a Server Action/Route Handler
+                const jwtPayload = JSON.parse(atob(token.split('.')[1]));
+                const accessTokenExpires = jwtPayload.exp ? jwtPayload.exp * 1000 : undefined;
+
                 await signIn("credentials", {
-                    accessToken: token, // Pass the Spring Boot JWT
-                    userData: JSON.stringify(fetchedUser), // Pass the full UserDTO as a JSON string
-                    redirect: false, // IMPORTANT: Prevents Next-Auth from doing its own redirect
+                    accessToken: token,
+                    userData: JSON.stringify(fetchedUser),
+                    accessTokenExpires, // ✅ OPTIONAL: Pass decoded expiry to reduce server parsing
+                    redirect: false,
                 });
+
 
                 login(fetchedUser, token);
 

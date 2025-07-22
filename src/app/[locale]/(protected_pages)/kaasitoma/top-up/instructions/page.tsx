@@ -1,7 +1,7 @@
 // src/app/[locale]/(protected_pages)/kaasitoma/details-requests/details/instructions/page.tsx
 // This is a Server Component.
 import React from 'react';
-import { notFound } from 'next/navigation';
+import {notFound, redirect} from 'next/navigation';
 import { getTranslations } from 'next-intl/server'; // For server component translations
 
 import { fetchBackendData } from "@/lib/backend-api-client"; // Assuming this is your utility for backend calls
@@ -13,6 +13,8 @@ import {CardContent, Divider} from "@mui/material";
 import {Button} from "@/components/ui/button";
 import {kaasitomaPaths} from "@/util/frontend-paths";
 import { Link } from '@/i18n/navigation';
+import {FetchBackendResult} from "../../../../../../../types/fetchBackendResult";
+import {isRedirectObject} from "@/util/typeguards";
 
 // --- UI Components (Simulated with HTML/Tailwind) ---
 
@@ -61,12 +63,17 @@ export default async function InstructionsPage({ searchParams }: InstructionsPag
 
     try {
         // Fetch countries to get the selected country's name
-        const countryPayload = await fetchBackendData<CountriesDataPayload>(
+        const countryPayload: FetchBackendResult<CountriesDataPayload> = await fetchBackendData<CountriesDataPayload>(
             '/kaasitoma/countries/getPriorityCountries',
             'GET',
             undefined,
             3600 // Cache for 1 hour
         );
+
+        if (isRedirectObject(countryPayload)) {
+            redirect(countryPayload.redirectTo);
+        }
+
         selectedCountryName = countryPayload?.countries?.find(
             (c) => c.countryId === numericCountryId
         )?.countryName;
@@ -79,6 +86,11 @@ export default async function InstructionsPage({ searchParams }: InstructionsPag
                 undefined,
                 3600
             );
+
+            if (isRedirectObject(cashAddressesPayload)) {
+                redirect(cashAddressesPayload.redirectTo);
+            }
+
             fetchedCashDepositAddresses = cashAddressesPayload?.cashDepositAddresses || [];
 
 
@@ -89,6 +101,10 @@ export default async function InstructionsPage({ searchParams }: InstructionsPag
                 undefined,
                 3600
             );
+            if (isRedirectObject(bankAddressesPayload)) {
+                redirect(bankAddressesPayload.redirectTo);
+            }
+
             fetchedBankDepositAddresses = bankAddressesPayload?.bankDepositAddresses || [];
         }
 
@@ -216,16 +232,6 @@ export default async function InstructionsPage({ searchParams }: InstructionsPag
             </h2>
 
             <CardContent className="flex-grow p-6 space-y-8">
-                <p className="text-lg mb-4 text-gray-800 dark:text-gray-200">
-                    {t('summaryInstructionsFor', {
-                        accountCategory: receiverAccountCategory,
-                        accountIdentifier: accountIdentifier,
-                        accountId: numericAccountId,
-                        countryName: selectedCountryName || 'selected country',
-                        topUpMethod: selectedMethodValue
-                    })}
-                </p>
-
                 {/* Display method-specific instructions */}
                 <Divider />
                 <div
@@ -235,11 +241,6 @@ export default async function InstructionsPage({ searchParams }: InstructionsPag
                         rounded-lg shadow-md
                     "
                 >
-                    <h3 className="text-xl font-semibold mb-3 text-yellow-800 dark:text-yellow-200">
-                        {/* You can replace this with an actual InfoIcon component if available */}
-                        {t('InstructionsContent.instructionsHeading', { methodName: selectedMethodValue })}
-                    </h3>
-                    <Divider className="my-3 border-yellow-200 dark:border-yellow-700" />
                     <div className="text-base text-gray-800 dark:text-gray-200">
                         {topUpInstructions[selectedMethodValue] || t('InstructionsContent.selectMethodHint')}
                     </div>

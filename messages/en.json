@@ -251,11 +251,12 @@
     "wechat": "WeChat Account",
     "bank": "Bank Account",
     "unknownCategory": "Unknown Account Category",
-    "topUpMethod": {
-      "alipay": "Alipay",
-      "wechat": "WeChat",
-      "bank": "Bank Transfer",
-      "other": "Other Method"
+    "TopUpMethod": {
+      "MOBILE_MONEY": "MTN Mobile Money",
+      "WAVE": "Wave",
+      "ORANGE_MONEY": "Orange Money",
+      "CASH": "Cash",
+      "BANK": "Bank"
     },
     "currency": {
       "CNY": "¥",
@@ -294,19 +295,19 @@
     "approved": "Approved",
     "pending": "Pending",
     "topUpMethod": {
-      "mobileMoney": "MTN Mobile Money",
-      "wave": "Wave",
-      "orangeMoney": "Orange Money",
-      "cash": "Cash",
-      "bank": "Bank"
+      "MOBILE_MONEY": "MTN Mobile Money",
+      "WAVE": "Wave",
+      "ORANGE_MONEY": "Orange Money",
+      "CASH": "Cash",
+      "BANK": "Bank"
     }
   },
   "TopUpMethod": {
-    "mobileMoney": "MTN Mobile Money",
-    "wave": "Wave",
-    "orangeMoney": "Orange Money",
-    "cash": "Cash",
-    "bank": "Bank"
+    "MOBILE_MONEY": "MTN Mobile Money",
+    "WAVE": "Wave",
+    "ORANGE_MONEY": "Orange Money",
+    "CASH": "Cash",
+    "BANK": "Bank"
   },
   "CountryAndMethodSelectorPage": {
     "pageTitle": "Select Top-Up Country and Method",
@@ -327,7 +328,6 @@
   },
   "InstructionsPage": {
     "pageTitle": "Top-Up Instructions",
-    "summaryInstructionsFor": "Below are the instructions for topping up account: {accountIdentifier} (ID: {accountId}) using the {topUpMethod} method for deposits in {countryName}.",
     "errorLoadingInstructions": "Error loading instructions.",
     "tryAgainMessage": "Please try again or contact support.",
     "noInstructionsFound": "No instructions found for this selection.",

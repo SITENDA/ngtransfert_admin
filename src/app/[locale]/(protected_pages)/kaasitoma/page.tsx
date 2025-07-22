@@ -1,4 +1,4 @@
-// src/app/[locale]/(protected_pages)/kaasitoma/page.tsx
+// app/[locale]/dashboard/page.tsx
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,6 +30,10 @@ export default async function KaasitomaDashboardPage() {
     let settledTransfersCount   : number | undefined;
     let topUpRequestsCount      : number | undefined;
 
+    if (!user) {
+        redirect(`/<span class="math-inline">\{locale\}</span>{kaasitomaPaths.loginPath}`);
+    }
+
     try {
         const dashboardDataPayload = await fetchBackendData<DashboardDataPayload>(
             '/kaasitoma/getDashboardContent',
@@ -44,20 +48,51 @@ export default async function KaasitomaDashboardPage() {
         }
 
         // Now it's safe to access the properties
-        receiverAccountsCount = dashboardDataPayload.receiverAccountsCount;
-        transferRequestsCount = dashboardDataPayload.transferRequestsCount;
-        settledTransfersCount = dashboardDataPayload.settledTransfersCount;
-        topUpRequestsCount = dashboardDataPayload.topUpRequestsCount;
+        receiverAccountsCount = dashboardDataPayload.receiverAccountsCount || 0;
+        transferRequestsCount = dashboardDataPayload.transferRequestsCount || 0;
+        settledTransfersCount = dashboardDataPayload.settledTransfersCount || 0;
+        topUpRequestsCount = dashboardDataPayload.topUpRequestsCount || 0;
 
-        console.log('AddReceiverAccountPage: Successfully fetched dashboard content.');
     } catch (error) {
         console.error("AddReceiverAccountPage: Error during bank data fetching process:", error);
     }
 
-    if (receiverAccountsCount == undefined || transferRequestsCount == undefined || settledTransfersCount == undefined || topUpRequestsCount == undefined) {
-        return (
-           <>No accounts found.</>
-        )
+    let displayedContent;
+
+    // Fix: Wrap multiple top-level JSX elements in a Fragment or a div
+    if (receiverAccountsCount === 0 && transferRequestsCount === 0 && settledTransfersCount === 0 && topUpRequestsCount === 0) {
+        displayedContent = (<>No accounts found.</>);
+    } else {
+        displayedContent = (
+            <>
+                <section className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-inner border border-gray-200 dark:border-gray-700">
+                    <h3 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">{t('yourAccountsSectionTitle')}</h3>
+                    <div className="space-y-3">
+                        <ClickableRow href={kaasitomaPaths.receiverAccountsPath} count={receiverAccountsCount}>
+                            {t('receiverAccountsLink')}
+                        </ClickableRow>
+                    </div>
+                </section>
+
+                <section className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-inner border border-gray-200 dark:border-gray-700">
+                    <h3 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">{t('sendingRecordsSectionTitle')}</h3>
+                    <div className="space-y-3">
+                        <ClickableRow href={kaasitomaPaths.topUpRequestsPath} count={topUpRequestsCount} className="hover:bg-yellow-50 dark:hover:bg-yellow-900">
+                            {t('topUpRequestsLink')}
+                        </ClickableRow>
+                        <ClickableRow href={kaasitomaPaths.transferRequestsPath} count={transferRequestsCount} className="hover:bg-pink-50 dark:hover:bg-pink-900">
+                            {t('transferRequestsLink')}
+                        </ClickableRow>
+                        <ClickableRow href={kaasitomaPaths.settledTransfersPath} count={settledTransfersCount} className="hover:bg-purple-50 dark:hover:bg-purple-900">
+                            {t('settledTransfersLink')}
+                        </ClickableRow>
+                        {/*<ClickableRow href={kaasitomaPaths.sendingRecordsPath} count={sendingRecordsCount} className="hover:bg-green-50 dark:hover:bg-green-900">*/}
+                        {/*    {t('allSendingRecordsLink')}*/}
+                        {/*</ClickableRow>*/}
+                    </div>
+                </section>
+            </>
+        );
     }
 
 
@@ -81,32 +116,7 @@ export default async function KaasitomaDashboardPage() {
                         {t('welcomeMessage', { userName: user.fullName })}! {/* Use userName placeholder */}
                     </div>
 
-                    <section className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-inner border border-gray-200 dark:border-gray-700">
-                        <h3 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">{t('yourAccountsSectionTitle')}</h3>
-                        <div className="space-y-3">
-                            <ClickableRow href={kaasitomaPaths.receiverAccountsPath} count={receiverAccountsCount}>
-                                {t('receiverAccountsLink')}
-                            </ClickableRow>
-                        </div>
-                    </section>
-
-                    <section className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-inner border border-gray-200 dark:border-gray-700">
-                        <h3 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">{t('sendingRecordsSectionTitle')}</h3>
-                        <div className="space-y-3">
-                            <ClickableRow href={kaasitomaPaths.topUpRequestsPath} count={topUpRequestsCount} className="hover:bg-yellow-50 dark:hover:bg-yellow-900">
-                                {t('topUpRequestsLink')}
-                            </ClickableRow>
-                            <ClickableRow href={kaasitomaPaths.transferRequestsPath} count={transferRequestsCount} className="hover:bg-pink-50 dark:hover:bg-pink-900">
-                                {t('transferRequestsLink')}
-                            </ClickableRow>
-                            <ClickableRow href={kaasitomaPaths.settledTransfersPath} count={settledTransfersCount} className="hover:bg-purple-50 dark:hover:bg-purple-900">
-                                {t('settledTransfersLink')}
-                            </ClickableRow>
-                            {/*<ClickableRow href={kaasitomaPaths.sendingRecordsPath} count={sendingRecordsCount} className="hover:bg-green-50 dark:hover:bg-green-900">*/}
-                            {/*    {t('allSendingRecordsLink')}*/}
-                            {/*</ClickableRow>*/}
-                        </div>
-                    </section>
+                    {displayedContent}
                 </CardContent>
             </Card>
         </div>

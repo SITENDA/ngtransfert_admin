@@ -8,10 +8,7 @@ import getSession from "@/lib/getSession";
 import { redirect } from 'next/navigation';
 import { kaasitomaPaths } from "@/util/frontend-paths";
 import { fetchBackendData } from "@/lib/backend-api-client";
-
-function isRedirectObject<T>(value: T | { redirectTo: string } | null): value is { redirectTo: string } {
-    return !!value && typeof value === 'object' && 'redirectTo' in value;
-}
+import {isRedirectObject} from "@/util/typeguards";
 
 async function AddReceiverAccountPage() {
     const t = await getTranslations('AddReceiverAccountPage');
@@ -19,6 +16,8 @@ async function AddReceiverAccountPage() {
 
     const session = await getSession();
     const clientId = session?.user?.userId;
+
+    console.log("Token expiry date:", session?.user?.accessTokenExpires);
 
     if (!clientId) {
         console.warn(`AddReceiverAccountPage: Client ID not found after session check. Redirecting to /${locale}/${kaasitomaPaths.loginPath}`);
