@@ -1,6 +1,4 @@
 // src/app/[locale]/(protected_pages)/kaasitoma/details/page.tsx
-
-import ReceiverAccountDetailsForm from "./ReceiverAccountDetailsForm";
 import PublicWrapper from "@/components/PublicWrapper";
 // Removed next-intl imports as they are not resolvable in this environment
 import getSession from "@/lib/getSession"; // Assuming getSession is available
@@ -12,18 +10,23 @@ import {CardHeader} from "@/components/ui/card";
 // Replaced Next.js Link from next-intl/navigation with a standard <a> tag
 // as it cannot be resolved in this environment.
 import {Link} from "@/i18n/navigation"; // Import Link for navigation
-import {Button} from "@/components/ui/button"; // Import the fetch utility
+import {Button} from "@/components/ui/button";
+import CategoryIcon from "@/components/CategoryIcon";
+import Image from "next/image";
+import CountryFlag from "@/components/CountryFlag";
+import React from "react";
+import {getTranslations} from "next-intl/server";
+import {isRedirectObject} from "@/util/typeguards"; // Import the fetch utility
+
+interface DetailRowProps {
+    label: string;
+    value?: React.ReactNode;
+    children?: React.ReactNode;
+}
 
 // Modify the page component to accept searchParams as a prop
 async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { receiverAccountId?: string } }) {
-    // Hardcoded strings for demonstration as next-intl is not resolvable
-    const getTranslation = (key: string) => {
-        switch (key) {
-            case 'errorLoadingAccountDetails': return 'Error loading account details. Please try again.';
-            case 'pageTitle': return 'Receiver Account Details';
-            default: return key;
-        }
-    };
+    const t = await getTranslations('ReceiverAccountDetailsPage');
     // const t = await getTranslations('ReceiverAccountDetailsPage');
     // const locale = await getLocale(); // Not needed for hardcoded translations
 
@@ -55,14 +58,13 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { re
                 undefined, // No body for GET request
                 3600 // Revalidate every hour
             );
+            if (isRedirectObject(response)) {
+                redirect(response.redirectTo);
+            }
 
             if (response && response.receiverAccount) {
-                // Destructure and filter out creationDate and lastUpdatedDate
-                const { creationDate, lastUpdatedDate, ...restOfAccount } = response.receiverAccount;
-
                 // Create a mutable copy to modify email/phoneNumber
-                const processedAccount: ReceiverAccount = { ...restOfAccount };
-
+                const processedAccount = response.receiverAccount;
                 // Ignore email or phone number if they start with "rand_"
                 if (processedAccount.email && processedAccount.email.startsWith('rand_')) {
                     processedAccount.email = undefined; // Set to undefined to ignore display
@@ -72,7 +74,6 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { re
                 }
 
                 receiverAccount = processedAccount;
-                console.log("ReceiverAccountDetailsPage: Successfully fetched and processed receiver account from backend.");
             } else {
                 console.warn("ReceiverAccountDetailsPage: No receiver account data fetched or data structure unexpected from backend.");
             }
@@ -99,7 +100,7 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { re
                     dark:bg-gray-800/80 dark:border-gray-700 min-h-[400px] flex items-center justify-center
                 ">
                     <h2 className="text-2xl font-bold text-center text-red-500">
-                        {getTranslation('errorLoadingAccountDetails')} {/* New translation key for error */}
+                        {t('errorLoadingAccountDetails')} {/* New translation key for error */}
                     </h2>
                 </div>
             </PublicWrapper>
@@ -114,7 +115,7 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { re
                 dark:bg-gray-800/80 dark:border-gray-700 min-h-[800px]
             ">
                 <h2 className="text-3xl font-bold mb-6 text-center text-foreground">
-                    {getTranslation('pageTitle')}
+                    {t('pageTitle')}
                 </h2>
                 <CardHeader className="flex flex-row justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     {/* Updated Top Up button styling */}
@@ -135,10 +136,106 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { re
                     </Link>
                 </CardHeader>
                 {/* Pass the processed receiverAccount object to the client component */}
-                <ReceiverAccountDetailsForm receiverAccount={receiverAccount} />
+                <div className="space-y-6">
+                    {/* General Account Details Section */}
+                    <section className="p-6 rounded-lg shadow-inner bg-background-light dark:bg-gray-700/50 border border-border">
+                        <h3 className="text-xl font-semibold mb-4 text-foreground">
+                            {t('generalDetails')}
+                        </h3>
+                        <DetailRow label={t('receiverAccountCategory')}>
+                            <div className=" items-center gap-2">
+                                <span>{t(receiverAccount.receiverAccountCategory.toLowerCase())}&nbsp; </span>
+                                <CategoryIcon category={receiverAccount.receiverAccountCategory} />
+                            </div>
+                        </DetailRow>
+                        <DetailRow label={t('receiverAccountIdentifier')} value={t(receiverAccount.receiverAccountIdentifier.toLowerCase())} />
+                        <DetailRow label={t('receiverAccountName')} value={receiverAccount.receiverAccountName} />
+
+
+                        {/* Conditional fields that might be present */}
+                        {receiverAccount.qrCodeUrl && (
+                            <DetailRow label={t('qrCodeImage')}>
+                                <a href={receiverAccount.qrCodeUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                    {t('viewImage')}
+                                </a>
+                            </DetailRow>
+                        )}
+                        {receiverAccount.email && <DetailRow label={t('email')} value={receiverAccount.email} />}
+                        {receiverAccount.phoneNumber && <DetailRow label={t('phoneNumber')} value={receiverAccount.phoneNumber} />}
+                    </section>
+
+                    {/* Balance & Limit Section */}
+                    <section className="p-6 rounded-lg shadow-inner bg-background-light dark:bg-gray-700/50 border border-border">
+                        <h3 className="text-xl font-semibold mb-4 text-foreground">
+                            {t('accountLimits')}
+                        </h3>
+
+                        <DetailRow label={t('accountBalance')}>
+                            {`${receiverAccount.balance.toLocaleString()} ${receiverAccount.currency?.currencyCode || ''}`}
+                        </DetailRow>
+
+                        {receiverAccount.limit !== undefined && (
+                            <DetailRow label={t('accountLimit')}>
+                                {`${receiverAccount.limit.toLocaleString()} ${receiverAccount.limitCurrency?.currencyCode || ''}`}
+                            </DetailRow>
+                        )}
+                    </section>
+
+
+                    {/* Bank Details Section - Conditional on it being a BANK_ACCOUNT */}
+                    {receiverAccount.receiverAccountCategory === 'BANK_ACCOUNT' && (
+                        <section className="p-6 rounded-lg shadow-inner bg-background-light dark:bg-gray-700/50 border border-border mt-6">
+                            <h3 className="text-xl font-semibold mb-4 text-foreground">
+                                {t('bankDetails')}
+                            </h3>
+                            {receiverAccount.bankAccountNumber && <DetailRow label={t('bankAccountNumber')} value={receiverAccount.bankAccountNumber} />}
+                            {receiverAccount.cardHolderName && <DetailRow label={t('cardHolderName')} value={receiverAccount.cardHolderName} />}
+                            {receiverAccount.bank?.bankName && <DetailRow label={t('bankName')} value={receiverAccount.bank.bankName} />}
+                            {receiverAccount.bank?.bankLogoUrl && (
+                                <DetailRow label={t('bankLogo')}>
+                                    <Image
+                                        src={receiverAccount.bank.bankLogoUrl}
+                                        alt={receiverAccount.bank?.bankName || 'Bank Logo'}
+                                        width={40}
+                                        height={40}
+                                        className="rounded-full object-contain border border-gray-200 dark:border-gray-600 p-1"
+                                    />
+                                </DetailRow>
+                            )}
+                            {receiverAccount.bank?.country?.countryName && (
+                                <DetailRow label={t('bankCountry')}>
+                            <span className="flex items-center gap-2">
+                                {receiverAccount.bank.country.countryName}
+                                {receiverAccount.bank.country.countryFlagUrl && (
+                                    <CountryFlag
+                                        flagUrl={receiverAccount.bank.country.countryFlagUrl}
+                                        alt={receiverAccount.bank.country.countryName}
+                                        style={{ width: '24px', height: '18px' }}
+                                    />
+                                )}
+                            </span>
+                                </DetailRow>
+                            )}
+                        </section>
+                    )}
+                </div>
             </div>
         </PublicWrapper>
     );
 }
+
+const DetailRow: React.FC<DetailRowProps> = async ({ label, value, children }) => {
+    const t = await getTranslations('ReceiverAccountDetailsPage');
+    return (
+        <div className="flex flex-col sm:flex-row sm:items-center py-3 border-b border-border-light last:border-b-0">
+            <div className="sm:w-1/3 text-muted-foreground font-medium mb-1 sm:mb-0 pr-4">
+                {label}:
+            </div>
+            <div className="sm:w-2/3 text-foreground break-words">
+                {value !== undefined && value !== null && value !== '' ? value : (children || t('notApplicable'))}
+            </div>
+        </div>
+    );
+};
 
 export default ReceiverAccountDetailsPage;

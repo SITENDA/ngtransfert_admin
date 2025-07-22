@@ -55,7 +55,10 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
             (method) => method === initialSearchParams.topUpMethod
         ) as TopUpMethodEnum | undefined;
 
-    const topUpKey = Object.keys(TopUpMethodEnum).find((method) => method === initialSearchParams.topUpMethod);
+    const topUpKey = Object.entries(TopUpMethodEnum).find(
+        ([, value]) => value === initialSearchParams.topUpMethod
+    )?.[0];
+    console.log("topUpKey : ", topUpKey);
 
 
     const getCategoryTranslationKey = (category: ReceiverAccountCategoryType): string => {
@@ -240,7 +243,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
         // 1. Append fixed details from props/initial values
         formData.append("receiverAccountId", initialReceiverAccount.receiverAccountId.toString());
         formData.append("countryOfDepositId", initialCountry.countryId.toString());
-        formData.append("topUpMethod", selectedTopUpMethod || '');
+        formData.append("topUpMethod", topUpKey || '');
         formData.append("destinationCurrencyCode", initialCountry.currency.currencyCode);
         formData.append("sendingFeeCurrencyCode", initialCountry.currency.currencyCode); // Use destination currency for sending fee currency code
 

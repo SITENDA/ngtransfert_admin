@@ -199,7 +199,10 @@
     "bank_account": "银行账户",
     "qr_code_image": "二维码图片",
     "phone_number": "电话号码",
-    "none": "无"
+    "none": "无",
+    "accountLimits": "账户限制",
+    "accountBalance": "账户余额",
+    "accountLimit": "限额"
   },
   "TopUpDetailsPage": {
     "pageTitle": "充值账户"

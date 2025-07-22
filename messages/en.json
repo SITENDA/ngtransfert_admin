@@ -221,7 +221,10 @@
     "bank_account": "Bank Account",
     "qr_code_image": "QR Code Image",
     "phone_number": "Phone Number",
-    "none": "None"
+    "none": "None",
+    "accountLimits": "Account Limits",
+    "accountBalance": "Account Balance",
+    "accountLimit": "Limit"
   },
   "TopUpDetailsPage": {
     "pageTitle": "Top Up Account"
@@ -251,7 +254,7 @@
     "wechat": "WeChat Account",
     "bank": "Bank Account",
     "unknownCategory": "Unknown Account Category",
-    "TopUpMethod": {
+    "topUpMethod": {
       "MOBILE_MONEY": "MTN Mobile Money",
       "WAVE": "Wave",
       "ORANGE_MONEY": "Orange Money",

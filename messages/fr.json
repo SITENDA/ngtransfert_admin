@@ -199,7 +199,10 @@
     "bank_account": "Compte Bancaire",
     "qr_code_image": "Image du Code QR",
     "phone_number": "Numéro de Téléphone",
-    "none": "Aucun"
+    "none": "Aucun",
+    "accountLimits": "Limites du Compte",
+    "accountBalance": "Solde du Compte",
+    "accountLimit": "Plafond"
   },
   "TopUpDetailsPage": {
     "pageTitle": "Recharger le Compte"

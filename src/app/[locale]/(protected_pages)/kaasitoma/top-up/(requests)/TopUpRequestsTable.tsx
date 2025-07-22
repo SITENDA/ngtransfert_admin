@@ -1,6 +1,6 @@
 // src/app/[locale]/(protected_pages)/kaasitoma/top-up/TopUpRequestsTable.tsx
 import React from 'react';
-import { getTranslations, getLocale } from "next-intl/server"; // Import getLocale
+import { getTranslations } from "next-intl/server"; // Import getLocale
 import { ResponseTopUpRequest } from "../../../../../../../types/response-top-up-request";
 import { TopUpMethodEnum } from "@/enums/TopUpMethodEnum"; // Ensure TopUpMethodEnum is imported if used for display
 import { Link } from "@/i18n/navigation"; // Assuming you want to link to details
@@ -13,12 +13,11 @@ interface TopUpRequestsTableProps { // Renamed for clarity in the file
 
 const TopUpRequestsTable: React.FC<TopUpRequestsTableProps> = async ({ initialTopUpRequests }) => {
     const t = await getTranslations('TopUpRequestsTable');
-    const locale = await getLocale(); // Get current locale for date formatting
     const topUpRequests = await initialTopUpRequests;
 
     // Helper to get translated TopUpMethod (if needed, otherwise just display enum value)
     const getTopUpMethodTranslationKey = (method: TopUpMethodEnum): string => {
-        return `topUpMethod.${method.toLowerCase()}`;
+        return `topUpMethod.${method}`;
     };
 
     if (topUpRequests?.length === 0) {
