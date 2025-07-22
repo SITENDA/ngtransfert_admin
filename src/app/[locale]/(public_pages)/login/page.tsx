@@ -16,15 +16,15 @@ export const metadata = {
 
 export default async function LoginPage() {
     const session = await getSession();
-    // const user: User | undefined = session?.user;
-    // const locale = await getLocale();
+    const user: User | undefined = session?.user;
+    const locale = await getLocale();
     const t = await getTranslations('Common');
 
     // Check if the user has a fullName AND a value for user.ekiddako
-    // if (user?.fullName && user?.ekiddako) {
-    //     const redirectPath = `/${locale}/${user.ekiddako}`; // Construct the full path with locale
-    //     redirect(redirectPath); // Perform the server-side redirect
-    // }
+    if (user?.fullName && user?.ekiddako) {
+        const redirectPath = `/${locale}/${user.ekiddako}`; // Construct the full path with locale
+        redirect(redirectPath); // Perform the server-side redirect
+    }
 
     // If the user is not authenticated, or if they are authenticated but
     // do not have both `fullName` and `ekiddako` as expected for redirection,

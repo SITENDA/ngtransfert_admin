@@ -6,24 +6,17 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {signIn} from "next-auth/react";
 
 // Define the structure of the HttpResponse from your backend
-interface HttpResponse<T = any> {
+interface HttpResponse<T> {
     status: number;
     message: string;
     data?: T; // Data field can be generic
 }
 
-// Define the expected structure for a successful login response
-interface LoginSuccessData {
-    token: string;
-    // Add other fields if your backend returns them, e.g., userId, username
-}
-
 // Define the props for this client component
-interface LoginFormComponentProps {
-    // No direct props needed from server component for translations, as we use hook
-}
+type LoginFormComponentProps = object
 
 export default function LoginFormComponent({}: LoginFormComponentProps) {
     const [email, setEmail] = useState<string>('');
@@ -61,32 +54,22 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
 
     const handleManualLogin = async (e: FormEvent) => {
         e.preventDefault();
-        setFormError(null); // Clear previous errors
-        try {
-            const response = await fetch('/api/auth/signin', { // Proxy to backend
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            });
+        setFormError(null);
 
-            const data: HttpResponse<LoginSuccessData> = await response.json();
+        const result = await signIn("credentials", {
+            redirect: false,
+            email,
+            password
+        });
 
-            if (response.ok && data.status === 200 && data.message === "Successful login" && data.data?.token) {
-                const jwtToken = data.data.token;
-                localStorage.setItem('jwtToken', jwtToken); // Store token
-                // console.log("Manual login successful, token:", jwtToken);
-                router.push(`/${locale}/dashboard`);
-            } else {
-                console.error("Manual login failed:", data.message);
-                setFormError(t('loginFailed', { message: data.message || t('unknownError') }));
-            }
-        } catch (error: any) {
-            console.error("Error during manual login:", error);
-            setFormError(t('loginError', { message: error.message || t('tryAgain') }));
+        if (result?.ok) {
+            router.push(`/${locale}/dashboard`);
+        } else {
+            setFormError(t('loginFailed', { message: result?.error || t('unknownError') }));
         }
     };
+
+
 
     const handleManualRegister = async (e: FormEvent) => {
         e.preventDefault();
@@ -100,7 +83,7 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
                 body: JSON.stringify({ username, email, password }),
             });
 
-            const data: HttpResponse = await response.json();
+            const data = await response.json();
 
             if (response.ok && data.status === 200 && data.message === "User registered successfully") {
                 console.log("Manual registration successful:", data.message);

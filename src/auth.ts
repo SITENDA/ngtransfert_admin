@@ -1,7 +1,8 @@
 // src/auth.ts
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import {decodeJwtExpiry} from "@/util/decodeJwtExpiry";
+import { decodeJwtExpiry } from "@/util/decodeJwtExpiry";
+import type { User } from "next-auth";
 
 interface RoleDTO {
     id: number;
@@ -16,61 +17,106 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // Configure the Credentials Provider
     providers: [
         CredentialsProvider({
-            // This name is primarily for display purposes if you were to have a login form.
-            // Since we're calling signIn programmatically, it's less critical.
             name: "Spring Boot Credentials",
-            // Define the fields that will be passed to the authorize function
+
+            // These fields appear in the default sign-in form
+            // Not used when calling signIn programmatically
             credentials: {
-                accessToken: { label: "Access Token", type: "text" },
-                userData: { label: "User Data (JSON)", type: "text" },
-                accessTokenExpires: { label: "Access Token Expiry (ms)", type: "text" }, // ✅ ADD THIS
+                email: { label: "Email", type: "text" },
+                password: { label: "Password", type: "password" },
             },
-            async authorize(credentials) {
+
+            async authorize(
+                credentials: Partial<Record<"email" | "password" | "accessToken" | "userData" | "accessTokenExpires", unknown>>,
+            ): Promise<User | null> {
                 if (!credentials) return null;
 
-                const accessToken = credentials.accessToken as string;
-                const userDataString = credentials.userData as string;
+                const email = credentials.email as string | undefined;
+                const password = credentials.password as string | undefined;
+                const accessToken = credentials.accessToken as string | undefined;
+                const userDataString = credentials.userData as string | undefined;
                 const rawAccessTokenExpires = credentials.accessTokenExpires as string | undefined;
 
-                if (!accessToken || !userDataString) {
-                    return null; // Essential data missing
-                }
+                // Optional: Add a type guard here
+                if (email && password) {
+                    // Perform email/password login via Spring Boot
+                    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signin`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email, password }),
+                    });
 
-                // Parse the expiry timestamp (in milliseconds)
-                const accessTokenExpires = rawAccessTokenExpires
-                    ? parseInt(rawAccessTokenExpires, 10)
-                    : decodeJwtExpiry(accessToken);
+                    const responseData = await backendResponse.json();
 
-                try {
-                    const userFromSpringBoot = JSON.parse(userDataString);
+                    if (
+                        backendResponse.ok &&
+                        responseData.status === 200 &&
+                        responseData.message === "Successful login" &&
+                        responseData.data?.token &&
+                        responseData.data?.user
+                    ) {
+                        const user = responseData.data.user;
+                        const accessToken = responseData.data.token;
+                        const accessTokenExpires = responseData.data.expiresAt;
 
-                    if (!userFromSpringBoot?.userId || !userFromSpringBoot?.email) {
-                        console.error("Invalid user data received in Credentials Provider:", userFromSpringBoot);
-                        return null;
+                        return {
+                            id: user.userId.toString(),
+                            email: user.email,
+                            name: user.fullName || user.username || user.email,
+                            image: user.profileImageUrl,
+                            accessToken,
+                            accessTokenExpires,
+                            userId: user.userId,
+                            username: user.username,
+                            fullName: user.fullName,
+                            profileImageUrl: user.profileImageUrl,
+                            enabled: user.enabled,
+                            registrationDate: user.registrationDate,
+                            roles: user.roles,
+                            role: user.roles?.[0]?.roleName,
+                            ekiddako: user.ekiddako,
+                        };
                     }
 
-                    return {
-                        id: userFromSpringBoot.userId.toString(),
-                        email: userFromSpringBoot.email,
-                        name: userFromSpringBoot.fullName || userFromSpringBoot.username || userFromSpringBoot.email,
-                        image: userFromSpringBoot.profileImageUrl,
-                        accessToken,
-                        accessTokenExpires,
-                        userId: userFromSpringBoot.userId,
-                        username: userFromSpringBoot.username,
-                        fullName: userFromSpringBoot.fullName,
-                        profileImageUrl: userFromSpringBoot.profileImageUrl,
-                        enabled: userFromSpringBoot.enabled,
-                        registrationDate: userFromSpringBoot.registrationDate,
-                        roles: userFromSpringBoot.roles,
-                        role: userFromSpringBoot.roles?.[0]?.roleName,
-                        ekiddako: userFromSpringBoot.ekiddako,
-                    };
-                } catch (e) {
-                    console.error("Error parsing user data in Credentials Provider:", e);
                     return null;
                 }
-            },
+
+                // If OAuth2-like login with token + user data
+                if (accessToken && userDataString) {
+                    const accessTokenExpires = rawAccessTokenExpires
+                        ? parseInt(rawAccessTokenExpires, 10)
+                        : decodeJwtExpiry(accessToken);
+
+                    try {
+                        const user = JSON.parse(userDataString);
+
+                        return {
+                            id: user.userId.toString(),
+                            email: user.email,
+                            name: user.fullName || user.username || user.email,
+                            image: user.profileImageUrl,
+                            accessToken,
+                            accessTokenExpires,
+                            userId: user.userId,
+                            username: user.username,
+                            fullName: user.fullName,
+                            profileImageUrl: user.profileImageUrl,
+                            enabled: user.enabled,
+                            registrationDate: user.registrationDate,
+                            roles: user.roles,
+                            role: user.roles?.[0]?.roleName,
+                            ekiddako: user.ekiddako,
+                        };
+                    } catch (e) {
+                        console.error("Failed to parse userData JSON:", e);
+                        return null;
+                    }
+                }
+
+                console.error("Missing email/password or accessToken/userData.");
+                return null;
+            }
+
         }),
     ],
     callbacks: {
