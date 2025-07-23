@@ -79,13 +79,16 @@ export default async function Header() {
             <DropdownMenuItem className="flex flex-col items-start"> {/* Use flex column */}
                 <div className="flex items-center gap-2"> {/* User info container */}
                   {user?.profileImageUrl ? (
-                      <Image
-                          src={user.profileImageUrl}
-                          width={30}
-                          height={30}
-                          alt="user profile avatar"
-                          unoptimized
-                      />
+                          <div className="w-[30px] h-[30px] rounded-full overflow-hidden">
+                            <Image
+                                src={user.profileImageUrl}
+                                width={30}
+                                height={30}
+                                alt="user profile avatar"
+                                unoptimized
+                                className="rounded-full object-cover"
+                            />
+                          </div>
                   ) : (
                       <User className="h-[1.2rem] w-[1.2rem]" />
                   )}
