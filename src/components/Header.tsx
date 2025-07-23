@@ -29,6 +29,7 @@ export default async function Header() {
   const session = await getSession(); // Use auth() to get the session
   const user = session?.user;
   const ekiddakoProp = user?.ekiddako || null;
+  console.log("User from session is : ", user);
 
 
   return (
@@ -77,18 +78,19 @@ export default async function Header() {
         <DropdownMenuContent align="end">
             <DropdownMenuItem className="flex flex-col items-start"> {/* Use flex column */}
                 <div className="flex items-center gap-2"> {/* User info container */}
-                    {user?.image ? (
-                        <Image
-                            className="rounded-full"
-                            src={user.image}
-                            width={30}  // Adjust size as needed
-                            height={30} // Adjust size as needed
-                            alt="user profile avatar"
-                        />
-                    ) : (
-                        <User className="h-[1.2rem] w-[1.2rem]" /> // Smaller icon
-                    )}
-                    <div className="flex flex-col">
+                  {user?.profileImageUrl ? (
+                      <Image
+                          src={user.profileImageUrl}
+                          width={30}
+                          height={30}
+                          alt="user profile avatar"
+                          unoptimized
+                      />
+                  ) : (
+                      <User className="h-[1.2rem] w-[1.2rem]" />
+                  )}
+
+                  <div className="flex flex-col">
                         <p className="text-base font-medium">{user?.name}</p>
                         <p className="text-sm text-gray-500">{/* Add any other user info */}</p>
                     </div>

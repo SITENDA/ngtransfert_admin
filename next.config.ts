@@ -1,3 +1,5 @@
+//  next.config.ts
+
 import {NextConfig} from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
  
