@@ -401,5 +401,34 @@
     "email": "Email Address",
     "registeredOn": "Registered On",
     "uploading": "Uploading..."
+  },
+  "Settings": {
+    "settingsTitle": "Settings",
+    "thirdPartyLogin": "Add Third-Party Login",
+    "addNow": "Add Now",
+    "addEmail": "Add Email Address",
+    "emailNotSet": "You have not yet added an email address to your account.",
+    "addPhoneNumber": "Add Phone Number",
+    "phoneNotSet": "You have not yet added a phone number.",
+    "changePassword": "Change Password",
+    "updateNow": "Update Now",
+    "addPasswordLogin": "Add Password Login",
+    "logout": "Logout",
+    "logoutConfirmation": "Are you sure you want to log out?"
+  },
+  "UserDetailsCard" : {
+    "yourDetails": "Your Details",
+    "fullName": "Full Name",
+    "username": "Username",
+    "email": "Email Address",
+    "phoneNumber": "Phone Number",
+    "registeredOn": "Registered On",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "profileUpdated": "Profile updated successfully.",
+    "updateFailed": "Failed to update profile.",
+    "viewDetails": "View User Details"
   }
 }

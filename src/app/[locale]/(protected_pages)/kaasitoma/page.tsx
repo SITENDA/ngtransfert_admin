@@ -38,6 +38,8 @@ export default async function KaasitomaDashboardPage() {
             3600
         );
 
+        console.log("DashboardDataPayload", dashboardDataPayload);
+
         // if (!dashboardDataPayload || isRedirectObject(dashboardDataPayload)) {
         //     redirect(dashboardDataPayload?.redirectTo || `/${locale}/login`);
         // }

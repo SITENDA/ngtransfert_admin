@@ -1,3 +1,5 @@
+import {User} from "next-auth";
+
 export interface RefreshApiResponse {
     success: boolean;
     tokens: {
@@ -10,15 +12,7 @@ export interface RefreshApiResponse {
         requestMethod: string | null;
         data: {
             token: string;
-            user: {
-                userId: number;
-                fullName: string;
-                username: string;
-                email: string;
-                registrationDate: number;
-                profileImageUrl: string;
-                ekiddako: string;
-            };
+            user: User;
         };
     };
 };

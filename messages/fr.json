@@ -335,5 +335,33 @@
     "email": "Adresse e-mail",
     "registeredOn": "Inscrit le",
     "uploading": "Téléchargement en cours..."
+  },
+  "Settings": {
+    "settingsTitle": "Paramètres",
+    "thirdPartyLogin": "Ajouter une connexion tierce",
+    "addNow": "Ajouter maintenant",
+    "addEmail": "Ajouter une adresse e-mail",
+    "emailNotSet": "Vous n'avez pas encore ajouté d'adresse e-mail à votre compte.",
+    "addPhoneNumber": "Ajouter un numéro de téléphone",
+    "phoneNotSet": "Vous n'avez pas encore ajouté de numéro de téléphone.",
+    "changePassword": "Changer le mot de passe",
+    "updateNow": "Mettre à jour",
+    "addPasswordLogin": "Ajouter une connexion par mot de passe",
+    "logout": "Se déconnecter",
+    "logoutConfirmation": "Êtes-vous sûr de vouloir vous déconnecter ?"
+  },
+  "UserDetailsCard" : {
+    "yourDetails": "Vos informations",
+    "fullName": "Nom complet",
+    "username": "Nom d'utilisateur",
+    "email": "Adresse e-mail",
+    "phoneNumber": "Numéro de téléphone",
+    "registeredOn": "Inscrit le",
+    "edit": "Modifier",
+    "cancel": "Annuler",
+    "saveChanges": "Enregistrer les modifications",
+    "saving": "Enregistrement...",
+    "profileUpdated": "Profil mis à jour avec succès.",
+    "updateFailed": "Échec de la mise à jour du profil."
   }
 }

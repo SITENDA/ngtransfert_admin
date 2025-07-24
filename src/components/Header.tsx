@@ -4,7 +4,6 @@ import Image from "next/image";
 import {NavButton} from "@/components/NavButton";
 import {ModeToggle} from "@/components/ModeToggle";
 import getSession from "@/lib/getSession";
-import SignInButton from "@/components/SignInButton";
 import SignOutButton from "@/components/SignOutButton";
 import transparentIcon from "@/app/[locale]/favicon-transparent.png";
 import {Button} from "@/components/ui/button";
@@ -30,9 +29,6 @@ export default async function Header() {
     };
     const session = await getSession(); // Use auth() to get the session
     const user = session?.user;
-    const ekiddakoProp = user?.ekiddako || null;
-    console.log("User from session is : ", user);
-
 
     return (
         <header className="animate-slide bg-background h-20 p-4 border-b sticky top-0 z-20 w-full shadow-md ">

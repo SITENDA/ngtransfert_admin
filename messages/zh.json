@@ -335,5 +335,33 @@
     "email": "电子邮箱",
     "registeredOn": "注册日期",
     "uploading": "正在上传..."
+  },
+  "Settings": {
+    "settingsTitle": "设置",
+    "thirdPartyLogin": "添加第三方登录",
+    "addNow": "立即添加",
+    "addEmail": "添加电子邮箱",
+    "emailNotSet": "您尚未为账户添加电子邮箱。",
+    "addPhoneNumber": "添加手机号",
+    "phoneNotSet": "您尚未添加手机号。",
+    "changePassword": "修改密码",
+    "updateNow": "立即更新",
+    "addPasswordLogin": "添加密码登录方式",
+    "logout": "退出登录",
+    "logoutConfirmation": "您确定要退出登录吗？"
+  },
+  "UserDetailsCard" : {
+    "yourDetails": "您的信息",
+    "fullName": "全名",
+    "username": "用户名",
+    "email": "电子邮箱地址",
+    "phoneNumber": "电话号码",
+    "registeredOn": "注册时间",
+    "edit": "编辑",
+    "cancel": "取消",
+    "saveChanges": "保存更改",
+    "saving": "正在保存...",
+    "profileUpdated": "个人信息更新成功。",
+    "updateFailed": "更新个人信息失败。"
   }
 }

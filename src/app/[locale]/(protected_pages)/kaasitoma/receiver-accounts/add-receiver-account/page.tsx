@@ -15,7 +15,10 @@ async function AddReceiverAccountPage() {
     const locale = await getLocale();
 
     const session = await getSession();
+    if (session == null) {return ;}
     const clientId = session?.user?.userId;
+
+    console.log("Token in AddReceiverAccountPage : ", session.accessToken)
 
     console.log("Token expiry date:", session?.user?.accessTokenExpires);
 

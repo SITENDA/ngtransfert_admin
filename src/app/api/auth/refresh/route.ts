@@ -46,8 +46,6 @@ export async function POST(req: NextRequest) {
         console.log("➤ Refresh returned token:", newAccessToken);
 
         const session= await getSession();
-        console.log("Current session is : ", session);
-
 
         if (session) {
             session.user = user;
@@ -64,8 +62,6 @@ export async function POST(req: NextRequest) {
             console.log("➤ Forwarding Set-Cookie header from backend");
             responseWithCookies.headers.set('Set-Cookie', setCookieHeader);
         }
-
-        console.log("✅ Session updated with new access token. Returning refreshed tokens.");
         return responseWithCookies;
 
     } catch (error) {

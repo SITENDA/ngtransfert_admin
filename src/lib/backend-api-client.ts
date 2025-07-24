@@ -1,10 +1,10 @@
 // src/lib/backend-api-client.ts
-import { getLocale } from 'next-intl/server';
 import { headers } from 'next/headers';
 import {BackendHttpResponse, ErrorBody, ErrorResponse} from "../../types/BackendHttpResponse";
 import getSession from "@/lib/getSession";
 import {RefreshApiResponse} from "../../types/RefreshApiResponse";
 import {FetchBackendResult} from "../../types/fetchBackendResult";
+import {User} from "next-auth";
 
 /**
  * Fetches data from the backend API with authentication headers and robust error handling.
@@ -25,9 +25,8 @@ export async function fetchBackendData<T>(
     revalidateSeconds: number = 60 * 60
 ): Promise<FetchBackendResult<T>> {
     const session = await getSession();
-    const locale = await getLocale();
 
-    let accessToken: string | { redirectTo: string } | null | undefined = session?.accessToken;
+    let accessToken: string | undefined = session?.accessToken;
 
     const backendApiBaseUrl = process.env.BACKEND_API_BASE_URL || 'http://localhost:8080';
     const fullUrl = `${backendApiBaseUrl}${endpoint}`;
@@ -53,64 +52,68 @@ export async function fetchBackendData<T>(
         return fetch(fullUrl, fetchOptions);
     };
 
-    const refreshAccessToken = async (): Promise<string | { redirectTo: string } | null> => {
-        const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
-        const host = headersList.get('host');
-        const currentHost = host || 'localhost:3000';
+    const refreshAccessToken = async (): Promise<{
+        accessToken: string;
+        user: User;
+    } | null> => {
+        const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+        const host = headersList.get("host");
+        const currentHost = host || "localhost:3000";
         const refreshEndpoint = `${protocol}://${currentHost}/api/auth/refresh`;
 
         try {
             const refreshResponse = await fetch(refreshEndpoint, {
-                method: 'POST',
-                credentials: 'include',
+                method: "POST",
+                credentials: "include",
                 headers: {
-                    'Content-Type': 'application/json',
-                    ...(cookieHeader ? { 'Cookie': cookieHeader } : {})
-                }
+                    "Content-Type": "application/json",
+                    ...(cookieHeader ? { Cookie: cookieHeader } : {}),
+                },
             });
 
             if (!refreshResponse.ok) {
-                const errorBody: ErrorBody = await refreshResponse.json().catch(() => ({ message: 'Error parsing refresh response' }));
-                console.error('Refresh failed:', errorBody);
+                const errorBody: ErrorBody = await refreshResponse
+                    .json()
+                    .catch(() => ({ message: "Error parsing refresh response" }));
+                console.error("Refresh failed:", errorBody);
                 return null;
             }
 
             const refreshData: RefreshApiResponse = await refreshResponse.json();
-            const newToken = refreshData.tokens.data?.token;
+            const newToken = refreshData.tokens?.data?.token;
+            const newUser = refreshData.tokens?.data?.user;
 
-            if (!newToken) return null;
+            if (!newToken || !newUser) {
+                return null;
+            }
 
-            const encodedToken = encodeURIComponent(newToken);
-            const encodedUser = encodeURIComponent(JSON.stringify(refreshData.tokens.data.user));
-            return { redirectTo: `/${locale}/auth/session/update?token=${encodedToken}&user=${encodedUser}` };
-
+            return {
+                accessToken: newToken,
+                user: newUser,
+            };
         } catch (error) {
-            console.error('Token refresh error:', error);
+            console.error("Token refresh error:", error);
             return null;
         }
     };
 
     let response: Response;
 
-    // Step 1: No access token? Try to refresh.
+    // Step 1: If no token, try to refresh
     if (!accessToken) {
         const refreshed = await refreshAccessToken();
 
-        if (typeof refreshed === 'object' && refreshed?.redirectTo) {
-            return refreshed;
+        if (!refreshed) {
+            return null; // Return null so caller can trigger logout
         }
 
-        if (!refreshed || typeof refreshed !== 'string') {
-            return { redirectTo: `/${locale}/login?forceSignOut=true` };
-        }
-
-        accessToken = refreshed;
+        accessToken = refreshed.accessToken;
     }
 
-    // Step 2: Try the actual request
-    response = await makeFetchRequest(accessToken as string);
+    // Step 2: Make the request
+    response = await makeFetchRequest(accessToken);
 
-    // Step 3: Handle token expiration
+    // Step 3: Retry on 401/403 if token expired
     if ([401, 403].includes(response.status)) {
         let errorData: ErrorResponse | undefined;
 
@@ -125,23 +128,20 @@ export async function fetchBackendData<T>(
         if (isExpired) {
             const refreshed = await refreshAccessToken();
 
-            if (typeof refreshed === 'object' && refreshed?.redirectTo) {
-                return refreshed;
+            if (!refreshed) {
+                return null;
             }
 
-            if (!refreshed || typeof refreshed !== 'string') {
-                return { redirectTo: `/${locale}/login?forceSignOut=true` };
-            }
-
-            accessToken = refreshed;
+            accessToken = refreshed.accessToken;
             response = await makeFetchRequest(accessToken);
         } else {
-            return { redirectTo: `/${locale}/login?forceSignOut=true` };
+            return null;
         }
     }
 
+    // Final check for non-OK responses
     if (!response.ok) {
-        return { redirectTo: `/${locale}/login?forceSignOut=true` };
+        return null;
     }
 
     const backendResponse: BackendHttpResponse<T> = await response.json();
@@ -150,5 +150,5 @@ export async function fetchBackendData<T>(
         return backendResponse.data;
     }
 
-    return { redirectTo: `/${locale}/login?forceSignOut=true` };
+    return null;
 }

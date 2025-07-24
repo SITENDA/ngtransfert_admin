@@ -139,7 +139,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         async jwt({ token, user, trigger, session }) {
 
             if (trigger === "update") {
-                console.log("Update trigger has been called");
+                console.log("Update trigger has been called, session being updated...");
                 return { ...token, ...session.user };
             }
             // `user` is the object returned by the `authorize` function of the CredentialsProvider

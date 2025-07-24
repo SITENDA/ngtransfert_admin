@@ -2,13 +2,13 @@
 // This is a Server Component.
 
 import React from 'react';
-import { ReceiverAccount } from "../../../../../../types/receiver-account";
-import { Link } from "@/i18n/navigation"; // Keep Link for navigation
+import {ReceiverAccount} from "../../../../../../types/receiver-account";
+import {Link} from "@/i18n/navigation"; // Keep Link for navigation
 
 // Import FontAwesome icons
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faWeixin, faAlipay } from '@fortawesome/free-brands-svg-icons'; // WeChat and Alipay icons
-import { faUniversity } from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faWeixin, faAlipay} from '@fortawesome/free-brands-svg-icons'; // WeChat and Alipay icons
+import {faUniversity} from '@fortawesome/free-solid-svg-icons';
 import {getLocale, getTranslations} from "next-intl/server";
 import {kaasitomaPaths} from "@/util/frontend-paths"; // Bank icon
 
@@ -16,7 +16,7 @@ interface ReceiverAccountsFormProps {
     initialReceiverAccounts: ReceiverAccount[];
 }
 
-const ReceiverAccountsTable: React.FC<ReceiverAccountsFormProps> = async ({ initialReceiverAccounts }) => {
+const ReceiverAccountsTable: React.FC<ReceiverAccountsFormProps> = async ({initialReceiverAccounts}) => {
     const t = await getTranslations('ReceiverAccountsTable'); // Translations for this component
     const locale = await getLocale();
     // No useState/useEffect as it's a Server Component
@@ -26,11 +26,15 @@ const ReceiverAccountsTable: React.FC<ReceiverAccountsFormProps> = async ({ init
     const getCategoryIcon = (category: ReceiverAccount['receiverAccountCategory']) => {
         switch (category) {
             case 'ALIPAY_ACCOUNT':
-                return <FontAwesomeIcon icon={faAlipay} style={{ color: '#1677FF', fontSize: '1em', maxWidth: '30px' }} className="m-auto"/>;
+                return <FontAwesomeIcon icon={faAlipay} style={{color: '#1677FF', fontSize: '1em', maxWidth: '30px'}}
+                                        className="m-auto"/>;
             case 'WECHAT_ACCOUNT':
-                return <FontAwesomeIcon icon={faWeixin} style={{ color: '#07C160', fontSize: '1em', maxWidth: '30px' }}  className="m-auto"/>;
+                return <FontAwesomeIcon icon={faWeixin} style={{color: '#07C160', fontSize: '1em', maxWidth: '30px'}}
+                                        className="m-auto"/>;
             case 'BANK_ACCOUNT':
-                return <FontAwesomeIcon icon={faUniversity} style={{ color: '#FF4500', fontSize: '1em', maxWidth: '30px'}}  className="m-auto"/>;
+                return <FontAwesomeIcon icon={faUniversity}
+                                        style={{color: '#FF4500', fontSize: '1em', maxWidth: '30px'}}
+                                        className="m-auto"/>;
             default:
                 return null;
         }
@@ -49,28 +53,36 @@ const ReceiverAccountsTable: React.FC<ReceiverAccountsFormProps> = async ({ init
             <table className="min-w-full divide-y divide-border">
                 <thead className="bg-muted">
                 <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <th scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         {t('accountName')}
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <th scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         {t('accountCategory')}
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <th scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         {t('identifierType')}
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <th scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         {t('identifierValue')}
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <th scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         {t('bankName')}
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <th scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         {t('country')}
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <th scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         {t('cardHolderName')}
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <th scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         {t('creationDate')}
                     </th>
                 </tr>
@@ -101,22 +113,26 @@ const ReceiverAccountsTable: React.FC<ReceiverAccountsFormProps> = async ({ init
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                             {account.receiverAccountIdentifier === 'EMAIL' ? account.email :
                                 account.receiverAccountIdentifier === 'PHONE_NUMBER' ? account.phoneNumber :
-                                    account.receiverAccountIdentifier === 'QR_CODE_IMAGE' ? (account.qrCodeImageUrl ? t('qrCodeLink') : t('noQrCode')) :
+                                    account.receiverAccountIdentifier === 'QR_CODE_IMAGE' ? (account.qrCodeUrl ? t('qrCodeLink') : t('noQrCode')) :
                                         account.receiverAccountIdentifier === 'NONE' ? account.bankAccountNumber :
                                             t('notApplicable')}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                            {account.bankName || account.bank?.bankName || t('notApplicable')}
+                            {account.bank?.bankName || account.bank?.bankName || t('notApplicable')}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                            {account.country?.countryName || t('notApplicable')}
+                            {account.bank?.country?.countryName || t('notApplicable')}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                             {account.cardHolderName || t('notApplicable')}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                            {new Date(account.creationDate).toLocaleDateString(locale)}
-                        </td>
+
+                        {account?.creationDate &&
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
+                                {new Date(account.creationDate).toLocaleDateString(locale)}
+                            </td>
+                        }
+
                     </tr>
                 ))}
                 </tbody>
