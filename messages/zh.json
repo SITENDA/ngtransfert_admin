@@ -19,7 +19,8 @@
     "topUpRequestsLink": "充值请求",
     "transferRequestsLink": "转账请求",
     "settledTransfersLink": "已结算转账",
-    "allSendingRecordsLink": "所有发送记录"
+    "allSendingRecordsLink": "所有发送记录",
+    "noAccountsFoundMessage": "未找到任何账户。"
   },
   "Header": {
     "signIn": "登录",
@@ -29,7 +30,8 @@
     "dark": "暗模式",
     "system": "系统",
     "toggleTheme": "切换模式",
-    "changeLanguage": "更改语言"
+    "changeLanguage": "更改语言",
+    "settings": "设置"
   },
   "ContactUsPage": {
     "contactUs": "联系我们",
@@ -323,5 +325,15 @@
       "countryOfDepositId": "存款国家为必填项。",
       "topUpMethod": "充值方式为必填项。"
     }
+  },
+  "UserProfile": {
+    "yourProfile": "您的资料",
+    "editSettings": "编辑设置",
+    "changeProfilePicture": "更换头像",
+    "fullName": "全名",
+    "username": "用户名",
+    "email": "电子邮箱",
+    "registeredOn": "注册日期",
+    "uploading": "正在上传..."
   }
 }

@@ -138,12 +138,12 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({
-    children,
-    params
-  }: {
+                                             children,
+                                             params
+                                         }: {
     children: React.ReactNode;
     params: Promise<{locale: string}>;
-  }) {
+}) {
 
     const { locale } =  await params;
     if (!routing.locales.includes(locale as "en" | "fr" | "zh")) {
@@ -151,36 +151,36 @@ export default async function RootLayout({
     }
 
     // Providing all messages to the client
-  // side is the easiest way to get started
-  const messages = await getMessages();
+    // side is the easiest way to get started
+    const messages = await getMessages();
 
 
     return (
         <html lang="en" suppressHydrationWarning>
-            <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-            >
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="system"
-                    enableSystem
-                    disableTransitionOnChange
-                >
-                    <SessionProvider>
-                    <NextIntlClientProvider messages={messages}>
-                        <Header />
-                        <main className="flex-grow flex flex-col min-h-screen justify-center text-center w-full pt-10 bg-black bg-home-img bg-cover bg-center">
-                            {/*flex flex-col min-h-screen bg-black bg-home-img bg-cover bg-center*/}
-                            <AuthProvider>
+        <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+        >
+            <SessionProvider>
+                <NextIntlClientProvider messages={messages}>
+                    <Header />
+                    <main className="flex-grow flex flex-col min-h-screen justify-center text-center w-full pt-10 bg-black bg-home-img bg-cover bg-center">
+                        {/*flex flex-col min-h-screen bg-black bg-home-img bg-cover bg-center*/}
+                        <AuthProvider>
                             {children}
                             <Toaster />
-                            </AuthProvider>
-                        </main>
-                        <FooterAdmin />
-                    </NextIntlClientProvider>
-                    </SessionProvider>
-                </ThemeProvider>
-            </body>
+                        </AuthProvider>
+                    </main>
+                    <FooterAdmin />
+                </NextIntlClientProvider>
+            </SessionProvider>
+        </ThemeProvider>
+        </body>
         </html>
     );
 }

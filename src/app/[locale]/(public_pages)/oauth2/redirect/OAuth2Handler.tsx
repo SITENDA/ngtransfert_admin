@@ -2,7 +2,7 @@
 'use client'; // This directive is essential for client-side hooks
 
 import { useEffect, useState } from 'react';
-import { signIn } from "next-auth/react"; // Import Next-Auth's signIn for client-side
+import {signIn, useSession} from "next-auth/react"; // Import Next-Auth's signIn for client-side
 import { useAuth } from '@/context/AuthContext'; // Assuming your AuthContext for client-side state
 import { useTranslations } from 'next-intl';
 import {User} from "next-auth";
@@ -23,6 +23,8 @@ export default function OAuth2Handler({ token, fetchedUser, locale }: OAuth2Hand
 
     const [isLoading, setIsLoading] = useState(true);
     const [authError, setAuthError] = useState<string | null>(null);
+
+    const { data: session, update } = useSession();
 
     useEffect(() => {
         const establishSession = async () => {
@@ -54,7 +56,16 @@ export default function OAuth2Handler({ token, fetchedUser, locale }: OAuth2Hand
                 });
 
 
-                login(fetchedUser, token);
+                // 🔁 Force NextAuth to update the session
+                await update({
+                    ...session, // spread current session
+                    user: fetchedUser, // updated user info from backend
+                    accessToken: token,
+                    accessTokenExpires,
+                });
+
+
+                router.refresh();
 
                 // console.log('Client Component: Next-Auth session established. Redirecting to dashboard...');
                 // --- Redirect the user to your main application dashboard ---

@@ -136,7 +136,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     ],
     callbacks: {
         // This callback is called whenever a JWT is created (e.g., on sign-in)
-        async jwt({ token, user }) {
+        async jwt({ token, user, trigger, session }) {
+
+            if (trigger === "update") {
+                console.log("Update trigger has been called");
+                return { ...token, ...session.user };
+            }
             // `user` is the object returned by the `authorize` function of the CredentialsProvider
             if (user) {
                 token.id = user.id;

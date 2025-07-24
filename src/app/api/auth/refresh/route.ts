@@ -1,6 +1,6 @@
 // src/app/api/auth/refresh/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { signIn } from '@/auth'; // From your NextAuth config — use this only if you’re using `export const { signIn } = NextAuth(...)`
+import getSession from "@/lib/getSession";
 
 export async function POST(req: NextRequest) {
     const backendApiBaseUrl = process.env.BACKEND_API_BASE_URL || 'http://localhost:8080';
@@ -42,15 +42,20 @@ export async function POST(req: NextRequest) {
         const newAccessToken = newTokens.data.token;
         const user = newTokens.data.user;
 
-        console.log("➤ Refresh returned user:", user?.email || 'unknown');
+        console.log("➤ Refresh returned user:", user);
+        console.log("➤ Refresh returned token:", newAccessToken);
 
-        // Re-authenticate via NextAuth to update session JWT cookie
-        await signIn("credentials", {
-            accessToken: newAccessToken,
-            userData: JSON.stringify(user),
-            redirect: false,
-            req // ensures JWT/session cookie is tied to current context
-        });
+        const session= await getSession();
+        console.log("Current session is : ", session);
+
+
+        if (session) {
+            session.user = user;
+            session.accessToken = newAccessToken;
+        }
+
+        console.log("Updated session-inside :", session?.accessToken);
+        console.log("Updated session-return :", newAccessToken);
 
         const setCookieHeader = response.headers.get('Set-Cookie');
         const responseWithCookies = NextResponse.json({ success: true, tokens: newTokens }, { status: 200 });

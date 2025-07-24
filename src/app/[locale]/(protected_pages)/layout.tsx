@@ -1,4 +1,4 @@
-// app/[locale]/(protected_pages)/layout.tsx
+// app/[locale]/(protected_pages)/_layout.tsx
 import getSession from "@/lib/getSession";
 import { redirect } from "next/navigation";
 import { User } from "next-auth";

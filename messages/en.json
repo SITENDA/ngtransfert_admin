@@ -19,7 +19,8 @@
     "topUpRequestsLink": "Top Up Requests",
     "transferRequestsLink": "Transfer Requests",
     "settledTransfersLink": "Settled Transfers",
-    "allSendingRecordsLink": "All Sending Records"
+    "allSendingRecordsLink": "All Sending Records",
+    "noAccountsFoundMessage": "No accounts found."
   },
   "Header": {
     "signIn": "Sign In",
@@ -29,7 +30,8 @@
     "dark": "dark",
     "system": "system",
     "toggleTheme": "Toggle Mode",
-    "changeLanguage": "Change Language"
+    "changeLanguage": "Change Language",
+    "settings": "Settings"
   },
   "ContactUsPage": {
     "contactUs": "Contact Us",
@@ -389,5 +391,15 @@
       "countryOfDepositId": "Country of Deposit is required.",
       "topUpMethod": "Top Up Method is required."
     }
+  },
+  "UserProfile": {
+    "yourProfile": "Your Profile",
+    "editSettings": "Edit Settings",
+    "changeProfilePicture": "Change Picture",
+    "fullName": "Full Name",
+    "username": "Username",
+    "email": "Email Address",
+    "registeredOn": "Registered On",
+    "uploading": "Uploading..."
   }
 }

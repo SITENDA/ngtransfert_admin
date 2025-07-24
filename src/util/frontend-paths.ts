@@ -14,3 +14,9 @@ export const kaasitomaPaths = {
     topUpInstructionsPath: "/kaasitoma/top-up/instructions?",
     topUpRequestDetailsPath: "/kaasitoma/top-up/request-details",
 }
+
+export const generalPaths = {
+    settingsPath: "/settings",
+    userProfilePath: "/user/",
+    loginPath: "/login",
+}

@@ -53,7 +53,7 @@ declare module "next-auth" {
     userId: number; // Original userId from DTO
     username: string;
     fullName?: string;
-    profileImageUrl?: string;
+    profileImageUrl: string;
     enabled: boolean;
     registrationDate: string;
     roles: Array<{ id: number; roleName: string }>; // Full roles array

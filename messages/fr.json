@@ -19,7 +19,8 @@
     "topUpRequestsLink": "Demandes de Recharge",
     "transferRequestsLink": "Demandes de Transfert",
     "settledTransfersLink": "Transferts Réglés",
-    "allSendingRecordsLink": "Tous les Historiques d'Envoi"
+    "allSendingRecordsLink": "Tous les Historiques d'Envoi",
+    "noAccountsFoundMessage": "Aucun compte trouvé."
   },
   "Header": {
     "signIn": "Se Connecter",
@@ -29,7 +30,8 @@
     "dark": "sombre",
     "system": "système",
     "toggleTheme": "Mode bascule",
-    "changeLanguage": "Changer la langue"
+    "changeLanguage": "Changer la langue",
+    "settings": "Paramètres"
   },
   "ContactUsPage": {
     "contactUs": "Contactez-nous",
@@ -323,5 +325,15 @@
       "countryOfDepositId": "Le pays de dépôt est requis.",
       "topUpMethod": "La méthode de recharge est requise."
     }
+  },
+  "UserProfile": {
+    "yourProfile": "Votre profil",
+    "editSettings": "Modifier les paramètres",
+    "changeProfilePicture": "Changer la photo",
+    "fullName": "Nom complet",
+    "username": "Nom d'utilisateur",
+    "email": "Adresse e-mail",
+    "registeredOn": "Inscrit le",
+    "uploading": "Téléchargement en cours..."
   }
 }
