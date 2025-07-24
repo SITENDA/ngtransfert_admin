@@ -1,6 +1,7 @@
 // src/app/api/auth/refresh/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import getSession from "@/lib/getSession";
+import {Session, User} from "next-auth";
 
 export async function POST(req: NextRequest) {
     const backendApiBaseUrl = process.env.BACKEND_API_BASE_URL || 'http://localhost:8080';
@@ -36,16 +37,16 @@ export async function POST(req: NextRequest) {
 
         if (!response.ok || !newTokens?.data?.token || !newTokens?.data?.user) {
             console.error("➤ Backend refresh failed or malformed data:", newTokens);
-            return NextResponse.json({ error: 'Refresh failed', details: newTokens }, { status: response.status });
+            return NextResponse.json({ error: newTokens?.message || 'Refresh failed', details: newTokens }, { status: response.status });
         }
 
         const newAccessToken = newTokens.data.token;
-        const user = newTokens.data.user;
+        const user: User = newTokens.data.user;
 
         console.log("➤ Refresh returned user:", user);
         console.log("➤ Refresh returned token:", newAccessToken);
 
-        const session= await getSession();
+        const session: Session | null = await getSession();
 
         if (session) {
             session.user = user;

@@ -4,10 +4,11 @@ import React, { useRef, useState, useTransition } from "react";
 import Image from "next/image";
 import { User } from "next-auth";
 import { Button } from "@/components/ui/button";
-import { useTranslations } from "next-intl";
+import {useLocale, useTranslations} from "next-intl";
 import { uploadProfileImageAction } from "@/lib/actions/uploadProfileImageAction";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import {signOut, useSession} from "next-auth/react";
+import {generalPaths} from "@/util/frontend-paths";
 
 function ProfileImageChanger({ user }: { user: User }) {
     const t = useTranslations("UserProfile");
@@ -15,6 +16,16 @@ function ProfileImageChanger({ user }: { user: User }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
     const { update } = useSession();
+    const locale = useLocale();
+    const {data: session} = useSession();
+
+    if (!session || !session.user || !session.accessToken) {
+        window.location.replace(`/${locale}${generalPaths.loginPath}?ensobi=signedout`);
+        signOut({
+            redirect: true,
+            callbackUrl: `/${locale}${generalPaths.loginPath}?ensobi=signedout`,
+        });
+    }
 
     // NEW: Local image state to update immediately after upload
     const [imageUrl, setImageUrl] = useState<string>(user.profileImageUrl);

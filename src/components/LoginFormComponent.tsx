@@ -39,7 +39,7 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
     }, [locale]);
 
     useEffect(() => {
-        if (status === "authenticated" && session?.user?.ekiddako) {
+        if (status === "authenticated" && session?.user?.ekiddako && session?.accessToken != null) {
             router.replace(`/${session.user.ekiddako}`, { scroll: false });
         }
     }, [status, session, router]);

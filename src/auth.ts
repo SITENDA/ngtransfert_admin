@@ -3,6 +3,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { decodeJwtExpiry } from "@/util/decodeJwtExpiry";
 import type { User } from "next-auth";
+import {refreshAccessToken} from "@/util/refreshAccessToken";
 
 interface RoleDTO {
     id: number;
@@ -77,6 +78,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                             userId: user.userId,
                             username: user.username,
                             fullName: user.fullName,
+                            phoneNumber: user.phoneNumber,
                             profileImageUrl: user.profileImageUrl,
                             enabled: user.enabled,
                             registrationDate: user.registrationDate,
@@ -115,6 +117,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                             userId: user.userId,
                             username: user.username,
                             fullName: user.fullName,
+                            phoneNumber: user.phoneNumber,
                             profileImageUrl: user.profileImageUrl,
                             enabled: user.enabled,
                             registrationDate: user.registrationDate,
@@ -138,10 +141,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // This callback is called whenever a JWT is created (e.g., on sign-in)
         async jwt({ token, user, trigger, session }) {
 
-            if (trigger === "update") {
+            console.log("Callbacks jwt part called.");
+            //Add code to decode the token to check its expiry
+
+            // --- Check token expiration ---
+            const now = Date.now();
+            const expiry = typeof token.accessTokenExpires === 'number' ? token.accessTokenExpires : 0;
+
+            if (expiry && now >= expiry) {
+                console.log("Token expired!");// --- Token is expired: attempt to refresh ---
+                console.log("Access token expired, attempting to refresh...");
+                const res = await refreshAccessToken();
+                console.log("Type of response is : ", typeof res, " Response is : ", res);
+                session = null;
+                trigger = undefined;
+                if (res?.error === "InvalidRefreshResponse") {
+                    await signOut();
+                }
+            }
+
+            if (trigger === "update" && session) {
                 console.log("Update trigger has been called, session being updated...");
                 return { ...token, ...session.user };
             }
+
+
             // `user` is the object returned by the `authorize` function of the CredentialsProvider
             if (user) {
                 token.id = user.id;
@@ -163,9 +187,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             }
             return token;
         },
-        // This callback is called whenever a session is accessed (e.g., via `await auth()`)
         // This callback is called whenever a session is accessed (e.g., via `await auth()` or `useSession()`)
         async session({ session, token }) {
+
+            if (session == null) {
+                await signOut();
+            }
             // `token` is the object returned by the `jwt` callback
             // Populate the session object with properties from the JWT token
 

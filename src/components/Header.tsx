@@ -5,7 +5,7 @@ import {NavButton} from "@/components/NavButton";
 import {ModeToggle} from "@/components/ModeToggle";
 import getSession from "@/lib/getSession";
 import SignOutButton from "@/components/SignOutButton";
-import transparentIcon from "@/app/[locale]/favicon-transparent.png";
+import transparentIcon from "@/app/(localized)/[locale]/favicon-transparent.png";
 import {Button} from "@/components/ui/button";
 import {
     DropdownMenu,
