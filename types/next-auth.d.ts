@@ -1,5 +1,5 @@
 // types/next-auth.d.ts
-import { DefaultUser } from "next-auth";
+import {DefaultSession, DefaultUser} from "next-auth";
 
 // IMPORTANT: Define UserDTO here or import from a shared types file
 // This should exactly match the structure you receive from your Spring Boot backend
@@ -20,9 +20,8 @@ declare module "next-auth" {
    * Returned by `useSession`, `auth`, `signIn`, `getSession`
    * Contains properties added in the `session` callback.
    */
-  interface Session {
-    accessToken: string; // Your JWT from Spring Boot
-    accessTokenExpires?: number;
+  interface Session extends DefaultSession {
+    accessToken: JWT; // Your JWT from Spring Boot
     user: User;
   }
 
@@ -31,9 +30,6 @@ declare module "next-auth" {
    * from the `authorize` function.
    */
   interface User extends DefaultUser {
-    accessToken: string; // Your JWT from Spring Boot
-    accessTokenExpires?: number;
-    // --- Add ALL UserDTO properties here ---
     userId: number; // Original userId from DTO
     username: string;
     fullName?: string;
@@ -54,17 +50,10 @@ declare module "next-auth/jwt" {
    * Contains properties added in the `jwt` callback.
    */
   interface JWT {
-    accessToken: string; // Your JWT from Spring Boot
+    accessToken: string;
     accessTokenExpires?: number;
-    // --- Add ALL UserDTO properties here ---
-    userId: number; // Original userId from DTO
-    username: string;
-    fullName?: string;
-    profileImageUrl?: string;
-    enabled: boolean;
-    registrationDate: string;
-    roles: Array<{ id: number; roleName: string }>; // Full roles array
-    role?: string; // Primary role
-    ekiddako?: string; // Add the new custom property
+    isExpired: boolean;
+    user?: User; // ✅ Add this line
   }
+
 }

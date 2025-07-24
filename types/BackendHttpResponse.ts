@@ -18,4 +18,5 @@ export interface ErrorResponse {
 
 export interface ErrorBody {
     error_message: string;
+    message?:  string;
 }

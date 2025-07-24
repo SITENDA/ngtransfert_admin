@@ -1,13 +1,14 @@
 // src/auth.ts
-import NextAuth from "next-auth";
+import NextAuth, {Session} from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { decodeJwtExpiry } from "@/util/decodeJwtExpiry";
 import type { User } from "next-auth";
-import {refreshAccessToken} from "@/util/refreshAccessToken";
+import { jwtDecode } from "jwt-decode";
+import type { AdapterUser } from "next-auth/adapters";
+import type { User as NextAuthUser } from "next-auth";
+import {JWT} from "next-auth/jwt";
 
-interface RoleDTO {
-    id: number;
-    roleName: string;
+interface DecodedToken {
+    exp: number;
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -41,7 +42,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 const identifier = credentials.identifier as string | undefined;
                 const accessToken = credentials.accessToken as string | undefined;
                 const userDataString = credentials.userData as string | undefined;
-                const rawAccessTokenExpires = credentials.accessTokenExpires as string | undefined;
 
                 // Optional: Add a type guard here
                 if ((email || phoneNumber) && password && identifier) {
@@ -65,16 +65,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         token
                     ) {
                         const user = responseData.data.user;
-                        const accessToken = responseData.data.token;
-                        const accessTokenExpires = responseData.data.expiresAt;
-
                         return {
                             id: user.userId.toString(),
                             email: user.email,
                             name: user.fullName || user.username || user.email,
                             image: user.profileImageUrl,
-                            accessToken,
-                            accessTokenExpires,
                             userId: user.userId,
                             username: user.username,
                             fullName: user.fullName,
@@ -100,10 +95,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
                 // If OAuth2-like login with token + user data
                 if (accessToken && userDataString) {
-                    const accessTokenExpires = rawAccessTokenExpires
-                        ? parseInt(rawAccessTokenExpires, 10)
-                        : decodeJwtExpiry(accessToken);
-
                     try {
                         const user = JSON.parse(userDataString);
 
@@ -112,8 +103,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                             email: user.email,
                             name: user.fullName || user.username || user.email,
                             image: user.profileImageUrl,
-                            accessToken,
-                            accessTokenExpires,
                             userId: user.userId,
                             username: user.username,
                             fullName: user.fullName,
@@ -139,83 +128,101 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     ],
     callbacks: {
         // This callback is called whenever a JWT is created (e.g., on sign-in)
-        async jwt({ token, user, trigger, session }) {
+        async jwt({
+                      token,
+                      user,
+                      trigger,
+                      session
+                  }: {
+            token: JWT;
+            user?: User | AdapterUser;
+            trigger?: "signIn" | "update" | "signUp";
+            isNewUser?: boolean;
+            session?: any;
+        }): Promise<JWT> {
+            console.log("\n\n[JWT Callback Start] token:", token, ", user:", user, ", trigger:", trigger, ", session:", session);
 
-            console.log("Callbacks jwt part called.");
-            //Add code to decode the token to check its expiry
-
-            // --- Check token expiration ---
             const now = Date.now();
-            const expiry = typeof token.accessTokenExpires === 'number' ? token.accessTokenExpires : 0;
+            const buffer = 2 * 60 * 1000;
 
-            if (expiry && now >= expiry) {
-                console.log("Token expired!");// --- Token is expired: attempt to refresh ---
-                console.log("Access token expired, attempting to refresh...");
-                const res = await refreshAccessToken();
-                console.log("Type of response is : ", typeof res, " Response is : ", res);
-                session = null;
-                trigger = undefined;
-                if (res?.error === "InvalidRefreshResponse") {
-                    await signOut();
-                }
-            }
-
+            // 🔁 Handle `useSession().update()` flow
             if (trigger === "update" && session) {
-                console.log("Update trigger has been called, session being updated...");
-                return { ...token, ...session.user };
+                const updatedToken: JWT = {
+                    ...token,
+                    accessToken: session.accessToken,
+                    accessTokenExpires: session.accessTokenExpires,
+                    user: session.user,
+                    isExpired: false,
+                };
+                console.log("[JWT Callback] token updated from session.update:", updatedToken);
+                return updatedToken;
             }
 
-
-            // `user` is the object returned by the `authorize` function of the CredentialsProvider
+            // 🔑 Handle new login
             if (user) {
-                token.id = user.id;
-                token.email = user.email;
-                token.name = user.name;
-                token.image = user.image; // Transfer the image URL
-                token.accessToken = user.accessToken;
-                token.accessTokenExpires = user.accessTokenExpires;
-                // --- Transfer all custom properties from `User` to `JWT` token ---
-                token.userId = user.userId; // Cast to any because TS might complain without explicit type for user
-                token.username = user.username;
-                token.fullName = user.fullName;
-                token.profileImageUrl = user.profileImageUrl;
-                token.enabled = user.enabled;
-                token.registrationDate = user.registrationDate;
-                token.roles = user.roles;
-                token.role = user.role;
-                token.ekiddako = user.ekiddako; // Transfer new property
+                const accessToken = token.accessToken || "";
+                let accessTokenExpires = 0;
+
+                if (typeof accessToken === "string") {
+                    try {
+                        const decoded = jwtDecode<DecodedToken>(accessToken);
+                        accessTokenExpires = decoded.exp * 1000;
+                    } catch (e) {
+                        console.error("[JWT Callback] Failed to decode accessToken:", e);
+                    }
+                }
+
+                return {
+                    accessToken,
+                    accessTokenExpires,
+                    isExpired: Date.now() >= accessTokenExpires,
+                    user: {
+                        userId: user.userId,
+                        username: user.username,
+                        fullName: user.fullName,
+                        profileImageUrl: user.profileImageUrl,
+                        phoneNumber: user.phoneNumber,
+                        email: user.email,
+                        enabled: user.enabled,
+                        registrationDate: user.registrationDate,
+                        roles: user.roles,
+                        role: user.role,
+                        ekiddako: user.ekiddako,
+                    },
+                };
             }
+
+            // 🔎 Fallback: calculate expiration
+            const expiry = typeof token.accessTokenExpires === 'number' ? token.accessTokenExpires : 0;
+            const isExpired = expiry && now >= expiry - buffer;
+
+            token.isExpired = Boolean(isExpired);
+
+            console.log("[JWT Callback End] returning token:", token);
             return token;
         },
         // This callback is called whenever a session is accessed (e.g., via `await auth()` or `useSession()`)
-        async session({ session, token }) {
+        async session({ session, token }: {
+            session: Session;
+            token: JWT;
+        }): Promise<Session> {
+            console.log("\n\n[Session Callback Start] token:", token, ", session:", session);
 
-            if (session == null) {
-                await signOut();
-            }
-            // `token` is the object returned by the `jwt` callback
-            // Populate the session object with properties from the JWT token
+            session.accessToken = {
+                accessToken: token.accessToken,
+                accessTokenExpires: token.accessTokenExpires,
+                isExpired: token.isExpired ?? false,
+            };
 
-            if (token.id) session.user.id = token.id as string;
-            if (token.email) session.user.email = token.email as string;
-            if (token.name) session.user.name = token.name as string;
-            if (token.image) session.user.image = token.image as string; // Transfer image to session.user
-            if (token.accessToken) session.accessToken = token.accessToken as string; // Expose JWT in session root
+            const user = token.user as NextAuthUser & { id?: string };
 
-            // --- Expose all custom properties from `JWT` token to `Session.user` ---
-            if (token.userId) session.user.userId = token.userId as number;
-            if (token.username) session.user.username = token.username as string;
-            if (token.fullName) session.user.fullName = token.fullName as string;
-            if (token.profileImageUrl) session.user.profileImageUrl = token.profileImageUrl as string;
-            if (token.enabled !== undefined) session.user.enabled = token.enabled as boolean;
-            if (token.registrationDate) session.user.registrationDate = token.registrationDate as string;
-            if (token.roles) session.user.roles = token.roles as RoleDTO[];
-            if (token.role) session.user.role = token.role as string;
-            if (token.ekiddako) session.user.ekiddako = token.ekiddako as string; // Transfer new property
+            session.user = {
+                ...user,
+                id: user.id ?? user.userId?.toString() ?? "",
+                emailVerified: null, // For AdapterUser compatibility
+            } as AdapterUser & NextAuthUser;
 
-            if (token.accessTokenExpires) {
-                session.accessTokenExpires = token.accessTokenExpires as number; // ✅ Add this
-            }
+            console.log("[Session Callback End] updated session:", session);
             return session;
         },
         async redirect({ url, baseUrl }) {

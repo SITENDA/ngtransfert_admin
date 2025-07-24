@@ -118,8 +118,11 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
     };
 
     const handleOAuth2Login = (provider: string): void => {
-        window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080'}/oauth2/authorization/${provider}`;
+        const redirectUri = `${window.location.origin}/${locale}/oauth2/redirect`;
+        const oauth2Url = `${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080'}/oauth2/authorization/${provider}?redirect_uri=${encodeURIComponent(redirectUri)}`;
+        window.location.href = oauth2Url;
     };
+
 
     return (
         // Outer div for the entire page background (can be handled by a layout component)

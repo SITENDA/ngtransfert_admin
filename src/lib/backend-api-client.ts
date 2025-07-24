@@ -5,6 +5,7 @@ import getSession from "@/lib/getSession";
 import {RefreshApiResponse} from "../../types/RefreshApiResponse";
 import {FetchBackendResult} from "../../types/fetchBackendResult";
 import {User} from "next-auth";
+import {JWT} from "next-auth/jwt";
 
 /**
  * Fetches data from the backend API with authentication headers and robust error handling.
@@ -26,7 +27,9 @@ export async function fetchBackendData<T>(
 ): Promise<FetchBackendResult<T>> {
     const session = await getSession();
 
-    let accessToken: string | undefined = session?.accessToken;
+    console.log("")
+
+    const tokenObject: JWT = session?.accessToken;
 
     const backendApiBaseUrl = process.env.BACKEND_API_BASE_URL || 'http://localhost:8080';
     const fullUrl = `${backendApiBaseUrl}${endpoint}`;
@@ -99,19 +102,22 @@ export async function fetchBackendData<T>(
 
     let response: Response;
 
+
+
     // Step 1: If no token, try to refresh
-    if (!accessToken) {
+    if (tokenObject.isExpired) {
+        console.log("Token was found expired inside fetchBackendData 109");
         const refreshed = await refreshAccessToken();
 
         if (!refreshed) {
             return null; // Return null so caller can trigger logout
         }
 
-        accessToken = refreshed.accessToken;
+        // tokenObject.accessToken = refreshed.accessToken;
     }
 
     // Step 2: Make the request
-    response = await makeFetchRequest(accessToken);
+    response = await makeFetchRequest(tokenObject.accessToken);
 
     // Step 3: Retry on 401/403 if token expired
     if ([401, 403].includes(response.status)) {
@@ -126,14 +132,13 @@ export async function fetchBackendData<T>(
         const isExpired = errorData?.error?.includes("expired") ?? false;
 
         if (isExpired) {
+            console.log("Token was found expired inside fetchBackendData 134");
             const refreshed = await refreshAccessToken();
 
             if (!refreshed) {
                 return null;
             }
-
-            accessToken = refreshed.accessToken;
-            response = await makeFetchRequest(accessToken);
+            response = await makeFetchRequest(tokenObject.accessToken);
         } else {
             return null;
         }
