@@ -5,7 +5,7 @@ import getSession from "@/lib/getSession";
 import { redirect } from 'next/navigation';
 import {getLocale, getTranslations} from 'next-intl/server';
 import { headers } from 'next/headers';
-import { User } from 'next-auth';
+import {Session, User} from 'next-auth';
 
 import ReceiverAccountsTable from "./ReceiverAccountsTable";
 import PublicWrapper from "@/components/PublicWrapper";
@@ -14,6 +14,7 @@ import {
     ReceiverAccountsPayload
 } from "../../../../../../types/receiver-account";
 import {BackendGenericResponse} from "../../../../../../types/BackendGenericResponse";
+import {JWT} from "next-auth/jwt";
 
 // URL for the Next.js API proxy that will fetch receiver accounts from Spring Boot
 // Now, we'll construct this URL to include the clientId as a query parameter.
@@ -24,7 +25,7 @@ export default async function ReceiverAccountsPage() {
     const locale = await getLocale();
 
     // 1. Authentication Check (Server-side Guard)
-    const session = await getSession();
+    const session: Session | null = await getSession();
     const user: User | undefined | null = session?.user;
 
     if (!session || !user || !user.userId || !session.accessToken) {
@@ -32,7 +33,7 @@ export default async function ReceiverAccountsPage() {
         redirect(`/${locale}/login`);
     }
 
-    const accessToken = session.accessToken;
+    const tokenObject: JWT = session?.accessToken;
     const clientId = user.userId; // Get clientId from authenticated user
 
     let receiverAccounts: ReceiverAccount[] = [];
@@ -48,7 +49,7 @@ export default async function ReceiverAccountsPage() {
         const response = await fetch(BASE_GET_RECEIVER_ACCOUNTS_PROXY_URL, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${accessToken}`,
+                'Authorization': `Bearer ${tokenObject.accessToken}`,
                 ...(cookieHeader && { 'Cookie': cookieHeader }),
             },
             next: {

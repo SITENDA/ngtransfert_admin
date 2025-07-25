@@ -2,6 +2,7 @@
 "use server";
 
 import getSession from "@/lib/getSession";
+import {JWT} from "next-auth/jwt";
 
 export async function updateUserProfileAction(profileData: {
     fullName?: string;
@@ -16,7 +17,8 @@ export async function updateUserProfileAction(profileData: {
             return { success: false, message: "Authentication required to update profile." };
         }
 
-        const accessToken = session.accessToken;
+        const tokenObject: JWT = session.accessToken;
+        const accessToken = tokenObject.accessToken;
         const proxyApiUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/profile/updateProfile`;
 
         const response = await fetch(proxyApiUrl, {

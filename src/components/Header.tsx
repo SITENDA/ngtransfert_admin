@@ -68,8 +68,6 @@ export default async function Header() {
                                 themeNames={{light: t('light'), dark: t('dark'), system: t('system')}}/>
                     <LocaleToggle label={t('changeLanguage')}/>
 
-                    {/*{!user?.name && <SignInButton hideOnPathSegment={ekiddakoProp}/>}*/}
-
                     {user && <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon" className="rounded-full">
@@ -96,7 +94,7 @@ export default async function Header() {
                                         )}
 
                                         <div className="flex flex-col">
-                                            <p className="text-base font-medium">{user?.name}</p>
+                                            <p className="text-base font-medium">{user.fullName}</p>
                                             <p className="text-sm text-gray-500">{/* Add any other user info */}</p>
                                         </div>
                                     </div>

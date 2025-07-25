@@ -2,6 +2,7 @@
 "use server"; // <-- IMPORTANT: This directive marks it as a Server Action
 
 import getSession from "@/lib/getSession";
+import {JWT} from "next-auth/jwt";
 // You might need other imports based on what this action previously did,
 // e.g., if it directly fetched from the backend before the proxy.
 
@@ -17,7 +18,8 @@ export async function createReceiverAccountAction(formData: FormData) {
             return { success: false, message: "Authentication required to create a receiver account." };
         }
 
-        const accessToken = session.accessToken;
+        const tokenObject: JWT = session.accessToken;
+        const accessToken = tokenObject.accessToken;
         console.log("Server Action: Using Access Token from session:", accessToken.substring(0, 10) + '...'); // Log a snippet for debugging
 
         // 3. Define the URL for your Next.js API proxy route

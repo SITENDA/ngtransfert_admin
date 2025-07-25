@@ -1,6 +1,7 @@
 "use server";
 
 import getSession from "@/lib/getSession";
+import {JWT} from "next-auth/jwt";
 
 export async function topUpAccountBalanceAction(formData: FormData) {
     try {
@@ -10,8 +11,8 @@ export async function topUpAccountBalanceAction(formData: FormData) {
             console.error("Server Action: Authentication failed. Session or Access Token missing.");
             return { success: false, message: "Authentication required to details account." };
         }
-
-        const accessToken = session.accessToken;
+        const tokenObject: JWT = session.accessToken;
+        const accessToken = tokenObject.accessToken;
         console.log("Server Action: Using Access Token from session:", accessToken.substring(0, 10) + '...');
 
         const proxyApiUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/kaasitoma/topUp/topUpAccountBalance`;

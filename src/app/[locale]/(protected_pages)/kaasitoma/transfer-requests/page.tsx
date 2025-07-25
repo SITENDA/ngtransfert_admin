@@ -13,6 +13,7 @@ import {TransferRequest, TransferRequestsPayload} from "../../../../../../types/
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {kaasitomaPaths} from "@/util/frontend-paths";
 import React from "react";
+import {JWT} from "next-auth/jwt";
 
 // URL for the Next.js API proxy that will fetch transfer requests from Spring Boot
 // Now, we'll construct this URL to include the clientId as a query parameter.
@@ -31,7 +32,8 @@ export default async function TransferRequestsPage() {
         redirect(`/${locale}/login`);
     }
 
-    const accessToken = session.accessToken;
+    const tokenObject: JWT = session.accessToken;
+    const accessToken = tokenObject.accessToken;
     const clientId = user.userId; // Get clientId from authenticated user
 
     let transferRequests: TransferRequest[] = [];
