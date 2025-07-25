@@ -14,12 +14,12 @@ interface RefreshResults {
 }
 
 function SessionUpdater({
-                            tokenIsExpired,
+                            tokenIsExpired = false,
                             canRefresh = true,
                             refreshResults,
                         }: {
-    tokenIsExpired: boolean;
-    canRefresh: boolean;
+    tokenIsExpired?: boolean;
+    canRefresh?: boolean;
     refreshResults?: RefreshResults;
 }) {
     const { data: session, status, update } = useSession();

@@ -140,7 +140,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             isNewUser?: boolean;
             session?: any;
         }): Promise<JWT> {
-            console.log("\n\n[JWT Callback Start] token:", token, ", user:", user, ", trigger:", trigger, ", session:", session);
+            // console.log("\n\n[JWT Callback Start] token:", token, ", user:", user, ", trigger:", trigger, ", session:", session);
 
             const now = Date.now();
             const buffer = 2 * 60 * 1000;
@@ -198,7 +198,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
             token.isExpired = Boolean(isExpired);
 
-            console.log("[JWT Callback End] returning token:", token);
+            // console.log("[JWT Callback End] returning token:", token);
             return token;
         },
         // This callback is called whenever a session is accessed (e.g., via `await auth()` or `useSession()`)
@@ -206,7 +206,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             session: Session;
             token: JWT;
         }): Promise<Session> {
-            console.log("\n\n[Session Callback Start] token:", token, ", session:", session);
+            // console.log("\n\n[Session Callback Start] token:", token, ", session:", session);
 
             session.accessToken = {
                 accessToken: token.accessToken,
@@ -222,7 +222,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 emailVerified: null, // For AdapterUser compatibility
             } as AdapterUser & NextAuthUser;
 
-            console.log("[Session Callback End] updated session:", session);
+            // console.log("[Session Callback End] updated session:", session);
             return session;
         },
         async redirect({ url, baseUrl }) {

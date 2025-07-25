@@ -9,6 +9,7 @@ import {ClickableRow} from "@/components/ClickableRow";
 import {kaasitomaPaths} from "@/util/frontend-paths";
 import {fetchBackendData} from "@/lib/backend-api-client";
 import {DashboardDataPayload} from "../../../../../types/dashboardContent";
+import {FetchBackendResult} from "../../../../../types/fetchBackendResult";
 
 export const metadata = {
     title: "Dashboard", // This could also use t('dashboardTitle') if you want
@@ -30,24 +31,23 @@ export default async function KaasitomaDashboardPage() {
     let topUpRequestsCount = 0;
 
     try {
-        const dashboardDataPayload = await fetchBackendData<DashboardDataPayload>(
+        const dashboardDataPayload: FetchBackendResult<DashboardDataPayload> = await fetchBackendData<DashboardDataPayload>(
             '/kaasitoma/getDashboardContent',
             'GET',
             undefined,
             3600
         );
 
-        console.log("DashboardDataPayload", dashboardDataPayload);
+        // console.log("DashboardDataPayload", dashboardDataPayload);
 
-        // if (!dashboardDataPayload || isRedirectObject(dashboardDataPayload)) {
-        //     redirect(dashboardDataPayload?.redirectTo || `/${locale}/login`);
-        // }
-
-        receiverAccountsCount = dashboardDataPayload.receiverAccountsCount ?? 0;
-        transferRequestsCount = dashboardDataPayload.transferRequestsCount ?? 0;
-        settledTransfersCount = dashboardDataPayload.settledTransfersCount ?? 0;
-        topUpRequestsCount = dashboardDataPayload.topUpRequestsCount ?? 0;
-
+        if (dashboardDataPayload) {
+            receiverAccountsCount = dashboardDataPayload.receiverAccountsCount ?? 0;
+            transferRequestsCount = dashboardDataPayload.transferRequestsCount ?? 0;
+            settledTransfersCount = dashboardDataPayload.settledTransfersCount ?? 0;
+            topUpRequestsCount = dashboardDataPayload.topUpRequestsCount ?? 0;
+        } else {
+            console.warn("Dashboard data payload is null or unsuccessful.");
+        }
     } catch (error) {
         console.error("DashboardPage: Error during dashboard data fetching:", error);
     }
