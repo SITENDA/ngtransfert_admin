@@ -15,6 +15,9 @@ import {
 } from "../../../../../../types/receiver-account";
 import {BackendGenericResponse} from "../../../../../../types/BackendGenericResponse";
 import {JWT} from "next-auth/jwt";
+import {kaasitomaPaths} from "@/util/frontend-paths";
+import {Button} from "@/components/ui/button";
+import {Link} from "@/i18n/navigation";
 
 // URL for the Next.js API proxy that will fetch receiver accounts from Spring Boot
 // Now, we'll construct this URL to include the clientId as a query parameter.
@@ -93,6 +96,17 @@ export default async function ReceiverAccountsPage() {
                 <h2 className="text-3xl font-bold mb-6 text-center text-foreground">
                     {t('pageTitle')}
                 </h2>
+                <div className="flex justify-end mb-6">
+                    <Link href={kaasitomaPaths.addReceiverAccountPath} passHref>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+                        >
+                            {t('addReceiverAccountButton')}
+                        </Button>
+                    </Link>
+                </div>
                 <ReceiverAccountsTable initialReceiverAccounts={receiverAccounts} />
             </div>
         </PublicWrapper>

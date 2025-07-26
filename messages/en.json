@@ -126,7 +126,8 @@
     "reset" : "Reset"
   },
   "ReceiverAccountsPage": {
-    "pageTitle": "Manage Receiver Accounts"
+    "pageTitle": "Manage Receiver Accounts",
+    "addReceiverAccountButton": "Add Receiver Account"
   },
   "ReceiverAccountsTable": {
     "noAccountsFound": "No receiver accounts found.",

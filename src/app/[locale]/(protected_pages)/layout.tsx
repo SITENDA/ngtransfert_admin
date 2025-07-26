@@ -30,6 +30,7 @@ export default async function ProtectedLayout({children}: ProtectedLayoutProps) 
 
     if (token?.isExpired) {
         const refreshed = await refreshAccessTokenServer();
+        console.log("refreshAccessTokenServer inside ProtectedLayout : ", refreshed);
 
         if (!refreshed.success) {
             console.error("❌ Failed to refresh token:", refreshed.message);

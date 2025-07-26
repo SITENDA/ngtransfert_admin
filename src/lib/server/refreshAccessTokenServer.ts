@@ -20,6 +20,7 @@ export type RefreshResult =
 export async function refreshAccessTokenServer(): Promise<RefreshResult> {
     const headersList = await headers();
     const cookie = headersList.get("cookie");
+    console.log("refreshAccessTokenServer called");
 
     const backendUrl = process.env.BACKEND_API_BASE_URL || "http://localhost:8080";
     const refreshUrl = `${backendUrl}/auth/refresh`;

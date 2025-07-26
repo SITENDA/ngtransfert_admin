@@ -14,7 +14,7 @@ export interface ReceiverAccount {
 
     qrCodeUrl?: string | null;
     qrCodeContent?: string | null;
-    email?: string | null;
+    email?: string;
     phoneNumber?: string | null;
 
     balance: number;

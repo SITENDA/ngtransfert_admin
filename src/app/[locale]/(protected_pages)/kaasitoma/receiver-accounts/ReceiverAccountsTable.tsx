@@ -10,7 +10,10 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faWeixin, faAlipay} from '@fortawesome/free-brands-svg-icons'; // WeChat and Alipay icons
 import {faUniversity} from '@fortawesome/free-solid-svg-icons';
 import {getLocale, getTranslations} from "next-intl/server";
-import {kaasitomaPaths} from "@/util/frontend-paths"; // Bank icon
+import {kaasitomaPaths} from "@/util/frontend-paths";
+import EmailDisplay from "@/components/EmailDisplay";
+import PhoneNumberDisplay from "@/components/PhoneNumberDisplay";
+import ImageDisplay from "@/components/ImageDisplay"; // Bank icon
 
 interface ReceiverAccountsFormProps {
     initialReceiverAccounts: ReceiverAccount[];
@@ -111,12 +114,16 @@ const ReceiverAccountsTable: React.FC<ReceiverAccountsFormProps> = async ({initi
                             {t(account.receiverAccountIdentifier.toLowerCase())}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                            {account.receiverAccountIdentifier === 'EMAIL' ? account.email :
-                                account.receiverAccountIdentifier === 'PHONE_NUMBER' ? account.phoneNumber :
-                                    account.receiverAccountIdentifier === 'QR_CODE_IMAGE' ? (account.qrCodeUrl ? t('qrCodeLink') : t('noQrCode')) :
-                                        account.receiverAccountIdentifier === 'NONE' ? account.bankAccountNumber :
-                                            t('notApplicable')}
+                            {account.receiverAccountIdentifier === 'EMAIL' && account?.email? (
+                                <EmailDisplay email={account.email} />
+                            ) : account.receiverAccountIdentifier === 'PHONE_NUMBER' && account?.phoneNumber ? (
+                                <PhoneNumberDisplay phoneNumber={account.phoneNumber}/>) :
+                                account.receiverAccountIdentifier === 'QR_CODE_IMAGE' && account.qrCodeUrl ? (
+                                    <ImageDisplay imageUrl={account.qrCodeUrl} title="Wechat QR Code"/>) :
+                                    account.receiverAccountIdentifier === 'NONE' ? account.bankAccountNumber :
+                                        t('notApplicable')}
                         </td>
+
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                             {account.bank?.bankName || account.bank?.bankName || t('notApplicable')}
                         </td>

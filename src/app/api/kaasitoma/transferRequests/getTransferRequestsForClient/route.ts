@@ -50,6 +50,7 @@ export async function GET(request: NextRequest) {
             console.error(`Proxy API (getAllTransferRequests): Error from backend: ${backendResponse.status} ${backendResponse.statusText} - ${responseBodyText}`);
             try {
                 // Attempt to parse the error response as JSON.
+                console.log("responseBodyText in getTransferRequestsForClient/route.ts (non-OK responses from the backend): ", responseBodyText);
                 const errorJson = JSON.parse(responseBodyText);
                 return NextResponse.json(errorJson, { status: backendResponse.status });
             } catch {
@@ -63,12 +64,16 @@ export async function GET(request: NextRequest) {
 
         // Handle successful responses from the backend.
         try {
-            // Parse the successful response as JSON.
+            if (!responseBodyText || responseBodyText.trim() === "") {
+                console.warn('Proxy API: Backend returned 200 OK with empty body. Returning empty object.');
+                return NextResponse.json({}, { status: 200 });
+            }
+
             const responseData = JSON.parse(responseBodyText);
-            // console.log('Proxy API (getTransferRequestsForClient): Backend response data (first 200 chars):', JSON.stringify(responseData).substring(0, 200));
+            console.log("Proxy API: Parsed backend JSON response:", responseData);
             return NextResponse.json(responseData, { status: backendResponse.status });
+
         } catch (jsonParseError) {
-            // Log an error if JSON parsing fails despite an OK status.
             console.error('Proxy API (getTransferRequestsForClient): Failed to parse backend response as JSON despite OK status:', jsonParseError);
             console.error('Proxy API (getTransferRequestsForClient): Offending response text:', responseBodyText);
             return NextResponse.json(

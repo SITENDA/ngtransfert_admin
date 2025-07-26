@@ -126,7 +126,8 @@
     "reset": "Réinitialiser"
   },
   "ReceiverAccountsPage": {
-    "pageTitle": "Gérer les comptes de bénéficiaires"
+    "pageTitle": "Gérer les comptes de bénéficiaires",
+    "addReceiverAccountButton": "Ajouter un Compte Bénéficiaire"
   },
   "ReceiverAccountsTable": {
     "noAccountsFound": "Aucun compte de bénéficiaire trouvé.",

@@ -126,7 +126,8 @@
     "reset": "重置"
   },
   "ReceiverAccountsPage": {
-    "pageTitle": "管理收款账户"
+    "pageTitle": "管理收款账户",
+    "addReceiverAccountButton": "添加收款账户"
   },
   "ReceiverAccountsTable": {
     "noAccountsFound": "未找到收款账户。",

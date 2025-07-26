@@ -1,6 +1,4 @@
 // app/[locale]/dashboard/page.tsx
-import { Link } from "@/i18n/navigation";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { redirect } from "next/navigation";
 import {getLocale, getTranslations} from "next-intl/server"; // Keep getTranslations for server component
@@ -111,15 +109,6 @@ export default async function KaasitomaDashboardPage() {
                     <CardTitle className="text-3xl font-bold text-blue-700 dark:text-blue-300">
                         {t('clientDashboardTitle')}
                     </CardTitle>
-                    <Link href={kaasitomaPaths.addReceiverAccountPath} passHref>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
-                        >
-                            {t('addReceiverAccountButton')}
-                        </Button>
-                    </Link>
                 </CardHeader>
 
                 <CardContent className="flex-grow p-6 space-y-8">
