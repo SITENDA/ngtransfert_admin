@@ -4,7 +4,8 @@ import { getTranslations } from "next-intl/server"; // Import getLocale
 import { ResponseTopUpRequest } from "../../../../../../../types/response-top-up-request";
 import { TopUpMethodEnum } from "@/enums/TopUpMethodEnum"; // Ensure TopUpMethodEnum is imported if used for display
 import { Link } from "@/i18n/navigation"; // Assuming you want to link to details
-import { kaasitomaPaths } from "@/util/frontend-paths"; // Import paths if linking to details
+import { kaasitomaPaths } from "@/util/frontend-paths";
+import ImageDisplay from "@/components/ImageDisplay"; // Import paths if linking to details
 
 interface TopUpRequestsTableProps { // Renamed for clarity in the file
     initialTopUpRequests: ResponseTopUpRequest[];
@@ -108,15 +109,7 @@ const TopUpRequestsTable: React.FC<TopUpRequestsTableProps> = async ({ initialTo
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                             {request.proofPictureUrl ? (
-                                <a
-                                    href={request.proofPictureUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-blue-600 hover:underline"
-                                    // onClick={(e) => e.stopPropagation()} // Prevent row link from triggering
-                                >
-                                    {t('viewProof')}
-                                </a>
+                                <ImageDisplay imageUrl={request.proofPictureUrl} title="Proof Picture" />
                             ) : (
                                 t('noProof')
                             )}

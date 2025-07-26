@@ -127,6 +127,7 @@
   },
   "ReceiverAccountsPage": {
     "pageTitle": "Gérer les comptes de bénéficiaires",
+    "chooseReceiverAccountTitle": "Choisir un compte bénéficiaire",
     "addReceiverAccountButton": "Ajouter un Compte Bénéficiaire"
   },
   "ReceiverAccountsTable": {
@@ -254,7 +255,8 @@
     }
   },
   "TopUpRequestsPage": {
-    "pageTitle": "Mes Demandes de Recharge"
+    "pageTitle": "Mes Demandes de Recharge",
+    "topUp": "Recharger"
   },
   "TopUpRequestsTable": {
     "topUpId": "ID Recharge",

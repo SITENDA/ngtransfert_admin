@@ -16,7 +16,7 @@ const ImageDisplay: React.FC<ImageDisplayProps> = ({ imageUrl, title }) => {
 
     useEffect(() => {
         console.log("imageUrl : ", imageUrl);
-    }, []);
+    }, [imageUrl]);
 
     const urlToUse =
         imageUrl && imageUrl.startsWith('http')

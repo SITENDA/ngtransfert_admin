@@ -16,7 +16,10 @@ import Image from "next/image";
 import CountryFlag from "@/components/CountryFlag";
 import React from "react";
 import {getTranslations} from "next-intl/server";
-import {isRedirectObject} from "@/util/typeguards"; // Import the fetch utility
+import {isRedirectObject} from "@/util/typeguards";
+import EmailDisplay from "@/components/EmailDisplay";
+import PhoneNumberDisplay from "@/components/PhoneNumberDisplay";
+import ImageDisplay from "@/components/ImageDisplay"; // Import the fetch utility
 
 interface DetailRowProps {
     label: string;
@@ -155,13 +158,11 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { re
                         {/* Conditional fields that might be present */}
                         {receiverAccount.qrCodeUrl && (
                             <DetailRow label={t('qrCodeImage')}>
-                                <a href={receiverAccount.qrCodeUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                                    {t('viewImage')}
-                                </a>
+                                <ImageDisplay imageUrl={receiverAccount.qrCodeUrl} title="Wechat QR Code"/>
                             </DetailRow>
                         )}
-                        {receiverAccount.email && <DetailRow label={t('email')} value={receiverAccount.email} />}
-                        {receiverAccount.phoneNumber && <DetailRow label={t('phoneNumber')} value={receiverAccount.phoneNumber} />}
+                        {receiverAccount.email && <DetailRow label={t('email')} value={<EmailDisplay email={receiverAccount.email} />} />}
+                        {receiverAccount.phoneNumber && <DetailRow label={t('phoneNumber')} value={<PhoneNumberDisplay phoneNumber={receiverAccount.phoneNumber}/>} />}
                     </section>
 
                     {/* Balance & Limit Section */}

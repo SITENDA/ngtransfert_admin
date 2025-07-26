@@ -4,7 +4,6 @@
 import getSession from "@/lib/getSession";
 import { redirect } from 'next/navigation';
 import {getLocale, getTranslations} from 'next-intl/server';
-import { headers } from 'next/headers';
 import {Session, User} from 'next-auth';
 
 import ReceiverAccountsTable from "./ReceiverAccountsTable";
@@ -18,14 +17,19 @@ import {JWT} from "next-auth/jwt";
 import {kaasitomaPaths} from "@/util/frontend-paths";
 import {Button} from "@/components/ui/button";
 import {Link} from "@/i18n/navigation";
+import {headers} from "next/headers";
 
 // URL for the Next.js API proxy that will fetch receiver accounts from Spring Boot
 // Now, we'll construct this URL to include the clientId as a query parameter.
 const BASE_GET_RECEIVER_ACCOUNTS_PROXY_URL = `${process.env.NEXT_PUBLIC_APP_URL}/api/kaasitoma/receiverAccounts/getAllReceiverAccounts`;
 
-export default async function ReceiverAccountsPage() {
+export default async function ReceiverAccountsPage({ searchParams }: { searchParams: Record<string, string> })  {
     const t = await getTranslations('ReceiverAccountsPage');
     const locale = await getLocale();
+
+    const searchParamsToUse = await searchParams;
+    const fromParam = searchParamsToUse.from;
+    const isFromTopUp = fromParam === 'topUp';
 
     // 1. Authentication Check (Server-side Guard)
     const session: Session | null = await getSession();
@@ -94,7 +98,7 @@ export default async function ReceiverAccountsPage() {
                 dark:bg-gray-800/80 dark:border-gray-700 min-h-[800px]
             ">
                 <h2 className="text-3xl font-bold mb-6 text-center text-foreground">
-                    {t('pageTitle')}
+                    {isFromTopUp ? t('chooseReceiverAccountTitle') : t('pageTitle')}
                 </h2>
                 <div className="flex justify-end mb-6">
                     <Link href={kaasitomaPaths.addReceiverAccountPath} passHref>
@@ -107,7 +111,7 @@ export default async function ReceiverAccountsPage() {
                         </Button>
                     </Link>
                 </div>
-                <ReceiverAccountsTable initialReceiverAccounts={receiverAccounts} />
+                <ReceiverAccountsTable initialReceiverAccounts={receiverAccounts} isFromTopUp={isFromTopUp}/>
             </div>
         </PublicWrapper>
     );

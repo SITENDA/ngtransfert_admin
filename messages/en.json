@@ -127,6 +127,7 @@
   },
   "ReceiverAccountsPage": {
     "pageTitle": "Manage Receiver Accounts",
+    "chooseReceiverAccountTitle": "Choose Receiver Account",
     "addReceiverAccountButton": "Add Receiver Account"
   },
   "ReceiverAccountsTable": {
@@ -276,7 +277,8 @@
     }
   },
   "TopUpRequestsPage": {
-    "pageTitle": "My Top-Up Requests"
+    "pageTitle": "My Top-Up Requests",
+    "topUp" : "Top Up"
   },
   "TopUpRequestsTable": {
     "noTopUpRequestsFound": "No top-up requests found.",

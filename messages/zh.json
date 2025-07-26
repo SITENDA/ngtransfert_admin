@@ -127,6 +127,7 @@
   },
   "ReceiverAccountsPage": {
     "pageTitle": "管理收款账户",
+    "chooseReceiverAccountTitle": "选择收款账户",
     "addReceiverAccountButton": "添加收款账户"
   },
   "ReceiverAccountsTable": {
@@ -254,7 +255,8 @@
     }
   },
   "TopUpRequestsPage": {
-    "pageTitle": "我的充值请求"
+    "pageTitle": "我的充值请求",
+    "topUp": "充值"
   },
   "TopUpRequestsTable": {
     "topUpId": "充值ID",

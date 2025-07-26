@@ -1,27 +1,23 @@
 // src/app/[locale]/(protected_pages)/kaasitoma/receiver-accounts/ReceiverAccountsTable.tsx
-// This is a Server Component.
 
 import React from 'react';
 import {ReceiverAccount} from "../../../../../../types/receiver-account";
-import {Link} from "@/i18n/navigation"; // Keep Link for navigation
 
 // Import FontAwesome icons
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faWeixin, faAlipay} from '@fortawesome/free-brands-svg-icons'; // WeChat and Alipay icons
 import {faUniversity} from '@fortawesome/free-solid-svg-icons';
-import {getLocale, getTranslations} from "next-intl/server";
+import {getTranslations} from "next-intl/server";
 import {kaasitomaPaths} from "@/util/frontend-paths";
-import EmailDisplay from "@/components/EmailDisplay";
-import PhoneNumberDisplay from "@/components/PhoneNumberDisplay";
-import ImageDisplay from "@/components/ImageDisplay"; // Bank icon
+import ClickableRowClient from "@/components/ClickableRowClient"; // Bank icon
 
 interface ReceiverAccountsFormProps {
     initialReceiverAccounts: ReceiverAccount[];
+    isFromTopUp: boolean;
 }
 
-const ReceiverAccountsTable: React.FC<ReceiverAccountsFormProps> = async ({initialReceiverAccounts}) => {
+const ReceiverAccountsTable: React.FC<ReceiverAccountsFormProps> = async ({initialReceiverAccounts, isFromTopUp}) => {
     const t = await getTranslations('ReceiverAccountsTable'); // Translations for this component
-    const locale = await getLocale();
     // No useState/useEffect as it's a Server Component
     const receiverAccounts = initialReceiverAccounts;
 
@@ -39,7 +35,9 @@ const ReceiverAccountsTable: React.FC<ReceiverAccountsFormProps> = async ({initi
                                         style={{color: '#FF4500', fontSize: '1em', maxWidth: '30px'}}
                                         className="m-auto"/>;
             default:
-                return null;
+                return <FontAwesomeIcon icon={faUniversity}
+                                        style={{color: '#FF4500', fontSize: '1em', maxWidth: '30px'}}
+                                        className="m-auto"/>;
         }
     };
 
@@ -92,56 +90,17 @@ const ReceiverAccountsTable: React.FC<ReceiverAccountsFormProps> = async ({initi
                 </thead>
                 <tbody className="bg-background divide-y divide-border">
                 {receiverAccounts.map((account) => (
-                    <tr
-                        key={account.receiverAccountId} // Key prop on the <tr>
-                        className="hover:bg-accent/50 group" // Use group to allow child link to style whole row
-                    >
-                        {/* Wrap the content of the first cell with Link, and make it fill the cell */}
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground relative">
-                            <Link
-                                href={`${kaasitomaPaths.receiverAccountDetailsPath}${account.receiverAccountId}`}
-                                passHref
-                                className="absolute inset-0 flex items-center p-6 text-foreground hover:underline group-hover:text-blue-600 dark:group-hover:text-blue-400"
-                            >
-                                {account.receiverAccountName}
-                            </Link>
-                        </td>
-                        {/* Other cells remain regular td's but are visually "covered" by the first cell's link */}
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                            {getCategoryIcon(account.receiverAccountCategory)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                            {t(account.receiverAccountIdentifier.toLowerCase())}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                            {account.receiverAccountIdentifier === 'EMAIL' && account?.email? (
-                                <EmailDisplay email={account.email} />
-                            ) : account.receiverAccountIdentifier === 'PHONE_NUMBER' && account?.phoneNumber ? (
-                                <PhoneNumberDisplay phoneNumber={account.phoneNumber}/>) :
-                                account.receiverAccountIdentifier === 'QR_CODE_IMAGE' && account.qrCodeUrl ? (
-                                    <ImageDisplay imageUrl={account.qrCodeUrl} title="Wechat QR Code"/>) :
-                                    account.receiverAccountIdentifier === 'NONE' ? account.bankAccountNumber :
-                                        t('notApplicable')}
-                        </td>
-
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                            {account.bank?.bankName || account.bank?.bankName || t('notApplicable')}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                            {account.bank?.country?.countryName || t('notApplicable')}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                            {account.cardHolderName || t('notApplicable')}
-                        </td>
-
-                        {account?.creationDate &&
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                                {new Date(account.creationDate).toLocaleDateString(locale)}
-                            </td>
+                    <ClickableRowClient
+                        key={account.receiverAccountId}
+                        account={account}
+                        href={
+                            isFromTopUp
+                                ? `${kaasitomaPaths.topUpCountryAndMethodPath}${account.receiverAccountId}`
+                                : `${kaasitomaPaths.receiverAccountDetailsPath}${account.receiverAccountId}`
                         }
-
-                    </tr>
-                ))}
+                        categoryIcon={getCategoryIcon(account.receiverAccountCategory)}/>
+                    ))
+                }
                 </tbody>
             </table>
         </div>
