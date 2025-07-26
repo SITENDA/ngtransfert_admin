@@ -149,7 +149,22 @@ export async function fetchBackendData<T>(
         return null;
     }
 
-    const backendResponse: BackendHttpResponse<T> = await response.json();
+    const text = await response.text();
+
+    if (!text || text.trim().length === 0) {
+        console.error("Empty response body from backend at", fullUrl);
+        return null;
+    }
+
+    let backendResponse: BackendHttpResponse<T>;
+
+    try {
+        backendResponse = JSON.parse(text);
+    } catch (e) {
+        console.error("Invalid JSON from backend at", fullUrl, "Response:", text);
+        return null;
+    }
+
 
     if (backendResponse.statusCode === 200 && backendResponse.data != null) {
         return backendResponse.data;

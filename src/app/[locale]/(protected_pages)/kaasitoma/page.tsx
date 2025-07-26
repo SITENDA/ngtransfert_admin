@@ -28,6 +28,8 @@ export default async function KaasitomaDashboardPage() {
     let settledTransfersCount = 0;
     let topUpRequestsCount = 0;
 
+    console.log("Token is : ", session?.accessToken);
+
     try {
         const dashboardDataPayload: FetchBackendResult<DashboardDataPayload> = await fetchBackendData<DashboardDataPayload>(
             '/kaasitoma/getDashboardContent',
@@ -37,6 +39,8 @@ export default async function KaasitomaDashboardPage() {
         );
 
         // console.log("DashboardDataPayload", dashboardDataPayload);
+
+        console.log("dashboardDataPayload is : ", dashboardDataPayload);
 
         if (dashboardDataPayload) {
             receiverAccountsCount = dashboardDataPayload.receiverAccountsCount ?? 0;

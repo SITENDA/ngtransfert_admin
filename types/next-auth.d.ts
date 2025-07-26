@@ -41,6 +41,7 @@ declare module "next-auth" {
     roles: Array<{ id: number; roleName: string }>; // Full roles array
     role?: string; // Primary role (e.g., 'ROLE_CLIENT')
     ekiddako?: string; // Add the new custom property
+    accessToken?: string;
   }
 }
 
