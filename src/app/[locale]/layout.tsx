@@ -1,3 +1,5 @@
+//  /home/amos/docure/ngtransfert_admin/src/app/[locale]/layout.tsx
+
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "@/app/[locale]/globals.css";
