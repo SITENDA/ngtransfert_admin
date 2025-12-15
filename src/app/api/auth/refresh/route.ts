@@ -3,6 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import getSession from "@/lib/getSession";
 import {Session, User} from "next-auth";
 
+export const config = {
+    api: {
+        bodyParser: false,
+    },
+};
+
 export async function POST(req: NextRequest) {
     const backendApiBaseUrl = process.env.BACKEND_API_BASE_URL || 'http://localhost:8080';
     const refreshEndpointUrl = `${backendApiBaseUrl}/auth/refresh`;

@@ -16,9 +16,9 @@ const nextConfig: NextConfig = {
       }
     ],
   },
-  api: {
-    bodyParser: false, // Required for FormData
-  },
+  // api: {
+  //   bodyParser: false, // Required for FormData
+  // },
   /* config options here */
 };
  
