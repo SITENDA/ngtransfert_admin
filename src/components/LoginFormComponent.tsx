@@ -6,8 +6,6 @@ import { useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {signIn, useSession} from "next-auth/react";
-import {kaasitomaPaths} from "@/util/frontend-paths";
 import {useRouter} from "@/i18n/navigation";
 
 // Define the props for this client component
@@ -22,12 +20,11 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
     const [formError, setFormError] = useState<string | null>(null); // State for displaying form errors
     // State for input type
     const [loginWithPhone, setLoginWithPhone] = useState<boolean>(false);
-    const { data: session, status } = useSession();
 
 
     const router = useRouter();
     const locale = useLocale();
-    const t = useTranslations('LoginPage'); // Use 'LoginPage' namespace for translations
+    const t = useTranslations('LoginFormComponent'); // Use 'LoginPage' namespace for translations
     const searchParams = useSearchParams(); // To read error parameter from URL
 
     // Effect to save the current locale to localStorage
@@ -38,11 +35,6 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
         }
     }, [locale]);
 
-    useEffect(() => {
-        if (status === "authenticated" && session?.user?.ekiddako && session?.accessToken != null) {
-            router.replace(`/${session.user.ekiddako}`, { scroll: false });
-        }
-    }, [status, session, router]);
 
     // Effect to check for OAuth2 errors in URL parameters
     useEffect(() => {
@@ -62,31 +54,72 @@ export default function LoginFormComponent({}: LoginFormComponentProps) {
         e.preventDefault();
         setFormError(null);
 
-        const identifier = loginWithPhone ? "phoneNumber" : "email";
-        const payload = {
-            identifier,
-            email: loginWithPhone ? '' : email,
-            phoneNumber: loginWithPhone ? phoneNumber : '',
-            password
-        };
+        try {
+            const res = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    identifier: loginWithPhone ? "phoneNumber" : "email",
+                    email,
+                    phoneNumber,
+                    password,
+                }),
+            });
 
-        const result = await signIn("credentials", {
-            redirect: false,
-            ...payload
-        });
+            const loginResult = await res.json();
 
-        console.log("Result from backend :", result);
-
-        if (result?.ok) {
-            if (status === "authenticated" && session?.user?.ekiddako) {
-                router.replace(`/${session.user.ekiddako}`, { scroll: false });
+            if (!loginResult.success || !loginResult.user?.ekiddako) {
+                setFormError(t("loginFailed"));
+                return;
             }
-            router.push(kaasitomaPaths.homePath);
 
-        } else {
-            setFormError(t('loginFailed', { message: result?.error || t('unknownError') }));
+            // ✅ Redirect using locale + role
+            router.push(`/${loginResult.user.ekiddako}`);
+
+
+        } catch (err) {
+            console.error("Login error:", err);
+            setFormError(t("loginFailed"));
         }
     };
+
+
+    // const handleManualLogin = async (e: FormEvent) => {
+    //     e.preventDefault();
+    //     setFormError(null);
+    //
+    //     try {
+    //
+    //         const res = await fetch("/api/auth/login", {
+    //             method: "POST",
+    //             headers: { "Content-Type": "application/json" },
+    //             body: JSON.stringify({
+    //                 identifier: loginWithPhone ? "phoneNumber" : "email",
+    //                 email,
+    //                 phoneNumber,
+    //                 password,
+    //             }),
+    //         });
+    //
+    //         const loginResult = res.json();
+    //
+    //         console.log("Login Result:", loginResult);
+    //         //
+    //         // if (!loginResult.success || !loginResult?.user?.ekiddako) {
+    //         //     setFormError(t("loginFailed"));
+    //         //     return;
+    //         // }
+    //         //
+    //         // // ✅ Safe redirect using returned user
+    //         // const ekiddako = loginResult?.user?.ekiddako || "";
+    //         // router.push(`/${ekiddako}`);
+    //
+    //     } catch (err) {
+    //         setFormError(t("loginFailed"));
+    //     }
+    // };
+
+
 
 
     const handleManualRegister = async (e: FormEvent) => {

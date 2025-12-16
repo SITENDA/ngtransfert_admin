@@ -1,4 +1,4 @@
-// src/types/request-top-up.ts
+// types/request-top-up.ts
 import { TopUpMethodEnum } from "@/enums/TopUpMethodEnum";
 import {Country} from "./country";
 import {ReceiverAccount} from "./receiver-account";

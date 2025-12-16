@@ -1,4 +1,5 @@
 /**
+ * /home/amos/docure/ngtransfert_admin/types/BackendGenericResponse.ts
  * Generic backend response structure.
  * This can be reused for various API responses.
  * @template T The type of the actual data payload.

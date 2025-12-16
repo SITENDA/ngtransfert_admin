@@ -1,6 +1,5 @@
-// app/[locale]/dashboard/page.tsx
+// /home/amos/docure/ngtransfert_admin/src/app/[locale]/(protected_pages)/kaasitoma/page.tsx (kaasitome home page)
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { redirect } from "next/navigation";
 import {getLocale, getTranslations} from "next-intl/server"; // Keep getTranslations for server component
 import getSession from "@/lib/getSession";
 import {ClickableRow} from "@/components/ClickableRow";
@@ -16,19 +15,17 @@ export const metadata = {
 export default async function KaasitomaDashboardPage() {
     const t = await getTranslations('DashboardPage');
     const session = await getSession();
-    const user = session?.user;
+    const user = session!.user; // safe now
     const locale = await getLocale();
 
-    if (!user || !session?.accessToken) {
-        redirect(`/${locale}${kaasitomaPaths.loginPath}?ensobi=signedout`);
-    }
+    // console.log("Session in KaasitomaDashboardPage : ", session);
+
 
     let receiverAccountsCount = 0;
     let transferRequestsCount = 0;
     let settledTransfersCount = 0;
     let topUpRequestsCount = 0;
 
-    console.log("Token is : ", session?.accessToken);
 
     try {
         const dashboardDataPayload: FetchBackendResult<DashboardDataPayload> = await fetchBackendData<DashboardDataPayload>(

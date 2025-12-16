@@ -1,0 +1,63 @@
+// src/app/api/auth/login/route.ts
+
+import { NextResponse } from "next/server";
+import { randomUUID } from "crypto";
+
+import { saveSession } from "@/lib/sessionStore";
+import { setSessionCookie } from "@/lib/cookies";
+import { mapBackendUserToBffUser } from "@/lib/mappers/mapBackendUserToBffUser";
+
+import { BackendHttpResponse } from "../../../../../types/BackendHttpResponse";
+import { BackendLoginPayload } from "../../../../../types/BackendLoginPayload";
+
+export async function POST(req: Request) {
+    const body = await req.json();
+
+    // 1️⃣ Forward login request to Spring Boot
+    const springRes = await fetch(
+        `${process.env.BACKEND_URL}/auth/login`,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+            credentials: "include", // ✅ allow refresh cookie if backend sets one
+        }
+    );
+
+    if (!springRes.ok) {
+        return NextResponse.json(
+            { success: false, message: "Invalid credentials" },
+            { status: 401 }
+        );
+    }
+
+    // 2️⃣ Parse backend response
+    const json: BackendHttpResponse<BackendLoginPayload> =
+        await springRes.json();
+
+    const { user, token, refreshToken, accessTokenExpiresAt } = json.data;
+
+    // 3️⃣ Map backend user → BFF user
+    const bffUser = mapBackendUserToBffUser(user);
+
+    // 4️⃣ Create BFF session
+    const sessionId = randomUUID();
+
+    await saveSession(sessionId, {
+        user: bffUser,
+        accessToken: token,              // ✅ FIX
+        refreshToken,
+        accessTokenExpiresAt,
+    });
+
+    // 5️⃣ Set HttpOnly BFF session cookie
+    await setSessionCookie(sessionId);
+
+    console.log("✅ Login complete, session established:", sessionId);
+
+    // 6️⃣ Return SAFE response (NO TOKENS)
+    return NextResponse.json({
+        success: true,
+        user: bffUser,
+    });
+}

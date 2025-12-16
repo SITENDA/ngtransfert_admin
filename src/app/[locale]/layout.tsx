@@ -11,8 +11,6 @@ import { routing } from '@/i18n/routing';
 import Header from "@/components/Header";
 import {Toaster} from "@/components/ui/toaster";
 import FooterAdmin from "@/components/ui/FooterAdmin";
-import { SessionProvider } from 'next-auth/react'; // From next-auth
-import { AuthProvider } from '@/context/AuthContext'; // Your custom AuthContext
 
 
 
@@ -168,19 +166,15 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
-            <SessionProvider>
                 <NextIntlClientProvider messages={messages}>
                     <Header />
                     <main className="flex-grow flex flex-col min-h-screen justify-center text-center w-full pt-10 bg-black bg-home-img bg-cover bg-center">
                         {/*flex flex-col min-h-screen bg-black bg-home-img bg-cover bg-center*/}
-                        <AuthProvider>
                             {children}
                             <Toaster />
-                        </AuthProvider>
                     </main>
                     <FooterAdmin />
                 </NextIntlClientProvider>
-            </SessionProvider>
         </ThemeProvider>
         </body>
         </html>

@@ -1,4 +1,4 @@
-// src/types/response-top-up-request.ts
+// /home/amos/docure/ngtransfert_admin/types/response-top-up-request.ts
 
 import {Currency} from "./currency";
 import {TopUpMethodEnum} from "@/enums/TopUpMethodEnum";

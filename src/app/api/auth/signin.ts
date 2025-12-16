@@ -10,7 +10,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         // It takes the incoming '/api/auth/signin' request from Next.js
         // and changes it to '/auth/signin' before forwarding to the target.
         pathRewrite: {
-            '^/api/auth/signin': '/auth/signin',
+            '^/api/auth/login': '/auth/login',
         },
         // Important: Change this to 'true' if your frontend and backend are on different domains/ports.
         // This is usually the case during development (e.g., 3000 vs 8080).

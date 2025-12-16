@@ -1,4 +1,4 @@
-import { Toaster } from "@/components/ui/toaster";
+// import { Toaster } from "@/components/ui/toaster";
 
 export default async function PublicLayout({
     children,
@@ -12,7 +12,7 @@ export default async function PublicLayout({
         <div className="flex flex-col min-h-screen bg-'rgb(0, 21, 41)'/50 bg-cover bg-center">
             <main className="flex-grow flex flex-col justify-center text-center max-w-5xl mx-auto w-full pt-10">
                 {children}
-                <Toaster />
+                {/*<Toaster />*/}
             </main>
         </div>
     );

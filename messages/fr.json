@@ -50,35 +50,46 @@
     "login": "Connexion"
   },
   "LoginPage": {
-    "signInTitle": "Se Connecter",
-    "registerAccountTitle": "Créer un Compte",
+    "title": "Se connecter"
+  },
+  "LoginFormComponent": {
+    "signInTitle": "Se connecter",
+    "registerAccountTitle": "Créer un compte",
     "usernameLabel": "Nom d'utilisateur",
     "emailLabel": "E-mail",
+    "phoneNumberLabel": "Numéro de téléphone",
     "passwordLabel": "Mot de passe",
+
     "registerButton": "S'inscrire",
-    "signInButton": "Se Connecter",
+    "signInButton": "Se connecter",
+
     "alreadyHaveAccount": "Vous avez déjà un compte ? Connectez-vous",
     "needAccount": "Besoin d'un compte ? Inscrivez-vous ici",
+
+    "loginWith": "Se connecter avec",
     "loginWithGoogle": "Se connecter avec Google",
     "loginWithFacebook": "Se connecter avec Facebook",
+
     "registrationSuccess": "Inscription réussie ! Veuillez vérifier votre e-mail pour la vérification.",
-    "loginFailed": "Échec de la connexion : {message}",
+
+    "loginFailed": "Échec de la connexion",
     "registrationFailed": "Échec de l'inscription : {message}",
     "loginError": "Une erreur est survenue lors de la connexion : {message}",
     "registrationError": "Une erreur est survenue lors de l'inscription : {message}",
     "unknownError": "Erreur inconnue, veuillez réessayer.",
     "tryAgain": "Veuillez réessayer.",
+
     "errorPrefix": "Erreur",
     "oauthError": "L'authentification avec le fournisseur externe a échoué. Veuillez réessayer.",
     "unexpectedError": "Une erreur inattendue est survenue.",
+
     "authenticationFailedCredentials": "Échec de l'authentification. Veuillez vérifier vos identifiants.",
     "authenticationFailed": "Échec de l'authentification.",
     "errorMessage": "Message d'erreur",
+
     "redirectingToLogin": "Redirection vers la page de connexion...",
     "oauthProcessing": "Traitement de l'authentification...",
-    "pleaseWait": "Veuillez patienter pendant que nous vous connectons.",
-    "loginWith": "Se connecter avec",
-    "phoneNumberLabel": "Numéro de téléphone"
+    "pleaseWait": "Veuillez patienter pendant que nous vous connectons."
   },
   "AddReceiverAccountPage": {
     "pageTitle": "Ajouter un compte bénéficiaire",

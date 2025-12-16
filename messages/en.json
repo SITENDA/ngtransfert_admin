@@ -50,35 +50,46 @@
     "login": "Login"
   },
   "LoginPage": {
+    "title": "Sign In"
+  },
+  "LoginFormComponent": {
     "signInTitle": "Sign In",
     "registerAccountTitle": "Register Account",
     "usernameLabel": "Username",
     "emailLabel": "Email",
+    "phoneNumberLabel": "Phone Number",
     "passwordLabel": "Password",
+
     "registerButton": "Register",
     "signInButton": "Sign In",
+
     "alreadyHaveAccount": "Already have an account? Sign In",
     "needAccount": "Need an account? Register Here",
+
+    "loginWith": "Login using",
     "loginWithGoogle": "Login with Google",
     "loginWithFacebook": "Login with Facebook",
+
     "registrationSuccess": "Registration successful! Please check your email for verification.",
-    "loginFailed": "Login failed: {message}",
+
+    "loginFailed": "Login failed",
     "registrationFailed": "Registration failed: {message}",
     "loginError": "An error occurred during login: {message}",
     "registrationError": "An error occurred during registration: {message}",
     "unknownError": "Unknown error, please try again.",
     "tryAgain": "Please try again.",
+
     "errorPrefix": "Error",
     "oauthError": "Authentication failed with the external provider. Please try again.",
     "unexpectedError": "An unexpected error occurred.",
+
     "authenticationFailedCredentials": "Authentication failed. Please check your credentials.",
     "authenticationFailed": "Authentication failed.",
     "errorMessage": "Error message",
+
     "redirectingToLogin": "Redirecting to login page...",
     "oauthProcessing": "Processing authentication...",
-    "pleaseWait": "Please wait while we log you in.",
-    "loginWith": "Login using",
-    "phoneNumberLabel": "Phone Number"
+    "pleaseWait": "Please wait while we log you in."
   },
   "AddReceiverAccountPage": {
     "pageTitle": "Add Receiver Account",

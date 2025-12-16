@@ -50,35 +50,47 @@
     "login": "登录"
   },
   "LoginPage": {
+    "title": "登录"
+  },
+
+  "LoginFormComponent": {
     "signInTitle": "登录",
     "registerAccountTitle": "注册账号",
     "usernameLabel": "用户名",
     "emailLabel": "电子邮件",
+    "phoneNumberLabel": "电话号码",
     "passwordLabel": "密码",
+
     "registerButton": "注册",
     "signInButton": "登录",
+
     "alreadyHaveAccount": "已有账号？去登录",
     "needAccount": "需要账号？在此注册",
+
+    "loginWith": "使用以下方式登录",
     "loginWithGoogle": "使用 Google 登录",
     "loginWithFacebook": "使用 Facebook 登录",
+
     "registrationSuccess": "注册成功！请检查您的电子邮件以进行验证。",
-    "loginFailed": "登录失败：{message}",
+
+    "loginFailed": "登录失败",
     "registrationFailed": "注册失败：{message}",
     "loginError": "登录时发生错误：{message}",
     "registrationError": "注册时发生错误：{message}",
     "unknownError": "未知错误，请重试。",
     "tryAgain": "请重试。",
+
     "errorPrefix": "错误",
     "oauthError": "外部提供商认证失败。请重试。",
     "unexpectedError": "发生了一个意外错误。",
+
     "authenticationFailedCredentials": "认证失败。请检查您的凭据。",
     "authenticationFailed": "认证失败。",
     "errorMessage": "错误信息",
+
     "redirectingToLogin": "正在重定向到登录页面...",
     "oauthProcessing": "正在处理身份验证...",
-    "pleaseWait": "请稍候，我们正在为您登录。",
-    "loginWith": "使用以下方式登录",
-    "phoneNumberLabel": "电话号码"
+    "pleaseWait": "请稍候，我们正在为您登录。"
   },
   "AddReceiverAccountPage": {
     "pageTitle": "添加收款账户",

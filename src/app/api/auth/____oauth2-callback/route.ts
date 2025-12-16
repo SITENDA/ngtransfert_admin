@@ -1,4 +1,4 @@
-// app/api/auth/oauth2-callback/route.ts
+// app/api/auth/____oauth2-callback/route.ts
 import { NextRequest } from 'next/server';
 import { signIn } from "@/auth"; // Import the server-side signIn helper
 import { redirect } from 'next/navigation';
