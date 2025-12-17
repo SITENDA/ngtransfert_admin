@@ -7,13 +7,10 @@ import getSession from "@/lib/getSession";
 import { redirect } from 'next/navigation';
 import {getLocale, getTranslations} from 'next-intl/server';
 import { headers } from 'next/headers';
-import { User } from 'next-auth';
 import TopUpRequestsTable from "@/app/[locale]/(protected_pages)/kaasitoma/top-up/(requests)/TopUpRequestsTable";
-import {JWT} from "next-auth/jwt";
 import {Link} from "@/i18n/navigation";
 import {kaasitomaPaths} from "@/util/frontend-paths";
 import {Button} from "@/components/ui/button";
-
 
 // URL for the Next.js API proxy that will fetch top up requests from Spring Boot
 // Now, we'll construct this URL to include the clientId as a query parameter.
@@ -25,15 +22,15 @@ export default async function TopUpRequestsPage() {
 
     // 1. Authentication Check (Server-side Guard)
     const session = await getSession();
-    const user: User | undefined | null = session?.user;
+    const user = session?.user;
 
     if (!session || !user || !user.userId || !session.accessToken) {
         console.warn(`TopUpRequestsPage: User not authenticated or missing required session data. Redirecting to /${locale}/login`);
         redirect(`/${locale}/login`);
     }
 
-    const tokenObject: JWT = session.accessToken;
     const clientId = user.userId; // Get clientId from authenticated user
+    const accessToken = session.accessToken;
 
     let topUpRequests: ResponseTopUpRequest[] = [];
 
@@ -50,7 +47,7 @@ export default async function TopUpRequestsPage() {
             headers: {
                 // Ensure the Authorization header comes from the NextAuth session.
                 // The proxy will then forward this to the Spring Boot backend.
-                'Authorization': `Bearer ${tokenObject.accessToken}`,
+                'Authorization': `Bearer ${accessToken}`,
                 ...(cookieHeader && { 'Cookie': cookieHeader }), // Forward cookies if needed for session/refresh
             },
             next: {

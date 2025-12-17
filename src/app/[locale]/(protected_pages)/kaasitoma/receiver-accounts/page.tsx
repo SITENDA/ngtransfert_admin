@@ -4,7 +4,6 @@
 import getSession from "@/lib/getSession";
 import { redirect } from 'next/navigation';
 import {getLocale, getTranslations} from 'next-intl/server';
-import {Session, User} from 'next-auth';
 
 import ReceiverAccountsTable from "./ReceiverAccountsTable";
 import PublicWrapper from "@/components/PublicWrapper";
@@ -13,7 +12,6 @@ import {
     ReceiverAccountsPayload
 } from "../../../../../../types/receiver-account";
 import {BackendGenericResponse} from "../../../../../../types/BackendGenericResponse";
-import {JWT} from "next-auth/jwt";
 import {kaasitomaPaths} from "@/util/frontend-paths";
 import {Button} from "@/components/ui/button";
 import {Link} from "@/i18n/navigation";
@@ -32,15 +30,14 @@ export default async function ReceiverAccountsPage({ searchParams }: { searchPar
     const isFromTopUp = fromParam === 'topUp';
 
     // 1. Authentication Check (Server-side Guard)
-    const session: Session | null = await getSession();
-    const user: User | undefined | null = session?.user;
+    const session = await getSession();
+    const user = session?.user;
 
     if (!session || !user || !user.userId || !session.accessToken) {
         console.warn(`ReceiverAccountsPage: User not authenticated or missing required session data. Redirecting to /${locale}/login`);
         redirect(`/${locale}/login`);
     }
 
-    const tokenObject: JWT = session?.accessToken;
     const clientId = user.userId; // Get clientId from authenticated user
 
     let receiverAccounts: ReceiverAccount[] = [];
@@ -56,7 +53,7 @@ export default async function ReceiverAccountsPage({ searchParams }: { searchPar
         const response = await fetch(BASE_GET_RECEIVER_ACCOUNTS_PROXY_URL, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${tokenObject.accessToken}`,
+                'Authorization': `Bearer ${session.accessToken}`,
                 ...(cookieHeader && { 'Cookie': cookieHeader }),
             },
             next: {

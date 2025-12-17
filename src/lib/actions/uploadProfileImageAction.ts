@@ -1,7 +1,6 @@
 "use server";
 
 import getSession from "@/lib/getSession";
-import {JWT} from "next-auth/jwt";
 
 export async function uploadProfileImageAction(formData: FormData) {
     try {
@@ -12,8 +11,7 @@ export async function uploadProfileImageAction(formData: FormData) {
             return { success: false, message: "Authentication required to upload image." };
         }
 
-        const tokenObject: JWT = session.accessToken;
-        const accessToken = tokenObject.accessToken;
+        const accessToken = session.accessToken;
         const proxyApiUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/profile/upload`;
 
         const response = await fetch(proxyApiUrl, {

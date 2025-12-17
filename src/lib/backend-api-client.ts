@@ -3,7 +3,8 @@ import getSession from "@/lib/getSession";
 import { saveSession } from "@/lib/sessionStore";
 import { BackendHttpResponse } from "../../types/BackendHttpResponse";
 import { FetchBackendResult } from "../../types/fetchBackendResult";
-import { BffSession, BffUser } from "../../types/session";
+import { BffSession } from "../../types/session";
+import { forceLogout } from "@/lib/server/forceLogout";
 
 /**
  * Fetch backend data using BFF session
@@ -51,6 +52,7 @@ export async function fetchBackendData<T>(
     /**
      * Refresh token via BFF
      */
+
     const refreshSession = async (): Promise<BffSession | null> => {
         const protocol =
             process.env.NODE_ENV === "development" ? "http" : "https";
@@ -68,23 +70,20 @@ export async function fetchBackendData<T>(
             }
         );
 
+        // ❌ Refresh failed → force logout
         if (!refreshRes.ok) {
+            await forceLogout(session.sessionId);
             return null;
         }
 
-        const refreshed: {
-            success: boolean;
-            accessToken: string;
-            refreshToken?: string;
-            expiresAt: number;
-            user: BffUser;
-        } = await refreshRes.json();
+        const refreshed = await refreshRes.json();
 
         if (!refreshed.success) {
+            await forceLogout(session.sessionId);
             return null;
         }
 
-        saveSession(session.sessionId, {
+        await saveSession(session.sessionId, {
             user: refreshed.user,
             accessToken: refreshed.accessToken,
             refreshToken: refreshed.refreshToken ?? session.refreshToken,

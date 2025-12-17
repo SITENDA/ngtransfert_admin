@@ -5,7 +5,6 @@ import getSession from "@/lib/getSession";
 import { redirect } from 'next/navigation';
 import {getLocale, getTranslations} from 'next-intl/server';
 import { headers } from 'next/headers';
-import { User } from 'next-auth';
 
 import {BackendGenericResponse} from "../../../../../../types/BackendGenericResponse";
 import TransferRequestsForm from "@/app/[locale]/(protected_pages)/kaasitoma/transfer-requests/TransferRequestsForm";
@@ -13,7 +12,6 @@ import {TransferRequest, TransferRequestsPayload} from "../../../../../../types/
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {kaasitomaPaths} from "@/util/frontend-paths";
 import React from "react";
-import {JWT} from "next-auth/jwt";
 
 // URL for the Next.js API proxy that will fetch transfer requests from Spring Boot
 // Now, we'll construct this URL to include the clientId as a query parameter.
@@ -24,7 +22,7 @@ export default async function TransferRequestsPage() {
 
     // 1. Authentication Check (Server-side Guard)
     const session = await getSession();
-    const user: User | undefined | null = session?.user;
+    const user = session?.user;
     const locale = await getLocale();
 
     if (!session || !user || !user.userId || !session.accessToken) {
@@ -32,8 +30,7 @@ export default async function TransferRequestsPage() {
         redirect(`/${locale}/login`);
     }
 
-    const tokenObject: JWT = session.accessToken;
-    const accessToken = tokenObject.accessToken;
+    const accessToken = session.accessToken;
     const clientId = user.userId; // Get clientId from authenticated user
 
     let transferRequests: TransferRequest[] = [];

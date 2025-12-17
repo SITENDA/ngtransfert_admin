@@ -1,48 +1,47 @@
 // src/app/[locale]/(protected_pages)/kaasitoma/add-receiver-account/page.tsx
+// This file is a Server Component by default in the App Router.
+// No "use client" here!
 
 import AddReceiverAccountForm from "./AddReceiverAccountForm";
 import PublicWrapper from "@/components/PublicWrapper";
-import { Bank, BankDataPayload } from "../../../../../../../types/bank";
+import { Bank, BankDataPayload } from "../../../../../../../types/bank"; // Assuming these types exist
 import { getLocale, getTranslations } from 'next-intl/server';
-import getSession from "@/lib/getSession";
+import getSession from "@/lib/getSession"; // Assuming getSession is available
 import { redirect } from 'next/navigation';
-import { kaasitomaPaths } from "@/util/frontend-paths";
-import { fetchBackendData } from "@/lib/backend-api-client";
-import {isRedirectObject} from "@/util/typeguards";
+import { kaasitomaPaths } from "@/util/frontend-paths"; // Assuming kaasitomaPaths is available
+import { fetchBackendData } from "@/lib/backend-api-client"; // Import the new reusable fetch utility
 
 async function AddReceiverAccountPage() {
     const t = await getTranslations('AddReceiverAccountPage');
     const locale = await getLocale();
 
+    // The fetchBackendData utility now handles authentication and redirects
+    // if the user is not authenticated or the access token is missing.
+    // So, we primarily need the session here if `clientId` is explicitly passed to the form.
     const session = await getSession();
-    if (session == null) {return ;}
-    const clientId = session?.user?.userId;
+    const clientId = session?.user?.userId; // Extract clientId after session is confirmed
 
-    console.log("Token in AddReceiverAccountPage : ", session.accessToken)
-
-    console.log("Token expiry date:", session?.user?.accessTokenExpires);
-
+    // If clientId is still not available after session check, it means authentication failed
+    // or user data is incomplete, and fetchBackendData would have redirected.
+    // This check acts as an additional safeguard before passing to client component.
     if (!clientId) {
-        console.warn(`AddReceiverAccountPage: Client ID not found after session check. Redirecting to /${locale}/${kaasitomaPaths.loginPath}`);
+        console.warn(`AddReceiverAccountPage: Client ID not found after initial session check. Redirecting to /${locale}/${kaasitomaPaths.loginPath}`);
         redirect(`/${locale}/${kaasitomaPaths.loginPath}`);
     }
 
     let banks: Bank[] = [];
-    const countryName = "China";
+    const countryName = "China"; // This can be made dynamic based on user context or selection
 
     try {
+        // Use the refactored fetchBackendData for fetching banks
         const bankPayload = await fetchBackendData<BankDataPayload>(
             `/kaasitoma/banks/getAllBanksByCountryName?countryName=${countryName}`,
             'GET',
-            undefined,
-            3600
+            undefined, // No body for GET request
+            3600       // Revalidate every hour
         );
 
-        if (isRedirectObject(bankPayload)) {
-            redirect(bankPayload.redirectTo);
-        }
-
-        if (bankPayload?.banks) {
+        if (bankPayload && bankPayload.banks) {
             banks = bankPayload.banks;
             console.log(`AddReceiverAccountPage: Successfully fetched ${banks.length} banks for ${countryName}.`);
         } else {
@@ -50,7 +49,7 @@ async function AddReceiverAccountPage() {
         }
     } catch (error) {
         console.error("AddReceiverAccountPage: Error during bank data fetching process:", error);
-        banks = []; // Ensure fallback to empty array
+        banks = []; // Ensure banks is an empty array on error
     }
 
     return (
@@ -63,6 +62,7 @@ async function AddReceiverAccountPage() {
                 <h2 className="text-3xl font-bold mb-6 text-center text-foreground">
                     {t('pageTitle')}
                 </h2>
+                {/* Pass the fetched banks data and the guaranteed clientId to the client component */}
                 <AddReceiverAccountForm initialBanks={banks} clientId={clientId} />
             </div>
         </PublicWrapper>
