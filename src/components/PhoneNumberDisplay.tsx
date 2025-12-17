@@ -26,8 +26,9 @@ const PhoneNumberDisplay: React.FC<PhoneNumberDisplayProps> = ({ phoneNumber }) 
     const formattedNumber = parsed.formatInternational();
 
     return (
-        <div className="flex items-center gap-2 text-sm text-foreground font-medium">
-            <img
+        // <div className="flex items-center gap-2 text-sm text-foreground font-medium">
+        <div className="flex gap-2 text-sm text-foreground font-medium items-start">
+        <img
                 src="https://flagcdn.com/w40/cn.png"
                 alt="China Flag"
                 className="w-6 h-4 object-cover rounded-sm"

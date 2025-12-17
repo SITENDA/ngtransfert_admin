@@ -32,6 +32,8 @@ export default async function KaasitomaDashboardPage() {
             3600
         );
 
+        console.log("dashboardDataPayload : ", dashboardDataPayload);
+
         if (dashboardDataPayload && dashboardDataPayload.receiverAccountsCount >=0 && dashboardDataPayload.transferRequestsCount >=0 && dashboardDataPayload.settledTransfersCount >=0 && dashboardDataPayload.topUpRequestsCount >=0) {
             receiverAccountsCount = dashboardDataPayload.receiverAccountsCount;
             transferRequestsCount = dashboardDataPayload.transferRequestsCount;

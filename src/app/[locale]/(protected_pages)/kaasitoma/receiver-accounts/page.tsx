@@ -61,6 +61,8 @@ export default async function ReceiverAccountsPage({ searchParams }: { searchPar
             }
         });
 
+        console.log("Response in ReceiverAccountsPage is : ", response);
+
         if (!response.ok) {
             console.error(`ReceiverAccountsPage: Failed to fetch accounts from proxy: ${response.status} ${response.statusText}`);
             const errorBody = await response.json();

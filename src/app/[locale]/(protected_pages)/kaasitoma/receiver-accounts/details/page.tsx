@@ -28,7 +28,7 @@ interface DetailRowProps {
 }
 
 // Modify the page component to accept searchParams as a prop
-async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { receiverAccountId?: string } }) {
+async function ReceiverAccountDetailsPage({searchParams}: { searchParams: { receiverAccountId?: string } }) {
     const t = await getTranslations('ReceiverAccountDetailsPage');
     // const t = await getTranslations('ReceiverAccountDetailsPage');
     // const locale = await getLocale(); // Not needed for hardcoded translations
@@ -47,7 +47,7 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { re
     }
 
     let receiverAccount: ReceiverAccount | null = null; // Initialize receiverAccount
-     // searchParams is already an object, no need for await
+    // searchParams is already an object, no need for await
     // Access receiverAccountId directly from the searchParams prop
     const params = await searchParams;
     const receiverAccountId = params.receiverAccountId;
@@ -120,53 +120,79 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { re
                 <h2 className="text-3xl font-bold mb-6 text-center text-foreground">
                     {t('pageTitle')}
                 </h2>
-                <CardHeader className="flex flex-row justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <CardHeader
+                    className="flex flex-row justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     {/* Updated Top Up button styling */}
-                    <Link href={`${kaasitomaPaths.topUpCountryAndMethodPath}${receiverAccountId}`} passHref>
-                        <Button variant="outline"
-                                size="sm"
-                                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                    <Link
+                        href={{
+                            pathname: kaasitomaPaths.topUpCountryAndMethodPath,
+                            query: {receiverAccountId},
+                        }}
+                    >
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+                        >
                             Top Up
                         </Button>
                     </Link>
+
                     {/* Updated Request for Transfer button styling */}
-                    <Link href={`${kaasitomaPaths.applyForTransferPath}${receiverAccountId}`} passHref>
-                        <Button variant="outline"
-                                size="sm"
-                                className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                    <Link
+                        href={{
+                            pathname: kaasitomaPaths.applyForTransferPath,
+                            query: {receiverAccountId},
+                        }}
+                    >
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+                        >
                             Request for Transfer
                         </Button>
                     </Link>
+
                 </CardHeader>
                 {/* Pass the processed receiverAccount object to the client component */}
                 <div className="space-y-6">
                     {/* General Account Details Section */}
-                    <section className="p-6 rounded-lg shadow-inner bg-background-light dark:bg-gray-700/50 border border-border">
+                    <section
+                        className="p-6 rounded-lg shadow-inner bg-background-light dark:bg-gray-700/50 border border-border">
                         <h3 className="text-xl font-semibold mb-4 text-foreground">
                             {t('generalDetails')}
                         </h3>
                         <DetailRow label={t('receiverAccountCategory')}>
                             <div className=" items-center gap-2">
+                                <CategoryIcon category={receiverAccount.receiverAccountCategory}/>
                                 <span>{t(receiverAccount.receiverAccountCategory.toLowerCase())}&nbsp; </span>
-                                <CategoryIcon category={receiverAccount.receiverAccountCategory} />
                             </div>
                         </DetailRow>
-                        <DetailRow label={t('receiverAccountIdentifier')} value={t(receiverAccount.receiverAccountIdentifier.toLowerCase())} />
-                        <DetailRow label={t('receiverAccountName')} value={receiverAccount.receiverAccountName} />
+                        <DetailRow label={t('receiverAccountIdentifier')}
+                                   value={t(receiverAccount.receiverAccountIdentifier.toLowerCase())}/>
+                        <DetailRow label={t('receiverAccountName')} value={receiverAccount.receiverAccountName}/>
 
 
                         {/* Conditional fields that might be present */}
-                        {receiverAccount.qrCodeUrl && (
-                            <DetailRow label={t('qrCodeImage')}>
-                                <ImageDisplay imageUrl={receiverAccount.qrCodeUrl} title="Wechat QR Code"/>
-                            </DetailRow>
-                        )}
-                        {receiverAccount.email && <DetailRow label={t('email')} value={<EmailDisplay email={receiverAccount.email} />} />}
-                        {receiverAccount.phoneNumber && <DetailRow label={t('phoneNumber')} value={<PhoneNumberDisplay phoneNumber={receiverAccount.phoneNumber}/>} />}
+                        {receiverAccount.qrCodeUrl &&
+                            !receiverAccount.qrCodeUrl.includes("null") && (
+                                <DetailRow label={t('qrCodeImage')}>
+                                    <ImageDisplay
+                                        imageUrl={receiverAccount.qrCodeUrl}
+                                        title="Wechat QR Code"
+                                    />
+                                </DetailRow>
+                            )}
+                        {receiverAccount.email &&
+                            <DetailRow label={t('email')} value={<EmailDisplay email={receiverAccount.email}/>}/>}
+                        {receiverAccount.phoneNumber && <DetailRow label={t('phoneNumber')} value={<PhoneNumberDisplay
+                            phoneNumber={receiverAccount.phoneNumber}/>}/>}
                     </section>
 
                     {/* Balance & Limit Section */}
-                    <section className="p-6 rounded-lg shadow-inner bg-background-light dark:bg-gray-700/50 border border-border">
+                    <section
+                        className="p-6 rounded-lg shadow-inner bg-background-light dark:bg-gray-700/50 border border-border">
                         <h3 className="text-xl font-semibold mb-4 text-foreground">
                             {t('accountLimits')}
                         </h3>
@@ -185,13 +211,17 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { re
 
                     {/* Bank Details Section - Conditional on it being a BANK_ACCOUNT */}
                     {receiverAccount.receiverAccountCategory === 'BANK_ACCOUNT' && (
-                        <section className="p-6 rounded-lg shadow-inner bg-background-light dark:bg-gray-700/50 border border-border mt-6">
+                        <section
+                            className="p-6 rounded-lg shadow-inner bg-background-light dark:bg-gray-700/50 border border-border mt-6">
                             <h3 className="text-xl font-semibold mb-4 text-foreground">
                                 {t('bankDetails')}
                             </h3>
-                            {receiverAccount.bankAccountNumber && <DetailRow label={t('bankAccountNumber')} value={receiverAccount.bankAccountNumber} />}
-                            {receiverAccount.cardHolderName && <DetailRow label={t('cardHolderName')} value={receiverAccount.cardHolderName} />}
-                            {receiverAccount.bank?.bankName && <DetailRow label={t('bankName')} value={receiverAccount.bank.bankName} />}
+                            {receiverAccount.bankAccountNumber &&
+                                <DetailRow label={t('bankAccountNumber')} value={receiverAccount.bankAccountNumber}/>}
+                            {receiverAccount.cardHolderName &&
+                                <DetailRow label={t('cardHolderName')} value={receiverAccount.cardHolderName}/>}
+                            {receiverAccount.bank?.bankName &&
+                                <DetailRow label={t('bankName')} value={receiverAccount.bank.bankName}/>}
                             {receiverAccount.bank?.bankLogoUrl && (
                                 <DetailRow label={t('bankLogo')}>
                                     <Image
@@ -211,7 +241,7 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { re
                                     <CountryFlag
                                         flagUrl={receiverAccount.bank.country.countryFlagUrl}
                                         alt={receiverAccount.bank.country.countryName}
-                                        style={{ width: '24px', height: '18px' }}
+                                        style={{width: '24px', height: '18px'}}
                                     />
                                 )}
                             </span>
@@ -225,18 +255,64 @@ async function ReceiverAccountDetailsPage({ searchParams }: { searchParams: { re
     );
 }
 
+// const DetailRow: React.FC<DetailRowProps> = async ({label, value, children}) => {
+//     const t = await getTranslations('ReceiverAccountDetailsPage');
+//     return (
+//         <div className="flex flex-col sm:flex-row sm:items-center py-3 border-b border-border-light last:border-b-0">
+//             <div className="sm:w-1/3 text-muted-foreground font-medium mb-1 sm:mb-0 pr-4">
+//                 {label}:
+//             </div>
+//             <div className="sm:w-2/3 text-foreground break-words">
+//                 {value !== undefined && value !== null && value !== '' ? value : (children || t('notApplicable'))}
+//             </div>
+//         </div>
+//     );
+// };
+
 const DetailRow: React.FC<DetailRowProps> = async ({ label, value, children }) => {
     const t = await getTranslations('ReceiverAccountDetailsPage');
+
     return (
-        <div className="flex flex-col sm:flex-row sm:items-center py-3 border-b border-border-light last:border-b-0">
-            <div className="sm:w-1/3 text-muted-foreground font-medium mb-1 sm:mb-0 pr-4">
+        <div
+            className="
+                grid grid-cols-1 sm:grid-cols-[220px_1fr]
+                gap-y-1 sm:gap-y-0
+                py-3
+                border-b border-border-light last:border-b-0
+            "
+        >
+            {/* Label column */}
+            <div
+                className="
+                    text-muted-foreground font-medium
+                    sm:text-right sm:pr-6
+                "
+            >
                 {label}:
             </div>
-            <div className="sm:w-2/3 text-foreground break-words">
-                {value !== undefined && value !== null && value !== '' ? value : (children || t('notApplicable'))}
+
+            {/* Value column */}
+            {/*<div className="text-foreground break-words">*/}
+            {/*    {value !== undefined && value !== null && value !== ''*/}
+            {/*        ? value*/}
+            {/*        : children || t('notApplicable')}*/}
+            {/*</div>*/}
+            {/* Value column */}
+            <div
+                className="
+        text-foreground break-words
+        text-right
+        flex items-end
+    "
+            >
+                {value !== undefined && value !== null && value !== ''
+                    ? value
+                    : children || t('notApplicable')}
             </div>
+
         </div>
     );
 };
+
 
 export default ReceiverAccountDetailsPage;
