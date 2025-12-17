@@ -365,7 +365,7 @@
     "logout": "退出登录",
     "logoutConfirmation": "您确定要退出登录吗？"
   },
-  "UserDetailsCard" : {
+  "UserDetailsCard": {
     "yourDetails": "您的信息",
     "fullName": "全名",
     "username": "用户名",
@@ -377,6 +377,8 @@
     "saveChanges": "保存更改",
     "saving": "正在保存...",
     "profileUpdated": "个人信息更新成功。",
-    "updateFailed": "更新个人信息失败。"
+    "updateFailed": "更新个人信息失败。",
+    "viewDetails": "查看用户详情"
   }
+
 }

@@ -1,12 +1,18 @@
 import { NextResponse } from "next/server";
-import { getSessionId, clearSessionCookie } from "@/lib/cookies";
+import { cookies } from "next/headers";
 import { deleteSession } from "@/lib/sessionStore";
 
-export async function POST() {
-    const sessionId = getSessionId();
-    if (sessionId) deleteSession(sessionId);
+const SESSION_COOKIE = "ngt_session";
 
-    clearSessionCookie();
+export async function POST() {
+    const cookieStore = await cookies();
+    const sessionId = cookieStore.get(SESSION_COOKIE)?.value;
+
+    if (sessionId) {
+        await deleteSession(sessionId);
+    }
+
+    cookieStore.delete(SESSION_COOKIE);
 
     return NextResponse.json({ success: true });
 }

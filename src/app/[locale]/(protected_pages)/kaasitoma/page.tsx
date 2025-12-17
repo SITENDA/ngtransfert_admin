@@ -32,14 +32,13 @@ export default async function KaasitomaDashboardPage() {
             3600
         );
 
-        console.log("dashboardDataPayload : ", dashboardDataPayload);
 
         if (dashboardDataPayload && dashboardDataPayload.receiverAccountsCount >=0 && dashboardDataPayload.transferRequestsCount >=0 && dashboardDataPayload.settledTransfersCount >=0 && dashboardDataPayload.topUpRequestsCount >=0) {
             receiverAccountsCount = dashboardDataPayload.receiverAccountsCount;
             transferRequestsCount = dashboardDataPayload.transferRequestsCount;
             settledTransfersCount = dashboardDataPayload.settledTransfersCount;
             topUpRequestsCount = dashboardDataPayload.topUpRequestsCount;
-            console.log('AddReceiverAccountPage: Successfully fetched dashboard content.');
+            // console.log('AddReceiverAccountPage: Successfully fetched dashboard content.');
         } else {
             console.warn("AddReceiverAccountPage: No bank data fetched or data structure unexpected from backend.");
         }

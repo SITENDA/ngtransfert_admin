@@ -16,6 +16,7 @@ export const kaasitomaPaths = {
 }
 
 export const generalPaths = {
+    welcomePath: "/",
     settingsPath: "/settings",
     userProfilePath: "/user/",
     loginPath: "/login",

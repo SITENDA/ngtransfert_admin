@@ -7,13 +7,14 @@ export interface BffRole {
 
 export interface BffUser {
     userId: number;
-    email: string;
-    username: string;
     fullName?: string;
+    username: string;
+    email: string;
+    roles: BffRole[];
+    phoneNumber: string;
+    registrationDate: string;
     profileImageUrl?: string;
     enabled: boolean;
-    roles: BffRole[];
-
     // Routing / domain role
     ekiddako: "nnyinimu" | "kaasitoma" | string;
 }

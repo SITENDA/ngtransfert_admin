@@ -176,7 +176,7 @@ async function ReceiverAccountDetailsPage({searchParams}: { searchParams: { rece
 
                         {/* Conditional fields that might be present */}
                         {receiverAccount.qrCodeUrl &&
-                            !receiverAccount.qrCodeUrl.includes("null") && (
+                            (
                                 <DetailRow label={t('qrCodeImage')}>
                                     <ImageDisplay
                                         imageUrl={receiverAccount.qrCodeUrl}

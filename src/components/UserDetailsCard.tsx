@@ -1,37 +1,39 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { useTranslations } from 'next-intl';
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 import { updateUserProfileAction } from "@/lib/actions/userActions";
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
-export default function UserDetailsCard() {
-    const t = useTranslations('UserDetailsCard');
-    const { data: session } = useSession();
-    const user = session?.user;
+interface Props {
+    user: {
+        userId: number;
+        fullName?: string;
+        username: string;
+        email?: string;
+        phoneNumber?: string;
+        registrationDate?: string;
+    };
+}
+
+export default function UserDetailsCard({ user }: Props) {
+    const t = useTranslations("UserDetailsCard");
 
     const [formData, setFormData] = useState({
-        fullName: user?.fullName || '',
-        username: user?.username || '',
-        email: user?.email || '',
-        phoneNumber: user?.phoneNumber || '',
+        fullName: user.fullName ?? "",
+        username: user.username ?? "",
+        email: user.email ?? "",
+        phoneNumber: user.phoneNumber ?? "",
     });
 
-    const [isEditing, setIsEditing] = useState(false);
     const [expanded, setExpanded] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const [saving, setSaving] = useState(false);
-    const [message, setMessage] = useState('');
-
-    const toggleExpand = () => {
-        setExpanded(!expanded);
-        setIsEditing(false);
-        setMessage('');
-    };
+    const [message, setMessage] = useState("");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -42,75 +44,70 @@ export default function UserDetailsCard() {
         setSaving(true);
         try {
             const result = await updateUserProfileAction(formData);
-            setMessage(result?.message || t('profileUpdated'));
+            setMessage(result.message);
             setIsEditing(false);
-        } catch (error) {
-            console.error('Failed to update profile:', error);
-            setMessage(t('updateFailed'));
+        } catch {
+            setMessage(t("updateFailed"));
         } finally {
             setSaving(false);
         }
     };
 
     return (
-        <div className="mb-4">
+        <div>
             <Button
-                variant={expanded ? 'secondary' : 'outline'}
+                variant={expanded ? "secondary" : "outline"}
                 size="sm"
-                onClick={toggleExpand}
+                onClick={() => setExpanded(v => !v)}
                 className="mb-4"
             >
-                {expanded ? t('cancel') : t('viewDetails')}
+                {expanded ? t("cancel") : t("viewDetails")}
             </Button>
 
             {expanded && (
-                <Card className="bg-background/80 backdrop-blur-md border border-border shadow-md dark:bg-gray-800/80 dark:border-gray-700">
+                <Card className="bg-background/80 backdrop-blur-md">
                     <CardHeader>
-                        <CardTitle className="text-xl font-semibold text-blue-700 dark:text-blue-300">
-                            {t('yourDetails')}
-                        </CardTitle>
+                        <CardTitle>{t("yourDetails")}</CardTitle>
                     </CardHeader>
 
                     <CardContent className="space-y-4">
-                        {['fullName', 'username', 'email', 'phoneNumber'].map(field => (
+                        {(["fullName", "username", "email", "phoneNumber"] as const).map(field => (
                             <div key={field}>
                                 <Label htmlFor={field}>{t(field)}</Label>
                                 <Input
                                     id={field}
                                     name={field}
-                                    value={formData[field as keyof typeof formData]}
+                                    value={formData[field]}
                                     onChange={handleChange}
                                     disabled={!isEditing}
-                                    type={field === 'email' ? 'email' : 'text'}
-                                    className="w-full"
                                 />
                             </div>
                         ))}
-
-                        <div>
-                            <Label>{t('registeredOn')}</Label>
-                            <p className="text-muted-foreground">
-                                {new Date(user?.registrationDate || '').toLocaleDateString()}
-                            </p>
-                        </div>
 
                         <div className="flex gap-3 pt-4">
                             {isEditing ? (
                                 <>
                                     <Button onClick={handleSave} disabled={saving}>
-                                        {saving ? t('saving') : t('saveChanges')}
+                                        {saving ? t("saving") : t("saveChanges")}
                                     </Button>
                                     <Button variant="ghost" onClick={() => setIsEditing(false)}>
-                                        {t('cancel')}
+                                        {t("cancel")}
                                     </Button>
                                 </>
                             ) : (
-                                <Button onClick={() => setIsEditing(true)}>{t('edit')}</Button>
+                                <Button onClick={() => setIsEditing(true)}>
+                                    {t("edit")}
+                                </Button>
                             )}
                         </div>
 
                         {message && (
-                            <p className={cn("text-sm", message.includes("success") ? "text-green-500" : "text-red-500")}>
+                            <p
+                                className={cn(
+                                    "text-sm",
+                                    message.includes("success") ? "text-green-500" : "text-red-500"
+                                )}
+                            >
                                 {message}
                             </p>
                         )}
@@ -120,3 +117,4 @@ export default function UserDetailsCard() {
         </div>
     );
 }
+

@@ -1,13 +1,12 @@
 // src/lib/server/forceLogout.ts
-import { deleteSession } from "@/lib/sessionStore";
-import { clearSessionCookie } from "@/lib/cookies";
+export async function forceLogout() {
+    const protocol =
+        process.env.NODE_ENV === "development" ? "http" : "https";
+    const host = process.env.NEXT_PUBLIC_APP_HOST || "localhost:3000";
 
-export async function forceLogout(sessionId?: string) {
-    if (sessionId) {
-        await deleteSession(sessionId);
-    }
-
-    await clearSessionCookie();
-
-    console.log("🧹 BFF logout: session + cookie cleared");
+    await fetch(`${protocol}://${host}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+    })
 }
+

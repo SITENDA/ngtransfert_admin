@@ -2,69 +2,44 @@
 
 import React, { useRef, useState, useTransition } from "react";
 import Image from "next/image";
-import { User } from "next-auth";
 import { Button } from "@/components/ui/button";
-import {useLocale, useTranslations} from "next-intl";
-import { uploadProfileImageAction } from "@/lib/actions/uploadProfileImageAction";
-import { useRouter } from "next/navigation";
-import {signOut, useSession} from "next-auth/react";
-import {generalPaths} from "@/util/frontend-paths";
+import { useTranslations } from "next-intl";
 
-function ProfileImageChanger({ user }: { user: User }) {
+interface Props {
+    profileImageUrl: string;
+}
+
+export default function ProfileImageChanger({ profileImageUrl }: Props) {
     const t = useTranslations("UserProfile");
-    const [isPending, startTransition] = useTransition();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const router = useRouter();
-    const { update } = useSession();
-    const locale = useLocale();
-    const {data: session} = useSession();
+    const [isPending, startTransition] = useTransition();
+    const [imageUrl, setImageUrl] = useState(profileImageUrl);
 
-    if (!session || !session.user || !session.accessToken) {
-        window.location.replace(`/${locale}${generalPaths.loginPath}?ensobi=signedout`);
-        signOut({
-            redirect: true,
-            callbackUrl: `/${locale}${generalPaths.loginPath}?ensobi=signedout`,
-        });
-    }
+    const triggerFileInput = () => fileInputRef.current?.click();
 
-    // NEW: Local image state to update immediately after upload
-    const [imageUrl, setImageUrl] = useState<string>(user.profileImageUrl);
-
-    const triggerFileInput = () => {
-        if (fileInputRef.current) {
-            fileInputRef.current.click();
-        }
-    };
-
-    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
         const formData = new FormData();
         formData.append("file", file);
 
-        startTransition(() => {
-            uploadProfileImageAction(formData)
-                .then(res => {
-                    if (res.success && res.updatedUser?.profileImageUrl) {
-                        console.log("Uploaded successfully:", res.updatedUser.profileImageUrl);
-                        // Inside your success handler:
-                        if (res.success && res.updatedUser) {
-                            update({
-                                user: {
-                                    ...res.updatedUser,
-                                },
-                            });
-                        }
-                        setImageUrl(res.updatedUser.profileImageUrl);
-                        router.refresh();
-                    } else {
-                        console.error("Failed to update profile image:", res.message);
-                    }
-                })
-                .catch(err => {
-                    console.error("Unexpected error:", err);
-                });
+        startTransition(async () => {
+            const res = await fetch("/api/user/profile-image", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!res.ok) {
+                console.error("Profile image upload failed");
+                return;
+            }
+
+            const json = await res.json();
+
+            if (json.success && json.user?.profileImageUrl) {
+                setImageUrl(json.user.profileImageUrl);
+            }
         });
     };
 
@@ -75,13 +50,14 @@ function ProfileImageChanger({ user }: { user: User }) {
                 alt="Profile"
                 width={120}
                 height={120}
-                className="rounded-full object-cover border border-gray-300 dark:border-gray-600"
+                className="rounded-full object-cover border"
                 unoptimized
             />
+
             <Button
                 variant="secondary"
                 size="sm"
-                className="text-sm mt-4"
+                className="mt-4"
                 disabled={isPending}
                 onClick={triggerFileInput}
             >
@@ -93,10 +69,8 @@ function ProfileImageChanger({ user }: { user: User }) {
                 accept="image/*"
                 ref={fileInputRef}
                 onChange={handleFileChange}
-                style={{ display: "none" }}
+                hidden
             />
         </div>
     );
 }
-
-export default ProfileImageChanger;

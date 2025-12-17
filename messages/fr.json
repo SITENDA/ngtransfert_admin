@@ -364,7 +364,7 @@
     "logout": "Se déconnecter",
     "logoutConfirmation": "Êtes-vous sûr de vouloir vous déconnecter ?"
   },
-  "UserDetailsCard" : {
+  "UserDetailsCard": {
     "yourDetails": "Vos informations",
     "fullName": "Nom complet",
     "username": "Nom d'utilisateur",
@@ -376,6 +376,8 @@
     "saveChanges": "Enregistrer les modifications",
     "saving": "Enregistrement...",
     "profileUpdated": "Profil mis à jour avec succès.",
-    "updateFailed": "Échec de la mise à jour du profil."
+    "updateFailed": "Échec de la mise à jour du profil.",
+    "viewDetails": "Voir les détails de l’utilisateur"
   }
+
 }

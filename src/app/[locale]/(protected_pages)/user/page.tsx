@@ -48,7 +48,7 @@ export default async function UserProfilePage() {
                 </CardHeader>
 
                 <CardContent className="flex flex-col md:flex-row gap-8 p-6">
-                    <ProfileImageChanger user={user} />
+                    <ProfileImageChanger profileImageUrl={user.profileImageUrl ?? "/default-avatar.png"} />
 
                     <div className="flex-grow space-y-4">
                         <div>

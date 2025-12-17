@@ -72,14 +72,14 @@ export async function fetchBackendData<T>(
 
         // ❌ Refresh failed → force logout
         if (!refreshRes.ok) {
-            await forceLogout(session.sessionId);
+            await forceLogout();
             return null;
         }
 
         const refreshed = await refreshRes.json();
 
         if (!refreshed.success) {
-            await forceLogout(session.sessionId);
+            await forceLogout();
             return null;
         }
 
