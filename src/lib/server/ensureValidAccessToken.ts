@@ -6,8 +6,9 @@ import {Session} from "../../../types/session";
 import {clearSessionCookie} from "@/lib/cookies";
 
 export async function ensureValidAccessToken(
-    session: Session
+    session: Session | null
 ): Promise<boolean> {
+    if (!session) {return false}
     if (session.accessTokenExpiresAt > Date.now()) {
         return true;
     }

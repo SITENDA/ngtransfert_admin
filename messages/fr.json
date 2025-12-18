@@ -33,6 +33,16 @@
     "changeLanguage": "Changer la langue",
     "settings": "Paramètres"
   },
+  "PublicHeader": {
+    "contact": "Contact",
+    "settings": "Paramètres",
+    "theme": "Thème",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "themeSystem": "Système",
+    "language": "Langue",
+    "login": "Connexion"
+  },
   "ContactUsPage": {
     "contactUs": "Contactez-nous",
     "readyToStart": "Prêt à démarrer votre prochain projet avec nous ? Envoyez-nous un message et nous vous répondrons dans les plus brefs délais !",
@@ -63,7 +73,6 @@
     "registerButton": "S'inscrire",
     "signInButton": "Se connecter",
 
-    "alreadyHaveAccount": "Vous avez déjà un compte ? Connectez-vous",
     "needAccount": "Besoin d'un compte ? Inscrivez-vous ici",
 
     "loginWith": "Se connecter avec",
@@ -89,7 +98,41 @@
 
     "redirectingToLogin": "Redirection vers la page de connexion...",
     "oauthProcessing": "Traitement de l'authentification...",
-    "pleaseWait": "Veuillez patienter pendant que nous vous connectons."
+    "pleaseWait": "Veuillez patienter pendant que nous vous connectons.",
+    "forgotPassword": "Mot de passe oublié ?"
+  },
+  "RegisterFormComponent": {
+    "title": "Créer votre compte",
+    "fullName": "Nom complet",
+    "email": "Adresse e-mail",
+    "phoneNumber": "Numéro de téléphone",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+
+    "registerButton": "Créer un compte",
+
+    "alreadyHaveAccount": "Vous avez déjà un compte ? Connectez-vous",
+
+    "signUpWithGoogle": "S’inscrire avec Google",
+    "signUpWithFacebook": "S’inscrire avec Facebook",
+
+    "passwordMismatch": "Les mots de passe ne correspondent pas.",
+    "registrationFailed": "Échec de l'inscription. Veuillez réessayer.",
+    "registrationSuccess": "Inscription réussie ! Vous pouvez maintenant vous connecter.",
+
+    "backToLogin": "Retour à la connexion",
+    "errorPrefix": "Erreur"
+  },
+  "ResetPassword": {
+    "title": "Réinitialiser votre mot de passe",
+    "email": "Adresse e-mail",
+    "phoneNumber": "Numéro de téléphone",
+    "use": "Utiliser",
+    "resetButton": "Envoyer le lien de réinitialisation",
+    "sending": "Envoi en cours...",
+    "resetSuccess": "Si le compte existe, un lien de réinitialisation a été envoyé.",
+    "resetFailed": "Impossible de traiter la demande de réinitialisation.",
+    "backToLogin": "Retour à la connexion"
   },
   "AddReceiverAccountPage": {
     "pageTitle": "Ajouter un compte bénéficiaire",

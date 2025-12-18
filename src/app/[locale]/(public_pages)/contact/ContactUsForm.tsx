@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,84 +6,99 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { InputWithLabel } from "@/components/inputs/InputWithLabel";
 import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
-import { contactUsSchema, type contactUsSchemaType } from "@/zod-schemas/contact-us"; // Create this schema
-import { useAction } from 'next-safe-action/hooks';
-import { sendContactUsEmailAction } from "@/lib/actions/sendContactUsEmailAction"; // Create this action
+import {
+    contactUsSchema,
+    type contactUsSchemaType,
+} from "@/zod-schemas/contact-us";
 import { useToast } from "@/hooks/use-toast";
 import { LoaderCircle } from "lucide-react";
-import { DisplayServerActionResponse } from "@/components/DisplayServerActionResponse";
+import TickAnimation from "@/components/TickAnimation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {sendContactUsMessageAction} from "@/lib/actions/sendContactUsEmailAction";
 
 type Props = {
     content: {
-        emailTitle: string,
-        emailPlaceholder: string,
-        messageTitle: string,
-        messagePlaceholder: string,
-        sendButtonTitle: string,
-        loadingLabel: string,
-        reset: string
-    }
-}
+        emailTitle: string;
+        emailPlaceholder: string;
+        messageTitle: string;
+        messagePlaceholder: string;
+        sendButtonTitle: string;
+        loadingLabel: string;
+        reset: string;
+    };
+};
 
-export default function ContactUsForm({ content } : Props) {
+export default function ContactUsForm({ content }: Props) {
     const { toast } = useToast();
-    const [setSuccessMessage] = useState<string | null>(null);
+    const router = useRouter();
+
+    const [isSending, setIsSending] = useState(false);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     const emptyValues: contactUsSchemaType = {
-        email: '',
-        message: '',
+        email: "",
+        message: "",
     };
 
     const form = useForm<contactUsSchemaType>({
-        mode: 'onBlur',
+        mode: "onBlur",
         resolver: zodResolver(contactUsSchema),
         defaultValues: emptyValues,
     });
 
-    const {
-        execute: executeSend,
-        result: sendResult,
-        isPending: isSending,
-        reset: resetSendAction,
-    } = useAction(sendContactUsEmailAction, {
-        onSuccess({ data }) {
-            if (data?.message) {
-                toast({
-                    variant: "default",
-                    title: "Success! 🎉",
-                    description: data.message,
-                });
-                setSuccessMessage(data.message);
-                form.reset(emptyValues); // Clear the form on success
-            }
-        },
-        onError({ error }) {
-            console.log("error", error);
-            toast({
-                variant: "destructive",
-                title: "Error",
-                description: "Message Failed to Send", // More generic message
-            });
-        },
-    });
-
     async function submitForm(data: contactUsSchemaType) {
-        executeSend(data);
+        setIsSending(true);
+
+        try {
+            const result = await sendContactUsMessageAction(data);
+
+            if (!result.success) {
+                toast({
+                    title: "Error",
+                    description: result.formErrors?.[0] ?? "Failed to send message",
+                    variant: "destructive",
+                });
+                return;
+            }
+
+            toast({
+                title: "Success 🎉",
+                description: result.message,
+            });
+
+            setSuccessMessage(result.message ?? "Message sent successfully");
+            form.reset(emptyValues);
+
+            setTimeout(() => {
+                router.push("/welcome");
+            }, 3000);
+        } finally {
+            setIsSending(false);
+        }
+    }
+
+    // ✅ Show success animation ONLY
+    if (successMessage) {
+        return <TickAnimation successMessage={successMessage} />;
     }
 
     return (
-        <div className="flex flex-col gap-1 mt-4 sm:px-8 relative"> {/* Relative for positioning */}
-            <div className="absolute inset-0 bg-[#230a84]/50 rounded-lg -z-50"></div> {/* Semi-transparent overlay */}
-            <div className="relative z-10 p-6 bg-black/50 rounded-lg"> {/* Form container with padding, background, and rounded corners */}
-                <DisplayServerActionResponse result={sendResult} />
+        <div className="flex flex-col gap-1 mt-4 sm:px-8 relative">
+            <div className="absolute inset-0 bg-[#230a84]/50 rounded-lg -z-50" />
+
+            <div className="relative z-10 p-6 bg-black/50 rounded-lg">
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(submitForm)} className="flex flex-col gap-4">
+                    <form
+                        onSubmit={form.handleSubmit(submitForm)}
+                        className="flex flex-col gap-4"
+                    >
                         <InputWithLabel<contactUsSchemaType>
-                            fieldTitle={ content.emailTitle }
+                            fieldTitle={content.emailTitle}
                             nameInSchema="email"
-                            placeholder={ content.emailPlaceholder } // Add placeholder
-                            type="email" // Specify input type
+                            placeholder={content.emailPlaceholder}
+                            type="email"
+                            control={form.control}
                         />
 
                         <TextAreaWithLabel<contactUsSchemaType>
@@ -97,24 +112,24 @@ export default function ContactUsForm({ content } : Props) {
                             <Button
                                 type="submit"
                                 className="w-3/4"
-                                variant="default"
-                                title={content.sendButtonTitle}
                                 disabled={isSending}
                             >
                                 {isSending ? (
                                     <>
-                                        <LoaderCircle className="animate-spin" /> {content.loadingLabel}
+                                        <LoaderCircle className="animate-spin mr-2" />
+                                        {content.loadingLabel}
                                     </>
-                                ) : content.sendButtonTitle}
+                                ) : (
+                                    content.sendButtonTitle
+                                )}
                             </Button>
+
                             <Button
                                 type="button"
                                 variant="destructive"
-                                title={content.reset}
                                 onClick={() => {
                                     form.reset(emptyValues);
-                                    resetSendAction();
-                                    setSuccessMessage(null); // Clear success message on reset
+                                    setSuccessMessage(null);
                                 }}
                             >
                                 {content.reset}
@@ -125,6 +140,4 @@ export default function ContactUsForm({ content } : Props) {
             </div>
         </div>
     );
-
-
 }

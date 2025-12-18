@@ -1,43 +1,42 @@
+// src/lib/actions/sendContactUsMessageAction.ts
 "use server";
 
-// import { z } from "zod";
 import { contactUsSchema } from "@/zod-schemas/contact-us";
-import { revalidatePath } from "next/cache";
-// import prisma from "@/lib/prisma";
-import { actionClient } from "@/lib/safe-action";
-import getSession from "@/lib/getSession";
 
-export const sendContactUsEmailAction = actionClient
-    .metadata({ actionName: 'sendContactUsEmailAction' }) // Add metadata
-    .schema(contactUsSchema) // Add schema validation
-    .action(async (data) => { // No need for destructuring here
-        const session = await getSession() // Get the session
+export async function sendContactUsMessageAction(
+    input: unknown
+) {
+    const parsed = contactUsSchema.safeParse(input);
 
-        if (!session) {
-            return {
-                // Return an error if the user is not authenticated
-                // Important: Structure to match next-safe-action error handling
-                fieldErrors: {
-                  email: ["You must be logged in to submit this form."],
-                  message: ["You must be logged in to submit this form."],
-                },
-                formErrors: ["You must be logged in to submit this form."],
-            };
+    if (!parsed.success) {
+        return {
+            success: false,
+            formErrors: ["Invalid form data"],
+            fieldErrors: parsed.error.flatten().fieldErrors,
+        };
+    }
+
+    const res = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/contact`,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(parsed.data),
+            cache: "no-store",
         }
+    );
 
-        try {
-            // await prisma.contactMessage.create({
-            //     data: {
-            //         email: data.parsedInput.email,
-            //         message: data.parsedInput.message,
-            //     },
-            // });
+    const json = await res.json();
 
-            revalidatePath('/contact-us');
+    if (!res.ok) {
+        return {
+            success: false,
+            formErrors: [json.message ?? "Failed to send message"],
+        };
+    }
 
-            return { message: "Message sent and saved successfully!" };
-        } catch (error) {
-            console.error("Error saving contact message:", error);
-            return { message: "Failed to save message." };
-        }
-    });
+    return {
+        success: true,
+        message: json.message,
+    };
+}

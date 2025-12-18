@@ -51,15 +51,15 @@ export const PhoneNumberInput = forwardRef<HTMLInputElement, PhoneNumberInputPro
                             border: "none",
                             color: "white",
                             fontSize: "18px",
-                            fontWeight: 500,
-                            height: "70px",
+                            fontWeight: 300,
+                            height: "50px",
                             width: "100%"
                         }}
                         containerStyle={{
                             backgroundColor: "transparent",
                             border: "1px solid #1A1A1A",
                             boxShadow: "0 0 4px #191919",
-                            height: "60px",
+                            height: "50px",
                             borderRadius: "8px",
                             fontFamily: "Inter, sans-serif",
                              marginBottom: "16px",
@@ -73,9 +73,9 @@ export const PhoneNumberInput = forwardRef<HTMLInputElement, PhoneNumberInputPro
                             backgroundColor: "#444444",
                             color: "#ffffff",
                         }}
-                        labelStyle={{
-                            color: textColor,
-                        }}
+                        // labelStyle={{
+                        //     color: textColor,
+                        // }}
                         value={value}
                         onChange={changeHandler}
                         inputProps={{

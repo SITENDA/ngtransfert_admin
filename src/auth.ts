@@ -1,4 +1,4 @@
-// // src/auth.ts
+// // src/loginAction.ts
 // import NextAuth, {Session} from "next-auth";
 // import CredentialsProvider from "next-auth/providers/credentials";
 // import type { User } from "next-auth";

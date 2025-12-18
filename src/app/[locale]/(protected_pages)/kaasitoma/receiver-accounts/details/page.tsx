@@ -123,33 +123,18 @@ async function ReceiverAccountDetailsPage({searchParams}: { searchParams: { rece
                 <CardHeader
                     className="flex flex-row justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     {/* Updated Top Up button styling */}
-                    <Link
-                        href={{
-                            pathname: kaasitomaPaths.topUpCountryAndMethodPath,
-                            query: {receiverAccountId},
-                        }}
-                    >
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
-                        >
+                    <Link href={`${kaasitomaPaths.topUpCountryAndMethodPath}${receiverAccountId}`} passHref>
+                        <Button variant="outline"
+                                size="sm"
+                                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
                             Top Up
                         </Button>
                     </Link>
-
                     {/* Updated Request for Transfer button styling */}
-                    <Link
-                        href={{
-                            pathname: kaasitomaPaths.applyForTransferPath,
-                            query: {receiverAccountId},
-                        }}
-                    >
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
-                        >
+                    <Link href={`${kaasitomaPaths.applyForTransferPath}${receiverAccountId}`} passHref>
+                        <Button variant="outline"
+                                size="sm"
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
                             Request for Transfer
                         </Button>
                     </Link>

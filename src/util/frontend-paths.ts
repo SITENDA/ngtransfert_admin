@@ -1,5 +1,7 @@
 export const kaasitomaPaths = {
     loginPath: "/login",
+    registerPath: "/register",
+    resetPasswordPath: "/reset-password",
     homePath: "/kaasitoma/",
     addReceiverAccountPath: "/kaasitoma/receiver-accounts/add-receiver-account",
     applyForTransferPath: "/kaasitoma/transfer-requests/apply-for-transfer?receiverAccountId=",
@@ -20,4 +22,5 @@ export const generalPaths = {
     settingsPath: "/settings",
     userProfilePath: "/user/",
     loginPath: "/login",
+    contactPath: "/contact",
 }

@@ -1,4 +1,4 @@
-// 1. Updated Server Action: src/app/actions/userActions.ts
+// 1. Updated Server Action: src/app/actions/updateUserProfileAction.ts
 "use server";
 
 import getSession from "@/lib/getSession";

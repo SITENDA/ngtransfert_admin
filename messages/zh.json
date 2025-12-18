@@ -33,6 +33,16 @@
     "changeLanguage": "更改语言",
     "settings": "设置"
   },
+  "PublicHeader": {
+    "contact": "联系",
+    "settings": "设置",
+    "theme": "主题",
+    "themeLight": "浅色",
+    "themeDark": "深色",
+    "themeSystem": "系统",
+    "language": "语言",
+    "login": "登录"
+  },
   "ContactUsPage": {
     "contactUs": "联系我们",
     "readyToStart": "准备好与我们一起开始您的下一个项目了吗？向我们发送消息，我们将尽快回复您！",
@@ -52,7 +62,6 @@
   "LoginPage": {
     "title": "登录"
   },
-
   "LoginFormComponent": {
     "signInTitle": "登录",
     "registerAccountTitle": "注册账号",
@@ -64,7 +73,6 @@
     "registerButton": "注册",
     "signInButton": "登录",
 
-    "alreadyHaveAccount": "已有账号？去登录",
     "needAccount": "需要账号？在此注册",
 
     "loginWith": "使用以下方式登录",
@@ -90,8 +98,43 @@
 
     "redirectingToLogin": "正在重定向到登录页面...",
     "oauthProcessing": "正在处理身份验证...",
-    "pleaseWait": "请稍候，我们正在为您登录。"
+    "pleaseWait": "请稍候，我们正在为您登录。",
+    "forgotPassword": "忘记密码？"
   },
+  "RegisterFormComponent": {
+    "title": "创建您的账号",
+    "fullName": "姓名",
+    "email": "电子邮箱地址",
+    "phoneNumber": "电话号码",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+
+    "alreadyHaveAccount": "已有账号？去登录",
+
+    "registerButton": "创建账号",
+
+    "signUpWithGoogle": "使用 Google 注册",
+    "signUpWithFacebook": "使用 Facebook 注册",
+
+    "passwordMismatch": "两次输入的密码不一致。",
+    "registrationFailed": "注册失败，请重试。",
+    "registrationSuccess": "注册成功！您现在可以登录。",
+
+    "backToLogin": "返回登录",
+    "errorPrefix": "错误"
+  },
+  "ResetPassword": {
+    "title": "重置您的密码",
+    "email": "电子邮箱地址",
+    "phoneNumber": "电话号码",
+    "use": "使用",
+    "resetButton": "发送重置链接",
+    "sending": "正在发送...",
+    "resetSuccess": "如果账户存在，重置链接已发送。",
+    "resetFailed": "无法处理重置请求。",
+    "backToLogin": "返回登录"
+  },
+
   "AddReceiverAccountPage": {
     "pageTitle": "添加收款账户",
     "loginRequiredMessage": "请登录以查看和添加收款账户。"

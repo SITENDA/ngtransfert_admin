@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
-import { updateUserProfileAction } from "@/lib/actions/userActions";
+import { updateUserProfileAction } from "@/lib/actions/updateUserProfileAction";
 import { cn } from "@/lib/utils";
 
 interface Props {

@@ -33,6 +33,16 @@
     "changeLanguage": "Change Language",
     "settings": "Settings"
   },
+  "PublicHeader": {
+    "contact": "Contact",
+    "settings": "Settings",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "language": "Language",
+    "login": "Login"
+  },
   "ContactUsPage": {
     "contactUs": "Contact Us",
     "readyToStart": "Ready to start your next project with us? Send us a messages and we will get back to you as soon as possible!",
@@ -52,6 +62,9 @@
   "LoginPage": {
     "title": "Sign In"
   },
+  "RegisterPage": {
+    "title": "Create your account"
+  },
   "LoginFormComponent": {
     "signInTitle": "Sign In",
     "registerAccountTitle": "Register Account",
@@ -63,7 +76,6 @@
     "registerButton": "Register",
     "signInButton": "Sign In",
 
-    "alreadyHaveAccount": "Already have an account? Sign In",
     "needAccount": "Need an account? Register Here",
 
     "loginWith": "Login using",
@@ -89,7 +101,41 @@
 
     "redirectingToLogin": "Redirecting to login page...",
     "oauthProcessing": "Processing authentication...",
-    "pleaseWait": "Please wait while we log you in."
+    "pleaseWait": "Please wait while we log you in.",
+    "forgotPassword": "Forgot password?"
+  },
+  "RegisterFormComponent": {
+    "title": "Create your account",
+    "fullName": "Full name",
+    "email": "Email address",
+    "phoneNumber": "Phone number",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+
+    "alreadyHaveAccount": "Already have an account? Sign In",
+
+    "registerButton": "Create account",
+
+    "signUpWithGoogle": "Sign up with Google",
+    "signUpWithFacebook": "Sign up with Facebook",
+
+    "passwordMismatch": "Passwords do not match.",
+    "registrationFailed": "Registration failed. Please try again.",
+    "registrationSuccess": "Registration successful! You can now sign in.",
+
+    "backToLogin": "Back to login",
+    "errorPrefix": "Error"
+  },
+  "ResetPassword": {
+    "title": "Reset your password",
+    "email": "Email address",
+    "phoneNumber": "Phone number",
+    "use": "Use",
+    "resetButton": "Send reset link",
+    "sending": "Sending...",
+    "resetSuccess": "If the account exists, a reset link has been sent.",
+    "resetFailed": "Unable to process reset request.",
+    "backToLogin": "Back to login"
   },
   "AddReceiverAccountPage": {
     "pageTitle": "Add Receiver Account",
