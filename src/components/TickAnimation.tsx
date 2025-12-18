@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useTheme } from "next-themes";
 import "@/css/TickAnimation.css";
 
 interface TickAnimationProps {
@@ -9,19 +8,9 @@ interface TickAnimationProps {
 }
 
 export default function TickAnimation({ successMessage }: TickAnimationProps) {
-    const { theme } = useTheme();
-
-    const isDark = theme === "dark";
-
     return (
-        <div
-            className="wrapper"
-            style={{
-                backgroundColor: isDark ? "hsl(var(--background))" : "hsl(var(--background))",
-                color: isDark ? "hsl(var(--foreground))" : "hsl(var(--foreground))",
-            }}
-        >
-            <svg
+        <div className="wrapper">
+        <svg
                 className="checkmark"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 52 52"

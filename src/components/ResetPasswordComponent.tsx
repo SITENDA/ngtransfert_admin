@@ -1,34 +1,62 @@
-// components/ResetPasswordComponent.tsx
 "use client";
 
-import React, { useState, FormEvent, ChangeEvent } from "react";
+import React, {
+    useState,
+    FormEvent,
+    ChangeEvent,
+    useRef
+} from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PhoneNumberInput } from "@/components/PhoneNumberInput";
 import { resetPasswordAction } from "@/lib/actions/resetPasswordAction";
-import {useResetPasswordRouter} from "@/app/[locale]/(public_pages)/reset-password/useRouter";
+import { useResetPasswordRouter } from "@/app/[locale]/(public_pages)/reset-password/useRouter";
 
 export default function ResetPasswordComponent() {
+    const t = useTranslations("ResetPassword");
+    const { backToLogin } = useResetPasswordRouter();
+
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [validPhoneNumber, setValidPhoneNumber] = useState(false);
     const [usePhone, setUsePhone] = useState(false);
+
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const t = useTranslations("ResetPassword");
-    const { backToLogin } = useResetPasswordRouter();
+    const phoneInputRef = useRef<HTMLInputElement | null>(null);
 
+    /* ---------------- Phone validation ---------------- */
+    const handlePhoneChange = (value: string) => {
+        setPhoneNumber(value);
+        const digits = value.replace(/\D/g, "");
+        setValidPhoneNumber(digits.length >= 10 && digits.length <= 13);
+    };
+
+    /* ---------------- Reset password ---------------- */
     const handleReset = async (e: FormEvent) => {
         e.preventDefault();
         setError(null);
         setSuccess(null);
+
+        if (usePhone && !validPhoneNumber) {
+            setError(t("invalidPhoneNumber"));
+            phoneInputRef.current?.focus();
+            return;
+        }
+
         setLoading(true);
 
         const result = await resetPasswordAction({
             identifier: usePhone ? "phoneNumber" : "email",
-            email,
-            phoneNumber,
+            email: usePhone ? "" : email,
+            phoneNumber: usePhone
+                ? phoneNumber.startsWith("+")
+                    ? phoneNumber
+                    : `+${phoneNumber}`
+                : "",
         });
 
         if (!result.success) {
@@ -58,32 +86,42 @@ export default function ResetPasswordComponent() {
                     </div>
                 )}
 
-                <form onSubmit={handleReset}>
-                    <div className="mb-4">
-                        <label className="block text-sm font-bold mb-2">
-                            {usePhone ? t("phoneNumber") : t("email")}
-                        </label>
+                <form onSubmit={handleReset} className="space-y-4">
+                    {/* Email OR Phone */}
+                    {!usePhone ? (
                         <Input
-                            type={usePhone ? "tel" : "email"}
-                            value={usePhone ? phoneNumber : email}
+                            type="email"
+                            placeholder={t("email")}
+                            value={email}
                             onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                usePhone
-                                    ? setPhoneNumber(e.target.value)
-                                    : setEmail(e.target.value)
+                                setEmail(e.target.value)
                             }
                             required
                         />
-                    </div>
+                    ) : (
+                        <PhoneNumberInput
+                            value={phoneNumber}
+                            changeHandler={handlePhoneChange}
+                            validPhoneNumber={validPhoneNumber}
+                            ref={phoneInputRef}
+                        />
+                    )}
 
+                    {/* Toggle */}
                     <button
                         type="button"
-                        onClick={() => setUsePhone(prev => !prev)}
-                        className="text-sm text-blue-600 dark:text-blue-400 hover:underline mb-4"
+                        onClick={() => setUsePhone((v) => !v)}
+                        className="text-sm text-blue-600 hover:underline dark:text-blue-400"
                     >
-                        {t("use")} {usePhone ? t("email") : t("phoneNumber")}
+                        {t("use")}{" "}
+                        {usePhone ? t("email") : t("phoneNumber")}
                     </button>
 
-                    <Button type="submit" className="w-full" disabled={loading}>
+                    <Button
+                        type="submit"
+                        className="w-full"
+                        disabled={loading}
+                    >
                         {loading ? t("sending") : t("resetButton")}
                     </Button>
                 </form>

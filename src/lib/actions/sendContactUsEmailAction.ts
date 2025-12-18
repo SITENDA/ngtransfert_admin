@@ -2,10 +2,10 @@
 "use server";
 
 import { contactUsSchema } from "@/zod-schemas/contact-us";
+import { ContactPayload } from "../../../types/ContactPayload";
 
-export async function sendContactUsMessageAction(
-    input: unknown
-) {
+export async function sendContactUsMessageAction(input: ContactPayload) {
+
     const parsed = contactUsSchema.safeParse(input);
 
     if (!parsed.success) {
@@ -17,16 +17,24 @@ export async function sendContactUsMessageAction(
     }
 
     const res = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/contact`,
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/contact`,
         {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(parsed.data),
+            body: JSON.stringify(input),
             cache: "no-store",
         }
     );
 
-    const json = await res.json();
+    let json;
+    try {
+        json = await res.json();
+    } catch {
+        return {
+            success: false,
+            formErrors: ["Unexpected server response"],
+        };
+    }
 
     if (!res.ok) {
         return {

@@ -16,6 +16,7 @@ import TickAnimation from "@/components/TickAnimation";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {sendContactUsMessageAction} from "@/lib/actions/sendContactUsEmailAction";
+import {generalPaths} from "@/util/frontend-paths";
 
 type Props = {
     content: {
@@ -51,6 +52,7 @@ export default function ContactUsForm({ content }: Props) {
         setIsSending(true);
 
         try {
+            console.log("Data entered is : ", data);
             const result = await sendContactUsMessageAction(data);
 
             if (!result.success) {
@@ -71,7 +73,7 @@ export default function ContactUsForm({ content }: Props) {
             form.reset(emptyValues);
 
             setTimeout(() => {
-                router.push("/welcome");
+                router.push(generalPaths.welcomePath);
             }, 3000);
         } finally {
             setIsSending(false);

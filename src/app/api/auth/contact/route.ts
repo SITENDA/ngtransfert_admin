@@ -1,20 +1,10 @@
 // src/app/api/contact/route.ts
 import { NextResponse } from "next/server";
-import getSession from "@/lib/getSession";
 import { BackendHttpResponse } from "../../../../../types/BackendHttpResponse";
 import {ContactPayload} from "../../../../../types/ContactPayload";
 
 
 export async function POST(req: Request) {
-    const session = await getSession();
-
-    // 🔐 Require authentication
-    if (!session) {
-        return NextResponse.json(
-            { success: false, message: "Unauthorized" },
-            { status: 401 }
-        );
-    }
 
     const body: ContactPayload = await req.json();
 
@@ -24,7 +14,6 @@ export async function POST(req: Request) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${session.accessToken}`,
             },
             body: JSON.stringify(body),
         }

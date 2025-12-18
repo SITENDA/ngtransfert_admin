@@ -41,7 +41,9 @@ export default function RegisterFormComponent() {
                 fullName,
                 identifier: "EMAIL",
                 email,
-                phoneNumber,
+                phoneNumber: phoneNumber.startsWith("+")
+                    ? phoneNumber
+                    : `+${phoneNumber}`,
                 password,
             }),
         });

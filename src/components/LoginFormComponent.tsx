@@ -64,7 +64,10 @@ export default function LoginFormComponent() {
                 body: JSON.stringify({
                     identifier: loginWithPhone ? "phoneNumber" : "email",
                     email: loginWithPhone ? "" : email,
-                    phoneNumber: loginWithPhone ? phoneNumber : "",
+                    phoneNumber: loginWithPhone ? phoneNumber.startsWith("+")
+                            ? phoneNumber
+                            : `+${phoneNumber}`
+                        : "",
                     password,
                 }),
             });
