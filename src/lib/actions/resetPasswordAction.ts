@@ -5,6 +5,7 @@ interface ResetPasswordActionInput {
     identifier: "email" | "phoneNumber";
     email?: string;
     phoneNumber?: string;
+    locale: string;
 }
 
 export async function resetPasswordAction(input: ResetPasswordActionInput) {

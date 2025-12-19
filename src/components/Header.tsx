@@ -49,7 +49,6 @@ export default async function Header() {
 
                 {/* Right Section - Navigation Links */}
                 <nav className="flex items-center gap-6">
-                    {user && token.length > 15 ? (
                         <>
                             <NavButton href="/home" label="Dashboard" icon={User}/>
                             <button onClick={handleLogout} className="text-red-500 flex items-center gap-1">
@@ -57,13 +56,9 @@ export default async function Header() {
                                 {t('signOut')}
                             </button>
                         </>
-                    ) : (
-                        <></>
-                        // <NavButton href="/login" label="Sign in" icon={User} />
-                    )}
                     {/* <NavButton href="/about" label="About" icon={Info} /> */}
-                    <NavButton href="/contact" label={t('contactUs')} icon={Mail}/>
-                    <NavButton href="/settings" label={t('settings')} icon={Settings}/>
+                    <NavButton href={generalPaths.contactPath} label={t('contactUs')} icon={Mail}/>
+                    <NavButton href={generalPaths.settingsPath} label={t('settings')} icon={Settings}/>
                     <ModeToggle label={t('toggleTheme')}
                                 themeNames={{light: t('light'), dark: t('dark'), system: t('system')}}/>
                     <LocaleToggle label={t('changeLanguage')}/>

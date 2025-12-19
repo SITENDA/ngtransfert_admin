@@ -10,9 +10,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import {JSX} from "react";
+// import {setPreference} from "@/lib/client/setPreference";
+// import {getSession} from "next-auth/react";
 
 type Props = {
     label: string;
+    userLoggedIn: boolean;
 }
 
 type LocaleType = {
@@ -21,6 +24,8 @@ type LocaleType = {
 }[];
 
 export function LocaleToggle({ label }: Props): JSX.Element {
+
+
     const locales: LocaleType = [
         {
             label: "English",
@@ -42,17 +47,24 @@ export function LocaleToggle({ label }: Props): JSX.Element {
     const pathname = usePathname();
 
     const handleLocaleChange = (locale: string) => {
-        // Get the current path without the locale prefix
         const currentPath = pathname.replace(/^\/(en|fr|zh)/, "");
-        localStorage.setItem('preferred_locale', locale);
+        localStorage.setItem("preferred_locale", locale);
 
-        // Construct the new path with the selected locale
+        // if (userLoggedIn) {
+        //     // 🔐 Persist preference
+        //     setPreference({
+        //         identifier: "email",      // or phoneNumber
+        //         email: undefined,
+        //         key: "language",
+        //         value: locale,
+        //     });
+        // }
+
         const newPath = `/${locale}${currentPath}`;
 
-        // Navigate to the new path
         startTransition(() => {
             router.push(newPath);
-        })
+        });
     };
 
     return (

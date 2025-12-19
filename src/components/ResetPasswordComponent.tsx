@@ -6,7 +6,7 @@ import React, {
     ChangeEvent,
     useRef
 } from "react";
-import { useTranslations } from "next-intl";
+import {useLocale, useTranslations} from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PhoneNumberInput } from "@/components/PhoneNumberInput";
@@ -16,6 +16,7 @@ import { useResetPasswordRouter } from "@/app/[locale]/(public_pages)/reset-pass
 export default function ResetPasswordComponent() {
     const t = useTranslations("ResetPassword");
     const { backToLogin } = useResetPasswordRouter();
+    const locale = useLocale();
 
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -57,6 +58,7 @@ export default function ResetPasswordComponent() {
                     ? phoneNumber
                     : `+${phoneNumber}`
                 : "",
+            locale,
         });
 
         if (!result.success) {
