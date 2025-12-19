@@ -490,5 +490,23 @@
     "profileUpdated": "Profile updated successfully.",
     "updateFailed": "Failed to update profile.",
     "viewDetails": "View User Details"
+  },
+  "ResetPasswordPage": {
+    "title": "Reset your password"
+  },
+
+  "ResetPasswordForm": {
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+
+    "submitButton": "Reset password",
+    "submitting": "Resetting...",
+
+    "passwordMismatch": "Passwords do not match.",
+    "invalidLink": "Invalid or expired password reset link.",
+    "resetFailed": "Unable to reset password. Please try again.",
+    "resetSuccess": "Your password has been reset successfully.",
+
+    "errorPrefix": "Error"
   }
 }

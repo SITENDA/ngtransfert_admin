@@ -421,6 +421,24 @@
     "profileUpdated": "Profil mis à jour avec succès.",
     "updateFailed": "Échec de la mise à jour du profil.",
     "viewDetails": "Voir les détails de l’utilisateur"
+  },
+  "ResetPasswordPage": {
+    "title": "Réinitialiser votre mot de passe"
+  },
+
+  "ResetPasswordForm": {
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+
+    "submitButton": "Réinitialiser le mot de passe",
+    "submitting": "Réinitialisation...",
+
+    "passwordMismatch": "Les mots de passe ne correspondent pas.",
+    "invalidLink": "Lien de réinitialisation invalide ou expiré.",
+    "resetFailed": "Impossible de réinitialiser le mot de passe. Veuillez réessayer.",
+    "resetSuccess": "Votre mot de passe a été réinitialisé avec succès.",
+
+    "errorPrefix": "Erreur"
   }
 
 }

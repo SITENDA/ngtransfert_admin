@@ -422,6 +422,24 @@
     "profileUpdated": "个人信息更新成功。",
     "updateFailed": "更新个人信息失败。",
     "viewDetails": "查看用户详情"
+  },
+  "ResetPasswordPage": {
+    "title": "重置您的密码"
+  },
+
+  "ResetPasswordForm": {
+    "newPassword": "新密码",
+    "confirmPassword": "确认密码",
+
+    "submitButton": "重置密码",
+    "submitting": "正在重置...",
+
+    "passwordMismatch": "两次输入的密码不一致。",
+    "invalidLink": "重置链接无效或已过期。",
+    "resetFailed": "无法重置密码，请重试。",
+    "resetSuccess": "您的密码已成功重置。",
+
+    "errorPrefix": "错误"
   }
 
 }
