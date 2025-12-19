@@ -135,7 +135,13 @@
     "sending": "Sending...",
     "resetSuccess": "If the account exists, a reset link has been sent.",
     "resetFailed": "Unable to process reset request.",
-    "backToLogin": "Back to login"
+    "backToLogin": "Back to login",
+    "invalidPhoneNumber": "Please enter a valid phone number.",
+    "resetLinkSent": "If the account exists, a reset link has been sent.",
+    "errorPrefix": "Error",
+    "resetLinkTitle": "Reset link sent",
+    "resetLinkDescription":
+    "A link to reset your password has been sent to {email}. Please check your inbox and click the link to reset your password."
   },
   "AddReceiverAccountPage": {
     "pageTitle": "Add Receiver Account",
@@ -507,6 +513,7 @@
     "resetFailed": "Unable to reset password. Please try again.",
     "resetSuccess": "Your password has been reset successfully.",
 
-    "errorPrefix": "Error"
+    "errorPrefix": "Error",
+    "successTitle": "Success 🎉"
   }
 }

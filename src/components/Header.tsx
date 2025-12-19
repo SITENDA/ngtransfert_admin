@@ -1,4 +1,4 @@
-import {LogOut, User, Mail, Settings} from "lucide-react";
+import {User, Mail, Settings} from "lucide-react";
 
 import Image from "next/image";
 import {NavButton} from "@/components/NavButton";
@@ -22,11 +22,6 @@ import {generalPaths} from "@/util/frontend-paths";
 export default async function Header() {
 
     const t = await getTranslations('Header');
-    const token = "valid_token"; // Replace with actual token state
-
-    const handleLogout = () => {
-        console.log("Logging out...");
-    };
     const session = await getSession(); // Use auth() to get the session
     const user = session?.user;
 
@@ -49,13 +44,6 @@ export default async function Header() {
 
                 {/* Right Section - Navigation Links */}
                 <nav className="flex items-center gap-6">
-                        <>
-                            <NavButton href="/home" label="Dashboard" icon={User}/>
-                            <button onClick={handleLogout} className="text-red-500 flex items-center gap-1">
-                                <LogOut size={22}/>
-                                {t('signOut')}
-                            </button>
-                        </>
                     {/* <NavButton href="/about" label="About" icon={Info} /> */}
                     <NavButton href={generalPaths.contactPath} label={t('contactUs')} icon={Mail}/>
                     <NavButton href={generalPaths.settingsPath} label={t('settings')} icon={Settings}/>

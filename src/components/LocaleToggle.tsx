@@ -15,7 +15,7 @@ import {JSX} from "react";
 
 type Props = {
     label: string;
-    userLoggedIn: boolean;
+    // userLoggedIn: boolean;
 }
 
 type LocaleType = {

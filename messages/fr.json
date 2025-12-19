@@ -132,7 +132,13 @@
     "sending": "Envoi en cours...",
     "resetSuccess": "Si le compte existe, un lien de réinitialisation a été envoyé.",
     "resetFailed": "Impossible de traiter la demande de réinitialisation.",
-    "backToLogin": "Retour à la connexion"
+    "backToLogin": "Retour à la connexion",
+    "invalidPhoneNumber": "Veuillez saisir un numéro de téléphone valide.",
+    "resetLinkSent": "Si le compte existe, un lien de réinitialisation a été envoyé.",
+    "errorPrefix": "Erreur",
+    "resetLinkTitle": "Lien de réinitialisation envoyé",
+    "resetLinkDescription":
+    "Un lien de réinitialisation de votre mot de passe a été envoyé à {email}. Veuillez vérifier votre boîte de réception et cliquer sur le lien pour réinitialiser votre mot de passe."
   },
   "AddReceiverAccountPage": {
     "pageTitle": "Ajouter un compte bénéficiaire",
@@ -438,7 +444,8 @@
     "resetFailed": "Impossible de réinitialiser le mot de passe. Veuillez réessayer.",
     "resetSuccess": "Votre mot de passe a été réinitialisé avec succès.",
 
-    "errorPrefix": "Erreur"
+    "errorPrefix": "Erreur",
+    "successTitle": "Succès 🎉"
   }
 
 }

@@ -7,11 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "@/i18n/navigation";
 import { kaasitomaPaths } from "@/util/frontend-paths";
-import {resetPasswordFormAction} from "@/lib/actions/resetPasswordFormAction";
+import { resetPasswordFormAction } from "@/lib/actions/resetPasswordFormAction";
+import TickAnimation from "@/components/TickAnimation";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ResetPasswordFormComponent() {
     const t = useTranslations("ResetPasswordForm");
     const router = useRouter();
+    const { toast } = useToast();
     const searchParams = useSearchParams();
 
     const token = searchParams.get("token");
@@ -20,6 +23,7 @@ export default function ResetPasswordFormComponent() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [formError, setFormError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     if (!token) {
         return (
@@ -52,9 +56,23 @@ export default function ResetPasswordFormComponent() {
             return;
         }
 
-        alert(t("resetSuccess"));
-        router.push(kaasitomaPaths.loginPath);
+        // ✅ Success UX
+        toast({
+            title: t("successTitle"),
+            description: t("resetSuccess"),
+        });
+
+        setSuccessMessage(t("resetSuccess"));
+
+        setTimeout(() => {
+            router.push(kaasitomaPaths.loginPath);
+        }, 3000);
     };
+
+    // ✅ Show success animation ONLY
+    if (successMessage) {
+        return <TickAnimation successMessage={successMessage} />;
+    }
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4 max-w-sm mx-auto">

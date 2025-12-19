@@ -132,7 +132,12 @@
     "sending": "正在发送...",
     "resetSuccess": "如果账户存在，重置链接已发送。",
     "resetFailed": "无法处理重置请求。",
-    "backToLogin": "返回登录"
+    "backToLogin": "返回登录",
+    "invalidPhoneNumber": "请输入有效的电话号码。",
+    "resetLinkSent": "如果账户存在，重置链接已发送。",
+    "errorPrefix": "错误",
+    "resetLinkTitle": "重置链接已发送",
+    "resetLinkDescription": "重置密码的链接已发送至 {email}。请检查您的邮箱并点击链接以重置密码。"
   },
 
   "AddReceiverAccountPage": {
@@ -439,7 +444,8 @@
     "resetFailed": "无法重置密码，请重试。",
     "resetSuccess": "您的密码已成功重置。",
 
-    "errorPrefix": "错误"
+    "errorPrefix": "错误",
+    "successTitle": "成功 🎉"
   }
 
 }
