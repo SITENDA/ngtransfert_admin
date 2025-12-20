@@ -99,9 +99,50 @@ export default function LoginFormComponent() {
         window.location.href = oauth2Url;
     };
 
+    /* ---------------- Entry message from query param ---------------- */
+    const from = searchParams.get("from");
+
+    const entryMessageConfig: Record<
+        string,
+        { message: string; variant: "success" | "warning" }
+    > = {
+        signed_out: {
+            message: t("signedOutMessage"),
+            variant: "warning",
+        },
+        session_expired: {
+            message: t("sessionExpiredMessage"),
+            variant: "warning",
+        },
+        registration_complete: {
+            message: t("registrationCompleteMessage"),
+            variant: "success",
+        },
+        password_reset: {
+            message: t("passwordResetMessage"),
+            variant: "success",
+        },
+    };
+
+    const entryMessage = from ? entryMessageConfig[from] : null;
+
+
     return (
         <div className="flex flex-col items-center justify-center p-4">
             <div className="w-full max-w-sm mx-auto my-8 p-6 rounded-lg shadow-xl bg-background/80 backdrop-blur-sm border border-border dark:bg-gray-800/80 dark:border-gray-700">
+
+                {entryMessage && !formError && (
+                    <div
+                        className={`mb-4 rounded-md border px-4 py-3 text-sm ${
+                            entryMessage.variant === "success"
+                                ? "border-green-400 bg-green-100 text-green-800 dark:border-green-600 dark:bg-green-900 dark:text-green-200"
+                                : "border-yellow-400 bg-yellow-100 text-yellow-800 dark:border-yellow-600 dark:bg-yellow-900 dark:text-yellow-200"
+                        }`}
+                    >
+                        {entryMessage.message}
+                    </div>
+                )}
+
                 {formError && (
                     <div className="mb-4 rounded-md border border-red-400 bg-red-100 px-4 py-3 text-red-700 dark:border-red-600 dark:bg-red-900 dark:text-red-300">
                         <strong>{t("errorPrefix")}:</strong> {formError}

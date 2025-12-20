@@ -21,6 +21,11 @@ export const generalPaths = {
     welcomePath: "/",
     settingsPath: "/settings",
     userProfilePath: "/user/",
-    loginPath: "/login",
     contactPath: "/contact",
+    aboutUsPath: "/about-us",
+    loginPath: "/login",
+    fromSignedOutLoginPath: "/login?from=signed_out",
+    fromRegistrationLoginPath: "/login?from=registration_complete",
+    fromPasswordResetLoginPath: "/login?from=password_reset",
+    fromSessionExpiredLoginPath: "/login?from=session_expired",
 }

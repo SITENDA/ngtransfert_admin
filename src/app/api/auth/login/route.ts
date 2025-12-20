@@ -20,21 +20,26 @@ export async function POST(req: Request) {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body),
-            credentials: "include", // ✅ allow refresh cookie if backend sets one
+            credentials: "include",
         }
     );
 
-    if (!springRes.ok) {
+    // 2️⃣ Always parse backend response
+    const json: BackendHttpResponse<BackendLoginPayload | null> =
+        await springRes.json();
+
+    // ❌ Authentication / validation failed
+    if (!springRes.ok || !json.data) {
         return NextResponse.json(
-            { success: false, message: "Invalid credentials" },
-            { status: 401 }
+            {
+                success: false,
+                message: json.message || "Invalid credentials",
+            },
+            { status: json.statusCode || 401 }
         );
     }
 
-    // 2️⃣ Parse backend response
-    const json: BackendHttpResponse<BackendLoginPayload> =
-        await springRes.json();
-
+    // ✅ Safe to destructure now
     const { user, token, refreshToken, accessTokenExpiresAt } = json.data;
 
     // 3️⃣ Map backend user → BFF user
@@ -45,7 +50,7 @@ export async function POST(req: Request) {
 
     await saveSession(sessionId, {
         user: bffUser,
-        accessToken: token,              // ✅ FIX
+        accessToken: token,
         refreshToken,
         accessTokenExpiresAt,
     });

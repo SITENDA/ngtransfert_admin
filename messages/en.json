@@ -41,7 +41,8 @@
     "themeDark": "Dark",
     "themeSystem": "System",
     "language": "Language",
-    "login": "Login"
+    "login": "Login",
+    "aboutUs": "About us"
   },
   "ContactUsPage": {
     "contactUs": "Contact Us",
@@ -58,6 +59,10 @@
     "signInButton": "Sign In",
     "signUpButton": "Sign Up",
     "login": "Login"
+  },
+  "AboutUs": {
+    "title": "About Us",
+    "description": "NG Transfert is a trusted international money transfer service specializing in fast, secure, and reliable financial transactions between China and multiple countries across Africa. We currently operate actively in Mali, the Democratic Republic of the Congo, the Republic of the Congo, Ivory Coast, Gabon, Senegal, Togo, and China.\n\nThrough strong partnerships and a growing international network, we facilitate smooth cross-border transfers tailored to the needs of individuals and businesses. Our mission is to simplify international payments by combining efficiency, transparency, and security—ensuring your funds reach their destination quickly and safely."
   },
   "LoginPage": {
     "title": "Sign In"
@@ -102,7 +107,12 @@
     "redirectingToLogin": "Redirecting to login page...",
     "oauthProcessing": "Processing authentication...",
     "pleaseWait": "Please wait while we log you in.",
-    "forgotPassword": "Forgot password?"
+    "forgotPassword": "Forgot password?",
+
+    "signedOutMessage": "You’ve been signed out. Please log in again to continue to your dashboard.",
+    "sessionExpiredMessage": "Your session expired due to inactivity. Please log in again to continue.",
+    "registrationCompleteMessage": "Your account was created successfully. You can now log in with your new credentials.",
+    "passwordResetMessage": "Your password was reset successfully. Please log in using your new password."
   },
   "RegisterFormComponent": {
     "title": "Create your account",
@@ -467,6 +477,12 @@
     "email": "Email Address",
     "registeredOn": "Registered On",
     "uploading": "Uploading..."
+  },
+  "SignOutButton": {
+    "logout": "Sign out",
+    "logoutConfirmation": "Are you sure you want to sign out?",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
   },
   "Settings": {
     "settingsTitle": "Settings",

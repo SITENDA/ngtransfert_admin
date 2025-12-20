@@ -41,7 +41,8 @@
     "themeDark": "深色",
     "themeSystem": "系统",
     "language": "语言",
-    "login": "登录"
+    "login": "登录",
+    "aboutUs": "关于我们"
   },
   "ContactUsPage": {
     "contactUs": "联系我们",
@@ -58,6 +59,10 @@
     "signInButton": "登录",
     "signUpButton": "注册",
     "login": "登录"
+  },
+  "AboutUs": {
+    "title": "关于我们",
+    "description": "NG Transfert 是一家值得信赖的国际汇款服务机构，专注于在中国与多个非洲国家之间提供快速、安全、可靠的资金转移服务。目前，我们已在马里、刚果民主共和国、刚果共和国、科特迪瓦、加蓬、塞内加尔、多哥以及中国开展业务。\n\n依托稳固的合作伙伴关系和不断扩展的国际网络，我们为个人和企业提供顺畅高效的跨境转账服务。我们的使命是通过高效、透明和安全的方式简化国际支付流程，确保您的资金能够快速、安全地到达目的地。"
   },
   "LoginPage": {
     "title": "登录"
@@ -99,7 +104,12 @@
     "redirectingToLogin": "正在重定向到登录页面...",
     "oauthProcessing": "正在处理身份验证...",
     "pleaseWait": "请稍候，我们正在为您登录。",
-    "forgotPassword": "忘记密码？"
+    "forgotPassword": "忘记密码？",
+
+    "signedOutMessage": "您已成功退出登录。请重新登录以继续访问您的控制面板。",
+    "sessionExpiredMessage": "由于长时间未操作，您的会话已过期。请重新登录以继续。",
+    "registrationCompleteMessage": "您的账户已成功创建。现在可以使用新的凭据登录。",
+    "passwordResetMessage": "您的密码已成功重置。请使用新密码登录。"
   },
   "RegisterFormComponent": {
     "title": "创建您的账号",
@@ -398,6 +408,12 @@
     "email": "电子邮箱",
     "registeredOn": "注册日期",
     "uploading": "正在上传..."
+  },
+  "SignOutButton": {
+    "logout": "退出登录",
+    "logoutConfirmation": "确定要退出登录吗？",
+    "confirm": "确认",
+    "cancel": "取消"
   },
   "Settings": {
     "settingsTitle": "设置",

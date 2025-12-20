@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import {SetPreferencePayload} from "../../../../../types/SetPreferencePayload";
 import {BackendHttpResponse} from "../../../../../types/BackendHttpResponse";
-import {GetPreferenceResponse} from "../../../../../types/GetPreferenceResponse";
+import {GetPreferencePayload} from "../../../../../types/GetPreferenceResponse";
 
 export async function POST(req: Request) {
     const body: SetPreferencePayload = await req.json();
@@ -63,7 +63,7 @@ export async function GET(req: Request) {
     );
 
     const json: BackendHttpResponse<{
-        preference: GetPreferenceResponse;
+        preference: GetPreferencePayload;
     }> = await springRes.json();
 
     if (!springRes.ok) {

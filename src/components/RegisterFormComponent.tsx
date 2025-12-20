@@ -1,12 +1,12 @@
 "use client";
 
-import React, {useState, FormEvent, useRef} from "react";
+import React, {FormEvent, useRef, useState} from "react";
 import {useLocale, useTranslations} from "next-intl";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useRouter } from "@/i18n/navigation";
-import {kaasitomaPaths} from "@/util/frontend-paths";
-import { PhoneNumberInput } from "@/components/PhoneNumberInput";
+import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
+import {useRouter} from "@/i18n/navigation";
+import {generalPaths, kaasitomaPaths} from "@/util/frontend-paths";
+import {PhoneNumberInput} from "@/components/PhoneNumberInput";
 
 export default function RegisterFormComponent() {
     const t = useTranslations("RegisterFormComponent");
@@ -56,13 +56,12 @@ export default function RegisterFormComponent() {
         }
 
         alert(t("registrationSuccess"));
-        router.push("/login");
+        router.push(generalPaths.fromRegistrationLoginPath);
     };
 
     const handleOAuth2Registration = (provider: string): void => {
         const redirectUri = `${window.location.origin}/${locale}/oauth2/redirect`;
-        const oauth2Url = `${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080'}/oauth2/authorization/${provider}?redirect_uri=${encodeURIComponent(redirectUri)}`;
-        window.location.href = oauth2Url;
+        window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080'}/oauth2/authorization/${provider}?redirect_uri=${encodeURIComponent(redirectUri)}`;
     };
 
     const handlePhoneChange = (value: string) => {

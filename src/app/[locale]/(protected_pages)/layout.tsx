@@ -5,6 +5,9 @@ import { getLocale } from "next-intl/server";
 import { ensureValidAccessToken } from "@/lib/server/ensureValidAccessToken";
 import { redirect } from "@/i18n/navigation";
 import Header from "@/components/Header";
+import {generalPaths} from "@/util/frontend-paths";
+
+export const dynamic = "force-dynamic"; // 🔥 VERY IMPORTANT
 
 export default async function ProtectedLayout({
                                                   children,
@@ -14,17 +17,21 @@ export default async function ProtectedLayout({
     const locale = await getLocale();
     const session = await getSession();
 
+    // 🔴 HARD STOP #1 — no session
     if (!session) {
-        redirect({ href: "/login?ensobi=signedout", locale });
+        redirect({ href: generalPaths.fromSignedOutLoginPath, locale });
+    }
+        // 🔴 HARD STOP #2 — no user
+    else if (!session.user) {
+        redirect({ href: generalPaths.fromSessionExpiredLoginPath, locale });
     }
 
-    if (session == null || !session.user) {
-        redirect({ href: "/login", locale });
-    }
-
+    // 🔄 Validate / refresh token
     const ok = await ensureValidAccessToken(session);
+
+    // 🔴 HARD STOP #3 — refresh failed
     if (!ok) {
-        redirect({ href: "/login?ensobi=signedout", locale });
+        redirect({ href: generalPaths.fromSessionExpiredLoginPath, locale });
     }
 
     return (

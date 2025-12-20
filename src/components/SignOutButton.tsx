@@ -1,50 +1,48 @@
 "use client";
 
+import { LogOut } from "lucide-react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
-interface SignOutButtonProps {
-    variant?: "default" | "destructive";
-    size?: "sm" | "default";
-    color?: "default" | "red";
-}
-
-export default function SignOutButton({
-                                          variant = "default",
-                                          size = "default",
-                                          color = "default",
-                                      }: SignOutButtonProps) {
-    const t = useTranslations("Settings");
+export default function SignOutButton() {
+    const t = useTranslations("SignOutButton");
     const router = useRouter();
+    const [open, setOpen] = useState(false);
 
-    const handleSignOut = async () => {
-        const confirmed = window.confirm(t("logoutConfirmation"));
-        if (!confirmed) return;
+    const handleConfirmLogout = async () => {
+        setOpen(false);
 
-        // 🔐 Call BFF logout endpoint
         await fetch("/api/auth/logout", {
             method: "POST",
-            credentials: "include", // IMPORTANT: send HttpOnly cookie
+            credentials: "include",
         });
 
-        // 🚪 Redirect after logout
         router.replace("/");
     };
 
-    const customClass =
-        color === "red"
-            ? "bg-red-600 text-white hover:bg-red-700"
-            : "";
-
     return (
-        <Button
-            onClick={handleSignOut}
-            variant={variant}
-            size={size}
-            className={customClass}
-        >
-            {t("logout")}
-        </Button>
+        <>
+            <Button
+                onClick={() => setOpen(true)}
+                variant="ghost"
+                size="icon"
+                title={t("logout")}
+            >
+                <LogOut className="h-5 w-5" />
+            </Button>
+
+            <ConfirmDialog
+                open={open}
+                title={t("logout")}
+                message={t("logoutConfirmation")}
+                confirmLabel={t("confirm")}
+                cancelLabel={t("cancel")}
+                onConfirmAction={handleConfirmLogout}
+                onCancelAction={() => setOpen(false)}
+            />
+        </>
     );
 }

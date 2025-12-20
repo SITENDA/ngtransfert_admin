@@ -1,6 +1,6 @@
 "use client";
 
-import {LogIn, Mail} from "lucide-react";
+import { LogIn, Mail, Info } from "lucide-react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { ModeToggle } from "@/components/ModeToggle";
@@ -8,7 +8,7 @@ import { LocaleToggle } from "@/components/LocaleToggle";
 import { Button } from "@/components/ui/button";
 import transparentIcon from "@/app/[locale]/favicon-transparent.png";
 import { useTranslations } from "next-intl";
-import {generalPaths} from "@/util/frontend-paths";
+import { generalPaths } from "@/util/frontend-paths";
 
 export default function PublicHeader() {
     const t = useTranslations("PublicHeader");
@@ -19,7 +19,7 @@ export default function PublicHeader() {
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
                     <Link
-                        href="/"
+                        href={generalPaths.welcomePath}
                         className="flex items-center gap-2 shrink-0"
                         title="NG Transfert"
                     >
@@ -31,12 +31,24 @@ export default function PublicHeader() {
                             className="h-10 w-10 object-contain"
                         />
                         <span className="hidden sm:block text-xl font-bold">
-              NG Transfert
-            </span>
+                            NG Transfert
+                        </span>
                     </Link>
 
                     {/* Right actions */}
                     <nav className="flex items-center gap-2 sm:gap-4">
+                        {/* About Us */}
+                        <Button
+                            asChild
+                            variant="ghost"
+                            size="icon"
+                            aria-label={t("aboutUs")}
+                        >
+                            <Link href={generalPaths.aboutUsPath}>
+                                <Info className="h-5 w-5" />
+                            </Link>
+                        </Button>
+
                         {/* Contact */}
                         <Button
                             asChild

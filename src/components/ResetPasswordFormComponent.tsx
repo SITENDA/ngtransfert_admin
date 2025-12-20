@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "@/i18n/navigation";
-import { kaasitomaPaths } from "@/util/frontend-paths";
+import {generalPaths} from "@/util/frontend-paths";
 import { resetPasswordFormAction } from "@/lib/actions/resetPasswordFormAction";
 import TickAnimation from "@/components/TickAnimation";
 import { useToast } from "@/hooks/use-toast";
@@ -65,7 +65,7 @@ export default function ResetPasswordFormComponent() {
         setSuccessMessage(t("resetSuccess"));
 
         setTimeout(() => {
-            router.push(kaasitomaPaths.loginPath);
+            router.push(generalPaths.fromPasswordResetLoginPath);
         }, 3000);
     };
 
