@@ -6,7 +6,6 @@ import { redirect } from 'next/navigation';
 import {getLocale, getTranslations} from 'next-intl/server';
 
 import ReceiverAccountsTable from "./ReceiverAccountsTable";
-import PublicWrapper from "@/components/PublicWrapper";
 import {
     ReceiverAccount,
     ReceiverAccountsPayload
@@ -16,6 +15,7 @@ import {kaasitomaPaths} from "@/util/frontend-paths";
 import {Button} from "@/components/ui/button";
 import {Link} from "@/i18n/navigation";
 import {headers} from "next/headers";
+import ProtectedWrapper from "@/components/ProtectedWrapper";
 
 // URL for the Next.js API proxy that will fetch receiver accounts from Spring Boot
 // Now, we'll construct this URL to include the clientId as a query parameter.
@@ -89,7 +89,7 @@ export default async function ReceiverAccountsPage({ searchParams }: { searchPar
     }
 
     return (
-        <PublicWrapper>
+        <ProtectedWrapper>
             <div className="
                 w-full max-w-4xl mx-auto my-8 p-6 rounded-lg shadow-xl
                 bg-background/80 backdrop-blur-sm border border-border
@@ -111,6 +111,6 @@ export default async function ReceiverAccountsPage({ searchParams }: { searchPar
                 </div>
                 <ReceiverAccountsTable initialReceiverAccounts={receiverAccounts} isFromTopUp={isFromTopUp}/>
             </div>
-        </PublicWrapper>
+        </ProtectedWrapper>
     );
 }

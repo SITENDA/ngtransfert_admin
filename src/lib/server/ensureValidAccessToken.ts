@@ -1,33 +1,27 @@
-//  /home/amos/docure/ngtransfert_admin/src/lib/server/ensureValidAccessToken.ts
+// src/lib/server/ensureValidAccessToken.ts
 
-import {deleteSession, saveSession} from "@/lib/sessionStore";
 import { refreshAccessTokenServer } from "@/lib/server/refreshAccessTokenServer";
-import {Session} from "../../../types/session";
-import {clearSessionCookie} from "@/lib/cookies";
+import { saveSession, deleteSession } from "@/lib/sessionStore";
+import { Session } from "../../../types/session";
 
-export async function ensureValidAccessToken(
-    session: Session | null
-): Promise<boolean> {
-    if (!session) {return false}
+export async function ensureValidAccessToken(session: Session): Promise<boolean> {
     if (session.accessTokenExpiresAt > Date.now()) {
         return true;
     }
 
-    const refreshed = await refreshAccessTokenServer(session.refreshToken);
+    const refreshed = await refreshAccessTokenServer();
 
     if (!refreshed.success) {
         await deleteSession(session.sessionId);
-        await clearSessionCookie();
-        console.log("🧹 Access token refresh failed → logout");
         return false;
     }
 
     await saveSession(session.sessionId, {
-        user: session.user,
+        ...session,
         accessToken: refreshed.accessToken,
-        refreshToken: refreshed.refreshToken ?? session.refreshToken,
         accessTokenExpiresAt: refreshed.expiresAt,
     });
 
     return true;
 }
+

@@ -17,11 +17,11 @@ import { InputWithLabel } from "@/components/inputs/InputWithLabel";
 import { Button } from "@/components/ui/button";
 import { FileInputWithLabel } from "@/components/inputs/FileInputWithLabel";
 import {Bank} from "../../../../../../../types/bank";
-import BankSelect from "@/components/BankSelect";
 import {useLocale, useTranslations} from 'next-intl';
 import {useReceiverAccountIdentifiers} from "@/hooks/ReceiverAccountIdentifier";
 import {createReceiverAccountAction} from "@/lib/actions/receiver-account";
 import { useRouter } from 'next/navigation';
+import {BankSelect} from "@/components/BankSelect";
 
 interface AddReceiverAccountFormProps {
     initialBanks: Bank[];
@@ -110,7 +110,7 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
             form.setValue("email", "");
             form.setValue("phoneNumber", "");
         } else if (watchedCategory === ReceiverAccountCategoryEnum.enum.BANK_ACCOUNT) {
-            form.setValue("receiverAccountIdentifier", ReceiverAccountIdentifierEnum.enum.NONE, { shouldValidate: true });
+            form.setValue("receiverAccountIdentifier", ReceiverAccountIdentifierEnum.enum.BANK_ACCOUNT_NUMBER, { shouldValidate: true });
             form.setValue("email", "");
             form.setValue("phoneNumber", "");
             form.setValue("qrCodeImage", null);
@@ -176,6 +176,8 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
         formData.append("countryId", data.countryId?.toString() || ''); // Convert number to string
         formData.append("cardHolderName", data.cardHolderName || '');
         formData.append("bankName", data.bankName || '');
+
+        console.log("formData : ", formData);
 
         // Call the `createReceiverAccountAction` Server Action
         const result = await createReceiverAccountAction(formData);
@@ -262,10 +264,10 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
                                     name="bankId"
                                     render={({ field }) => (
                                         <BankSelect
-                                            {...field}
                                             banks={initialBanks}
-                                            placeholderHint={t('selectBankPlaceholder')}
-                                            onMenuStateChange={setIsBankSelectMenuOpen}
+                                            value={field.value}
+                                            onChangeAction={field.onChange}
+                                            placeholder={t("selectBankPlaceholder")}
                                         />
                                     )}
                                 />

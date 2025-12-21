@@ -222,7 +222,9 @@
     "qr_code_image": "QR Code Image",
     "email": "Email",
     "phone_number": "Phone Number",
-    "none": "None"
+    "bank_account_number": "Bank Account Number",
+    "none": "None",
+    "cardHolderNameHint": "Card Holder Name"
   },
   "TransferRequestsPage": {
     "pageTitle": "Transfer Requests",
@@ -303,7 +305,8 @@
     "none": "None",
     "accountLimits": "Account Limits",
     "accountBalance": "Account Balance",
-    "accountLimit": "Limit"
+    "accountLimit": "Limit",
+    "bank_account_number": "Bank Account Number"
   },
   "TopUpDetailsPage": {
     "pageTitle": "Top Up Account"

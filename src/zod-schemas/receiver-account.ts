@@ -33,8 +33,7 @@ export const ReceiverAccountIdentifierEnum = z.enum([
     "EMAIL",
     "PHONE_NUMBER",
     "QR_CODE_IMAGE",
-    "BANK_ACCOUNT_NUMBER",
-    "NONE"
+    "BANK_ACCOUNT_NUMBER"
 ]);
 export type ReceiverAccountIdentifierType = z.infer<typeof ReceiverAccountIdentifierEnum>;
 

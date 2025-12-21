@@ -1,57 +1,39 @@
-// //  /home/amos/docure/ngtransfert_admin/src/lib/server/refreshAccessTokenServer.ts
+// src/lib/server/refreshAccessTokenServer.ts
 
+import { RefreshTokenResult } from "../../../types/RefreshTokenResult";
 
-import {RefreshTokenResult} from "../../../types/RefreshTokenResult";
+export async function refreshAccessTokenServer(): Promise<RefreshTokenResult> {
 
-interface RefreshApiResponse {
-    accessToken: string;
-    refreshToken?: string;
-    expiresIn: number; // seconds
-}
-
-export async function refreshAccessTokenServer(
-    refreshToken: string
-): Promise<RefreshTokenResult> {
-    const backendUrl = process.env.BACKEND_API_BASE_URL || "http://localhost:8080";
+    const backendUrl = process.env.BACKEND_API_BASE_URL!;
     const refreshUrl = `${backendUrl}/auth/refresh`;
+    const response = await fetch(refreshUrl, {
+        method: "POST",
+        credentials: "include",
+        cache: "no-store",
+    });
 
-    try {
-        const response = await fetch(refreshUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ refreshToken }),
-            cache: "no-store",
-        });
-
-        if (!response.ok) {
-            const text = await response.text();
-            return {
-                success: false,
-                accessToken: "",
-                expiresAt: 0,
-            };
-        }
-
-        const json: RefreshApiResponse = await response.json();
-
-        return {
-            success: true,
-            accessToken: json.accessToken,
-            refreshToken: json.refreshToken,
-            expiresAt: Date.now() + json.expiresIn * 1000,
-        };
-    } catch (error) {
-        console.error("Token refresh error:", error);
-        return {
-            success: false,
-            accessToken: "",
-            expiresAt: 0,
-        };
+    if (!response.ok) {
+        return { success: false };
     }
-}
 
+    const text = await response.text();
+    if (!text) {
+        return { success: false };
+    }
+
+    const json = JSON.parse(text);
+
+    if (!json?.data?.token || !json?.data?.expiresIn) {
+        return { success: false };
+    }
+
+    return {
+        success: true,
+        accessToken: json.data.token,
+        expiresAt: Date.now() + json.data.expiresIn * 1000,
+        user: json.data.user,
+    };
+}
 //
 // import { headers } from "next/headers";
 // import { jwtDecode } from "jwt-decode";

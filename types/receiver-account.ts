@@ -10,7 +10,7 @@ export interface ReceiverAccount {
     cardHolderName?: string | null;
 
     receiverAccountCategory: 'ALIPAY_ACCOUNT' | 'WECHAT_ACCOUNT' | 'BANK_ACCOUNT';
-    receiverAccountIdentifier: 'QR_CODE_IMAGE' | 'EMAIL' | 'PHONE_NUMBER' | 'NONE';
+    receiverAccountIdentifier: 'QR_CODE_IMAGE' | 'EMAIL' | 'PHONE_NUMBER' | 'BANK_ACCOUNT_NUMBER';
 
     qrCodeUrl?: string | null;
     qrCodeContent?: string | null;

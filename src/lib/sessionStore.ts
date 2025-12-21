@@ -1,3 +1,5 @@
+//  /home/amos/docure/ngtransfert_admin/src/lib/sessionStore.ts
+
 import redis from "@/lib/redis";
 import { Session } from "../../types/session";
 

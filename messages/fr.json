@@ -219,6 +219,8 @@
     "qr_code_image": "Image du code QR",
     "email": "E-mail",
     "phone_number": "Numéro de téléphone",
+    "bank_account_number": "Numéro de compte bancaire",
+    "cardHolderNameHint": "nom du titulaire de la carte pour les comptes bancaires",
     "none": "Aucun"
   },
   "TransferRequestsPage": {
@@ -278,7 +280,8 @@
     "none": "Aucun",
     "accountLimits": "Limites du Compte",
     "accountBalance": "Solde du Compte",
-    "accountLimit": "Plafond"
+    "accountLimit": "Plafond",
+    "bank_account_number": "Numéro de compte bancaire"
   },
   "TopUpDetailsPage": {
     "pageTitle": "Recharger le Compte"

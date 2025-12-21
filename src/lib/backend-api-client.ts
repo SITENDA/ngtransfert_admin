@@ -1,10 +1,11 @@
-import { headers } from "next/headers";
+//  /home/amos/docure/ngtransfert_admin/src/lib/backend-api-client.ts
+
+import {cookies, headers} from "next/headers";
 import getSession from "@/lib/getSession";
-import { saveSession } from "@/lib/sessionStore";
 import { BackendHttpResponse } from "../../types/BackendHttpResponse";
 import { FetchBackendResult } from "../../types/fetchBackendResult";
-import { BffSession } from "../../types/session";
 import { forceLogout } from "@/lib/server/forceLogout";
+import {Session} from "../../types/session";
 
 /**
  * Fetch backend data using BFF session
@@ -26,7 +27,11 @@ export async function fetchBackendData<T>(
     const fullUrl = `${backendApiBaseUrl}${endpoint}`;
 
     const headersList = await headers();
-    const cookieHeader = headersList.get("cookie");
+    const cookieHeaderResult = await cookies();
+    const cookieHeader = cookieHeaderResult
+        .getAll()
+        .map(c => `${c.name}=${c.value}`)
+        .join("; ");
 
     /**
      * Performs backend request with provided token
@@ -53,7 +58,7 @@ export async function fetchBackendData<T>(
      * Refresh token via BFF
      */
 
-    const refreshSession = async (): Promise<BffSession | null> => {
+    const refreshSession = async (): Promise<boolean> => {
         const protocol =
             process.env.NODE_ENV === "development" ? "http" : "https";
         const host = headersList.get("host") || "localhost:3000";
@@ -64,47 +69,30 @@ export async function fetchBackendData<T>(
                 method: "POST",
                 credentials: "include",
                 headers: {
-                    "Content-Type": "application/json",
                     ...(cookieHeader ? { Cookie: cookieHeader } : {}),
                 },
             }
         );
 
-        // ❌ Refresh failed → force logout
         if (!refreshRes.ok) {
             await forceLogout();
-            return null;
+            return false;
         }
 
-        const refreshed = await refreshRes.json();
-
-        if (!refreshed.success) {
-            await forceLogout();
-            return null;
-        }
-
-        await saveSession(session.sessionId, {
-            user: refreshed.user,
-            accessToken: refreshed.accessToken,
-            refreshToken: refreshed.refreshToken ?? session.refreshToken,
-            accessTokenExpiresAt: refreshed.expiresAt,
-        });
-
-        return {
-            ...session,
-            accessToken: refreshed.accessToken,
-            refreshToken: refreshed.refreshToken ?? session.refreshToken,
-            accessTokenExpiresAt: refreshed.expiresAt,
-        };
+        return true;
     };
 
+
     // ✅ Step 1: Ensure token validity
-    let activeSession = session;
+    let activeSession : Session | null = session;
 
     if (Date.now() >= session.accessTokenExpiresAt) {
-        const refreshed = await refreshSession();
-        if (!refreshed) return null;
-        activeSession = refreshed;
+        const ok = await refreshSession();
+        if (!ok) return null;
+
+        // 🔄 Reload session from Redis
+        activeSession = await getSession();
+        if (!activeSession) return null;
     }
 
     // ✅ Step 2: Perform request
@@ -115,7 +103,15 @@ export async function fetchBackendData<T>(
         const refreshed = await refreshSession();
         if (!refreshed) return null;
 
-        response = await doFetch(refreshed.accessToken);
+        const ok = await refreshSession();
+        if (!ok) return null;
+
+        // 🔄 Reload updated session from Redis
+        activeSession = await getSession();
+        if (!activeSession) return null;
+
+        response = await doFetch(activeSession.accessToken);
+
         if (!response.ok) return null;
     }
 

@@ -3,13 +3,13 @@
 // No "use client" here!
 
 import AddReceiverAccountForm from "./AddReceiverAccountForm";
-import PublicWrapper from "@/components/PublicWrapper";
 import { Bank, BankDataPayload } from "../../../../../../../types/bank"; // Assuming these types exist
 import { getLocale, getTranslations } from 'next-intl/server';
 import getSession from "@/lib/getSession"; // Assuming getSession is available
 import { redirect } from 'next/navigation';
 import { kaasitomaPaths } from "@/util/frontend-paths"; // Assuming kaasitomaPaths is available
-import { fetchBackendData } from "@/lib/backend-api-client"; // Import the new reusable fetch utility
+import { fetchBackendData } from "@/lib/backend-api-client";
+import ProtectedWrapper from "@/components/ProtectedWrapper"; // Import the new reusable fetch utility
 
 async function AddReceiverAccountPage() {
     const t = await getTranslations('AddReceiverAccountPage');
@@ -53,7 +53,7 @@ async function AddReceiverAccountPage() {
     }
 
     return (
-        <PublicWrapper>
+        <ProtectedWrapper>
             <div className="
                 w-full max-w-2xl mx-auto my-8 p-6 rounded-lg shadow-xl
                 bg-background/80 backdrop-blur-sm border border-border
@@ -65,7 +65,7 @@ async function AddReceiverAccountPage() {
                 {/* Pass the fetched banks data and the guaranteed clientId to the client component */}
                 <AddReceiverAccountForm initialBanks={banks} clientId={clientId} />
             </div>
-        </PublicWrapper>
+        </ProtectedWrapper>
     );
 }
 

@@ -1,7 +1,5 @@
 // src/app/[locale]/(protected_pages)/kaasitoma/details/page.tsx
-import PublicWrapper from "@/components/PublicWrapper";
 // Removed next-intl imports as they are not resolvable in this environment
-import getSession from "@/lib/getSession"; // Assuming getSession is available
 import {redirect} from 'next/navigation';
 import {kaasitomaPaths} from "@/util/frontend-paths"; // Assuming kaasitomaPaths is available
 import {ReceiverAccount, ReceiverAccountPayload} from "../../../../../../../types/receiver-account"; // Import ReceiverAccountPayload
@@ -19,7 +17,8 @@ import {getTranslations} from "next-intl/server";
 import {isRedirectObject} from "@/util/typeguards";
 import EmailDisplay from "@/components/EmailDisplay";
 import PhoneNumberDisplay from "@/components/PhoneNumberDisplay";
-import ImageDisplay from "@/components/ImageDisplay"; // Import the fetch utility
+import ImageDisplay from "@/components/ImageDisplay";
+import ProtectedWrapper from "@/components/ProtectedWrapper"; // Import the fetch utility
 
 interface DetailRowProps {
     label: string;
@@ -35,16 +34,6 @@ async function ReceiverAccountDetailsPage({searchParams}: { searchParams: { rece
 
     // The fetchBackendData utility (if used) handles authentication and redirects
     // if the user is not authenticated or the access token is missing.
-    const session = await getSession();
-    const clientId = session?.user?.userId; // Extract clientId after session is confirmed
-
-    // If clientId is still not available after session check, it means authentication failed
-    // or user data is incomplete, and fetchBackendData would have redirected.
-    // This check acts as an additional safeguard before passing to client component.
-    if (!clientId) {
-        console.warn(`ReceiverAccountDetailsPage: Client ID not found after initial session check. Redirecting to /${kaasitomaPaths.loginPath}`);
-        redirect(`/${kaasitomaPaths.loginPath}`);
-    }
 
     let receiverAccount: ReceiverAccount | null = null; // Initialize receiverAccount
     // searchParams is already an object, no need for await
@@ -96,7 +85,7 @@ async function ReceiverAccountDetailsPage({searchParams}: { searchParams: { rece
         // If receiverAccount is still null after fetching attempts (e.g., missing or malformed data),
         // display an error or redirect.
         return (
-            <PublicWrapper>
+            <ProtectedWrapper>
                 <div className="
                     w-full max-w-2xl mx-auto my-8 p-6 rounded-lg shadow-xl
                     bg-background/80 backdrop-blur-sm border border-border
@@ -106,12 +95,12 @@ async function ReceiverAccountDetailsPage({searchParams}: { searchParams: { rece
                         {t('errorLoadingAccountDetails')} {/* New translation key for error */}
                     </h2>
                 </div>
-            </PublicWrapper>
+            </ProtectedWrapper>
         );
     }
 
     return (
-        <PublicWrapper>
+        <ProtectedWrapper>
             <div className="
                 w-full max-w-2xl mx-auto my-8 p-6 rounded-lg shadow-xl
                 bg-background/80 backdrop-blur-sm border border-border
@@ -236,7 +225,7 @@ async function ReceiverAccountDetailsPage({searchParams}: { searchParams: { rece
                     )}
                 </div>
             </div>
-        </PublicWrapper>
+        </ProtectedWrapper>
     );
 }
 

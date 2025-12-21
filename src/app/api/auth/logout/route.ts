@@ -1,18 +1,17 @@
+// src/app/api/auth/logout/route.ts
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { deleteSession } from "@/lib/sessionStore";
-
-const SESSION_COOKIE = "ngt_session";
+import { cookies } from "next/headers";
 
 export async function POST() {
     const cookieStore = await cookies();
-    const sessionId = cookieStore.get(SESSION_COOKIE)?.value;
+    const sessionId = cookieStore.get("ngt_session")?.value;
 
     if (sessionId) {
         await deleteSession(sessionId);
     }
 
-    cookieStore.delete(SESSION_COOKIE);
+    cookieStore.delete("ngt_session");
 
     return NextResponse.json({ success: true });
 }

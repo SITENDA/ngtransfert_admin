@@ -126,6 +126,10 @@ export default function LoginFormComponent() {
 
     const entryMessage = from ? entryMessageConfig[from] : null;
 
+    const canSubmit = loginWithPhone
+        ? validPhoneNumber && phoneNumber.trim().length > 0 && password.trim().length > 0
+        : email.trim().length > 0 && password.trim().length > 0;
+
 
     return (
         <div className="flex flex-col items-center justify-center p-4">
@@ -202,9 +206,14 @@ export default function LoginFormComponent() {
                         </button>
                     </div>
 
-                    <Button type="submit" className="w-full">
+                    <Button
+                        type="submit"
+                        className="w-full disabled:opacity-60 disabled:cursor-not-allowed"
+                        disabled={!canSubmit}
+                    >
                         {t("signInButton")}
                     </Button>
+
                 </form>
 
                 {/* Register */}

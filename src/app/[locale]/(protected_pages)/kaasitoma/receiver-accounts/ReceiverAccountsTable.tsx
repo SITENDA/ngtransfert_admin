@@ -54,37 +54,30 @@ const ReceiverAccountsTable: React.FC<ReceiverAccountsFormProps> = async ({initi
             <table className="min-w-full divide-y divide-border">
                 <thead className="bg-muted">
                 <tr>
-                    <th scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        {t('accountName')}
+                    <th className="px-6 py-3 text-left">
+                        <div className="flex flex-col">
+                            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                                {t('accountName')}
+                            </span>
+                                    <span className="text-[11px] text-muted-foreground normal-case">
+                                ({t('cardHolderNameHint')})
+                            </span>
+                        </div>
                     </th>
-                    <th scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         {t('accountCategory')}
                     </th>
-                    <th scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        {t('identifierType')}
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <div className="flex flex-col">
+                            <span>{t('identifierType')}</span>
+                            <span className="text-[11px] text-muted-foreground normal-case">
+                                ({t('bankName')})
+                            </span>
+                        </div>
                     </th>
-                    <th scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         {t('identifierValue')}
-                    </th>
-                    <th scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        {t('bankName')}
-                    </th>
-                    <th scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        {t('country')}
-                    </th>
-                    <th scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        {t('cardHolderName')}
-                    </th>
-                    <th scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        {t('creationDate')}
                     </th>
                 </tr>
                 </thead>

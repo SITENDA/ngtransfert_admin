@@ -1,6 +1,5 @@
 // src/app/[locale]/(protected_pages)/kaasitoma/top-up/page.tsx
 // This is a Server Component.
-import PublicWrapper from "@/components/PublicWrapper";
 import {BackendGenericResponse} from "../../../../../../../types/BackendGenericResponse";
 import {ResponseTopUpRequest, TopUpRequestsPayload} from "../../../../../../../types/response-top-up-request";
 import getSession from "@/lib/getSession";
@@ -11,6 +10,7 @@ import TopUpRequestsTable from "@/app/[locale]/(protected_pages)/kaasitoma/top-u
 import {Link} from "@/i18n/navigation";
 import {kaasitomaPaths} from "@/util/frontend-paths";
 import {Button} from "@/components/ui/button";
+import ProtectedWrapper from "@/components/ProtectedWrapper";
 
 // URL for the Next.js API proxy that will fetch top up requests from Spring Boot
 // Now, we'll construct this URL to include the clientId as a query parameter.
@@ -82,7 +82,7 @@ export default async function TopUpRequestsPage() {
     }
 
     return (
-        <PublicWrapper>
+        <ProtectedWrapper>
             <div className="
                 w-full max-w-4xl mx-auto my-8 p-6 rounded-lg shadow-xl
                 bg-background/80 backdrop-blur-sm border border-border
@@ -104,6 +104,6 @@ export default async function TopUpRequestsPage() {
                 </div>
                 <TopUpRequestsTable initialTopUpRequests={topUpRequests} />
             </div>
-        </PublicWrapper>
+        </ProtectedWrapper>
     );
 }

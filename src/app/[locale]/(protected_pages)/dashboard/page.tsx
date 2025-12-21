@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Link } from "@/i18n/navigation";
 
-import PublicWrapper from "@/components/PublicWrapper";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {redirect} from "next/navigation";
 import getSession from "@/lib/getSession";
 import {kaasitomaPaths} from "@/util/frontend-paths";
+import ProtectedWrapper from "@/components/ProtectedWrapper";
 
 export const metadata = {
     title: "Dashboard",
@@ -33,7 +33,7 @@ export default async function DashboardPage() {
     // }
 
     return (
-        <PublicWrapper>
+        <ProtectedWrapper>
             <Card className="w-[80%] mx-auto my-8 bg-background text-foreground">
                 <CardHeader className="flex justify-between">
                     <CardTitle className="text-2xl font-semibold">Client Dashboard</CardTitle>
@@ -79,6 +79,6 @@ export default async function DashboardPage() {
                 {/*    </div>*/}
                 {/*</CardContent>*/}
             </Card>
-        </PublicWrapper>
+        </ProtectedWrapper>
     );
 }

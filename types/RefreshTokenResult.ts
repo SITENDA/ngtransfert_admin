@@ -1,8 +1,12 @@
 // /home/amos/docure/ngtransfert_admin/types/RefreshTokenResult.ts
-export interface RefreshTokenResult {
-    success: boolean;
+export type RefreshTokenResult =
+    | {
+    success: true;
     accessToken: string;
-    refreshToken?: string;
     expiresAt: number;
+    user: unknown; // or your BffUser type if available
 }
+    | {
+    success: false;
+};
 

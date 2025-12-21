@@ -219,6 +219,8 @@
     "qr_code_image": "二维码图片",
     "email": "邮箱",
     "phone_number": "电话号码",
+    "bank_account_number": "银行账号",
+    "cardHolderNameHint": "用于银行账户的持卡人姓名",
     "none": "无"
   },
   "TransferRequestsPage": {
@@ -278,7 +280,8 @@
     "none": "无",
     "accountLimits": "账户限制",
     "accountBalance": "账户余额",
-    "accountLimit": "限额"
+    "accountLimit": "限额",
+    "bank_account_number": "银行账号"
   },
   "TopUpDetailsPage": {
     "pageTitle": "充值账户"

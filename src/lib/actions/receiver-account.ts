@@ -6,6 +6,7 @@ import getSession from "@/lib/getSession";
 // e.g., if it directly fetched from the backend before the proxy.
 
 export async function createReceiverAccountAction(formData: FormData) {
+    console.log("createReceiverAccountAction called");
     try {
         // 1. Get the current session on the server-side
         const session = await getSession();
