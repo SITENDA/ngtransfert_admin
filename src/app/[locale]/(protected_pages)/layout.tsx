@@ -27,7 +27,7 @@ export default async function ProtectedLayout({
     }
 
     // 🔄 Validate / refresh token
-    const ok = await ensureValidAccessToken(session);
+    const ok = session == null ? false : await ensureValidAccessToken(session);
 
     // 🔴 HARD STOP #3 — refresh failed
     if (!ok) {

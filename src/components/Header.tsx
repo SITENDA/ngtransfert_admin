@@ -9,6 +9,7 @@ import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 import { LocaleToggle } from "@/components/LocaleToggle";
 import { generalPaths } from "@/util/frontend-paths";
+import {SessionCountdown} from "@/components/SessionCountdown";
 
 export default async function Header() {
     const t = await getTranslations("Header");
@@ -58,6 +59,8 @@ export default async function Header() {
                     />
 
                     <LocaleToggle label={t("changeLanguage")} />
+
+                    {user && <SessionCountdown/>}
 
                     {/* 👤 User profile */}
                     {user && (

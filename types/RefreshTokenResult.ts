@@ -1,10 +1,12 @@
 // /home/amos/docure/ngtransfert_admin/types/RefreshTokenResult.ts
+import {BffUser} from "./session";
+
 export type RefreshTokenResult =
     | {
     success: true;
     accessToken: string;
     expiresAt: number;
-    user: unknown; // or your BffUser type if available
+    user: BffUser; // or your BffUser type if available
 }
     | {
     success: false;

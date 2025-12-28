@@ -137,12 +137,15 @@ async function ReceiverAccountDetailsPage({searchParams}: { searchParams: { rece
                         <h3 className="text-xl font-semibold mb-4 text-foreground">
                             {t('generalDetails')}
                         </h3>
-                        <DetailRow label={t('receiverAccountCategory')}>
-                            <div className=" items-center gap-2">
-                                <CategoryIcon category={receiverAccount.receiverAccountCategory}/>
-                                <span>{t(receiverAccount.receiverAccountCategory.toLowerCase())}&nbsp; </span>
+                        <DetailRow label={t("receiverAccountCategory")}>
+                            <div className="flex items-center gap-2">
+                                <CategoryIcon category={receiverAccount.receiverAccountCategory} />
+                                <span>
+                                    {t(receiverAccount.receiverAccountCategory.toLowerCase())}
+                                </span>
                             </div>
                         </DetailRow>
+
                         <DetailRow label={t('receiverAccountIdentifier')}
                                    value={t(receiverAccount.receiverAccountIdentifier.toLowerCase())}/>
                         <DetailRow label={t('receiverAccountName')} value={receiverAccount.receiverAccountName}/>

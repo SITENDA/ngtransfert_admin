@@ -17,7 +17,7 @@ const ProtectedWrapper: React.FC<ProtectedWrapperProps> = async ({ children }) =
     const locale = await getLocale();
 
     // 🔄 Validate / refresh token
-    const ok = session == null ? false : await ensureValidAccessToken(session);
+    const ok = session == null ? false :  await ensureValidAccessToken(session);
 
     // 🔴 HARD STOP #3 — refresh failed
     if (!ok || !clientId) {

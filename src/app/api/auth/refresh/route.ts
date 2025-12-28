@@ -61,10 +61,10 @@ export async function POST() {
 
     // 4️⃣ Update Redis session
     await saveSession(sessionId, {
-        user: session.user, // user stays the same
+        user: session.user,
         accessToken: newAccessToken,
-        refreshToken: session.refreshToken,
         accessTokenExpiresAt: decoded.exp * 1000,
+        lastActivityAt: Date.now(),
     });
 
     return NextResponse.json({ success: true });

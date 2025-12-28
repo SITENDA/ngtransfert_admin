@@ -23,10 +23,14 @@ export async function saveSession(
     await redis.set(
         key(sessionId),
         JSON.stringify(fullSession),
-        "EX",
-        SESSION_TTL_SECONDS
-    );
+        // "EX",
+        // 60 * 65 // 65 minutes
+    "EX",
+        120 // 🔥 2 minutes
+
+);
 }
+
 
 export async function getSession(sessionId: string): Promise<Session | null> {
     const raw = await redis.get(key(sessionId));

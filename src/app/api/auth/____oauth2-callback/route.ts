@@ -1,28 +1,29 @@
 // app/api/auth/____oauth2-callback/route.ts
 import { NextRequest } from 'next/server';
-import { signIn } from "@/auth"; // Import the server-side signIn helper
-import { redirect } from 'next/navigation';
-import {UserDTO} from "../../../../../types/next-auth"; // For server-side redirect
+import {UserDTO} from "../../../../../types/next-auth";
+import {redirect} from "@/i18n/navigation";
+import {getLocale} from "next-intl/server";
+import {signIn} from "next-auth/react"; // For server-side redirect
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
 
     const token = searchParams.get('token');
     const email = searchParams.get('email');
-    const locale = searchParams.get('locale');
     const ekiddakoPath = searchParams.get('ekiddakoPath'); // New param for redirect path
     const springBootError = searchParams.get('error');
+    const locale = await getLocale();
 
     // --- 1. Handle immediate errors from Spring Boot redirect ---
     if (springBootError) {
         console.error('OAuth2 Error from Spring Boot (via Route Handler):', springBootError);
-        return redirect(`/${locale || 'en'}/login?error=${encodeURIComponent(springBootError)}`);
+        return redirect({ href: `/login?error=${encodeURIComponent(springBootError)}`, locale });
     }
 
     // --- 2. Validate essential parameters received from redirect ---
     if (!token || !email || !ekiddakoPath) { // ekiddakoPath is now essential
         console.warn('OAuth2 callback missing token, email, or redirect path.');
-        return redirect(`/${locale || 'en'}/login?error=${encodeURIComponent("Authentication data missing.")}`);
+        return redirect({ href: `/login?error=${encodeURIComponent("Authentication data missing.")}`, locale });
     }
 
     let fetchedUser: UserDTO | null = null;
@@ -60,7 +61,7 @@ export async function GET(req: NextRequest) {
     } catch (err: any) {
         console.error('Route Handler: Error fetching user info from backend:', err);
         const fetchError = err.message || 'An unexpected error occurred during user profile retrieval.';
-        return redirect(`/${locale || 'en'}/login?error=${encodeURIComponent(fetchError)}`);
+        return redirect({ href: `/login?error=${encodeURIComponent(fetchError)}`, locale });
     }
 
     // --- KEY CHANGE: Initiate NextAuth.js session within this Route Handler ---
@@ -74,11 +75,11 @@ export async function GET(req: NextRequest) {
         console.log("Route Handler: NextAuth session established successfully.");
 
         // Redirect to the user's dashboard after successful session creation
-        return redirect(`/${locale || 'en'}/${ekiddakoPath}`, { scroll: false });
+        return redirect({ href: ekiddakoPath, locale });
 
     } catch (authError: any) {
         console.error('Route Handler: Error establishing NextAuth session:', authError);
         const errorMessage = authError.message || "Failed to establish user session.";
-        return redirect(`/${locale || 'en'}/login?error=${encodeURIComponent(errorMessage)}`);
+        return redirect({ href: `/login?error=${encodeURIComponent(errorMessage)}`, locale });
     }
 }

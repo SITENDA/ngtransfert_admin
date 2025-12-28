@@ -7,15 +7,12 @@ export interface BffRole {
 
 export interface BffUser {
     userId: number;
-    fullName?: string;
     username: string;
     email: string;
-    roles: BffRole[];
-    phoneNumber: string;
-    registrationDate: string;
+    fullName?: string;
     profileImageUrl?: string;
     enabled: boolean;
-    // Routing / domain role
+    roles: BffRole[];
     ekiddako: "nnyinimu" | "kaasitoma" | string;
 }
 
@@ -24,18 +21,8 @@ export interface Session {
     user: BffUser;
 
     accessToken: string;
-    refreshToken: string;
-    accessTokenExpiresAt: number; // epoch ms
+    accessTokenExpiresAt: number; // JWT exp (ms)
+
+    lastActivityAt: number; // 🔑 NEW: sliding session
     createdAt: number;
-}
-
-export interface BffSession {
-    sessionId: string;
-    createdAt: number;
-
-    user: BffUser;
-
-    accessToken: string;
-    refreshToken: string;
-    accessTokenExpiresAt: number;
 }

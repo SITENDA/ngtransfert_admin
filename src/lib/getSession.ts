@@ -2,17 +2,13 @@
 
 import {getSessionId} from "@/lib/cookies";
 import {getSession} from "@/lib/sessionStore";
-import {Session} from "../../types/session";
+import {maybeCleanupSessions} from "@/lib/server/maybeCleanupSessions";
 
-export default async function getBffSession(): Promise<Session | null> {
+export default async function getBffSession() {
+    await maybeCleanupSessions(); // 🔥 SAFE
+
     const sessionId = await getSessionId();
-
     if (!sessionId) return null;
-
-
-     // ✅ FIX: await
-    // console.log("📦 Loaded BFF session:", session);
-    // console.log("📦 Loaded BFF session.");
 
     return await getSession(sessionId);
 }

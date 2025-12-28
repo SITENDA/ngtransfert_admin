@@ -1,19 +1,69 @@
+// // src/app/api/auth/login/route.ts
+//
+// import { NextResponse } from "next/server";
+// import { randomUUID } from "crypto";
+// import { saveSession } from "@/lib/sessionStore";
+// import { mapBackendUserToBffUser } from "@/lib/mappers/mapBackendUserToBffUser";
+// import { BackendHttpResponse } from "../../../../../types/BackendHttpResponse";
+// import { BackendLoginPayload } from "../../../../../types/BackendLoginPayload";
+// import {setSessionCookie} from "@/lib/cookies";
+//
+// export async function POST(req: Request) {
+//     const body = await req.json();
+//
+//     const springRes = await fetch(
+//         `${process.env.BACKEND_URL}/auth/login`,
+//         {
+//             method: "POST",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify(body),
+//             credentials: "include",
+//         }
+//     );
+//
+//     const json: BackendHttpResponse<BackendLoginPayload | null> =
+//         await springRes.json();
+//
+//     if (!springRes.ok || !json.data) {
+//         return NextResponse.json(
+//             { success: false, message: json.message || "Invalid credentials" },
+//             { status: json.statusCode || 401 }
+//         );
+//     }
+//
+//     const { user, token, accessTokenExpiresAt } = json.data;
+//     const bffUser = mapBackendUserToBffUser(user);
+//     const sessionId = randomUUID();
+//
+//     await saveSession(sessionId, {
+//         user: bffUser,
+//         accessToken: token,
+//         accessTokenExpiresAt,
+//         lastActivityAt: Date.now(),
+//     });
+//     await setSessionCookie(sessionId); // 🔥 REQUIRED
+//
+//     // ✅ RETURN IMMEDIATELY
+//     return NextResponse.json({
+//         success: true,
+//         user: bffUser,
+//     });
+// }
+
+
 // src/app/api/auth/login/route.ts
 
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
-
 import { saveSession } from "@/lib/sessionStore";
-import { setSessionCookie } from "@/lib/cookies";
 import { mapBackendUserToBffUser } from "@/lib/mappers/mapBackendUserToBffUser";
-
 import { BackendHttpResponse } from "../../../../../types/BackendHttpResponse";
 import { BackendLoginPayload } from "../../../../../types/BackendLoginPayload";
+import { setSessionCookie } from "@/lib/cookies";
 
 export async function POST(req: Request) {
     const body = await req.json();
 
-    // 1️⃣ Forward login request to Spring Boot
     const springRes = await fetch(
         `${process.env.BACKEND_URL}/auth/login`,
         {
@@ -24,9 +74,24 @@ export async function POST(req: Request) {
         }
     );
 
-    // 2️⃣ Always parse backend response
-    const json: BackendHttpResponse<BackendLoginPayload | null> =
-        await springRes.json();
+    // ✅ ALWAYS read as text first
+    const text = await springRes.text();
+
+    let json: BackendHttpResponse<BackendLoginPayload | null>;
+
+    try {
+        json = JSON.parse(text);
+    } catch (err) {
+        console.error("❌ Backend returned non-JSON:", text);
+
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Server error. Please try again.",
+            },
+            { status: 500 }
+        );
+    }
 
     // ❌ Authentication / validation failed
     if (!springRes.ok || !json.data) {
@@ -39,28 +104,20 @@ export async function POST(req: Request) {
         );
     }
 
-    // ✅ Safe to destructure now
-    const { user, token, refreshToken, accessTokenExpiresAt } = json.data;
-
-    // 3️⃣ Map backend user → BFF user
+    // ✅ Safe to proceed
+    const { user, token, accessTokenExpiresAt } = json.data;
     const bffUser = mapBackendUserToBffUser(user);
-
-    // 4️⃣ Create BFF session
     const sessionId = randomUUID();
 
     await saveSession(sessionId, {
         user: bffUser,
         accessToken: token,
-        refreshToken,
         accessTokenExpiresAt,
+        lastActivityAt: Date.now(),
     });
 
-    // 5️⃣ Set HttpOnly BFF session cookie
     await setSessionCookie(sessionId);
 
-    console.log("✅ Login complete, session established:", sessionId);
-
-    // 6️⃣ Return SAFE response (NO TOKENS)
     return NextResponse.json({
         success: true,
         user: bffUser,

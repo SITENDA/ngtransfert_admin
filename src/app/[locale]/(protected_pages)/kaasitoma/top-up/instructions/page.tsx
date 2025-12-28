@@ -2,19 +2,21 @@
 // This is a Server Component.
 import React from 'react';
 import {notFound, redirect} from 'next/navigation';
-import { getTranslations } from 'next-intl/server'; // For server component translations
+import {getTranslations} from 'next-intl/server'; // For server component translations
 
-import { fetchBackendData } from "@/lib/backend-api-client"; // Assuming this is your utility for backend calls
-import { CountriesDataPayload } from "../../../../../../../types/country"; // Assuming this type is available
-import { TopUpMethodEnum } from '@/enums/TopUpMethodEnum';
+import {fetchBackendData} from "@/lib/backend-api-client"; // Assuming this is your utility for backend calls
+import {CountriesDataPayload} from "../../../../../../../types/country"; // Assuming this type is available
+import {TopUpMethodEnum} from '@/enums/TopUpMethodEnum';
 import {CashDepositAddress, CashDepositAddressDataPayload} from "../../../../../../../types/cashDepositAddress";
 import {BankDepositAddress, BankDepositAddressDataPayload} from "../../../../../../../types/bankDepositAddress";
-import {CardContent, Divider} from "@mui/material";
 import {Button} from "@/components/ui/button";
 import {kaasitomaPaths} from "@/util/frontend-paths";
-import { Link } from '@/i18n/navigation';
+import {Link} from '@/i18n/navigation';
 import {FetchBackendResult} from "../../../../../../../types/fetchBackendResult";
 import {isRedirectObject} from "@/util/typeguards";
+import InstructionsClient from "@/components/InstructionsClient";
+import { Separator } from "@/components/ui/separator";
+
 
 // --- UI Components (Simulated with HTML/Tailwind) ---
 
@@ -30,11 +32,11 @@ interface InstructionsPageProps {
     };
 }
 
-export default async function InstructionsPage({ searchParams }: InstructionsPageProps) {
+export default async function InstructionsPage({searchParams}: InstructionsPageProps) {
     const params = await searchParams;
     const t = await getTranslations('InstructionsPage'); // Use server-side translations
 
-    const { accountId, countryId, topUpMethod, receiverAccountCategory, accountIdentifier } = params;
+    const {accountId, countryId, topUpMethod, receiverAccountCategory, accountIdentifier} = params;
 
     // --- 1. Validate incoming query parameters ---
     if (!accountId || !countryId || !topUpMethod || !receiverAccountCategory || !accountIdentifier) {
@@ -127,7 +129,7 @@ export default async function InstructionsPage({ searchParams }: InstructionsPag
             <div className="space-y-4">
                 <div>
                     <h3 className="font-semibold text-lg">{t('InstructionsContent.bankStep1Title')}</h3>
-                    <p className="text-gray-700 dark:text-gray-300">{t('InstructionsContent.bankStep1Desc', { countryName: selectedCountryName || '' })}</p>
+                    <p className="text-gray-700 dark:text-gray-300">{t('InstructionsContent.bankStep1Desc', {countryName: selectedCountryName || ''})}</p>
                 </div>
                 <div>
                     <h3 className="font-semibold text-lg">{t('InstructionsContent.bankStep2Title')}</h3>
@@ -141,7 +143,7 @@ export default async function InstructionsPage({ searchParams }: InstructionsPag
         ),
         [TopUpMethodEnum.MOBILE_MONEY]: (
             <p className="text-gray-700 dark:text-gray-300">
-                {t('InstructionsContent.mobileMoneyDesc', { mobileNumber: '123456789' })}
+                {t('InstructionsContent.mobileMoneyDesc', {mobileNumber: '123456789'})}
             </p>
         ),
         [TopUpMethodEnum.WAVE]: (
@@ -152,7 +154,7 @@ export default async function InstructionsPage({ searchParams }: InstructionsPag
                 </div>
                 <div>
                     <h3 className="font-semibold text-lg">{t('InstructionsContent.waveStep2Title')}</h3>
-                    <p className="text-gray-700 dark:text-gray-300">{t('InstructionsContent.waveStep2Desc', { accountNumber: '9999999' })}</p>
+                    <p className="text-gray-700 dark:text-gray-300">{t('InstructionsContent.waveStep2Desc', {accountNumber: '9999999'})}</p>
                 </div>
                 <div>
                     <h3 className="font-semibold text-lg">{t('InstructionsContent.waveStep3Title')}</h3>
@@ -172,7 +174,7 @@ export default async function InstructionsPage({ searchParams }: InstructionsPag
                 </div>
                 <div>
                     <h3 className="font-semibold text-lg">{t('InstructionsContent.orangeMoneyStep2Title')}</h3>
-                    <p className="text-gray-700 dark:text-gray-300">{t('InstructionsContent.orangeMoneyStep2Desc', { accountNumber: '376385' })}</p>
+                    <p className="text-gray-700 dark:text-gray-300">{t('InstructionsContent.orangeMoneyStep2Desc', {accountNumber: '376385'})}</p>
                 </div>
                 <div>
                     <h3 className="font-semibold text-lg">{t('InstructionsContent.orangeMoneyStep3Title')}</h3>
@@ -188,7 +190,7 @@ export default async function InstructionsPage({ searchParams }: InstructionsPag
             <div className="space-y-4">
                 <div>
                     <h3 className="font-semibold text-lg">{t('InstructionsContent.cashStep1Title')}</h3>
-                    <p className="text-gray-700 dark:text-gray-300">{t('InstructionsContent.cashStep1Desc', { countryName: selectedCountryName || '' })}</p>
+                    <p className="text-gray-700 dark:text-gray-300">{t('InstructionsContent.cashStep1Desc', {countryName: selectedCountryName || ''})}</p>
                 </div>
                 <div>
                     <h3 className="font-semibold text-lg">{t('InstructionsContent.cashStep2Title')}</h3>
@@ -231,76 +233,91 @@ export default async function InstructionsPage({ searchParams }: InstructionsPag
                 {t('pageTitle')}
             </h2>
 
-            <CardContent className="flex-grow p-6 space-y-8">
+            <InstructionsClient>
                 {/* Display method-specific instructions */}
-                <Divider />
                 <div
                     className="
-                        p-5 bg-yellow-50 dark:bg-yellow-900/20
-                        border border-yellow-200 dark:border-yellow-700
-                        rounded-lg shadow-md
-                    "
+      p-5 bg-yellow-50 dark:bg-yellow-900/20
+      border border-yellow-200 dark:border-yellow-700
+      rounded-lg shadow-md
+    "
                 >
                     <div className="text-base text-gray-800 dark:text-gray-200">
-                        {topUpInstructions[selectedMethodValue] || t('InstructionsContent.selectMethodHint')}
+                        {topUpInstructions[selectedMethodValue]}
                     </div>
                 </div>
 
-                {/* Display Cash Deposit Addresses */}
-                {selectedMethodValue === TopUpMethodEnum.CASH && fetchedCashDepositAddresses.length > 0 && (
-                    <>
-                        <Divider />
-                        <h3 className="text-xl font-semibold mb-4">
-                            {t('InstructionsContent.cashAddressesHeading', { countryName: selectedCountryName || '' })}
-                        </h3>
-                        <ul className="space-y-3">
-                            {fetchedCashDepositAddresses.map((address, index) => (
-                                <li key={index} className="
-                                    bg-pink-100 dark:bg-pink-900/30 p-4 rounded-lg shadow-sm
-                                    flex items-center space-x-3
-                                ">
-                                    {/* Replace with actual PlaceIcon if available */}
-                                    <span className="text-red-500">📍</span>
-                                    <span className="text-gray-800 dark:text-gray-200">{address.address}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </>
-                )}
+                {/* Cash Deposit Addresses */}
+                {selectedMethodValue === TopUpMethodEnum.CASH &&
+                    fetchedCashDepositAddresses.length > 0 && (
+                        <>
+                            <Separator className="my-6" />
+                            <h3 className="text-xl font-semibold mb-4">
+                                {t("InstructionsContent.cashAddressesHeading", {
+                                    countryName: selectedCountryName || "",
+                                })}
+                            </h3>
+                            <ul className="space-y-3">
+                                {fetchedCashDepositAddresses.map((address, index) => (
+                                    <li
+                                        key={index}
+                                        className="
+                bg-pink-100 dark:bg-pink-900/30
+                p-4 rounded-lg shadow-sm
+                flex items-center space-x-3
+              "
+                                    >
+                                        <span className="text-red-500">📍</span>
+                                        <span className="text-gray-800 dark:text-gray-200">
+                {address.address}
+              </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
 
-                {/* Display Bank Deposit Addresses */}
-                {selectedMethodValue === TopUpMethodEnum.BANK && fetchedBankDepositAddresses.length > 0 && (
-                    <>
-                        <Divider />
-                        <h3 className="text-xl font-semibold mb-4">
-                            {t('InstructionsContent.bankAddressesHeading', { countryName: selectedCountryName || '' })}
-                        </h3>
-                        <ul className="space-y-3">
-                            {fetchedBankDepositAddresses.map((address, index) => (
-                                <li key={index} className="
-                                    bg-pink-100 dark:bg-pink-900/30 p-4 rounded-lg shadow-sm
-                                    flex items-center space-x-3
-                                ">
-                                    {/* Replace with actual PlaceIcon if available */}
-                                    <span className="text-red-500">🏦</span>
-                                    <span className="text-gray-800 dark:text-gray-200">{address.address}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </>
-                )}
+                {/* Bank Deposit Addresses */}
+                {selectedMethodValue === TopUpMethodEnum.BANK &&
+                    fetchedBankDepositAddresses.length > 0 && (
+                        <>
+                            <Separator className="my-6" />
+                            <h3 className="text-xl font-semibold mb-4">
+                                {t("InstructionsContent.bankAddressesHeading", {
+                                    countryName: selectedCountryName || "",
+                                })}
+                            </h3>
+                            <ul className="space-y-3">
+                                {fetchedBankDepositAddresses.map((address, index) => (
+                                    <li
+                                        key={index}
+                                        className="
+                bg-pink-100 dark:bg-pink-900/30
+                p-4 rounded-lg shadow-sm
+                flex items-center space-x-3
+              "
+                                    >
+                                        <span className="text-red-500">🏦</span>
+                                        <span className="text-gray-800 dark:text-gray-200">
+                {address.address}
+              </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
 
-                {/* The Link component now passes all searchParams to the next page */}
+                {/* Continue button */}
                 <div className="text-center mt-8">
                     <Link href={topUpDetailsHref}>
                         <Button
-                            className={`bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full sm:w-auto`}
-                        >
-                            {t('continueToTopUpButton')}
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full sm:w-auto">
+                            {t("continueToTopUpButton")}
                         </Button>
                     </Link>
                 </div>
-            </CardContent>
+            </InstructionsClient>
+
         </div>
     );
 }

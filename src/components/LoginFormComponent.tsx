@@ -80,7 +80,10 @@ export default function LoginFormComponent() {
             }
 
             // ✅ Redirect based on role (ekiddako)
-            router.push(`/${data.user.ekiddako}`);
+            // router.push(`/${data.user.ekiddako}`);
+            router.refresh(); // forces server to re-read cookies
+            router.replace(`/${data.user.ekiddako}`);
+
         } catch (err) {
             console.error("Login error:", err);
             setFormError(t("loginFailed"));
@@ -91,7 +94,7 @@ export default function LoginFormComponent() {
     const handleOAuth2Login = (provider: string) => {
         const redirectUri = `${window.location.origin}/${locale}/oauth2/redirect`;
         const oauth2Url = `${
-            process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080"
+            process.env.NEXT_PUBLIC_BACKEND_URL
         }/oauth2/authorization/${provider}?redirect_uri=${encodeURIComponent(
             redirectUri
         )}`;

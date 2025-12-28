@@ -16,6 +16,7 @@ import {Button} from "@/components/ui/button";
 import {Link} from "@/i18n/navigation";
 import {headers} from "next/headers";
 import ProtectedWrapper from "@/components/ProtectedWrapper";
+import {authenticatedFetch} from "@/lib/server/authenticatedFetch";
 
 // URL for the Next.js API proxy that will fetch receiver accounts from Spring Boot
 // Now, we'll construct this URL to include the clientId as a query parameter.
@@ -48,19 +49,11 @@ export default async function ReceiverAccountsPage({ searchParams }: { searchPar
         // Get headers from the incoming client request to this server component
         const headersList = await headers();
         headersList.get('authorization');
-        const cookieHeader = headersList.get('cookie');
 
-        const response = await fetch(BASE_GET_RECEIVER_ACCOUNTS_PROXY_URL, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${session.accessToken}`,
-                ...(cookieHeader && { 'Cookie': cookieHeader }),
-            },
-            next: {
-                revalidate: 60
-            }
-        });
-
+        const response = await authenticatedFetch(
+            BASE_GET_RECEIVER_ACCOUNTS_PROXY_URL,
+            { method: "GET" }
+        );
 
         if (!response.ok) {
             console.error(`ReceiverAccountsPage: Failed to fetch accounts from proxy: ${response.status} ${response.statusText}`);

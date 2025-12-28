@@ -72,9 +72,10 @@ export default function ContactUsForm({ content }: Props) {
             setSuccessMessage(result.message ?? "Message sent successfully");
             form.reset(emptyValues);
 
-            setTimeout(() => {
-                router.push(generalPaths.welcomePath);
-            }, 3000);
+            router.push(generalPaths.welcomePath);
+            // setTimeout(() => {
+            //     router.push(generalPaths.welcomePath);
+            // }, 3000);
         } finally {
             setIsSending(false);
         }

@@ -1,12 +1,12 @@
 // /home/amos/docure/ngtransfert_admin/src/app/[locale]/(protected_pages)/kaasitoma/page.tsx (kaasitome home page)
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {getTranslations} from "next-intl/server"; // Keep getTranslations for server component
+import {getLocale, getTranslations} from "next-intl/server"; // Keep getTranslations for server component
 import getSession from "@/lib/getSession";
 import {ClickableRow} from "@/components/ClickableRow";
-import {kaasitomaPaths} from "@/util/frontend-paths";
+import {generalPaths, kaasitomaPaths} from "@/util/frontend-paths";
 import {fetchBackendData} from "@/lib/backend-api-client";
 import {DashboardDataPayload} from "../../../../../types/dashboardContent";
-import { Link } from "@/i18n/navigation";
+import {Link, redirect} from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 
 export const metadata = {
@@ -16,7 +16,12 @@ export const metadata = {
 export default async function KaasitomaDashboardPage() {
     const t = await getTranslations('DashboardPage');
     const session = await getSession();
-    const user = session!.user; // safe now
+    const locale = await getLocale();
+    // if (!session || !session?.user) {
+    //     redirect({ href: generalPaths.fromSignedOutLoginPath, locale });
+    //     return;
+    // }
+    const user = session?.user;
 
     let receiverAccountsCount = 0;
     let transferRequestsCount = 0;
@@ -102,7 +107,7 @@ export default async function KaasitomaDashboardPage() {
 
                 <CardContent className="flex-grow p-6 space-y-8">
                     <div className="text-xl font-medium text-gray-800 dark:text-gray-200 mb-6">
-                        {t('welcomeMessage', { userName: user.fullName })}! {/* Use userName placeholder */}
+                        {t('welcomeMessage', { userName: user?.fullName })}! {/* Use userName placeholder */}
                     </div>
 
                     {displayedContent}
