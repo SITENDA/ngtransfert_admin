@@ -4,20 +4,19 @@ import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 
-export default function SessionUpdateHandler({ token, user }: { token?: string; user?: string }) {
+export default function SessionUpdateHandler({ user }: { user?: string }) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
     useEffect(() => {
         const updateSession = async () => {
-            if (!token || !user) {
+            if (!user) {
                 router.replace('/login?error=sessionUpdateFailed');
                 return;
             }
 
             try {
                 await signIn('credentials', {
-                    accessToken: token,
                     userData: user,
                     redirect: false
                 });
@@ -32,7 +31,7 @@ export default function SessionUpdateHandler({ token, user }: { token?: string; 
         };
 
         updateSession();
-    }, [token, user, router, searchParams]);
+    }, [user, router, searchParams]);
 
     return <p>Refreshing session... please wait.</p>;
 }

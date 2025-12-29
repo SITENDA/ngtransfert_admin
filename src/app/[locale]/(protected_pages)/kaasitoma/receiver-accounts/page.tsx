@@ -1,108 +1,91 @@
 // src/app/[locale]/(protected_pages)/kaasitoma/receiver-accounts/page.tsx
-// This is a Server Component.
-
-import getSession from "@/lib/getSession";
-import { redirect } from 'next/navigation';
-import {getLocale, getTranslations} from 'next-intl/server';
+import { getTranslations } from "next-intl/server";
 
 import ReceiverAccountsTable from "./ReceiverAccountsTable";
-import {
-    ReceiverAccount,
-    ReceiverAccountsPayload
-} from "../../../../../../types/receiver-account";
-import {BackendGenericResponse} from "../../../../../../types/BackendGenericResponse";
-import {kaasitomaPaths} from "@/util/frontend-paths";
-import {Button} from "@/components/ui/button";
-import {Link} from "@/i18n/navigation";
-import {headers} from "next/headers";
+import { ReceiverAccount } from "../../../../../../types/receiver-account";
+import { BackendGenericResponse } from "../../../../../../types/BackendGenericResponse";
+import { kaasitomaPaths } from "@/util/frontend-paths";
+import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
 import ProtectedWrapper from "@/components/ProtectedWrapper";
-import {authenticatedFetch} from "@/lib/server/authenticatedFetch";
+import {cookies, headers} from "next/headers";
 
-// URL for the Next.js API proxy that will fetch receiver accounts from Spring Boot
-// Now, we'll construct this URL to include the clientId as a query parameter.
-const BASE_GET_RECEIVER_ACCOUNTS_PROXY_URL = `${process.env.NEXT_PUBLIC_APP_URL}/api/kaasitoma/receiverAccounts/getAllReceiverAccounts`;
+export default async function ReceiverAccountsPage({
+                                                       searchParams,
+                                                   }: {
+    searchParams: Record<string, string>;
+}) {
+    const t = await getTranslations("ReceiverAccountsPage");
 
-export default async function ReceiverAccountsPage({ searchParams }: { searchParams: Record<string, string> })  {
-    const t = await getTranslations('ReceiverAccountsPage');
-    const locale = await getLocale();
-
-    const searchParamsToUse = await searchParams;
-    const fromParam = searchParamsToUse.from;
-    const isFromTopUp = fromParam === 'topUp';
-
-    // 1. Authentication Check (Server-side Guard)
-    const session = await getSession();
-    const user = session?.user;
-
-    if (!session || !user || !user.userId || !session.accessToken) {
-        console.warn(`ReceiverAccountsPage: User not authenticated or missing required session data. Redirecting to /${locale}/login`);
-        redirect(`/${locale}/login`);
-    }
-
-    const clientId = user.userId; // Get clientId from authenticated user
+    const isFromTopUp = (await searchParams).from === "topUp";
 
     let receiverAccounts: ReceiverAccount[] = [];
 
-    try {
-        console.log(`ReceiverAccountsPage (Server Component): Fetching receiver accounts for clientId: ${clientId} via proxy...`);
-
-        // Get headers from the incoming client request to this server component
         const headersList = await headers();
-        headersList.get('authorization');
+        const protocol = headersList.get("x-forwarded-proto") ?? "https";
+        const host = headersList.get("host");
 
-        const response = await authenticatedFetch(
-            BASE_GET_RECEIVER_ACCOUNTS_PROXY_URL,
-            { method: "GET" }
-        );
+        if (!host) {
+            throw new Error("Host header missing");
+        }
+
+    try {
+
+        const apiUrl = `${protocol}://${host}/api/kaasitoma/receiverAccounts/getAllReceiverAccounts`;
+
+        const cookieHeader = (await cookies())
+            .getAll()
+            .map(c => `${c.name}=${c.value}`)
+            .join("; ");
+
+        const response = await fetch(apiUrl, {
+            method: "GET",
+            cache: "no-store",
+            headers: {
+                Cookie: cookieHeader, // 🔥 THIS FIXES IT
+            },
+        });
+
 
         if (!response.ok) {
-            console.error(`ReceiverAccountsPage: Failed to fetch accounts from proxy: ${response.status} ${response.statusText}`);
-            const errorBody = await response.json();
-            console.error('ReceiverAccountsPage: Proxy error details:', errorBody);
-
-            if (response.status === 401 || response.status === 403) {
-                console.warn(`ReceiverAccountsPage: Authentication/Authorization issue fetching accounts. Redirecting to /${locale}/login`);
-                redirect(`/${locale}/login`);
-            }
-            receiverAccounts = [];
+            console.error("Failed to fetch receiver accounts:", response.status);
         } else {
-            const backendResponse: BackendGenericResponse<ReceiverAccountsPayload> = await response.json();
+            const data: BackendGenericResponse<{
+                receiverAccounts: ReceiverAccount[];
+            }> = await response.json();
 
-            if (backendResponse.statusCode === 200 && backendResponse.data && backendResponse.data.receiverAccounts) {
-                receiverAccounts = backendResponse.data.receiverAccounts;
-                // console.log(`ReceiverAccountsPage: Successfully fetched ${receiverAccounts.length} receiver accounts.`);
-            } else {
-                console.warn("ReceiverAccountsPage: Backend response for accounts was OK, but 'data' or 'receiverAccounts' array was missing/empty:", backendResponse);
-                receiverAccounts = [];
-            }
+            receiverAccounts = data.data?.receiverAccounts ?? [];
         }
-    } catch (error) {
-        console.error("ReceiverAccountsPage: Network or unexpected error fetching receiver accounts:", error);
-        receiverAccounts = [];
+    }
+     catch (err) {
+        console.error("ReceiverAccountsPage fetch error:", err);
     }
 
     return (
         <ProtectedWrapper>
-            <div className="
-                w-full max-w-4xl mx-auto my-8 p-6 rounded-lg shadow-xl
-                bg-background/80 backdrop-blur-sm border border-border
-                dark:bg-gray-800/80 dark:border-gray-700 min-h-[800px]
-            ">
+            <div
+                className="
+          w-full max-w-4xl mx-auto my-8 p-6 rounded-lg shadow-xl
+          bg-background/80 backdrop-blur-sm border border-border
+          dark:bg-gray-800/80 dark:border-gray-700 min-h-[800px]
+        "
+            >
                 <h2 className="text-3xl font-bold mb-6 text-center text-foreground">
-                    {isFromTopUp ? t('chooseReceiverAccountTitle') : t('pageTitle')}
+                    {isFromTopUp ? t("chooseReceiverAccountTitle") : t("pageTitle")}
                 </h2>
+
                 <div className="flex justify-end mb-6">
-                    <Link href={kaasitomaPaths.addReceiverAccountPath} passHref>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
-                        >
-                            {t('addReceiverAccountButton')}
+                    <Link href={kaasitomaPaths.addReceiverAccountPath}>
+                        <Button variant="outline" size="sm">
+                            {t("addReceiverAccountButton")}
                         </Button>
                     </Link>
                 </div>
-                <ReceiverAccountsTable initialReceiverAccounts={receiverAccounts} isFromTopUp={isFromTopUp}/>
+
+                <ReceiverAccountsTable
+                    initialReceiverAccounts={receiverAccounts}
+                    isFromTopUp={isFromTopUp}
+                />
             </div>
         </ProtectedWrapper>
     );

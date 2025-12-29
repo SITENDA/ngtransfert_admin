@@ -11,19 +11,16 @@ export async function updateUserProfileAction(profileData: {
     try {
         const session = await getSession();
 
-        if (!session || !session.accessToken) {
+        if (!session) {
             console.error("Authentication failed. Session or Access Token missing.");
             return { success: false, message: "Authentication required to update profile." };
         }
-
-        const accessToken = session.accessToken;
         const proxyApiUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/profile/updateProfile`;
 
         const response = await fetch(proxyApiUrl, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${accessToken}`,
             },
             body: JSON.stringify(profileData),
         });

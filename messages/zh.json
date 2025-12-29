@@ -193,7 +193,10 @@
     "emailIdentifier": "电子邮件",
     "selectIdentifierPlaceholder": "选择二维码、手机号码或电子邮件",
     "receiverAccountIdentifier": "识别码",
-    "reset": "重置"
+    "reset": "重置",
+    "success": "收款账户添加成功",
+    "error": "错误",
+    "submissionError": "添加收款账户失败，请重试。"
   },
   "ReceiverAccountsPage": {
     "pageTitle": "管理收款账户",

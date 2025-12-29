@@ -1,13 +1,15 @@
-// /home/amos/docure/ngtransfert_admin/src/app/[locale]/(protected_pages)/kaasitoma/page.tsx (kaasitome home page)
+// /home/amos/docure/ngtransfert_admin/src/app/[locale]/(protected_pages)/kaasitoma/page.tsx (kaasitoma home page)
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {getLocale, getTranslations} from "next-intl/server"; // Keep getTranslations for server component
 import getSession from "@/lib/getSession";
 import {ClickableRow} from "@/components/ClickableRow";
 import {generalPaths, kaasitomaPaths} from "@/util/frontend-paths";
-import {fetchBackendData} from "@/lib/backend-api-client";
 import {DashboardDataPayload} from "../../../../../types/dashboardContent";
 import {Link, redirect} from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
+import { cookies, headers } from "next/headers";
+import {BackendGenericResponse} from "../../../../../types/BackendGenericResponse";
+
 
 export const metadata = {
     title: "Dashboard", // This could also use t('dashboardTitle') if you want
@@ -17,10 +19,10 @@ export default async function KaasitomaDashboardPage() {
     const t = await getTranslations('DashboardPage');
     const session = await getSession();
     const locale = await getLocale();
-    // if (!session || !session?.user) {
-    //     redirect({ href: generalPaths.fromSignedOutLoginPath, locale });
-    //     return;
-    // }
+    if (!session || !session?.user) {
+        redirect({ href: generalPaths.fromSignedOutLoginPath, locale });
+        return;
+    }
     const user = session?.user;
 
     let receiverAccountsCount = 0;
@@ -28,27 +30,39 @@ export default async function KaasitomaDashboardPage() {
     let settledTransfersCount = 0;
     let topUpRequestsCount = 0;
 
-    try {
-        // Use the refactored fetchBackendData for fetching banks
-        const dashboardDataPayload = await fetchBackendData<DashboardDataPayload>(
-            '/kaasitoma/getDashboardContent',
-            'GET',
-            undefined,
-            3600
-        );
+    const headersList = await headers();
+    const protocol = headersList.get("x-forwarded-proto") ?? "https";
+    const host = headersList.get("host");
 
+    if (!host) {
+        throw new Error("Host header missing");
+    }
 
-        if (dashboardDataPayload && dashboardDataPayload.receiverAccountsCount >=0 && dashboardDataPayload.transferRequestsCount >=0 && dashboardDataPayload.settledTransfersCount >=0 && dashboardDataPayload.topUpRequestsCount >=0) {
-            receiverAccountsCount = dashboardDataPayload.receiverAccountsCount;
-            transferRequestsCount = dashboardDataPayload.transferRequestsCount;
-            settledTransfersCount = dashboardDataPayload.settledTransfersCount;
-            topUpRequestsCount = dashboardDataPayload.topUpRequestsCount;
-            // console.log('AddReceiverAccountPage: Successfully fetched dashboard content.');
-        } else {
-            console.warn("AddReceiverAccountPage: No bank data fetched or data structure unexpected from backend.");
-        }
-    } catch (error) {
-        console.error("AddReceiverAccountPage: Error during bank data fetching process:", error);
+    const apiUrl = `${protocol}://${host}/api/kaasitoma/getDashboardContent`;
+
+    const cookieHeader = (await cookies())
+        .getAll()
+        .map(c => `${c.name}=${c.value}`)
+        .join("; ");
+
+    const response = await fetch(apiUrl, {
+        method: "GET",
+        cache: "no-store",
+        headers: {
+            Cookie: cookieHeader, // 🔥 REQUIRED
+        },
+    });
+
+    if (!response.ok) {
+        console.error("Failed to fetch dashboard content:", response.status);
+    } else {
+        const data: BackendGenericResponse<DashboardDataPayload> =
+            await response.json();
+
+        receiverAccountsCount = data.data?.receiverAccountsCount ?? 0;
+        transferRequestsCount = data.data?.transferRequestsCount ?? 0;
+        settledTransfersCount = data.data?.settledTransfersCount ?? 0;
+        topUpRequestsCount = data.data?.topUpRequestsCount ?? 0;
     }
 
     let displayedContent;

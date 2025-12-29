@@ -19,9 +19,15 @@ import { FileInputWithLabel } from "@/components/inputs/FileInputWithLabel";
 import {Bank} from "../../../../../../../types/bank";
 import {useLocale, useTranslations} from 'next-intl';
 import {useReceiverAccountIdentifiers} from "@/hooks/ReceiverAccountIdentifier";
-import {createReceiverAccountAction} from "@/lib/actions/receiver-account";
+import {createReceiverAccountAction} from "@/lib/actions/createReceiverAccountAction";
 import { useRouter } from 'next/navigation';
 import {BankSelect} from "@/components/BankSelect";
+import { PhoneNumberInput } from "@/components/PhoneNumberInput";
+import { useToast } from "@/hooks/use-toast";
+import TickAnimation from "@/components/TickAnimation";
+import { kaasitomaPaths } from "@/util/frontend-paths";
+
+
 
 interface AddReceiverAccountFormProps {
     initialBanks: Bank[];
@@ -32,6 +38,9 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
 
     const t = useTranslations('AddReceiverAccountForm');
     const receiverAccountIdentifiers = useReceiverAccountIdentifiers();
+    const receiverAccountCategories = useOrderedReceiverAccountCategories();
+    const { toast } = useToast();
+
     const router = useRouter();
     const locale = useLocale();
 
@@ -66,6 +75,8 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
     const [qrCodePreview, setQrCodePreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [isBankSelectMenuOpen, setIsBankSelectMenuOpen] = useState(false);
+    const [validPhoneNumber, setValidPhoneNumber] = useState(false);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     useEffect(() => {
         if (watchedCategory === ReceiverAccountCategoryEnum.enum.ALIPAY_ACCOUNT) {
@@ -142,6 +153,16 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
         }
     }, [watchedQrCodeImage]);
 
+    const handlePhoneChange = (
+        value: string,
+        onChange: (value: string) => void
+    ) => {
+        onChange(value);
+
+        const digits = value.replace(/\D/g, "");
+        setValidPhoneNumber(digits.length >= 10 && digits.length <= 13);
+    };
+
     // Handle form submission using the Server Action
     const onSubmit = async (data: ReceiverAccountSchemaType) => {
         setLoading(true); // Start loading state
@@ -184,21 +205,38 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
 
         setLoading(false); // End loading state
 
-        if (result.success) {
-            alert(result.message); // Display success message from the Server Action
-            form.reset(defaultEmptyValues); // Reset all form fields to their initial empty states
-            setQrCodePreview(null); // Clear the QR code preview image
-            const redirectPath = `/${locale}/kaasitoma/receiver-accounts`;
-            // Optionally, navigate to a different page after successful submission
-            router.push(redirectPath); // **Adjust this path** to your actual receiver accounts list route
-        } else {
-            // Handle submission errors: display a user-friendly message and log details.
-            alert(`${t('submissionError')}: ${result.message}`); // Display error message
-            console.error('Receiver account creation failed:', result.message);
+        if (!result.success) {
+            toast({
+                title: t("error"),
+                description: result.message ?? t("submissionError"),
+                variant: "destructive",
+            });
+            return;
         }
+
+        toast({
+            title: t("success"),
+            description: result.message,
+        });
+
+        setSuccessMessage(result.message ?? t("success"));
+        form.reset(defaultEmptyValues);
+        setQrCodePreview(null);
+
+// ⏳ Redirect AFTER animation (3s)
+        setTimeout(() => {
+            router.push(
+                `/${locale}${kaasitomaPaths.receiverAccountsPath}`
+            );
+        }, 3000);
+
     };
 
     const selectedBankIsOther = watchedBankId && initialBanks.find(bank => bank.bankId === watchedBankId)?.bankName === "Other banks";
+
+    if (successMessage) {
+        return <TickAnimation successMessage={successMessage} />;
+    }
 
     return (
         <Form {...form}>
@@ -206,7 +244,7 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
                 <SelectWithLabel<ReceiverAccountSchemaType>
                     fieldTitle={t('receiverAccountType')}
                     nameInSchema="receiverAccountCategory"
-                    data={useOrderedReceiverAccountCategories()} // Call the hook here
+                    data={receiverAccountCategories} // Call the hook here
                     control={form.control}
                     placeholderHint={t('selectCategoryPlaceholder')}
                 />
@@ -247,13 +285,23 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
                                     />
                                 )}
                                 {watchedIdentifier === ReceiverAccountIdentifierEnum.enum.PHONE_NUMBER && (
-                                    <InputWithLabel<ReceiverAccountSchemaType>
-                                        fieldTitle={t('phoneNumber')}
-                                        nameInSchema="phoneNumber"
+                                    <Controller
                                         control={form.control}
-                                        placeholder={t('phoneNumberPlaceholder')}
+                                        name="phoneNumber"
+                                        render={({ field }) => (
+                                            <div className="space-y-1">
+                                                <PhoneNumberInput
+                                                    value={field.value ?? ""}
+                                                    changeHandler={(val) =>
+                                                        handlePhoneChange(val, field.onChange)
+                                                    }
+                                                    validPhoneNumber={validPhoneNumber}
+                                                />
+                                            </div>
+                                        )}
                                     />
                                 )}
+
                             </>
                         )}
 

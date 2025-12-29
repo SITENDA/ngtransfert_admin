@@ -6,7 +6,7 @@ import PhoneNumberDisplay from "@/components/PhoneNumberDisplay";
 import ImageDisplay from "@/components/ImageDisplay";
 import { ReceiverAccount } from "../../types/receiver-account";
 import { useRouter } from "@/i18n/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import {ReceiverAccountCategoryEnum, ReceiverAccountIdentifierEnum} from "@/zod-schemas/receiver-account";
 import BankLogo from "@/components/BankLogo";
 
@@ -21,8 +21,6 @@ function ClickableRowClient({
 }) {
     const router = useRouter();
     const t = useTranslations("ReceiverAccountsTable");
-    const locale = useLocale();
-    console.log("Account is : ", account);
 
     return (
         <tr

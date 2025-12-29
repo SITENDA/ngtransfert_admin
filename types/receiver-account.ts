@@ -1,4 +1,4 @@
-// src/types/receiver-account.ts
+// src/types/createReceiverAccountAction.ts
 
 import { Bank } from "./bank";
 import { Currency } from "./currency";

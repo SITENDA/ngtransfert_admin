@@ -80,7 +80,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 registrationDate: session.user.registrationDate || '',
                 roles: userRoles,
                 role: userPrimaryRole,
-                accessToken: session.accessToken || undefined,
             };
             setUser(authUser);
             setIsAuthenticated(true);

@@ -1,121 +1,79 @@
 //  /home/amos/docure/ngtransfert_admin/src/lib/backend-api-client.ts
 
-import {cookies, headers} from "next/headers";
 import getSession from "@/lib/getSession";
 import { BackendHttpResponse } from "../../types/BackendHttpResponse";
 import { FetchBackendResult } from "../../types/fetchBackendResult";
 import { forceLogout } from "@/lib/server/forceLogout";
-import {Session} from "../../types/session";
+import { ensureValidAccessToken } from "@/lib/server/ensureValidAccessToken";
 
 /**
- * Fetch backend data using BFF session
+ * Fetch backend data using BFF-controlled session.
+ * NO access token is read in JS.
+ * HttpOnly cookie is forwarded automatically.
  */
 export async function fetchBackendData<T>(
     endpoint: string,
     method: string = "GET",
     body?: unknown,
-    revalidateSeconds: number = 3600
+    revalidateSeconds: number = 0
 ): Promise<FetchBackendResult<T>> {
-    const session = await getSession();
 
+    /* -------------------------------------------------
+     * 1️⃣ Load Redis-backed BFF session
+     * ------------------------------------------------- */
+    const session = await getSession();
     if (!session) {
         return null;
     }
 
+    /* -------------------------------------------------
+     * 2️⃣ Enforce BFF session rules
+     * (idle timeout, sliding window, rotation)
+     * ------------------------------------------------- */
+    const ok = await ensureValidAccessToken(session);
+    if (!ok) {
+        await forceLogout();
+        return null;
+    }
+
+    /* -------------------------------------------------
+     * 3️⃣ Call backend (COOKIE-BASED AUTH)
+     * ------------------------------------------------- */
     const backendApiBaseUrl =
-        process.env.BACKEND_API_BASE_URL || "http://localhost:8080";
-    const fullUrl = `${backendApiBaseUrl}${endpoint}`;
+        process.env.BACKEND_API_BASE_URL || "https://localhost:8080";
 
-    const headersList = await headers();
-    const cookieHeaderResult = await cookies();
-    const cookieHeader = cookieHeaderResult
-        .getAll()
-        .map(c => `${c.name}=${c.value}`)
-        .join("; ");
+    let response: Response;
 
-    /**
-     * Performs backend request with provided token
-     */
-    const doFetch = async (token: string): Promise<Response> => {
-        const options: RequestInit = {
+    try {
+        response = await fetch(`${backendApiBaseUrl}${endpoint}`, {
             method,
+            credentials: "include", // 🔥 THIS IS THE AUTH
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-                ...(cookieHeader ? { Cookie: cookieHeader } : {}),
             },
+            body:
+                body && ["POST", "PUT", "PATCH"].includes(method)
+                    ? JSON.stringify(body)
+                    : undefined,
             next: { revalidate: revalidateSeconds },
-        };
-
-        if (body && ["POST", "PUT", "PATCH"].includes(method)) {
-            options.body = JSON.stringify(body);
-        }
-
-        return fetch(fullUrl, options);
-    };
-
-    /**
-     * Refresh token via BFF
-     */
-
-    const refreshSession = async (): Promise<boolean> => {
-        const protocol =
-            process.env.NODE_ENV === "development" ? "http" : "https";
-        const host = headersList.get("host") || "localhost:3000";
-
-        const refreshRes = await fetch(
-            `${protocol}://${host}/api/auth/refresh`,
-            {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    ...(cookieHeader ? { Cookie: cookieHeader } : {}),
-                },
-            }
-        );
-
-        if (!refreshRes.ok) {
-            await forceLogout();
-            return false;
-        }
-
-        return true;
-    };
-
-
-    // ✅ Step 1: Ensure token validity
-    let activeSession : Session | null = session;
-
-    if (Date.now() >= session.accessTokenExpiresAt) {
-        const ok = await refreshSession();
-        if (!ok) return null;
-
-        // 🔄 Reload session from Redis
-        activeSession = await getSession();
-        if (!activeSession) return null;
+        });
+    } catch (err) {
+        console.error("❌ Backend fetch failed:", err);
+        await forceLogout();
+        return null;
     }
 
-    // ✅ Step 2: Perform request
-    let response = await doFetch(activeSession.accessToken);
-
-    // ✅ Step 3: Retry on auth failure
-    if ([401, 403].includes(response.status)) {
-        const refreshed = await refreshSession();
-        if (!refreshed) return null;
-
-        const ok = await refreshSession();
-        if (!ok) return null;
-
-        // 🔄 Reload updated session from Redis
-        activeSession = await getSession();
-        if (!activeSession) return null;
-
-        response = await doFetch(activeSession.accessToken);
-
-        if (!response.ok) return null;
+    /* -------------------------------------------------
+     * 4️⃣ Hard auth failure → force logout
+     * ------------------------------------------------- */
+    if (response.status === 401 || response.status === 403) {
+        await forceLogout();
+        return null;
     }
 
-    // ✅ Step 4: Parse response
+    /* -------------------------------------------------
+     * 5️⃣ Safe response parsing
+     * ------------------------------------------------- */
     const text = await response.text();
     if (!text) return null;
 
@@ -123,12 +81,11 @@ export async function fetchBackendData<T>(
     try {
         backendResponse = JSON.parse(text);
     } catch {
+        console.error("❌ Backend returned non-JSON:", text);
         return null;
     }
 
-    if (backendResponse.statusCode === 200) {
-        return backendResponse.data;
-    }
-
-    return null;
+    return backendResponse.statusCode === 200
+        ? backendResponse.data
+        : null;
 }

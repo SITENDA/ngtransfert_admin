@@ -1,24 +1,24 @@
 // src/app/[locale]/(protected_pages)/kaasitoma/details/page.tsx
-// Removed next-intl imports as they are not resolvable in this environment
-import {redirect} from 'next/navigation';
-import {kaasitomaPaths} from "@/util/frontend-paths"; // Assuming kaasitomaPaths is available
-import {ReceiverAccount, ReceiverAccountPayload} from "../../../../../../../types/receiver-account"; // Import ReceiverAccountPayload
-import {fetchBackendData} from "@/lib/backend-api-client";
-import {CardHeader} from "@/components/ui/card";
-// Replaced Next.js Link from next-intl/navigation with a standard <a> tag
-// as it cannot be resolved in this environment.
-import {Link} from "@/i18n/navigation"; // Import Link for navigation
-import {Button} from "@/components/ui/button";
-import CategoryIcon from "@/components/CategoryIcon";
-import Image from "next/image";
-import CountryFlag from "@/components/CountryFlag";
+
 import React from "react";
-import {getTranslations} from "next-intl/server";
-import {isRedirectObject} from "@/util/typeguards";
+import { redirect } from "next/navigation";
+import { cookies, headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
+
+import ProtectedWrapper from "@/components/ProtectedWrapper";
+import { Button } from "@/components/ui/button";
+import { CardHeader } from "@/components/ui/card";
+import CategoryIcon from "@/components/CategoryIcon";
+import CountryFlag from "@/components/CountryFlag";
+import ImageDisplay from "@/components/ImageDisplay";
 import EmailDisplay from "@/components/EmailDisplay";
 import PhoneNumberDisplay from "@/components/PhoneNumberDisplay";
-import ImageDisplay from "@/components/ImageDisplay";
-import ProtectedWrapper from "@/components/ProtectedWrapper"; // Import the fetch utility
+
+import { Link } from "@/i18n/navigation";
+import { kaasitomaPaths } from "@/util/frontend-paths";
+
+import { ReceiverAccount } from "../../../../../../../types/receiver-account";
+import { BackendGenericResponse } from "../../../../../../../types/BackendGenericResponse";
 
 interface DetailRowProps {
     label: string;
@@ -26,270 +26,218 @@ interface DetailRowProps {
     children?: React.ReactNode;
 }
 
-// Modify the page component to accept searchParams as a prop
-async function ReceiverAccountDetailsPage({searchParams}: { searchParams: { receiverAccountId?: string } }) {
-    const t = await getTranslations('ReceiverAccountDetailsPage');
-    // const t = await getTranslations('ReceiverAccountDetailsPage');
-    // const locale = await getLocale(); // Not needed for hardcoded translations
+export default async function ReceiverAccountDetailsPage({
+                                                             searchParams,
+                                                         }: {
+    searchParams: { receiverAccountId?: string };
+}) {
+    const t = await getTranslations("ReceiverAccountDetailsPage");
 
-    // The fetchBackendData utility (if used) handles authentication and redirects
-    // if the user is not authenticated or the access token is missing.
-
-    let receiverAccount: ReceiverAccount | null = null; // Initialize receiverAccount
-    // searchParams is already an object, no need for await
-    // Access receiverAccountId directly from the searchParams prop
-    const params = await searchParams;
-    const receiverAccountId = params.receiverAccountId;
-
-    try {
-        if (receiverAccountId) {
-            // Fetch receiver account details from the backend
-            const response = await fetchBackendData<ReceiverAccountPayload>(
-                `/kaasitoma/receiverAccounts/getReceiverAccountByReceiverAccountId?receiverAccountId=${receiverAccountId}`,
-                'GET',
-                undefined, // No body for GET request
-                3600 // Revalidate every hour
-            );
-            if (isRedirectObject(response)) {
-                redirect(response.redirectTo);
-            }
-
-            if (response && response.receiverAccount) {
-                // Create a mutable copy to modify email/phoneNumber
-                const processedAccount = response.receiverAccount;
-                // Ignore email or phone number if they start with "rand_"
-                if (processedAccount.email && processedAccount.email.startsWith('rand_')) {
-                    processedAccount.email = undefined; // Set to undefined to ignore display
-                }
-                if (processedAccount.phoneNumber && processedAccount.phoneNumber.startsWith('rand_')) {
-                    processedAccount.phoneNumber = undefined; // Set to undefined to ignore display
-                }
-
-                receiverAccount = processedAccount;
-            } else {
-                console.warn("ReceiverAccountDetailsPage: No receiver account data fetched or data structure unexpected from backend.");
-            }
-        } else {
-            console.warn("ReceiverAccountDetailsPage: No 'receiverAccountId' parameter found in URL for receiver account details.");
-            // Optionally redirect or show an error if data is missing
-            // redirect(`/kaasitoma/receiver-accounts`); // Example redirect back to list
-        }
-    } catch (error) {
-        console.error("ReceiverAccountDetailsPage: Error during receiver account data fetching process:", error);
-        receiverAccount = null; // Ensure it's null on parsing error
-        // Optionally redirect or show an error if data is malformed
-        // redirect(`/kaasitoma/receiver-accounts`); // Example redirect
+    const receiverAccountId = searchParams.receiverAccountId;
+    if (!receiverAccountId) {
+        redirect(kaasitomaPaths.receiverAccountsPath);
     }
 
+    const headersList = await headers();
+    const protocol = headersList.get("x-forwarded-proto") ?? "https";
+    const host = headersList.get("host");
+
+    if (!host) {
+        throw new Error("Host header missing");
+    }
+
+    const apiUrl =
+        `${protocol}://${host}` +
+        `/api/kaasitoma/receiverAccounts/getReceiverAccountById` +
+        `?receiverAccountId=${receiverAccountId}`;
+
+    let receiverAccount: ReceiverAccount | null = null;
+
+    try {
+        const cookieHeader = (await cookies())
+            .getAll()
+            .map((c) => `${c.name}=${c.value}`)
+            .join("; ");
+
+        const response = await fetch(apiUrl, {
+            method: "GET",
+            cache: "no-store",
+            headers: {
+                Cookie: cookieHeader,
+            },
+        });
+
+        if (!response.ok) {
+            console.error("Failed to fetch receiver account:", response.status);
+            receiverAccount = null;
+        } else {
+            const data: BackendGenericResponse<{ receiverAccount: ReceiverAccount }> =
+                await response.json();
+
+            receiverAccount = data.data?.receiverAccount ?? null;
+        }
+    } catch (err) {
+        console.error("ReceiverAccountDetailsPage fetch error:", err);
+        receiverAccount = null;
+    }
+
+    // ⛔ HARD STOP — JSX BELOW NEVER RUNS WITHOUT DATA
     if (!receiverAccount) {
-        // If receiverAccount is still null after fetching attempts (e.g., missing or malformed data),
-        // display an error or redirect.
         return (
             <ProtectedWrapper>
-                <div className="
-                    w-full max-w-2xl mx-auto my-8 p-6 rounded-lg shadow-xl
-                    bg-background/80 backdrop-blur-sm border border-border
-                    dark:bg-gray-800/80 dark:border-gray-700 min-h-[400px] flex items-center justify-center
-                ">
+                <div className="w-full max-w-2xl mx-auto my-8 p-6 rounded-lg shadow-xl
+                        bg-background/80 backdrop-blur-sm border border-border
+                        dark:bg-gray-800/80 dark:border-gray-700
+                        min-h-[400px] flex items-center justify-center">
                     <h2 className="text-2xl font-bold text-center text-red-500">
-                        {t('errorLoadingAccountDetails')} {/* New translation key for error */}
+                        {t("errorLoadingAccountDetails")}
                     </h2>
                 </div>
             </ProtectedWrapper>
         );
     }
 
+    // ✅ SAFE: receiverAccount is guaranteed from here onward
+
     return (
         <ProtectedWrapper>
-            <div className="
-                w-full max-w-2xl mx-auto my-8 p-6 rounded-lg shadow-xl
-                bg-background/80 backdrop-blur-sm border border-border
-                dark:bg-gray-800/80 dark:border-gray-700 min-h-[800px]
-            ">
+            <div className="w-full max-w-2xl mx-auto my-8 p-6 rounded-lg shadow-xl
+                      bg-background/80 backdrop-blur-sm border border-border
+                      dark:bg-gray-800/80 dark:border-gray-700 min-h-[800px]">
+
                 <h2 className="text-3xl font-bold mb-6 text-center text-foreground">
-                    {t('pageTitle')}
+                    {t("pageTitle")}
                 </h2>
-                <CardHeader
-                    className="flex flex-row justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                    {/* Updated Top Up button styling */}
-                    <Link href={`${kaasitomaPaths.topUpCountryAndMethodPath}${receiverAccountId}`} passHref>
-                        <Button variant="outline"
-                                size="sm"
-                                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+
+                <CardHeader className="flex flex-row justify-between items-center px-6 py-4 border-b">
+                    <Link href={`${kaasitomaPaths.topUpCountryAndMethodPath}${receiverAccountId}`}>
+                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
                             Top Up
                         </Button>
                     </Link>
-                    {/* Updated Request for Transfer button styling */}
-                    <Link href={`${kaasitomaPaths.applyForTransferPath}${receiverAccountId}`} passHref>
-                        <Button variant="outline"
-                                size="sm"
-                                className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+
+                    <Link href={`${kaasitomaPaths.applyForTransferPath}${receiverAccountId}`}>
+                        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
                             Request for Transfer
                         </Button>
                     </Link>
-
                 </CardHeader>
-                {/* Pass the processed receiverAccount object to the client component */}
-                <div className="space-y-6">
-                    {/* General Account Details Section */}
-                    <section
-                        className="p-6 rounded-lg shadow-inner bg-background-light dark:bg-gray-700/50 border border-border">
-                        <h3 className="text-xl font-semibold mb-4 text-foreground">
-                            {t('generalDetails')}
-                        </h3>
+
+                <section className="mt-6 space-y-6">
+
+                    <Section title={t("generalDetails")}>
                         <DetailRow label={t("receiverAccountCategory")}>
                             <div className="flex items-center gap-2">
                                 <CategoryIcon category={receiverAccount.receiverAccountCategory} />
-                                <span>
-                                    {t(receiverAccount.receiverAccountCategory.toLowerCase())}
-                                </span>
+                                <span>{t(receiverAccount.receiverAccountCategory.toLowerCase())}</span>
                             </div>
                         </DetailRow>
 
-                        <DetailRow label={t('receiverAccountIdentifier')}
-                                   value={t(receiverAccount.receiverAccountIdentifier.toLowerCase())}/>
-                        <DetailRow label={t('receiverAccountName')} value={receiverAccount.receiverAccountName}/>
+                        <DetailRow label={t("receiverAccountName")} value={receiverAccount.receiverAccountName} />
+                        <DetailRow label={t("receiverAccountIdentifier")}
+                                   value={t(receiverAccount.receiverAccountIdentifier.toLowerCase())} />
 
+                        {receiverAccount.qrCodeUrl && (
+                            <DetailRow label={t("qrCodeImage")}>
+                                <ImageDisplay imageUrl={receiverAccount.qrCodeUrl} title="QR Code" />
+                            </DetailRow>
+                        )}
 
-                        {/* Conditional fields that might be present */}
-                        {receiverAccount.qrCodeUrl &&
-                            (
-                                <DetailRow label={t('qrCodeImage')}>
-                                    <ImageDisplay
-                                        imageUrl={receiverAccount.qrCodeUrl}
-                                        title="Wechat QR Code"
-                                    />
-                                </DetailRow>
-                            )}
-                        {receiverAccount.email &&
-                            <DetailRow label={t('email')} value={<EmailDisplay email={receiverAccount.email}/>}/>}
-                        {receiverAccount.phoneNumber && <DetailRow label={t('phoneNumber')} value={<PhoneNumberDisplay
-                            phoneNumber={receiverAccount.phoneNumber}/>}/>}
-                    </section>
+                        {receiverAccount.email && !receiverAccount.email.startsWith("rand") &&(
+                            <DetailRow label={t("email")}>
+                                <EmailDisplay email={receiverAccount.email} />
+                            </DetailRow>
+                        )}
 
-                    {/* Balance & Limit Section */}
-                    <section
-                        className="p-6 rounded-lg shadow-inner bg-background-light dark:bg-gray-700/50 border border-border">
-                        <h3 className="text-xl font-semibold mb-4 text-foreground">
-                            {t('accountLimits')}
-                        </h3>
+                        {receiverAccount.phoneNumber && !receiverAccount.phoneNumber.startsWith("rand") && (
+                            <DetailRow label={t("phoneNumber")}>
+                                <PhoneNumberDisplay phoneNumber={receiverAccount.phoneNumber} />
+                            </DetailRow>
+                        )}
+                    </Section>
 
-                        <DetailRow label={t('accountBalance')}>
-                            {`${receiverAccount.balance.toLocaleString()} ${receiverAccount.currency?.currencyCode || ''}`}
+                    <Section title={t("accountLimits")}>
+                        <DetailRow label={t("accountBalance")}>
+                            {receiverAccount.balance.toLocaleString()}{" "}
+                            {receiverAccount.currency?.currencyCode}
                         </DetailRow>
 
                         {receiverAccount.limit !== undefined && (
-                            <DetailRow label={t('accountLimit')}>
-                                {`${receiverAccount.limit.toLocaleString()} ${receiverAccount.limitCurrency?.currencyCode || ''}`}
+                            <DetailRow label={t("accountLimit")}>
+                                {receiverAccount.limit.toLocaleString()}{" "}
+                                {receiverAccount.limitCurrency?.currencyCode}
                             </DetailRow>
                         )}
-                    </section>
+                    </Section>
 
+                    {receiverAccount.receiverAccountCategory === "BANK_ACCOUNT" && (
+                        <Section title={t("bankDetails")}>
+                            {receiverAccount.bankAccountNumber && (
+                                <DetailRow label={t("bankAccountNumber")}
+                                           value={receiverAccount.bankAccountNumber} />
+                            )}
 
-                    {/* Bank Details Section - Conditional on it being a BANK_ACCOUNT */}
-                    {receiverAccount.receiverAccountCategory === 'BANK_ACCOUNT' && (
-                        <section
-                            className="p-6 rounded-lg shadow-inner bg-background-light dark:bg-gray-700/50 border border-border mt-6">
-                            <h3 className="text-xl font-semibold mb-4 text-foreground">
-                                {t('bankDetails')}
-                            </h3>
-                            {receiverAccount.bankAccountNumber &&
-                                <DetailRow label={t('bankAccountNumber')} value={receiverAccount.bankAccountNumber}/>}
-                            {receiverAccount.cardHolderName &&
-                                <DetailRow label={t('cardHolderName')} value={receiverAccount.cardHolderName}/>}
-                            {receiverAccount.bank?.bankName &&
-                                <DetailRow label={t('bankName')} value={receiverAccount.bank.bankName}/>}
-                            {receiverAccount.bank?.bankLogoUrl && (
-                                <DetailRow label={t('bankLogo')}>
-                                    <Image
-                                        src={receiverAccount.bank.bankLogoUrl}
-                                        alt={receiverAccount.bank?.bankName || 'Bank Logo'}
-                                        width={40}
-                                        height={40}
-                                        className="rounded-full object-contain border border-gray-200 dark:border-gray-600 p-1"
-                                    />
+                            {receiverAccount.cardHolderName && (
+                                <DetailRow label={t("cardHolderName")}
+                                           value={receiverAccount.cardHolderName} />
+                            )}
+
+                            {receiverAccount.bank?.bankName && (
+                                <DetailRow label={t("bankName")}
+                                           value={receiverAccount.bank.bankName} />
+                            )}
+
+                            {receiverAccount.bank?.country && (
+                                <DetailRow label={t("bankCountry")}>
+                  <span className="flex items-center gap-2">
+                    {receiverAccount.bank.country.countryName}
+                      {receiverAccount.bank.country.countryFlagUrl && (
+                          <CountryFlag
+                              flagUrl={receiverAccount.bank.country.countryFlagUrl}
+                              alt={receiverAccount.bank.country.countryName}
+                          />
+                      )}
+                  </span>
                                 </DetailRow>
                             )}
-                            {receiverAccount.bank?.country?.countryName && (
-                                <DetailRow label={t('bankCountry')}>
-                            <span className="flex items-center gap-2">
-                                {receiverAccount.bank.country.countryName}
-                                {receiverAccount.bank.country.countryFlagUrl && (
-                                    <CountryFlag
-                                        flagUrl={receiverAccount.bank.country.countryFlagUrl}
-                                        alt={receiverAccount.bank.country.countryName}
-                                        style={{width: '24px', height: '18px'}}
-                                    />
-                                )}
-                            </span>
-                                </DetailRow>
-                            )}
-                        </section>
+                        </Section>
                     )}
-                </div>
+                </section>
             </div>
         </ProtectedWrapper>
     );
 }
 
-// const DetailRow: React.FC<DetailRowProps> = async ({label, value, children}) => {
-//     const t = await getTranslations('ReceiverAccountDetailsPage');
-//     return (
-//         <div className="flex flex-col sm:flex-row sm:items-center py-3 border-b border-border-light last:border-b-0">
-//             <div className="sm:w-1/3 text-muted-foreground font-medium mb-1 sm:mb-0 pr-4">
-//                 {label}:
-//             </div>
-//             <div className="sm:w-2/3 text-foreground break-words">
-//                 {value !== undefined && value !== null && value !== '' ? value : (children || t('notApplicable'))}
-//             </div>
-//         </div>
-//     );
-// };
+/* ---------------------------------- */
+
+function Section({
+                     title,
+                     children,
+                 }: {
+    title: string;
+    children: React.ReactNode;
+}) {
+    return (
+        <section className="p-6 rounded-lg shadow-inner bg-background-light dark:bg-gray-700/50 border">
+            <h3 className="text-xl font-semibold mb-4">{title}</h3>
+            {children}
+        </section>
+    );
+}
 
 const DetailRow: React.FC<DetailRowProps> = async ({ label, value, children }) => {
-    const t = await getTranslations('ReceiverAccountDetailsPage');
+    const t = await getTranslations("ReceiverAccountDetailsPage");
 
     return (
-        <div
-            className="
-                grid grid-cols-1 sm:grid-cols-[220px_1fr]
-                gap-y-1 sm:gap-y-0
-                py-3
-                border-b border-border-light last:border-b-0
-            "
-        >
-            {/* Label column */}
-            <div
-                className="
-                    text-muted-foreground font-medium
-                    sm:text-right sm:pr-6
-                "
-            >
+        <div className="grid grid-cols-1 sm:grid-cols-[220px_1fr] py-3 border-b last:border-b-0">
+            <div className="text-muted-foreground font-medium sm:text-right sm:pr-6">
                 {label}:
             </div>
 
-            {/* Value column */}
-            {/*<div className="text-foreground break-words">*/}
-            {/*    {value !== undefined && value !== null && value !== ''*/}
-            {/*        ? value*/}
-            {/*        : children || t('notApplicable')}*/}
-            {/*</div>*/}
-            {/* Value column */}
-            <div
-                className="
-        text-foreground break-words
-        text-right
-        flex items-end
-    "
-            >
-                {value !== undefined && value !== null && value !== ''
-                    ? value
-                    : children || t('notApplicable')}
+            {/* 👇 KEY FIX */}
+            <div className="flex justify-end items-center text-foreground">
+                {value ?? children ?? t("notApplicable")}
             </div>
-
         </div>
     );
 };
-
-
-export default ReceiverAccountDetailsPage;

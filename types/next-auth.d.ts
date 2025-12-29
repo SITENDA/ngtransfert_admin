@@ -21,7 +21,6 @@ declare module "next-auth" {
    * Contains properties added in the `session` callback.
    */
   interface Session extends DefaultSession {
-    accessToken: JWT; // Your JWT from Spring Boot
     user: User;
   }
 

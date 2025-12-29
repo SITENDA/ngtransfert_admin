@@ -1,8 +1,11 @@
 // src/lib/server/authenticatedFetch.ts
-import { ensureValidAccessToken } from "@/lib/server/ensureValidAccessToken";
 import getSession from "@/lib/getSession";
+import { ensureValidAccessToken } from "@/lib/server/ensureValidAccessToken";
 
-export async function authenticatedFetch(url: string, init?: RequestInit) {
+export async function authenticatedFetch(
+    url: string,
+    init: RequestInit = {}
+) {
     const session = await getSession();
 
     if (!session) {
@@ -10,16 +13,13 @@ export async function authenticatedFetch(url: string, init?: RequestInit) {
     }
 
     const ok = await ensureValidAccessToken(session);
-
     if (!ok) {
         throw new Error("Session expired");
     }
 
+    // ✅ NO cookie handling needed
     return fetch(url, {
         ...init,
-        headers: {
-            ...(init?.headers || {}),
-            Authorization: `Bearer ${session.accessToken}`,
-        },
+        cache: "no-store",
     });
 }

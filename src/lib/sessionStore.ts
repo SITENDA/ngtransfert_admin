@@ -4,7 +4,6 @@ import redis from "@/lib/redis";
 import { Session } from "../../types/session";
 
 const SESSION_PREFIX = "bff:session:";
-const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
 function key(sessionId: string) {
     return `${SESSION_PREFIX}${sessionId}`;
@@ -25,10 +24,10 @@ export async function saveSession(
         JSON.stringify(fullSession),
         // "EX",
         // 60 * 65 // 65 minutes
-    "EX",
-        120 // 🔥 2 minutes
+        "EX",
+        60 * 60 * 2 // 2 hours hard cap
 
-);
+    );
 }
 
 

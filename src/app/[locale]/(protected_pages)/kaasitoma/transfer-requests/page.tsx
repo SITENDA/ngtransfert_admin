@@ -25,12 +25,11 @@ export default async function TransferRequestsPage() {
     const user = session?.user;
     const locale = await getLocale();
 
-    if (!session || !user || !user.userId || !session.accessToken) {
+    if (!session || !user || !user.userId) {
         console.warn(`TransferRequestsPage: User not authenticated or missing required session data. Redirecting to /${locale}/login`);
         redirect(`/${locale}/login`);
     }
 
-    const accessToken = session.accessToken;
     const clientId = user.userId; // Get clientId from authenticated user
 
     let transferRequests: TransferRequest[] = [];
@@ -52,7 +51,6 @@ export default async function TransferRequestsPage() {
             headers: {
                 // Ensure the Authorization header comes from the NextAuth session.
                 // The proxy will then forward this to the Spring Boot backend.
-                'Authorization': `Bearer ${accessToken}`,
                 ...(cookieHeader && { 'Cookie': cookieHeader }), // Forward cookies if needed for session/refresh
             },
             next: {

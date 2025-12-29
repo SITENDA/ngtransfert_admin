@@ -196,7 +196,10 @@
     "phoneIdentifier": "Phone Number",
     "emailIdentifier": "Email Address",
     "selectIdentifierPlaceholder": "Select QR code, phone number, or email",
-    "reset" : "Reset"
+    "reset" : "Reset",
+    "success": "Receiver account added successfully",
+    "error": "Error",
+    "submissionError": "Failed to add receiver account. Please try again."
   },
   "ReceiverAccountsPage": {
     "pageTitle": "Manage Receiver Accounts",

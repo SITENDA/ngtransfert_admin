@@ -19,10 +19,12 @@ export default async function ProtectedLayout({
 
     // 🔴 HARD STOP #1 — no session
     if (!session) {
+        console.log("Logged out due to no session");
         redirect({ href: generalPaths.fromSignedOutLoginPath, locale });
     }
         // 🔴 HARD STOP #2 — no user
     else if (!session.user) {
+        console.log("Logged out due to expired session");
         redirect({ href: generalPaths.fromSessionExpiredLoginPath, locale });
     }
 

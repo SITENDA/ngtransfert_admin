@@ -1,56 +1,3 @@
-// // src/app/api/auth/login/route.ts
-//
-// import { NextResponse } from "next/server";
-// import { randomUUID } from "crypto";
-// import { saveSession } from "@/lib/sessionStore";
-// import { mapBackendUserToBffUser } from "@/lib/mappers/mapBackendUserToBffUser";
-// import { BackendHttpResponse } from "../../../../../types/BackendHttpResponse";
-// import { BackendLoginPayload } from "../../../../../types/BackendLoginPayload";
-// import {setSessionCookie} from "@/lib/cookies";
-//
-// export async function POST(req: Request) {
-//     const body = await req.json();
-//
-//     const springRes = await fetch(
-//         `${process.env.BACKEND_URL}/auth/login`,
-//         {
-//             method: "POST",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify(body),
-//             credentials: "include",
-//         }
-//     );
-//
-//     const json: BackendHttpResponse<BackendLoginPayload | null> =
-//         await springRes.json();
-//
-//     if (!springRes.ok || !json.data) {
-//         return NextResponse.json(
-//             { success: false, message: json.message || "Invalid credentials" },
-//             { status: json.statusCode || 401 }
-//         );
-//     }
-//
-//     const { user, token, accessTokenExpiresAt } = json.data;
-//     const bffUser = mapBackendUserToBffUser(user);
-//     const sessionId = randomUUID();
-//
-//     await saveSession(sessionId, {
-//         user: bffUser,
-//         accessToken: token,
-//         accessTokenExpiresAt,
-//         lastActivityAt: Date.now(),
-//     });
-//     await setSessionCookie(sessionId); // 🔥 REQUIRED
-//
-//     // ✅ RETURN IMMEDIATELY
-//     return NextResponse.json({
-//         success: true,
-//         user: bffUser,
-//     });
-// }
-
-
 // src/app/api/auth/login/route.ts
 
 import { NextResponse } from "next/server";
@@ -105,13 +52,12 @@ export async function POST(req: Request) {
     }
 
     // ✅ Safe to proceed
-    const { user, token, accessTokenExpiresAt } = json.data;
+    const { user, accessTokenExpiresAt } = json.data;
     const bffUser = mapBackendUserToBffUser(user);
     const sessionId = randomUUID();
 
     await saveSession(sessionId, {
         user: bffUser,
-        accessToken: token,
         accessTokenExpiresAt,
         lastActivityAt: Date.now(),
     });

@@ -24,14 +24,12 @@ export default async function TopUpRequestsPage() {
     const session = await getSession();
     const user = session?.user;
 
-    if (!session || !user || !user.userId || !session.accessToken) {
+    if (!session || !user || !user.userId) {
         console.warn(`TopUpRequestsPage: User not authenticated or missing required session data. Redirecting to /${locale}/login`);
         redirect(`/${locale}/login`);
     }
 
     const clientId = user.userId; // Get clientId from authenticated user
-    const accessToken = session.accessToken;
-
     let topUpRequests: ResponseTopUpRequest[] = [];
 
     try {
@@ -47,7 +45,6 @@ export default async function TopUpRequestsPage() {
             headers: {
                 // Ensure the Authorization header comes from the NextAuth session.
                 // The proxy will then forward this to the Spring Boot backend.
-                'Authorization': `Bearer ${accessToken}`,
                 ...(cookieHeader && { 'Cookie': cookieHeader }), // Forward cookies if needed for session/refresh
             },
             next: {

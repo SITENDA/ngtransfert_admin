@@ -1,7 +1,6 @@
 // src/lib/server/forceLogout.ts
 export async function forceLogout() {
-    const protocol =
-        process.env.NODE_ENV === "development" ? "http" : "https";
+    const protocol = "https";
     const host = process.env.NEXT_PUBLIC_APP_HOST || "localhost:3000";
 
     await fetch(`${protocol}://${host}/api/auth/logout`, {

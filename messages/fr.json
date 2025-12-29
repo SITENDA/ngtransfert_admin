@@ -193,7 +193,10 @@
     "emailIdentifier": "Adresse E-mail",
     "selectIdentifierPlaceholder": "Sélectionnez un code QR, un numéro de téléphone ou un e-mail",
     "receiverAccountIdentifier": "Identifiant",
-    "reset": "Réinitialiser"
+    "reset": "Réinitialiser",
+    "success": "Compte bénéficiaire ajouté avec succès",
+    "error": "Erreur",
+    "submissionError": "Échec de l’ajout du compte bénéficiaire. Veuillez réessayer."
   },
   "ReceiverAccountsPage": {
     "pageTitle": "Gérer les comptes de bénéficiaires",

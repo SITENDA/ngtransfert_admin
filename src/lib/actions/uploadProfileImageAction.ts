@@ -6,19 +6,16 @@ export async function uploadProfileImageAction(formData: FormData) {
     try {
         const session = await getSession();
 
-        if (!session || !session.accessToken) {
+        if (!session) {
             console.error("uploadProfileImageAction: Missing or invalid session.");
             return { success: false, message: "Authentication required to upload image." };
         }
-
-        const accessToken = session.accessToken;
         const proxyApiUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/profile/upload`;
 
         const response = await fetch(proxyApiUrl, {
             method: 'POST',
             body: formData,
             headers: {
-                Authorization: `Bearer ${accessToken}`,
                 // Content-Type is automatically set by fetch when sending FormData
             },
         });
