@@ -338,6 +338,7 @@
     "alipay": "Alipay Account",
     "wechat": "WeChat Account",
     "bank": "Bank Account",
+    "sendingFee": "Sending Fee",
     "unknownCategory": "Unknown Account Category",
     "topUpMethod": {
       "MOBILE_MONEY": "MTN Mobile Money",

@@ -314,6 +314,7 @@
     "wechat": "Compte WeChat",
     "bank": "Compte Bancaire",
     "unknownCategory": "Catégorie de Compte Inconnue",
+    "sendingFee": "Frais d’envoi",
     "topUpMethod": {
       "MOBILE_MONEY": "MTN Mobile Money",
       "WAVE": "Wave",

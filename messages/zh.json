@@ -310,6 +310,7 @@
     "submissionError": "提交错误",
     "missingAmount": "必须提供人民币金额或目标货币金额。",
     "proofPictureRequired": "支付凭证图片是必需的。",
+    "sendingFee": "手续费",
     "alipay": "支付宝账户",
     "wechat": "微信账户",
     "bank": "银行账户",

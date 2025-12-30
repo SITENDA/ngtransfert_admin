@@ -33,7 +33,7 @@ export default async function ReceiverAccountDetailsPage({
 }) {
     const t = await getTranslations("ReceiverAccountDetailsPage");
 
-    const receiverAccountId = searchParams.receiverAccountId;
+    const receiverAccountId = (await searchParams).receiverAccountId;
     if (!receiverAccountId) {
         redirect(kaasitomaPaths.receiverAccountsPath);
     }

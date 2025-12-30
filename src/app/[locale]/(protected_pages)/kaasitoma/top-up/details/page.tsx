@@ -1,5 +1,4 @@
-// src/app/[locale]/(protected_pages)/kaasitoma/details-requests/details/page.tsx
-// This is a Server Component.
+// src/app/[locale]/(protected_pages)/kaasitoma/top-up/details/page.tsx
 
 import React from 'react';
 import { redirect } from 'next/navigation';
@@ -7,19 +6,18 @@ import { getTranslations, getLocale } from 'next-intl/server';
 import getSession from "@/lib/getSession";
 import { kaasitomaPaths } from "@/util/frontend-paths";
 import { CardContent } from "@/components/ui/card";
-import { fetchBackendData } from "@/lib/backend-api-client";
 import { ReceiverAccount } from "../../../../../../../types/receiver-account";
 import {Country} from "../../../../../../../types/country"; // Import Country and its payload
 import TopUpDetailsForm from "./TopUpDetailsForm";
 import {ExchangeRate} from "../../../../../../../types/exchangeRateResult";
 import {TopUpDetailsPayload} from "../../../../../../../types/request-top-up-request";
-import {isRedirectObject} from "@/util/typeguards";
+import {cookies, headers} from "next/headers";
 
 interface TopUpDetailsPageProps {
     searchParams: { // Query parameters from URL
-        receiverAccountId?: string;
-        countryId?: string; // This is now essential for fetching the country object
-        topUpMethod?: string; // Still needed for the form
+        receiverAccountId: string;
+        countryId: string; // This is now essential for fetching the country object
+        topUpMethod: string; // Still needed for the form
     };
 }
 
@@ -29,6 +27,14 @@ async function TopUpDetailsPage({ searchParams }: TopUpDetailsPageProps) {
 
     const session = await getSession();
     const clientId = session?.user?.userId;
+    const headersList = await headers();
+    const protocol = headersList.get("x-forwarded-proto") ?? "https";
+    const host = headersList.get("host");
+
+    if (!host) {
+        throw new Error("Host header missing");
+    }
+
 
     if (!clientId) {
         console.warn(`TopUpDetailsPage: Client ID not found. Redirecting to /${locale}${kaasitomaPaths.loginPath}`);
@@ -55,62 +61,56 @@ async function TopUpDetailsPage({ searchParams }: TopUpDetailsPageProps) {
     let exchangeRate: ExchangeRate | undefined; // Make sure ExchangeRateResult is correctly imported
     let sendingFeePercentage: number | undefined;
 
+
+
     try {
         // --- 2. Fetch Receiver Account details, Country, and Exchange Rate ---
-        const topUpDetailsPayload = await fetchBackendData<TopUpDetailsPayload>(
-            `/kaasitoma/topUp/getTopUpDetails?receiverAccountId=${numericReceiverAccountId}&countryId=${numericCountryId}`, // FIXED HERE
-            'GET',
-            undefined,
-            3600
-        );
+        const apiUrl = `${protocol}://${host}//api/kaasitoma/topUp/getTopUpDetails?receiverAccountId=${numericReceiverAccountId}&countryId=${numericCountryId}`;
+        const cookieHeader = (await cookies())
+                .getAll()
+                .map((c) => `${c.name}=${c.value}`)
+                .join("; ");
 
-        if (isRedirectObject(topUpDetailsPayload)) {
-            redirect(topUpDetailsPayload.redirectTo);
-        }
+        const response = await fetch(apiUrl, {
+            method: "GET",
+            cache: "no-store",
+            headers: {
+                Cookie: cookieHeader,
+            },
+        });
 
-        if (topUpDetailsPayload && topUpDetailsPayload.receiverAccount && topUpDetailsPayload.country && topUpDetailsPayload.exchangeRate) { // Ensure exchangeRate is checked here
-            receiverAccount = topUpDetailsPayload.receiverAccount;
-            country = topUpDetailsPayload.country;
-            exchangeRate = topUpDetailsPayload.exchangeRate;
-            sendingFeePercentage = topUpDetailsPayload.sendingFeePercentage;
+        const data: {
+            success: boolean;
+            data: TopUpDetailsPayload;
+        } = await response.json();
 
+        receiverAccount = data.data.receiverAccount;
+        country = data.data.country;
+        exchangeRate = data.data.exchangeRate;
+        sendingFeePercentage = data.data.sendingFeePercentage;
 
-            console.log("ExchangeRate: ", exchangeRate);
-
-            console.log(`TopUpDetailsPage: Successfully fetched top up details for receiverAccountId: ${receiverAccount.receiverAccountId}`);
-        } else {
-            console.warn(`TopUpDetailsPage: No top up details fetched or unexpected structure for Receiver Account ID ${numericReceiverAccountId} and CountryId ${countryId}.`);
-        }
-
-        if (!country) {
-            console.warn(`TopUpDetailsPage: Country with ID ${numericCountryId} not found after fetch.`);
-            // Redirect if the country cannot be found
-            redirect(`/${locale}/${kaasitomaPaths.receiverAccountsPath}`);
-        }
-
-        if (!exchangeRate) {
-            console.warn(`TopUpDetailsPage: Exchange Rate for Country ID ${numericCountryId} not found after fetch.`);
-            // Redirect if the exchange rate cannot be found
-            redirect(`/${locale}/${kaasitomaPaths.receiverAccountsPath}`);
-        }
-
-        if (sendingFeePercentage == undefined || sendingFeePercentage < 0) {
-            console.warn(`TopUpDetailsPage: Sending fee for Country ID ${numericCountryId} not found after fetch.`);
-            // Redirect if the exchange rate cannot be found
-            redirect(`/${locale}/${kaasitomaPaths.receiverAccountsPath}`);
-        }
 
     } catch (error) {
         console.error(`TopUpDetailsPage: Error fetching required top up details for Receiver Account ID ${numericReceiverAccountId} or Country ID ${numericCountryId}: `, error);
         // Fallback or redirect on fetch error
-        redirect(`/${locale}/${kaasitomaPaths.receiverAccountsPath}`);
+        // redirect(`/${locale}/${kaasitomaPaths.receiverAccountsPath}`);
     }
 
     // --- 4. Final Data Validation before rendering ---
-    if (!receiverAccount || !country || receiverAccount.receiverAccountId === undefined || receiverAccount.receiverAccountId === null) {
-        console.log(`TopUpDetailsPage: Missing essential data after fetch (receiverAccount or country). Redirecting to /${locale}/${kaasitomaPaths.receiverAccountsPath}.`);
-        redirect(`/${locale}/${kaasitomaPaths.receiverAccountsPath}`);
+    if (!receiverAccount || !country || !exchangeRate) {
+        console.error("TopUpDetailsPage: Missing required data", {
+            receiverAccount,
+            country,
+            exchangeRate,
+        });
+
+        return (
+            <div className="text-center text-red-500">
+                Failed to load top-up details. Please try again.
+            </div>
+        );
     }
+
 
 
     return (

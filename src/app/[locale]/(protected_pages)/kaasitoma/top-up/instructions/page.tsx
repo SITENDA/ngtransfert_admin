@@ -1,21 +1,20 @@
 // src/app/[locale]/(protected_pages)/kaasitoma/details-requests/details/instructions/page.tsx
 // This is a Server Component.
 import React from 'react';
-import {notFound, redirect} from 'next/navigation';
+import { notFound } from 'next/navigation';
 import {getTranslations} from 'next-intl/server'; // For server component translations
 
-import {fetchBackendData} from "@/lib/backend-api-client"; // Assuming this is your utility for backend calls
-import {CountriesDataPayload} from "../../../../../../../types/country"; // Assuming this type is available
+import { Country } from "../../../../../../../types/country"; // Assuming this type is available
 import {TopUpMethodEnum} from '@/enums/TopUpMethodEnum';
-import {CashDepositAddress, CashDepositAddressDataPayload} from "../../../../../../../types/cashDepositAddress";
-import {BankDepositAddress, BankDepositAddressDataPayload} from "../../../../../../../types/bankDepositAddress";
+import { CashDepositAddress } from "../../../../../../../types/cashDepositAddress";
+import { BankDepositAddress } from "../../../../../../../types/bankDepositAddress";
 import {Button} from "@/components/ui/button";
 import {kaasitomaPaths} from "@/util/frontend-paths";
 import {Link} from '@/i18n/navigation';
-import {FetchBackendResult} from "../../../../../../../types/fetchBackendResult";
-import {isRedirectObject} from "@/util/typeguards";
 import InstructionsClient from "@/components/InstructionsClient";
 import { Separator } from "@/components/ui/separator";
+import {cookies, headers} from "next/headers";
+import {BackendGenericResponse} from "../../../../../../../types/BackendGenericResponse";
 
 
 // --- UI Components (Simulated with HTML/Tailwind) ---
@@ -32,7 +31,7 @@ interface InstructionsPageProps {
     };
 }
 
-export default async function InstructionsPage({searchParams}: InstructionsPageProps) {
+export default async function InstructionsPage({ searchParams }: InstructionsPageProps) {
     const params = await searchParams;
     const t = await getTranslations('InstructionsPage'); // Use server-side translations
 
@@ -62,52 +61,76 @@ export default async function InstructionsPage({searchParams}: InstructionsPageP
     let selectedCountryName: string | undefined;
     let fetchedCashDepositAddresses: CashDepositAddress[] = [];
     let fetchedBankDepositAddresses: BankDepositAddress[] = [];
+    let countries: Country[] = [];
+
+    const headersList = await headers();
+    const protocol = headersList.get("x-forwarded-proto") ?? "https";
+    const host = headersList.get("host");
+
+    if (!host) {
+        throw new Error("Host header missing");
+    }
 
     try {
         // Fetch countries to get the selected country's name
-        const countryPayload: FetchBackendResult<CountriesDataPayload> = await fetchBackendData<CountriesDataPayload>(
-            '/kaasitoma/countries/getPriorityCountries',
-            'GET',
-            undefined,
-            3600 // Cache for 1 hour
-        );
+        const countryApiUrl = `${protocol}://${host}/api/kaasitoma/countries/getPriorityCountries`;
+        const cookieHeader = (await cookies())
+            .getAll()
+            .map(c => `${c.name}=${c.value}`)
+            .join("; ");
 
-        if (isRedirectObject(countryPayload)) {
-            redirect(countryPayload.redirectTo);
+        const countryResponse = await fetch(countryApiUrl, {
+            method: "GET",
+            cache: "no-store",
+            headers: {
+                Cookie: cookieHeader, // 🔥 THIS FIXES IT
+            },
+        });
+
+        if (!countryResponse.ok) {
+            console.error("Failed to fetch countries : ", countryResponse.status);
+        } else {
+            const data: BackendGenericResponse<{
+                countries: Country[];
+            }> = await countryResponse.json();
+
+            countries = data.data?.countries ?? [];
         }
 
-        selectedCountryName = countryPayload?.countries?.find(
+        selectedCountryName = countries?.find(
             (c) => c.countryId === numericCountryId
         )?.countryName;
 
         // Conditionally fetch cash deposit addresses based on selected method
-        if (selectedMethodValue === TopUpMethodEnum.CASH) {
-            const cashAddressesPayload = await fetchBackendData<CashDepositAddressDataPayload>(
-                `/kaasitoma/cashDepositAddresses/getCashDepositAddressesByCountryId?countryId=${numericCountryId}`,
-                'GET',
-                undefined,
-                3600
+        // --- Fetch deposit addresses via BFF ---
+        const depositApiUrl =
+            `${protocol}://${host}/api/kaasitoma/depositAddresses/getDepositAddressesByCountryId` +
+            `?countryId=${numericCountryId}&type=${selectedMethodValue === TopUpMethodEnum.CASH ? "cash" : "bank"}`;
+
+        const depositResponse = await fetch(depositApiUrl, {
+            method: "GET",
+            cache: "no-store",
+            headers: {
+                Cookie: cookieHeader, // 🔥 REQUIRED for BFF session lookup
+            },
+        });
+
+        if (!depositResponse.ok) {
+            console.error(
+                "Failed to fetch deposit addresses:",
+                depositResponse.status
             );
+        } else {
+            const data: BackendGenericResponse<{
+                cashDepositAddresses?: CashDepositAddress[];
+                bankDepositAddresses?: BankDepositAddress[];
+            }> = await depositResponse.json();
 
-            if (isRedirectObject(cashAddressesPayload)) {
-                redirect(cashAddressesPayload.redirectTo);
+            if (selectedMethodValue === TopUpMethodEnum.CASH) {
+                fetchedCashDepositAddresses = data.data?.cashDepositAddresses ?? [];
+            } else {
+                fetchedBankDepositAddresses = data.data?.bankDepositAddresses ?? [];
             }
-
-            fetchedCashDepositAddresses = cashAddressesPayload?.cashDepositAddresses || [];
-
-
-        } else if (selectedMethodValue === TopUpMethodEnum.BANK) {
-            const bankAddressesPayload = await fetchBackendData<BankDepositAddressDataPayload>(
-                `/kaasitoma/bankDepositAddresses/getBankDepositAddressesByCountryId?countryId=${numericCountryId}`,
-                'GET',
-                undefined,
-                3600
-            );
-            if (isRedirectObject(bankAddressesPayload)) {
-                redirect(bankAddressesPayload.redirectTo);
-            }
-
-            fetchedBankDepositAddresses = bankAddressesPayload?.bankDepositAddresses || [];
         }
 
     } catch (error) {

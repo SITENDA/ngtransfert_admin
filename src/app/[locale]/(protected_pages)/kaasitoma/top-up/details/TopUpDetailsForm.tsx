@@ -9,7 +9,7 @@ import { useLocale, useTranslations } from 'next-intl';
 
 import { Form } from "@/components/ui/form";
 import { ReceiverAccount } from "../../../../../../../types/receiver-account";
-import { topUpAccountBalanceAction } from "@/lib/actions/top-up-account";
+import { topUpAccountBalanceAction } from "@/lib/actions/topUpAccountBalanceAction";
 import {
     ReceiverAccountCategoryEnum,
     ReceiverAccountCategoryType,
@@ -23,7 +23,8 @@ import { Country } from "../../../../../../../types/country";
 import {TopUpMethodEnum} from "@/enums/TopUpMethodEnum";
 import {ExchangeRate} from "../../../../../../../types/exchangeRateResult";
 import {kaasitomaPaths} from "@/util/frontend-paths";
-
+import TickAnimation from "@/components/TickAnimation";
+import { useToast } from "@/hooks/use-toast";
 
 interface TopUpDetailsFormSearchParams {
     topUpMethod?: string;
@@ -35,7 +36,7 @@ interface TopUpDetailsFormProps {
     initialExchangeRate: ExchangeRate;
     initialSearchParams: TopUpDetailsFormSearchParams;
     // Add the new prop for sendingFeePercentage
-    sendingFeePercentage: number;
+    sendingFeePercentage: number | undefined;
 }
 
 const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
@@ -49,6 +50,10 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
     const t = useTranslations('TopUpDetailsForm');
     const router = useRouter();
     const locale = useLocale();
+    const { toast } = useToast();
+
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const redirectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const selectedTopUpMethod: TopUpMethodEnum | undefined =
         Object.values(TopUpMethodEnum).find(
@@ -82,7 +87,7 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
                 return account.phoneNumber || '';
             case ReceiverAccountIdentifierEnum.enum.QR_CODE_IMAGE:
                 return account.receiverAccountName || String(account.receiverAccountId) || '';
-            case ReceiverAccountIdentifierEnum.enum.NONE:
+            case ReceiverAccountIdentifierEnum.enum.BANK_ACCOUNT_NUMBER:
                 return account.bankAccountNumber || '';
             default:
                 return '';
@@ -219,6 +224,13 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
         }
     }, [watchedAmountInDestinationCurrency, initialCountry.countryName, sendingFeePercentage, form]);
 
+    useEffect(() => {
+        return () => {
+            if (redirectTimeoutRef.current) {
+                clearTimeout(redirectTimeoutRef.current);
+            }
+        };
+    }, []);
 
     // Handlers for actual user input
     const handleCnyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -269,7 +281,11 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
         } else {
             console.error("Neither CNY nor Destination Currency field was directly edited by the user, and no calculated values exist.");
             setLoading(false);
-            alert(`${t('submissionError')}: ${t('missingAmount')}`);
+            toast({
+                title: t("submissionError", { defaultValue: "Error" }),
+                description: t('missingAmount'),
+                variant: "destructive",
+            });
             return;
         }
 
@@ -280,7 +296,11 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
         } else {
             console.error("Final amountInCNY is missing after determination, cannot submit.");
             setLoading(false);
-            alert(`${t('submissionError')}: ${t('missingAmount')}`);
+            toast({
+                title: t("submissionError", { defaultValue: "Error" }),
+                description: t('missingAmount'),
+                variant: "destructive",
+            });
             return;
         }
 
@@ -289,7 +309,11 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
         } else {
             console.error("Final amountInDestinationCurrency is missing after determination, cannot submit.");
             setLoading(false);
-            alert(`${t('submissionError')}: ${t('missingAmount')}`);
+            toast({
+                title: t("submissionError", { defaultValue: "Error" }),
+                description: t('missingAmount'),
+                variant: "destructive",
+            });
             return;
         }
 
@@ -307,7 +331,11 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
             formData.append("proofPicture", data.proofPicture);
         } else {
             setLoading(false);
-            alert(`${t('submissionError')}: ${t('proofPictureRequired')}`);
+            toast({
+                title: t("submissionError", { defaultValue: "Error" }),
+                description: t('proofPictureRequired'),
+                variant: "destructive",
+            });
             return;
         }
 
@@ -318,25 +346,58 @@ const TopUpDetailsForm: React.FC<TopUpDetailsFormProps> = ({
             console.log("DEBUG: TopUpDetailsForm - Server action result:", result);
 
             if (result.success) {
-                alert(t('topUpSuccessMessage', { message: result.message }));
+                toast({
+                    title: t("successTitle", { defaultValue: "Success 🎉" }),
+                    description: result.message,
+                });
+
+                setSuccessMessage(
+                    t("topUpSuccessMessage", { message: result.message })
+                );
+
+                // Reset form state
                 form.reset(defaultFormValues);
                 setProofPicturePreview(null);
-                isProgrammaticUpdate.current = false; // Ensure flag is reset
-                setDisplayedSendingFee(undefined); // Reset displayed sending fee
-                router.push(`/${locale}${kaasitomaPaths.topUpRequestsPath}`);
-            } else {
-                alert(`${t('submissionError')}: ${result.message}`);
+                isProgrammaticUpdate.current = false;
+                setDisplayedSendingFee(undefined);
+
+                // Redirect after 3 seconds
+                redirectTimeoutRef.current = setTimeout(() => {
+                    router.push(`/${locale}${kaasitomaPaths.topUpRequestsPath}`);
+                }, 3000);
+
+                return;
+            }
+            else {
+                toast({
+                    title: t("submissionError", { defaultValue: "Error" }),
+                    description: result.message,
+                    variant: "destructive",
+                });
+
                 console.error('ERROR: Top-up request submission failed:', result.message);
             }
         } catch (error) {
             console.error("CRITICAL ERROR: TopUpDetailsForm - Exception during server action call:", error);
-            alert(`${t('submissionError')}: An unexpected error occurred during submission.`);
+            toast({
+                title: t("submissionError", { defaultValue: "Error" }),
+                description: `${t('submissionError')}: An unexpected error occurred during submission.`,
+                variant: "destructive",
+            });
         } finally {
             setLoading(false);
         }
     };
 
     const isDRCongo = initialCountry.countryName === "DR Congo";
+
+    if (successMessage) {
+        return (
+            <TickAnimation
+                successMessage={successMessage}
+            />
+        );
+    }
 
     return (
         <Form {...form}>
