@@ -15,7 +15,7 @@ export function mapBackendUserToBffUser(
         profileImageUrl: backendUser.profileImageUrl,
         enabled: backendUser.enabled,
         roles: backendUser.roles.map(r => ({
-            id: r.roleId ?? r.roleId, // 👈 handles backend naming
+            id: r.id ?? r.id, // 👈 handles backend naming
             roleName: r.roleName,
         })),
         ekiddako: backendUser.ekiddako, // ✅ FIX

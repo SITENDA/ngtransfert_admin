@@ -1,5 +1,5 @@
 // src/lib/cookies.ts
-import { cookies } from "next/headers";
+import {cookies, headers} from "next/headers";
 
 const SESSION_COOKIE = "ngt_session";
 
@@ -9,9 +9,14 @@ const SESSION_COOKIE = "ngt_session";
 export async function setSessionCookie(sessionId: string) {
     const cookieStore = await cookies();
 
+    const headersList = await headers();
+    const proto = headersList.get("x-forwarded-proto");
+
+    const isSecure = proto === "https";
+
     cookieStore.set(SESSION_COOKIE, sessionId, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: isSecure,
         sameSite: "lax",           // IMPORTANT for login redirects
         path: "/",
         maxAge: 60 * 60 * 24 * 7,  // 7 days

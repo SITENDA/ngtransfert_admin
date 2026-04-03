@@ -6,6 +6,7 @@ First, run the development server:
 
 ```bash
 npm run dev
+or NODE_TLS_REJECT_UNAUTHORIZED=0 npm run dev
 # or
 yarn dev
 # or

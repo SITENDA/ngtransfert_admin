@@ -28,3 +28,5 @@ app.prepare().then(() => {
         console.log("🚀 HTTPS Next.js running on https://localhost:3000");
     });
 });
+
+//  NODE_OPTIONS=--use-system-ca yarn dev:https
