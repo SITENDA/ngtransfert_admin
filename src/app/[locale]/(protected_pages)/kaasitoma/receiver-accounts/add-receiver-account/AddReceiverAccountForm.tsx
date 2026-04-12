@@ -74,7 +74,7 @@ const AddReceiverAccountForm: React.FC<AddReceiverAccountFormProps> = ({ initial
 
     const [qrCodePreview, setQrCodePreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    const [isBankSelectMenuOpen, setIsBankSelectMenuOpen] = useState(false);
+    const [isBankSelectMenuOpen] = useState(false);
     const [validPhoneNumber, setValidPhoneNumber] = useState(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 

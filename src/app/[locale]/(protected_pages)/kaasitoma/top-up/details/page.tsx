@@ -14,11 +14,11 @@ import {TopUpDetailsPayload} from "../../../../../../../types/request-top-up-req
 import {cookies, headers} from "next/headers";
 
 interface TopUpDetailsPageProps {
-    searchParams: { // Query parameters from URL
+    searchParams: Promise<{ // Query parameters from URL
         receiverAccountId: string;
         countryId: string; // This is now essential for fetching the country object
         topUpMethod: string; // Still needed for the form
-    };
+    }>;
 }
 
 async function TopUpDetailsPage({ searchParams }: TopUpDetailsPageProps) {

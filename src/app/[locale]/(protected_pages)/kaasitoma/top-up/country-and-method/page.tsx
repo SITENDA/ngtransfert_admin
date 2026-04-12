@@ -16,9 +16,9 @@ import { Country } from "../../../../../../../types/country";
 import { BackendGenericResponse } from "../../../../../../../types/BackendGenericResponse";
 
 interface CountryAndMethodSelectorPageProps {
-    searchParams: {
+    searchParams: Promise<{
         receiverAccountId?: string;
-    };
+    }>;
 }
 
 export default async function CountryAndMethodSelectorPage({

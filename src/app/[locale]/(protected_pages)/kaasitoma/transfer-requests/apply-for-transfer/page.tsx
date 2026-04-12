@@ -14,9 +14,9 @@ import { BackendGenericResponse } from "../../../../../../../types/BackendGeneri
 import { cookies, headers } from "next/headers";
 
 interface ApplyForTransferPageProps {
-    searchParams: {
+    searchParams: Promise<{
         receiverAccountId?: string;
-    };
+    }>;
 }
 
 export default async function ApplyForTransferPage({
@@ -32,7 +32,9 @@ export default async function ApplyForTransferPage({
         redirect(`/${locale}${kaasitomaPaths.loginPath}`);
     }
 
-    const receiverAccountId = searchParams.receiverAccountId;
+    const params = await searchParams;
+
+    const receiverAccountId = params.receiverAccountId;
     if (!receiverAccountId) {
         redirect(`/${locale}${kaasitomaPaths.receiverAccountsPath}`);
     }

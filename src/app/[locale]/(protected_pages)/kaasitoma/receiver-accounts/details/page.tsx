@@ -1,24 +1,24 @@
 // src/app/[locale]/(protected_pages)/kaasitoma/details/page.tsx
 
 import React from "react";
-import { redirect } from "next/navigation";
-import { cookies, headers } from "next/headers";
-import { getTranslations } from "next-intl/server";
+import {redirect} from "next/navigation";
+import {cookies, headers} from "next/headers";
+import {getTranslations} from "next-intl/server";
 
 import ProtectedWrapper from "@/components/ProtectedWrapper";
-import { Button } from "@/components/ui/button";
-import { CardHeader } from "@/components/ui/card";
+import {Button} from "@/components/ui/button";
+import {CardHeader} from "@/components/ui/card";
 import CategoryIcon from "@/components/CategoryIcon";
 import CountryFlag from "@/components/CountryFlag";
 import ImageDisplay from "@/components/ImageDisplay";
 import EmailDisplay from "@/components/EmailDisplay";
 import PhoneNumberDisplay from "@/components/PhoneNumberDisplay";
 
-import { Link } from "@/i18n/navigation";
-import { kaasitomaPaths } from "@/util/frontend-paths";
+import {Link} from "@/i18n/navigation";
+import {kaasitomaPaths} from "@/util/frontend-paths";
 
-import { ReceiverAccount } from "../../../../../../../types/receiver-account";
-import { BackendGenericResponse } from "../../../../../../../types/BackendGenericResponse";
+import {ReceiverAccount} from "../../../../../../../types/receiver-account";
+import {BackendGenericResponse} from "../../../../../../../types/BackendGenericResponse";
 
 interface DetailRowProps {
     label: string;
@@ -29,7 +29,7 @@ interface DetailRowProps {
 export default async function ReceiverAccountDetailsPage({
                                                              searchParams,
                                                          }: {
-    searchParams: { receiverAccountId?: string };
+    searchParams: Promise<{ receiverAccountId?: string }>;
 }) {
     const t = await getTranslations("ReceiverAccountDetailsPage");
 
@@ -128,30 +128,30 @@ export default async function ReceiverAccountDetailsPage({
                     <Section title={t("generalDetails")}>
                         <DetailRow label={t("receiverAccountCategory")}>
                             <div className="flex items-center gap-2">
-                                <CategoryIcon category={receiverAccount.receiverAccountCategory} />
+                                <CategoryIcon category={receiverAccount.receiverAccountCategory}/>
                                 <span>{t(receiverAccount.receiverAccountCategory.toLowerCase())}</span>
                             </div>
                         </DetailRow>
 
-                        <DetailRow label={t("receiverAccountName")} value={receiverAccount.receiverAccountName} />
+                        <DetailRow label={t("receiverAccountName")} value={receiverAccount.receiverAccountName}/>
                         <DetailRow label={t("receiverAccountIdentifier")}
-                                   value={t(receiverAccount.receiverAccountIdentifier.toLowerCase())} />
+                                   value={t(receiverAccount.receiverAccountIdentifier.toLowerCase())}/>
 
                         {receiverAccount.qrCodeUrl && (
                             <DetailRow label={t("qrCodeImage")}>
-                                <ImageDisplay imageUrl={receiverAccount.qrCodeUrl} title="QR Code" />
+                                <ImageDisplay imageUrl={receiverAccount.qrCodeUrl} title="QR Code"/>
                             </DetailRow>
                         )}
 
-                        {receiverAccount.email && !receiverAccount.email.startsWith("rand") &&(
+                        {receiverAccount.email && !receiverAccount.email.startsWith("rand") && (
                             <DetailRow label={t("email")}>
-                                <EmailDisplay email={receiverAccount.email} />
+                                <EmailDisplay email={receiverAccount.email}/>
                             </DetailRow>
                         )}
 
                         {receiverAccount.phoneNumber && !receiverAccount.phoneNumber.startsWith("rand") && (
                             <DetailRow label={t("phoneNumber")}>
-                                <PhoneNumberDisplay phoneNumber={receiverAccount.phoneNumber} />
+                                <PhoneNumberDisplay phoneNumber={receiverAccount.phoneNumber}/>
                             </DetailRow>
                         )}
                     </Section>
@@ -174,17 +174,17 @@ export default async function ReceiverAccountDetailsPage({
                         <Section title={t("bankDetails")}>
                             {receiverAccount.bankAccountNumber && (
                                 <DetailRow label={t("bankAccountNumber")}
-                                           value={receiverAccount.bankAccountNumber} />
+                                           value={receiverAccount.bankAccountNumber}/>
                             )}
 
                             {receiverAccount.cardHolderName && (
                                 <DetailRow label={t("cardHolderName")}
-                                           value={receiverAccount.cardHolderName} />
+                                           value={receiverAccount.cardHolderName}/>
                             )}
 
                             {receiverAccount.bank?.bankName && (
                                 <DetailRow label={t("bankName")}
-                                           value={receiverAccount.bank.bankName} />
+                                           value={receiverAccount.bank.bankName}/>
                             )}
 
                             {receiverAccount.bank?.country && (
@@ -225,7 +225,7 @@ function Section({
     );
 }
 
-const DetailRow: React.FC<DetailRowProps> = async ({ label, value, children }) => {
+const DetailRow: React.FC<DetailRowProps> = async ({label, value, children}) => {
     const t = await getTranslations("ReceiverAccountDetailsPage");
 
     return (

@@ -22,13 +22,13 @@ import {BackendGenericResponse} from "../../../../../../../types/BackendGenericR
 
 // Define the type for the query parameters expected by this page
 interface InstructionsPageProps {
-    searchParams: {
+    searchParams: Promise<{
         accountId?: string;
         countryId?: string;
         topUpMethod?: string;
         receiverAccountCategory?: string;
         accountIdentifier?: string;
-    };
+    }>;
 }
 
 export default async function InstructionsPage({ searchParams }: InstructionsPageProps) {

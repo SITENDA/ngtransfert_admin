@@ -23,11 +23,11 @@ export default async function UserProfilePage() {
         redirect(`/${locale}${kaasitomaPaths.loginPath}?ensobi=signedout`);
     }
 
-    const formattedDate = new Date(user.registrationDate).toLocaleDateString(locale, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-    });
+    // const formattedDate = new Date(user.registrationDate).toLocaleDateString(locale, {
+    //     year: "numeric",
+    //     month: "long",
+    //     day: "numeric",
+    // });
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4 font-sans">
@@ -63,10 +63,10 @@ export default async function UserProfilePage() {
                             <p className="text-sm text-muted-foreground">{t("email")}</p>
                             <p className="text-lg font-medium">{user.email}</p>
                         </div>
-                        <div>
-                            <p className="text-sm text-muted-foreground">{t("registeredOn")}</p>
-                            <p className="text-lg font-medium">{formattedDate}</p>
-                        </div>
+                        {/*<div>*/}
+                        {/*    <p className="text-sm text-muted-foreground">{t("registeredOn")}</p>*/}
+                        {/*    <p className="text-lg font-medium">{formattedDate}</p>*/}
+                        {/*</div>*/}
                     </div>
                 </CardContent>
             </Card>

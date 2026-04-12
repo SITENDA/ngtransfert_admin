@@ -34,10 +34,9 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
     // Default form values: Use 'undefined' for fields that are optional in Zod schema
     const defaultEmptyValues: TransferRequestSchemaType = {
         amount: undefined,
-        currencyId: undefined, // This will now be set by effect, not user selection
+        currencyCode: undefined, // This will now be set by effect, not user selection
         rate: undefined,
         remark: undefined,
-        receiverAccountCategory: undefined,
         receiverAccountId: undefined,
         clientId: clientId, // Pre-fill clientId from props
         countryOfDepositId: undefined,
@@ -67,21 +66,20 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
 
             // Automatically set currencyId from the selected country's default currency
             if (country && country.currency) {
-                if (form.getValues("currencyId") !== country.currency.currencyId) {
-                    form.setValue("currencyId", country.currency.currencyId, { shouldDirty: true, shouldValidate: true });
+                if (form.getValues("currencyCode") !== country.currency.currencyCode) {
+                    form.setValue("currencyCode", country.currency.currencyCode, { shouldDirty: true, shouldValidate: true });
                 }
             } else {
                 // If country has no currency or is null, clear currencyId
-                form.setValue("currencyId", undefined, { shouldDirty: true, shouldValidate: true });
+                form.setValue("currencyCode", undefined, { shouldDirty: true, shouldValidate: true });
             }
         } else {
             setSelectedCountryObj(null);
             // Reset currency and all subsequent fields if country is unselected/reset
-            form.setValue("currencyId", undefined, { shouldDirty: true, shouldValidate: true });
+            form.setValue("currencyCode", undefined, { shouldDirty: true, shouldValidate: true });
             form.setValue("amount", undefined, { shouldDirty: true, shouldValidate: true });
             form.setValue("rate", undefined, { shouldDirty: true, shouldValidate: true });
             form.setValue("remark", undefined, { shouldDirty: true, shouldValidate: true });
-            form.setValue("receiverAccountCategory", undefined, { shouldDirty: true, shouldValidate: true });
             form.setValue("receiverAccountId", undefined, { shouldDirty: true, shouldValidate: true });
         }
     }, [watchedCountryOfDepositId, initialCountries, form]);
@@ -101,7 +99,6 @@ const ApplyForTransferForm: React.FC<ApplyForTransferFormProps> = ({ initialCoun
         console.log("DEBUG: Applying for transfer with data (before final additions):", data);
 
         data.clientId = clientId;
-        data.receiverAccountCategory = receiverAccount.receiverAccountCategory;
         data.receiverAccountId = receiverAccount.receiverAccountId;
 
         console.log("DEBUG: Data prepared for transfer (final payload to action):", data);

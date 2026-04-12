@@ -6,8 +6,19 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import type { ComponentProps } from "react";
 
-export default function SignOutButton() {
+type SignOutButtonProps = {
+    variant?: ComponentProps<typeof Button>["variant"];
+    size?: ComponentProps<typeof Button>["size"];
+    className?: string;
+};
+
+export default function SignOutButton({
+                                          variant = "ghost",
+                                          size = "icon",
+                                          className,
+                                      }: SignOutButtonProps) {
     const t = useTranslations("SignOutButton");
     const router = useRouter();
     const [open, setOpen] = useState(false);
@@ -27,9 +38,11 @@ export default function SignOutButton() {
         <>
             <Button
                 onClick={() => setOpen(true)}
-                variant="ghost"
-                size="icon"
+                variant={variant}
+                size={size}
+                className={className}
                 title={t("logout")}
+                type="button"
             >
                 <LogOut className="h-5 w-5" />
             </Button>

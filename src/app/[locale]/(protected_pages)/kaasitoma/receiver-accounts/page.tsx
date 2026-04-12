@@ -13,7 +13,7 @@ import {cookies, headers} from "next/headers";
 export default async function ReceiverAccountsPage({
                                                        searchParams,
                                                    }: {
-    searchParams: Record<string, string>;
+    searchParams: Promise<Record<string, string>>
 }) {
     const t = await getTranslations("ReceiverAccountsPage");
 

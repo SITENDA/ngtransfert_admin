@@ -111,30 +111,29 @@ export const metadata = {
 };
 
 interface OAuthRedirectPageProps {
-    searchParams: {
+    searchParams: Promise<{
         accessToken?: string;
         refreshToken?: string;
         error?: string;
-    };
+    }>;
 }
 
 export default async function OAuthRedirectPage({
                                                     searchParams,
                                                 }: OAuthRedirectPageProps) {
     const locale = await getLocale();
+    const params = await searchParams;
 
-    // 1️⃣ Handle OAuth failure
-    if (searchParams.error) {
-        redirect(`/${locale}/login?error=${encodeURIComponent(searchParams.error)}`);
+    const { accessToken, refreshToken, error } = params;
+
+    if (error) {
+        redirect(`/${locale}/login?error=${encodeURIComponent(error)}`);
     }
-
-    const { accessToken, refreshToken } = searchParams;
 
     if (!accessToken || !refreshToken) {
         redirect(`/${locale}/login?error=oauth_failed`);
     }
 
-    // 2️⃣ Fetch authenticated user from Spring Boot
     const meRes = await fetch(`${process.env.BACKEND_URL}/auth/me`, {
         headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -148,10 +147,9 @@ export default async function OAuthRedirectPage({
 
     const user = await meRes.json();
 
-    // 3️⃣ Create BFF session
     const sessionId = randomUUID();
 
-    saveSession(sessionId, {
+    await saveSession(sessionId, {
         user,
         accessToken,
         refreshToken,
@@ -160,6 +158,5 @@ export default async function OAuthRedirectPage({
 
     await setSessionCookie(sessionId);
 
-    // 4️⃣ Redirect to app
     redirect(`/${locale}/${user.ekiddako}`);
 }
