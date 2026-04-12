@@ -25,5 +25,7 @@ export interface BackendLoginPayload {
         roles: Array<{ id: number; roleName: string }>;
         ekiddako: string;
     };
-    accessTokenExpiresAt: number; // epoch millis
+    accessToken: string;
+    refreshToken: string;
+    accessTokenExpiresAt: number;
 }

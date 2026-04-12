@@ -14,14 +14,11 @@ if (process.env.NODE_ENV === "development") {
 export async function POST(req: Request) {
     const body = await req.json();
 
-    const springRes = await fetch(
-        `${process.env.BACKEND_URL}/auth/login`,
-        {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body),
-        }
-    );
+    const springRes = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+    });
 
     const text = await springRes.text();
 
@@ -44,15 +41,18 @@ export async function POST(req: Request) {
         );
     }
 
-    const { user, accessTokenExpiresAt } = json.data;
+    const { user, accessToken, refreshToken, accessTokenExpiresAt } = json.data;
 
     const bffUser = mapBackendUserToBffUser(user);
     const sessionId = randomUUID();
+    const now = Date.now();
 
     await saveSession(sessionId, {
         user: bffUser,
+        accessToken,
+        refreshToken,
         accessTokenExpiresAt,
-        lastActivityAt: Date.now(),
+        lastActivityAt: now,
     });
 
     await setSessionCookie(sessionId);

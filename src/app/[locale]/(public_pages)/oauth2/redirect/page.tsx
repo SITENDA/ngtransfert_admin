@@ -100,11 +100,14 @@
 
 // ✅ SERVER COMPONENT ONLY
 
+// ✅ SERVER COMPONENT ONLY
+
 import { redirect } from "next/navigation";
 import { randomUUID } from "crypto";
 import { saveSession } from "@/lib/sessionStore";
 import { setSessionCookie } from "@/lib/cookies";
 import { getLocale } from "next-intl/server";
+import { mapBackendUserToBffUser } from "@/lib/mappers/mapBackendUserToBffUser";
 
 export const metadata = {
     title: "Signing you in...",
@@ -145,18 +148,21 @@ export default async function OAuthRedirectPage({
         redirect(`/${locale}/login?error=oauth_failed`);
     }
 
-    const user = await meRes.json();
+    const backendUser = await meRes.json();
+    const bffUser = mapBackendUserToBffUser(backendUser);
 
     const sessionId = randomUUID();
+    const now = Date.now();
 
     await saveSession(sessionId, {
-        user,
+        user: bffUser,
         accessToken,
         refreshToken,
-        accessTokenExpiresAt: Date.now() + 5 * 60 * 1000,
+        accessTokenExpiresAt: now + 5 * 60 * 1000,
+        lastActivityAt: now,
     });
 
     await setSessionCookie(sessionId);
 
-    redirect(`/${locale}/${user.ekiddako}`);
+    redirect(`/${locale}/${bffUser.ekiddako}`);
 }

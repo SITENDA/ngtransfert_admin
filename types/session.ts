@@ -19,7 +19,11 @@ export interface BffUser {
 export interface Session {
     sessionId: string;
     user: BffUser;
-    accessTokenExpiresAt: number; // JWT exp (ms)
-    lastActivityAt: number; // 🔑 NEW: sliding session
+
+    accessToken: string;
+    refreshToken: string;
+    accessTokenExpiresAt: number;
+
+    lastActivityAt: number;
     createdAt: number;
 }

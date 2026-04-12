@@ -15,14 +15,16 @@ export async function POST() {
         );
     }
 
-    // 2️⃣ Call backend — cookies are forwarded automatically
+    // 2️⃣ Call backend using Authorization header (NEW DESIGN)
     let springRes: Response;
     try {
         springRes = await fetch(
             `${process.env.BACKEND_URL}/auth/rotate-token`,
             {
                 method: "POST",
-                credentials: "include", // 🔥 REQUIRED
+                headers: {
+                    Authorization: `Bearer ${session.accessToken}`, // 🔥 FIXED
+                },
                 cache: "no-store",
             }
         );
@@ -39,6 +41,7 @@ export async function POST() {
     const text = await springRes.text();
 
     let json: BackendHttpResponse<{
+        accessToken: string;              // 🔥 NEW
         accessTokenExpiresAt: number;
     } | null>;
 
@@ -62,9 +65,11 @@ export async function POST() {
         );
     }
 
-    // 5️⃣ Update Redis session (NO TOKEN STORED)
+    // 5️⃣ Update Redis session (STORE NEW TOKEN)
     await saveSession(session.sessionId, {
         user: session.user,
+        accessToken: json.data.accessToken,              // 🔥 NEW TOKEN
+        refreshToken: session.refreshToken,              // keep existing
         accessTokenExpiresAt: json.data.accessTokenExpiresAt,
         lastActivityAt: Date.now(),
     });

@@ -59,6 +59,8 @@ export async function ensureValidAccessToken(
      * ------------------------------------------------- */
     await saveSession(session.sessionId, {
         user: session.user,
+        accessToken: session.accessToken,           // 🔥 REQUIRED
+        refreshToken: session.refreshToken,         // 🔥 REQUIRED
         accessTokenExpiresAt: session.accessTokenExpiresAt,
         lastActivityAt: now,
     });
