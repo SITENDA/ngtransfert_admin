@@ -1,0 +1,1 @@
+export type FetchBackendResult<T> = T | null;

@@ -1,0 +1,49 @@
+// src/app/api/kaasitoma/topUp/getTopUpDetails/route.ts
+import { NextResponse } from "next/server";
+import getSession from "@/lib/getSession";
+import { bffFetch } from "@/lib/bffFetch";
+
+export async function GET(req: Request) {
+    const session = await getSession();
+
+    if (!session) {
+        return NextResponse.json(
+            { success: false, message: "Authentication required." },
+            { status: 401 }
+        );
+    }
+
+    const { searchParams } = new URL(req.url);
+    const receiverAccountId = searchParams.get("receiverAccountId");
+    const countryId = searchParams.get("countryId");
+
+    if (!receiverAccountId || !countryId) {
+        return NextResponse.json(
+            { success: false, message: "Missing receiverAccountId or countryId" },
+            { status: 400 }
+        );
+    }
+
+    const backendUrl =
+        `${process.env.BACKEND_URL}/kaasitoma/topUp/getTopUpDetails` +
+        `?receiverAccountId=${receiverAccountId}&countryId=${countryId}`;
+
+    const response = await bffFetch(backendUrl, {
+        method: "GET",
+        session,
+        cache: "no-store",
+    });
+
+    const text = await response.text();
+
+    try {
+        return NextResponse.json(JSON.parse(text), {
+            status: response.status,
+        });
+    } catch {
+        return NextResponse.json(
+            { success: false, message: text },
+            { status: response.status }
+        );
+    }
+}

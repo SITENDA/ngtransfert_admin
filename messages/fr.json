@@ -1,0 +1,474 @@
+{
+    "HomePage": {
+      "carouselTitle-1": "Transférer de l'argent entre l'Afrique et la Chine",
+      "carouselDescription-1": "Nous livrons rapidement votre argent sur votre compte en Chine, WeChat, Alipay ou sur un compte bancaire.",
+      "carouselTitle-2": "Transferts d'argent rapides et pratiques",
+      "carouselDescription-2": "Découvrez la commodité et la sécurité de NG Transfert, votre partenaire de confiance pour les transferts d'argent internationaux. Rapide, fiable et sécurisé.",
+      "newAtNGTransfert" : "Nouveau chez NG Transfert?",
+      "signIn": "Se Connecter",
+      "signOut": "Se Déconnecter",
+      "signUpWithGoogle" : "Inscrivez-vous avec Google"
+    },
+  "DashboardPage": {
+    "clientDashboardTitle": "Tableau de Bord Client",
+    "addReceiverAccountButton": "Ajouter un Compte Bénéficiaire",
+    "welcomeMessage": "Bienvenue, {userName} !",
+    "yourAccountsSectionTitle": "Vos Comptes",
+    "receiverAccountsLink": "Comptes Bénéficiaires",
+    "sendingRecordsSectionTitle": "Historique des Envois",
+    "topUpRequestsLink": "Demandes de Recharge",
+    "transferRequestsLink": "Demandes de Transfert",
+    "settledTransfersLink": "Transferts Réglés",
+    "allSendingRecordsLink": "Tous les Historiques d'Envoi",
+    "noAccountsFoundMessage": "Aucun compte trouvé."
+  },
+  "Header": {
+    "signIn": "Se Connecter",
+    "signOut": "Se Déconnecter",
+    "contactUs": "Contactez-nous",
+    "light": "lumière",
+    "dark": "sombre",
+    "system": "système",
+    "toggleTheme": "Mode bascule",
+    "changeLanguage": "Changer la langue",
+    "settings": "Paramètres"
+  },
+  "PublicHeader": {
+    "contact": "Contact",
+    "settings": "Paramètres",
+    "theme": "Thème",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "themeSystem": "Système",
+    "language": "Langue",
+    "login": "Connexion",
+    "aboutUs": "À propos de nous"
+  },
+  "ContactUsPage": {
+    "contactUs": "Contactez-nous",
+    "readyToStart": "Prêt à démarrer votre prochain projet avec nous ? Envoyez-nous un message et nous vous répondrons dans les plus brefs délais !",
+    "emailTitle": "E-mail",
+    "emailPlaceholder": "votre@email.com",
+    "messageTitle": "Message",
+    "messagePlaceholder": "Votre message ici...",
+    "sendButtonTitle": "Envoyer",
+    "loadingLabel": "Envoi...",
+    "reset": "Réinitialiser"
+  },
+  "Common": {
+    "signInButton": "Se Connecter",
+    "signUpButton": "S'inscrire",
+    "login": "Connexion"
+  },
+  "AboutUs": {
+    "title": "À propos de nous",
+    "description": "NG Transfert est un service de transfert d’argent international fiable, spécialisé dans des transactions financières rapides, sécurisées et fiables entre la Chine et plusieurs pays d’Afrique. Nous opérons actuellement de manière active au Mali, en République démocratique du Congo, en République du Congo, en Côte d’Ivoire, au Gabon, au Sénégal, au Togo et en Chine.\n\nGrâce à des partenariats solides et à un réseau international en constante expansion, nous facilitons des transferts transfrontaliers fluides, adaptés aux besoins des particuliers et des entreprises. Notre mission est de simplifier les paiements internationaux en combinant efficacité, transparence et sécurité, afin de garantir que vos fonds arrivent rapidement et en toute sécurité à destination."
+  },
+  "LoginPage": {
+    "title": "Se connecter"
+  },
+  "LoginFormComponent": {
+    "signInTitle": "Se connecter",
+    "registerAccountTitle": "Créer un compte",
+    "usernameLabel": "Nom d'utilisateur",
+    "emailLabel": "E-mail",
+    "phoneNumberLabel": "Numéro de téléphone",
+    "passwordLabel": "Mot de passe",
+
+    "registerButton": "S'inscrire",
+    "signInButton": "Se connecter",
+
+    "needAccount": "Besoin d'un compte ? Inscrivez-vous ici",
+
+    "loginWith": "Se connecter avec",
+    "loginWithGoogle": "Se connecter avec Google",
+    "loginWithFacebook": "Se connecter avec Facebook",
+
+    "registrationSuccess": "Inscription réussie ! Veuillez vérifier votre e-mail pour la vérification.",
+
+    "loginFailed": "Échec de la connexion",
+    "registrationFailed": "Échec de l'inscription : {message}",
+    "loginError": "Une erreur est survenue lors de la connexion : {message}",
+    "registrationError": "Une erreur est survenue lors de l'inscription : {message}",
+    "unknownError": "Erreur inconnue, veuillez réessayer.",
+    "tryAgain": "Veuillez réessayer.",
+
+    "errorPrefix": "Erreur",
+    "oauthError": "L'authentification avec le fournisseur externe a échoué. Veuillez réessayer.",
+    "unexpectedError": "Une erreur inattendue est survenue.",
+
+    "authenticationFailedCredentials": "Échec de l'authentification. Veuillez vérifier vos identifiants.",
+    "authenticationFailed": "Échec de l'authentification.",
+    "errorMessage": "Message d'erreur",
+
+    "redirectingToLogin": "Redirection vers la page de connexion...",
+    "oauthProcessing": "Traitement de l'authentification...",
+    "pleaseWait": "Veuillez patienter pendant que nous vous connectons.",
+    "forgotPassword": "Mot de passe oublié ?",
+
+    "signedOutMessage": "Vous avez été déconnecté. Veuillez vous reconnecter pour accéder à votre tableau de bord.",
+    "sessionExpiredMessage": "Votre session a expiré en raison d’une période d’inactivité. Veuillez vous reconnecter pour continuer.",
+    "registrationCompleteMessage": "Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter avec vos nouveaux identifiants.",
+    "passwordResetMessage": "Votre mot de passe a été réinitialisé avec succès. Veuillez vous connecter avec votre nouveau mot de passe."
+  },
+  "RegisterFormComponent": {
+    "title": "Créer votre compte",
+    "fullName": "Nom complet",
+    "email": "Adresse e-mail",
+    "phoneNumber": "Numéro de téléphone",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+
+    "registerButton": "Créer un compte",
+
+    "alreadyHaveAccount": "Vous avez déjà un compte ? Connectez-vous",
+
+    "signUpWithGoogle": "S’inscrire avec Google",
+    "signUpWithFacebook": "S’inscrire avec Facebook",
+
+    "passwordMismatch": "Les mots de passe ne correspondent pas.",
+    "registrationFailed": "Échec de l'inscription. Veuillez réessayer.",
+    "registrationSuccess": "Inscription réussie ! Vous pouvez maintenant vous connecter.",
+
+    "backToLogin": "Retour à la connexion",
+    "errorPrefix": "Erreur"
+  },
+  "ResetPassword": {
+    "title": "Réinitialiser votre mot de passe",
+    "email": "Adresse e-mail",
+    "phoneNumber": "Numéro de téléphone",
+    "use": "Utiliser",
+    "resetButton": "Envoyer le lien de réinitialisation",
+    "sending": "Envoi en cours...",
+    "resetSuccess": "Si le compte existe, un lien de réinitialisation a été envoyé.",
+    "resetFailed": "Impossible de traiter la demande de réinitialisation.",
+    "backToLogin": "Retour à la connexion",
+    "invalidPhoneNumber": "Veuillez saisir un numéro de téléphone valide.",
+    "resetLinkSent": "Si le compte existe, un lien de réinitialisation a été envoyé.",
+    "errorPrefix": "Erreur",
+    "resetLinkTitle": "Lien de réinitialisation envoyé",
+    "resetLinkDescription":
+    "Un lien de réinitialisation de votre mot de passe a été envoyé à {email}. Veuillez vérifier votre boîte de réception et cliquer sur le lien pour réinitialiser votre mot de passe."
+  },
+  "AddReceiverAccountPage": {
+    "pageTitle": "Ajouter un compte bénéficiaire",
+    "loginRequiredMessage": "Veuillez vous connecter pour voir et ajouter des comptes bénéficiaires."
+  },
+  "AddReceiverAccountForm": {
+    "wechat": "WeChat",
+    "alipay": "Alipay",
+    "bank": "Banque",
+    "receiver": "Bénéficiaire",
+    "receiverAccountType": "Type de compte bénéficiaire",
+    "selectCategoryPlaceholder": "Sélectionnez WeChat, Alipay ou Banque",
+    "accountDetails": "Détails du compte {categoryName}",
+    "accountName": "Nom du compte {categoryName}",
+    "accountNamePlaceholder": "ex: Mon compte {categoryName}",
+    "accountIdentification": "Identification du compte",
+    "qrCodeImage": "Image du code QR",
+    "email": "E-mail",
+    "phoneNumber": "Numéro de téléphone",
+    "emailPlaceholder": "beneficiaire@exemple.com",
+    "phoneNumberPlaceholder": "ex: +861234567890",
+    "useEmailInstead": "Utiliser l'e-mail à la place",
+    "usePhoneNumberInstead": "Utiliser le numéro de téléphone à la place",
+    "useQrCodeInstead": "Utiliser le code QR à la place",
+    "bankName": "Nom de la banque",
+    "bankNamePlaceholder": "ex: Banque Industrielle et Commerciale de Chine",
+    "cardHolderName": "Nom du titulaire de la carte",
+    "cardHolderNamePlaceholder": "ex: Jean Dupont",
+    "bankAccountNumber": "Numéro de compte bancaire",
+    "bankAccountNumberPlaceholder": "ex: 1234567890",
+    "selectBankPlaceholder": "Sélectionnez une banque",
+    "addAccountButton": "Ajouter un compte",
+    "addingAccountButton": "Ajout du compte...",
+    "bankLabel": "Banque",
+    "searchBankPlaceholder": "Rechercher une banque...",
+    "selectedBankLogoAlt": "Logo de la banque sélectionnée",
+    "qrCodePreviewAlt": "Aperçu de l'image du code QR",
+    "chooseFile": "Choisir un fichier",
+    "noFileSelected": "Aucun fichier sélectionné",
+    "qrcodeIdentifier": "Code QR",
+    "phoneIdentifier": "Numéro de Téléphone",
+    "emailIdentifier": "Adresse E-mail",
+    "selectIdentifierPlaceholder": "Sélectionnez un code QR, un numéro de téléphone ou un e-mail",
+    "receiverAccountIdentifier": "Identifiant",
+    "reset": "Réinitialiser",
+    "success": "Compte bénéficiaire ajouté avec succès",
+    "error": "Erreur",
+    "submissionError": "Échec de l’ajout du compte bénéficiaire. Veuillez réessayer."
+  },
+  "ReceiverAccountsPage": {
+    "pageTitle": "Gérer les comptes de bénéficiaires",
+    "chooseReceiverAccountTitle": "Choisir un compte bénéficiaire",
+    "addReceiverAccountButton": "Ajouter un Compte Bénéficiaire"
+  },
+  "ReceiverAccountsTable": {
+    "noAccountsFound": "Aucun compte de bénéficiaire trouvé.",
+    "accountName": "Nom du compte",
+    "accountCategory": "Catégorie",
+    "identifierType": "Type d'identifiant",
+    "identifierValue": "Valeur de l'identifiant",
+    "bankName": "Nom de la banque",
+    "country": "Pays",
+    "cardHolderName": "Nom du titulaire de la carte",
+    "creationDate": "Date de création",
+    "qrCodeLink": "Lien du code QR",
+    "noQrCode": "Pas de code QR",
+    "notApplicable": "N/A",
+    "alipay_account": "Compte Alipay",
+    "wechat_account": "Compte WeChat",
+    "bank_account": "Compte bancaire",
+    "qr_code_image": "Image du code QR",
+    "email": "E-mail",
+    "phone_number": "Numéro de téléphone",
+    "bank_account_number": "Numéro de compte bancaire",
+    "cardHolderNameHint": "nom du titulaire de la carte pour les comptes bancaires",
+    "none": "Aucun"
+  },
+  "TransferRequestsPage": {
+    "pageTitle": "Demandes de Transfert",
+    "applyForTransferButtonLabel": "Demander un transfert"
+  },
+  "TransferRequestsForm": {
+    "noTransferRequestsFound": "Aucune demande de transfert trouvée.",
+    "amount": "Montant",
+    "currencyId": "ID de Devise",
+    "rate": "Taux",
+    "remark": "Remarque",
+    "receiverAccountCategory": "Catégorie de Compte Bénéficiaire",
+    "receiverAccountId": "ID de Compte Bénéficiaire",
+    "clientId": "ID Client",
+    "countryOfDepositId": "ID du Pays de Dépôt",
+    "noRemark": "N/A",
+    "alipay_account": "Compte Alipay",
+    "wechat_account": "Compte WeChat",
+    "bank_account": "Compte Bancaire"
+  },
+  "ApplyForTransferPage": {
+    "pageTitle": "Demander un Transfert",
+    "applyForTransferButtonLabel": "Demander un transfert"
+  },
+  "ReceiverAccountDetailsPage": {
+    "pageTitle": "Détails du Compte Bénéficiaire",
+    "errorLoadingAccountDetails": "Erreur lors du chargement des détails du compte. Veuillez réessayer.",
+    "generalDetails": "Détails Généraux",
+    "receiverAccountId": "ID du Compte",
+    "receiverAccountName": "Nom du Compte",
+    "receiverAccountCategory": "Catégorie de Compte",
+    "receiverAccountIdentifier": "Type d'Identifiant",
+    "identifierValue": "Valeur de l'Identifiant",
+    "notApplicable": "N/A",
+    "viewQrCode": "Voir le Code QR",
+    "noQrCode": "Pas de Code QR",
+    "qrCodeImage": "Image du Code QR",
+    "viewImage": "Voir l'image",
+    "email": "E-mail",
+    "phoneNumber": "Numéro de Téléphone",
+    "bankDetails": "Détails Bancaires",
+    "bankAccountNumber": "Numéro de Compte Bancaire",
+    "cardHolderName": "Nom du Titulaire de la Carte",
+    "bankName": "Nom de la Banque",
+    "bankLogo": "Logo de la Banque",
+    "bankCountry": "Pays de la Banque",
+    "additionalInfo": "Informations Supplémentaires",
+    "clientId": "ID Client",
+    "creationDate": "Date de Création",
+    "lastUpdatedDate": "Date de Dernière Mise à Jour",
+    "alipay_account": "Compte Alipay",
+    "wechat_account": "Compte WeChat",
+    "bank_account": "Compte Bancaire",
+    "qr_code_image": "Image du Code QR",
+    "phone_number": "Numéro de Téléphone",
+    "none": "Aucun",
+    "accountLimits": "Limites du Compte",
+    "accountBalance": "Solde du Compte",
+    "accountLimit": "Plafond",
+    "bank_account_number": "Numéro de compte bancaire"
+  },
+  "TopUpDetailsPage": {
+    "pageTitle": "Recharger le Compte"
+  },
+  "TopUpDetailsForm": {
+    "summaryDetails": "Détails Récapitulatifs",
+    "receiverAccountName": "Nom du Compte Bénéficiaire",
+    "receiverAccountType": "Type de Compte Bénéficiaire",
+    "countryOfDeposit": "Pays de Dépôt",
+    "topUpMethodLabel": "Méthode de Recharge",
+    "exchangeRateCnyToDestLabel": "Taux CNY vers Devise Locale",
+    "exchangeRateDestToCnyLabel": "Taux Devise Locale vers CNY",
+    "amountIn": "Montant en",
+    "amountInCNY": "Montant en CNY",
+    "amountInCNYPlaceholder": "ex., 1000",
+    "amountInDestinationCurrency": "Montant en Devise Locale",
+    "amountInDestinationCurrencyPlaceholder": "ex., 500",
+    "proofPicture": "Preuve de Paiement (Photo)",
+    "submitTopUp": "Soumettre la Demande de Recharge",
+    "submittingTopUp": "Envoi en cours...",
+    "reset": "Réinitialiser",
+    "topUpSuccessMessage": "Demande de recharge soumise avec succès : {message}",
+    "submissionError": "Erreur de Soumission",
+    "missingAmount": "Le montant en CNY ou en devise locale doit être fourni.",
+    "proofPictureRequired": "La preuve de paiement (photo) est requise.",
+    "alipay": "Compte Alipay",
+    "wechat": "Compte WeChat",
+    "bank": "Compte Bancaire",
+    "unknownCategory": "Catégorie de Compte Inconnue",
+    "sendingFee": "Frais d’envoi",
+    "topUpMethod": {
+      "MOBILE_MONEY": "MTN Mobile Money",
+      "WAVE": "Wave",
+      "ORANGE_MONEY": "Orange Money",
+      "CASH": "Espèces",
+      "BANK": "Banque"
+    },
+    "currency": {
+      "CNY": "¥",
+      "XAF": "FCFA",
+      "USD": "$",
+      "EUR": "€",
+      "GBP": "£",
+      "XOF": "XOF"
+    }
+  },
+  "TopUpRequestsPage": {
+    "pageTitle": "Mes Demandes de Recharge",
+    "topUp": "Recharger"
+  },
+  "TopUpRequestsTable": {
+    "topUpId": "ID Recharge",
+    "receiverAccountId": "ID Compte Bénéficiaire",
+    "amountInCNY": "Montant (CNY)",
+    "amountInDestinationCurrency": "Montant (Devise Dest.)",
+    "destinationCurrency": "Devise Dest.",
+    "sendingFee": "Frais d'envoi",
+    "sendingFeeCurrency": "Devise Frais",
+    "countryOfDeposit": "Pays de Dépôt",
+    "topUpMethodLabel": "Méthode de Recharge",
+    "proofPicture": "Preuve Photo",
+    "status": "Statut",
+    "viewProof": "Voir Preuve",
+    "noProof": "Pas de Preuve",
+    "approved": "Approuvée",
+    "pending": "En Attente",
+    "noTopUpRequestsFound": "Aucune demande de recharge trouvée.",
+    "topUpMethod": {
+      "MOBILE_MONEY": "MTN Mobile Money",
+      "WAVE": "Wave",
+      "ORANGE_MONEY": "Orange Money",
+      "CASH": "Espèces",
+      "BANK": "Banque"
+    }
+  },
+  "TopUpMethod": {
+    "MOBILE_MONEY": "MTN Mobile Money",
+    "WAVE": "Wave",
+    "ORANGE_MONEY": "Orange Money",
+    "CASH": "Espèces",
+    "BANK": "Banque"
+  },
+  "CountryAndMethodSelectorPage": {
+    "pageTitle": "Sélectionner le Pays et la Méthode de Recharge",
+    "errorFetchingAccount": "Erreur lors de la récupération des détails du compte.",
+    "errorFetchingCountries": "Erreur lors de la récupération des pays."
+  },
+  "CountryAndMethodSelectorForm": {
+    "countryOfDeposit": "Pays de Dépôt",
+    "selectCountryPlaceholder": "Sélectionnez le pays de dépôt",
+    "topUpMethod": "Méthode de Recharge",
+    "selectTopUpMethodPlaceholder": "Sélectionnez une méthode de recharge",
+    "continueButton": "Continuer",
+    "topUpSuccessMessage": "Demande de recharge soumise avec succès : {message}",
+    "submissionError": "Erreur de Soumission",
+    "selectionSuccessful": "Sélection réussie !",
+    "missingAmount": "Le montant en CNY ou en devise locale doit être fourni.",
+    "proofPictureRequired": "La preuve de paiement (photo) est requise."
+  },
+  "InstructionsPage": {
+    "instructionsTitle": "Instructions de Recharge",
+    "forAccount": "Pour le Compte ID : {accountId}",
+    "selectedMethod": "Méthode sélectionnée : {method} en {country}",
+    "stepsHeading": "Étapes à Suivre",
+    "instructionsForTransfer": "Instructions pour votre Virement",
+    "step1Details": "Étape 1 : Vérifiez les détails du compte - Catégorie de compte : {accountCategory}, Identifiant : {accountIdentifier}, ID : {accountId}.",
+    "step2Method": "Étape 2 : Utilisez la méthode de recharge '{method}'.",
+    "step3Country": "Étape 3 : Assurez-vous que le dépôt provient du pays avec l'ID : {countryId}.",
+    "step4BankDetails": "Étape 4 : Les détails bancaires spécifiques ou les informations de paiement vous seront fournis sur l'écran suivant.",
+    "step5Reference": "Étape 5 : N'oubliez pas d'inclure tout numéro de référence fourni dans votre virement.",
+    "errorLoadingInstructions": "Erreur lors du chargement des instructions.",
+    "tryAgainMessage": "Veuillez réessayer ou contacter le support.",
+    "noInstructionsFound": "Aucune instruction trouvée pour cette sélection.",
+    "pleaseGoBack": "Veuillez revenir en arrière et réessayer."
+  },
+  "ZodMessages": {
+    "CountryAndMethodSchema": {
+      "countryOfDepositId": "Le pays de dépôt est requis.",
+      "topUpMethod": "La méthode de recharge est requise."
+    }
+  },
+  "UserProfile": {
+    "yourProfile": "Votre profil",
+    "editSettings": "Modifier les paramètres",
+    "changeProfilePicture": "Changer la photo",
+    "fullName": "Nom complet",
+    "username": "Nom d'utilisateur",
+    "email": "Adresse e-mail",
+    "registeredOn": "Inscrit le",
+    "uploading": "Téléchargement en cours..."
+  },
+  "SignOutButton": {
+    "logout": "Se déconnecter",
+    "logoutConfirmation": "Êtes-vous sûr de vouloir vous déconnecter ?",
+    "confirm": "Confirmer",
+    "cancel": "Annuler"
+  },
+  "Settings": {
+    "settingsTitle": "Paramètres",
+    "thirdPartyLogin": "Ajouter une connexion tierce",
+    "addNow": "Ajouter maintenant",
+    "addEmail": "Ajouter une adresse e-mail",
+    "emailNotSet": "Vous n'avez pas encore ajouté d'adresse e-mail à votre compte.",
+    "addPhoneNumber": "Ajouter un numéro de téléphone",
+    "phoneNotSet": "Vous n'avez pas encore ajouté de numéro de téléphone.",
+    "changePassword": "Changer le mot de passe",
+    "updateNow": "Mettre à jour",
+    "addPasswordLogin": "Ajouter une connexion par mot de passe",
+    "logout": "Se déconnecter",
+    "logoutConfirmation": "Êtes-vous sûr de vouloir vous déconnecter ?"
+  },
+  "UserDetailsCard": {
+    "yourDetails": "Vos informations",
+    "fullName": "Nom complet",
+    "username": "Nom d'utilisateur",
+    "email": "Adresse e-mail",
+    "phoneNumber": "Numéro de téléphone",
+    "registeredOn": "Inscrit le",
+    "edit": "Modifier",
+    "cancel": "Annuler",
+    "saveChanges": "Enregistrer les modifications",
+    "saving": "Enregistrement...",
+    "profileUpdated": "Profil mis à jour avec succès.",
+    "updateFailed": "Échec de la mise à jour du profil.",
+    "viewDetails": "Voir les détails de l’utilisateur"
+  },
+  "ResetPasswordPage": {
+    "title": "Réinitialiser votre mot de passe"
+  },
+
+  "ResetPasswordForm": {
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+
+    "submitButton": "Réinitialiser le mot de passe",
+    "submitting": "Réinitialisation...",
+
+    "passwordMismatch": "Les mots de passe ne correspondent pas.",
+    "invalidLink": "Lien de réinitialisation invalide ou expiré.",
+    "resetFailed": "Impossible de réinitialiser le mot de passe. Veuillez réessayer.",
+    "resetSuccess": "Votre mot de passe a été réinitialisé avec succès.",
+
+    "errorPrefix": "Erreur",
+    "successTitle": "Succès 🎉"
+  }
+
+}
