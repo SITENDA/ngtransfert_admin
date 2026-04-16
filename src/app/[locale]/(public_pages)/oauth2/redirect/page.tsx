@@ -5,7 +5,7 @@
 // import {User} from "next-auth";
 // import {getLocale} from "next-intl/server";
 //
-// export const metadata = {
+// export const metadata: Metadata = {
 //     title: "Processing Authentication...",
 // };
 //
@@ -100,16 +100,15 @@
 
 // ✅ SERVER COMPONENT ONLY
 
-// ✅ SERVER COMPONENT ONLY
-
 import { redirect } from "next/navigation";
 import { randomUUID } from "crypto";
 import { saveSession } from "@/lib/sessionStore";
 import { setSessionCookie } from "@/lib/cookies";
 import { getLocale } from "next-intl/server";
 import { mapBackendUserToBffUser } from "@/lib/mappers/mapBackendUserToBffUser";
+import {Metadata} from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Signing you in...",
 };
 

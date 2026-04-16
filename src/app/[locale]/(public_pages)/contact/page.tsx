@@ -2,8 +2,9 @@ import * as React from "react";
 import PublicWrapper from "@/components/PublicWrapper";
 import ContactUsForm from "@/app/[locale]/(public_pages)/contact/ContactUsForm";
 import {useTranslations} from 'next-intl';
+import {Metadata} from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Contact Us",
 }
 

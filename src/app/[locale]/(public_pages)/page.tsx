@@ -7,8 +7,9 @@ import getSession from "@/lib/getSession";
 import PublicWrapper from "@/components/PublicWrapper";
 import CarouselSection from "@/components/CarouselSection";
 import AuthRedirector from "@/components/AuthRedirector";
+import {Metadata} from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Home Page | NG Transfert",
 };
 

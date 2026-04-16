@@ -13,6 +13,7 @@
     "clientDashboardTitle": "客户控制面板",
     "addReceiverAccountButton": "添加收款账户",
     "welcomeMessage": "欢迎回来，{userName}！",
+    "defaultUserName": "用户",
     "yourAccountsSectionTitle": "我的账户",
     "receiverAccountsLink": "收款账户",
     "sendingRecordsSectionTitle": "发送记录",

@@ -26,9 +26,10 @@ export default function PublicHeader() {
                         <Image
                             src={transparentIcon}
                             alt="NG Transfert Logo"
-                            width={48}
-                            height={48}
-                            className="h-10 w-10 object-contain"
+                            width={70}
+                            height={70}
+                            className="h-16 w-16 object-contain"
+                            priority
                         />
                         <span className="hidden sm:block text-xl font-bold">
                             NG Transfert

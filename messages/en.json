@@ -13,6 +13,7 @@
     "clientDashboardTitle": "Client Dashboard",
     "addReceiverAccountButton": "Add Receiver Account",
     "welcomeMessage": "Welcome back, {userName}!",
+    "defaultUserName": "User",
     "yourAccountsSectionTitle": "Your Accounts",
     "receiverAccountsLink": "Receiver Accounts",
     "sendingRecordsSectionTitle": "Sending Records",

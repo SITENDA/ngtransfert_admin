@@ -28,6 +28,7 @@ export default async function Header() {
                         width={70}
                         height={70}
                         className="h-16 w-16 object-contain"
+                        priority
                     />
                     <h1 className="text-2xl font-bold hidden sm:block">
                         NG Transfert
@@ -78,7 +79,7 @@ export default async function Header() {
                                         alt="User profile"
                                         width={36}
                                         height={36}
-                                        className="rounded-full object-cover"
+                                        className="w-9 h-9 rounded-full object-cover"
                                         unoptimized
                                     />
                                 ) : (

@@ -13,6 +13,7 @@
     "clientDashboardTitle": "Tableau de Bord Client",
     "addReceiverAccountButton": "Ajouter un Compte Bénéficiaire",
     "welcomeMessage": "Bienvenue, {userName} !",
+    "defaultUserName": "Utilisateur",
     "yourAccountsSectionTitle": "Vos Comptes",
     "receiverAccountsLink": "Comptes Bénéficiaires",
     "sendingRecordsSectionTitle": "Historique des Envois",

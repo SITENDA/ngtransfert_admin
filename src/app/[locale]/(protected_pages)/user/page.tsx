@@ -8,8 +8,9 @@ import { getLocale, getTranslations } from "next-intl/server";
 import getSession from "@/lib/getSession";
 import {generalPaths, kaasitomaPaths} from "@/util/frontend-paths";
 import ProfileImageChanger from "@/components/ProfileImageChanger";
+import {Metadata} from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "User Profile",
 };
 

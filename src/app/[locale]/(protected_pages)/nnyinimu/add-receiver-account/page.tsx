@@ -10,8 +10,9 @@ import {
     ReceiverAccountIdentifierEnum,
 } from "@/zod-schemas/receiver-account";
 import { RequestReceiverAccount } from "../../../../../../types/receiver-account";
+import {Metadata} from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Add Receiver Account",
 };
 

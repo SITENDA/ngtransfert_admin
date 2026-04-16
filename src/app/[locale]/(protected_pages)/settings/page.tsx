@@ -11,7 +11,7 @@
 //
 // // Dynamically import UserDetailsCard as it's a client component
 //
-// export const metadata = {
+// export const metadata: Metadata = {
 //     title: "Settings",
 // };
 //
@@ -111,8 +111,9 @@ import getSession from "@/lib/getSession";
 import { kaasitomaPaths } from "@/util/frontend-paths";
 import SignOutButton from "@/components/SignOutButton";
 import UserDetailsCard from "@/components/UserDetailsCard";
+import {Metadata} from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Settings",
 };
 

@@ -4,8 +4,9 @@
 // import { redirect } from "next/navigation";
 import AdminDashboardForm from "./AdminDashboardForm";
 import ProtectedWrapper from "@/components/ProtectedWrapper";
+import {Metadata} from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Dashboard",
 };
 

@@ -9,9 +9,10 @@ import {Link, redirect} from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { cookies, headers } from "next/headers";
 import {BackendGenericResponse} from "../../../../../types/BackendGenericResponse";
+import {Metadata} from "next";
 
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Dashboard", // This could also use t('dashboardTitle') if you want
 };
 
@@ -121,7 +122,7 @@ export default async function KaasitomaDashboardPage() {
 
                 <CardContent className="flex-grow p-6 space-y-8">
                     <div className="text-xl font-medium text-gray-800 dark:text-gray-200 mb-6">
-                        {t('welcomeMessage', { userName: user?.fullName })}! {/* Use userName placeholder */}
+                        {t('welcomeMessage', { userName: user?.fullName ?? "User" })}
                     </div>
 
                     {displayedContent}

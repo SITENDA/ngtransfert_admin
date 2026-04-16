@@ -14,17 +14,20 @@ export async function bffFetch(
 
     const { user, sessionId } = options.session;
 
-    // ✅ ONE token creator ONLY
     const bffToken = createBffToken({
         userId: user.userId,
         sessionId,
     });
 
-    // Forward cookies if needed
     const cookieHeader = (await cookies())
         .getAll()
-        .map(c => `${c.name}=${c.value}`)
+        .map((c) => `${c.name}=${c.value}`)
         .join("; ");
+
+    // 🔥 DEV ONLY: disable TLS verification
+    if (process.env.NODE_ENV !== "production") {
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    }
 
     return fetch(url, {
         ...options,

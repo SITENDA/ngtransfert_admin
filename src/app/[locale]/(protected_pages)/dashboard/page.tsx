@@ -7,8 +7,9 @@ import {redirect} from "next/navigation";
 import getSession from "@/lib/getSession";
 import {kaasitomaPaths} from "@/util/frontend-paths";
 import ProtectedWrapper from "@/components/ProtectedWrapper";
+import {Metadata} from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Dashboard",
 };
 

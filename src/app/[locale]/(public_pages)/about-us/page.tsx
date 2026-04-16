@@ -1,8 +1,9 @@
 import * as React from "react";
 import PublicWrapper from "@/components/PublicWrapper";
 import { getTranslations } from "next-intl/server";
+import {Metadata} from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "About Us",
 };
 
