@@ -1,7 +1,8 @@
 // app/api/profile/upload/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import getBackEndApiUrl from "@/lib/getBackEndApiUrl";
 
-const BACKEND_API_BASE_URL = process.env.BACKEND_API_BASE_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
+const BACKEND_API_BASE_URL = getBackEndApiUrl();
 
 export async function POST(req: NextRequest) {
     const authorizationHeader = req.headers.get('authorization');

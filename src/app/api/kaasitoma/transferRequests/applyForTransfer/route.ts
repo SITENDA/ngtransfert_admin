@@ -1,7 +1,8 @@
 // src/app/api/kaasitoma/transferRequests/applyForTransfer/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import getBackEndApiUrl from "@/lib/getBackEndApiUrl";
 
-const BACKEND_API_BASE_URL = process.env.BACKEND_API_BASE_URL;
+const BACKEND_API_BASE_URL = getBackEndApiUrl();
 
 export async function POST(request: NextRequest) {
     console.log('DEBUG: Proxy API (/api/kaasitoma/transferRequests/applyForTransfer): Request received.');

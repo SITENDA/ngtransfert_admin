@@ -3,6 +3,7 @@
 import { NextResponse } from "next/server";
 import getSession from "@/lib/getSession";
 import { bffFetch } from "@/lib/bffFetch";
+import getBackEndApiUrl from "@/lib/getBackEndApiUrl";
 
 export async function GET() {
     const session = await getSession();
@@ -14,8 +15,7 @@ export async function GET() {
         );
     }
 
-    const backendUrl =
-        `${process.env.BACKEND_API_BASE_URL}/kaasitoma/getDashboardContent`;
+    const backendUrl = `${getBackEndApiUrl()}/kaasitoma/getDashboardContent`;
 
     const response = await bffFetch(backendUrl, {
         method: "GET",

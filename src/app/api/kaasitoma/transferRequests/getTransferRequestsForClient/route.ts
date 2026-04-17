@@ -1,7 +1,8 @@
 // src/app/api/kaasitoma/transferRequests/getTransferRequestsForClient/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import getBackEndApiUrl from "@/lib/getBackEndApiUrl";
 
-const BACKEND_API_BASE_URL = process.env.BACKEND_API_BASE_URL;
+const BACKEND_API_BASE_URL = getBackEndApiUrl();
 
 export async function GET(request: NextRequest) {
     // Check if the backend API base URL is configured.

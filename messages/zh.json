@@ -137,6 +137,7 @@
   "ResetPassword": {
     "title": "重置您的密码",
     "email": "电子邮箱地址",
+    "defaultEmail": "useremail@unset.com",
     "phoneNumber": "电话号码",
     "use": "使用",
     "resetButton": "发送重置链接",

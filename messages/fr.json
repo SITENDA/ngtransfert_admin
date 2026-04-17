@@ -137,6 +137,7 @@
   "ResetPassword": {
     "title": "Réinitialiser votre mot de passe",
     "email": "Adresse e-mail",
+    "defaultEmail": "useremail@unset.com",
     "phoneNumber": "Numéro de téléphone",
     "use": "Utiliser",
     "resetButton": "Envoyer le lien de réinitialisation",

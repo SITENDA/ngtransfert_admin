@@ -5,6 +5,7 @@ import { BackendHttpResponse } from "../../types/BackendHttpResponse";
 import { FetchBackendResult } from "../../types/fetchBackendResult";
 import { forceLogout } from "@/lib/server/forceLogout";
 import { ensureValidAccessToken } from "@/lib/server/ensureValidAccessToken";
+import getBackEndApiUrl from "@/lib/getBackEndApiUrl";
 
 /**
  * Fetch backend data using BFF-controlled session.
@@ -39,8 +40,7 @@ export async function fetchBackendData<T>(
     /* -------------------------------------------------
      * 3️⃣ Call backend (COOKIE-BASED AUTH)
      * ------------------------------------------------- */
-    const backendApiBaseUrl =
-        process.env.BACKEND_API_BASE_URL || "https://localhost:8080";
+    const backendApiBaseUrl = getBackEndApiUrl();
 
     let response: Response;
 

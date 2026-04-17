@@ -1,3 +1,5 @@
+//  src/app/api/auth/login/route.ts
+
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { saveSession } from "@/lib/sessionStore";
@@ -5,6 +7,7 @@ import { mapBackendUserToBffUser } from "@/lib/mappers/mapBackendUserToBffUser";
 import { BackendHttpResponse } from "../../../../../types/BackendHttpResponse";
 import { BackendLoginPayload } from "../../../../../types/BackendLoginPayload";
 import { setSessionCookie } from "@/lib/cookies";
+import getBackEndApiUrl from "@/lib/getBackEndApiUrl";
 
 // ✅ DEV ONLY: allow self-signed HTTPS
 if (process.env.NODE_ENV === "development") {
@@ -14,7 +17,7 @@ if (process.env.NODE_ENV === "development") {
 export async function POST(req: Request) {
     const body = await req.json();
 
-    const springRes = await fetch(`${process.env.BACKEND_API_BASE_URL}/auth/login`, {
+    const springRes = await fetch(`${getBackEndApiUrl()}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),

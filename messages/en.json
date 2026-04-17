@@ -140,6 +140,7 @@
   "ResetPassword": {
     "title": "Reset your password",
     "email": "Email address",
+    "defaultEmail": "useremail@unset.com",
     "phoneNumber": "Phone number",
     "use": "Use",
     "resetButton": "Send reset link",

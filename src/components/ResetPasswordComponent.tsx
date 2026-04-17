@@ -25,6 +25,7 @@ export default function ResetPasswordComponent() {
     const [validPhoneNumber, setValidPhoneNumber] = useState(false);
     const [usePhone, setUsePhone] = useState(false);
     const [sentTo, setSentTo] = useState<string | null>(null);
+    const defaultUserEmail = t('defaultEmail');
 
 
     const [error, setError] = useState<string | null>(null);
@@ -104,7 +105,7 @@ export default function ResetPasswordComponent() {
                 ">
                     <CheckCircle className="w-6 h-6 animate-bounce"/>
                     <span className="font-medium">
-                        {t("resetLinkDescription", { email: sentTo })}
+                        {t("resetLinkDescription", { email: sentTo ?? defaultUserEmail})}
                     </span>
                 </div>
             )}
