@@ -17,11 +17,28 @@ if (process.env.NODE_ENV === "development") {
 export async function POST(req: Request) {
     const body = await req.json();
 
-    const springRes = await fetch(`${getBackEndApiUrl()}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-    });
+    const backendUrl = `${getBackEndApiUrl()}/auth/login`;
+
+    console.log("🚀 BFF sending request to:", backendUrl);
+    console.log("📦 Payload:", body);
+
+    let springRes;
+
+    try {
+        springRes = await fetch(backendUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+        });
+    } catch (err) {
+        console.error("❌ Fetch failed BEFORE reaching backend:", err);
+        return NextResponse.json(
+            { success: false, message: "Backend unreachable" },
+            { status: 500 }
+        );
+    }
+
+    console.log("📡 Response status:", springRes.status);
 
     const text = await springRes.text();
 
