@@ -12,10 +12,18 @@ export async function setSessionCookie(sessionId: string) {
     const isHttps = forwardedProto === "https";
     const isProduction = process.env.NODE_ENV === "production";
 
+    // cookieStore.set(SESSION_COOKIE, sessionId, {
+    //     httpOnly: true,
+    //     secure: isProduction || isHttps,
+    //     sameSite: "lax",
+    //     path: "/",
+    //     maxAge: 60 * 60 * 24 * 7,
+    // });
+
     cookieStore.set(SESSION_COOKIE, sessionId, {
         httpOnly: true,
-        secure: isProduction || isHttps,
-        sameSite: "lax",
+        secure: true,                // 🔥 ALWAYS true in production
+        sameSite: "none",            // 🔥 REQUIRED for subdomain calls
         path: "/",
         maxAge: 60 * 60 * 24 * 7,
     });
