@@ -8,6 +8,9 @@ import { BackendHttpResponse } from "../../../../../types/BackendHttpResponse";
 import { BackendLoginPayload } from "../../../../../types/BackendLoginPayload";
 import { setSessionCookie } from "@/lib/cookies";
 import getBackEndApiUrl from "@/lib/getBackEndApiUrl";
+import {getBffIdentityFromLogin, LoginRequestSchema} from "../../../../../types/LoginRequest";
+import {bffFetch} from "@/lib/bffFetch";
+
 
 // ✅ DEV ONLY: allow self-signed HTTPS
 if (process.env.NODE_ENV === "development") {
@@ -15,53 +18,51 @@ if (process.env.NODE_ENV === "development") {
 }
 
 export async function POST(req: Request) {
-    const body = await req.json();
+    const rawBody = await req.json();
+
+    const parsed = LoginRequestSchema.safeParse(rawBody);
+    if (!parsed.success) {
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Invalid login request",
+                errors: parsed.error.flatten(),
+            },
+            { status: 400 }
+        );
+    }
+
+    const body = parsed.data;
 
     const backendUrl = `${getBackEndApiUrl()}/auth/login`;
 
     console.log("🚀 BFF sending request to:", backendUrl);
-    console.log("📦 Payload:", body);
+    console.log("📦 Payload:", {
+        ...body,
+        password: "[REDACTED]",
+    });
 
-    let springRes;
+    const { identifierType, identifierValue } = getBffIdentityFromLogin(body);
 
-    try {
-        springRes = await fetch(backendUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body),
-        });
-    } catch (err) {
-        console.error("❌ Fetch failed BEFORE reaching backend:", err);
+    const result = await bffFetch<BackendHttpResponse<BackendLoginPayload | null>>({
+        url: backendUrl,
+        method: "POST",
+        body,
+        identifierType,
+        identifierValue,
+    });
+
+    if (!result.ok || !result.data?.data) {
         return NextResponse.json(
-            { success: false, message: "Backend unreachable" },
-            { status: 500 }
+            {
+                success: false,
+                message: result.error || "Invalid credentials",
+            },
+            { status: result.status }
         );
     }
 
-    console.log("📡 Response status:", springRes.status);
-
-    const text = await springRes.text();
-
-    let json: BackendHttpResponse<BackendLoginPayload | null>;
-
-    try {
-        json = JSON.parse(text);
-    } catch {
-        console.error("❌ Backend returned non-JSON:", text);
-        return NextResponse.json(
-            { success: false, message: "Server error. Please try again." },
-            { status: 500 }
-        );
-    }
-
-    if (!springRes.ok || !json.data) {
-        return NextResponse.json(
-            { success: false, message: json.message || "Invalid credentials" },
-            { status: json.statusCode || 401 }
-        );
-    }
-
-    const { user, accessToken, refreshToken, accessTokenExpiresAt } = json.data;
+    const { user, accessToken, refreshToken, accessTokenExpiresAt } =  result.data.data;
 
     const bffUser = mapBackendUserToBffUser(user);
     const sessionId = randomUUID();

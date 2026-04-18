@@ -8,8 +8,8 @@ import {DashboardDataPayload} from "../../../../../types/dashboardContent";
 import {Link, redirect} from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { cookies, headers } from "next/headers";
-import {BackendGenericResponse} from "../../../../../types/BackendGenericResponse";
 import {Metadata} from "next";
+import {BackendHttpResponse} from "../../../../../types/BackendHttpResponse";
 
 
 export const metadata: Metadata = {
@@ -57,7 +57,7 @@ export default async function KaasitomaDashboardPage() {
     if (!response.ok) {
         console.error("Failed to fetch dashboard content:", response.status);
     } else {
-        const data: BackendGenericResponse<DashboardDataPayload> =
+        const data: BackendHttpResponse<DashboardDataPayload> =
             await response.json();
 
         receiverAccountsCount = data.data?.receiverAccountsCount ?? 0;

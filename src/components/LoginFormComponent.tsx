@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { PhoneNumberInput } from "@/components/PhoneNumberInput";
 import { useRouter } from "@/i18n/navigation";
 import {generalPaths, kaasitomaPaths} from "@/util/frontend-paths";
+import {UserIdentifierEnum} from "../../types/UserIdentifier";
+import {LoginRequest} from "../../types/LoginRequest";
 
 export default function LoginFormComponent() {
     const t = useTranslations("LoginFormComponent");
@@ -58,18 +60,16 @@ export default function LoginFormComponent() {
         }
 
         try {
+            const payload: LoginRequest = { identifier: loginWithPhone ? UserIdentifierEnum.enum.PHONE_NUMBER  : UserIdentifierEnum.enum.EMAIL,
+                email: loginWithPhone ? "" : email, phoneNumber: loginWithPhone ? phoneNumber.startsWith("+")
+                    ? phoneNumber : `+${phoneNumber}` : "",
+                password,
+            };
+
             const res = await fetch("/api/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    identifier: loginWithPhone ? "phoneNumber" : "email",
-                    email: loginWithPhone ? "" : email,
-                    phoneNumber: loginWithPhone ? phoneNumber.startsWith("+")
-                            ? phoneNumber
-                            : `+${phoneNumber}`
-                        : "",
-                    password,
-                }),
+                body: JSON.stringify(payload),
             });
 
             const data = await res.json();

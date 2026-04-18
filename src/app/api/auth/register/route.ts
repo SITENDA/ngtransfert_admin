@@ -1,34 +1,57 @@
 // src/app/api/auth/register/route.ts
+
 import { NextResponse } from "next/server";
+import getBackEndApiUrl from "@/lib/getBackEndApiUrl";
+import { bffFetch } from "@/lib/bffFetch";
+import { getBffIdentityFromLogin } from "../../../../../types/LoginRequest";
+import {BackendHttpResponse} from "../../../../../types/BackendHttpResponse";
+import {BackendRegisterPayload} from "../../../../../types/BackendRegisterPayload"; // reuse same helper
 
 export async function POST(req: Request) {
     const body = await req.json();
 
-    // 1️⃣ Forward register request to Spring Boot
-    const springRes = await fetch(
-        `${process.env.BACKEND_URL}/auth/register`,
-        {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body),
-        }
-    );
+    const backendUrl = `${getBackEndApiUrl()}/auth/register`;
 
-    if (!springRes.ok) {
-        const error = await springRes.json().catch(() => ({}));
+    console.log("🚀 BFF sending REGISTER request to:", backendUrl);
+    console.log("📦 Payload:", {
+        ...body,
+        password: "[REDACTED]",
+    });
+
+    // 🔥 Reuse same identity extractor as login
+    let identifierType;
+    let identifierValue: string;
+
+    try {
+        const identity = getBffIdentityFromLogin(body);
+        identifierType = identity.identifierType;
+        identifierValue = identity.identifierValue;
+    } catch {
         return NextResponse.json(
-            {
-                success: false,
-                message: error.message || "Registration failed",
-            },
-            { status: springRes.status }
+            { success: false, message: "Invalid identifier type" },
+            { status: 400 }
         );
     }
 
-    // 2️⃣ Backend may return a message or user — we don’t care
-    await springRes.json().catch(() => null);
+    // 🔥 Use shared BFF fetch
+    const result = await bffFetch<BackendHttpResponse<BackendRegisterPayload | null>>({
+        url: backendUrl,
+        method: "POST",
+        body,
+        identifierType,
+        identifierValue,
+    });
 
-    // 3️⃣ SAFE response (no tokens, no cookies)
+    if (!result.ok) {
+        return NextResponse.json(
+            {
+                success: false,
+                message: result.error || "Registration failed",
+            },
+            { status: result.status }
+        );
+    }
+
     return NextResponse.json({
         success: true,
     });

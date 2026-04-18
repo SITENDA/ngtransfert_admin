@@ -1,20 +1,29 @@
+//  src/lib/createBffToken.ts
+
 import jwt from "jsonwebtoken";
+import { UserIdentifierType } from "../../types/UserIdentifier";
 
 interface CreateBffTokenInput {
-    userId: number | string;
+    identifierType: UserIdentifierType;
+    identifierValue: string | number;
     sessionId: string;
 }
 
-export function createBffToken({ userId, sessionId }: CreateBffTokenInput) {
+export function createBffToken({
+                                   identifierType,
+                                   identifierValue,
+                                   sessionId,
+                               }: CreateBffTokenInput) {
     return jwt.sign(
         {
             typ: "BFF",
-            uid: userId,
+            idt: identifierType,
+            idv: identifierValue,
             sid: sessionId,
         },
         process.env.BFF_SHARED_SECRET!,
         {
-            subject: String(userId), // 🔥 REQUIRED
+            subject: String(identifierValue),
             algorithm: "HS256",
             expiresIn: "30s",
             issuer: "ngtransfert-bff",

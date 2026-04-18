@@ -4,11 +4,14 @@ import { NextResponse } from "next/server";
 import getSession from "@/lib/getSession";
 import { bffFetch } from "@/lib/bffFetch";
 import getBackEndApiUrl from "@/lib/getBackEndApiUrl";
+import { BackendHttpResponse } from "../../../../../types/BackendHttpResponse";
+import { DashboardDataPayload } from "../../../../../types/dashboardContent";
+import { UserIdentifierEnum } from "../../../../../types/UserIdentifier";
 
 export async function GET() {
     const session = await getSession();
 
-    if (!session) {
+    if (!session || !session.user) {
         return NextResponse.json(
             { success: false, message: "Authentication required." },
             { status: 401 }
@@ -17,22 +20,29 @@ export async function GET() {
 
     const backendUrl = `${getBackEndApiUrl()}/kaasitoma/getDashboardContent`;
 
-    const response = await bffFetch(backendUrl, {
+    console.log("🚀 BFF sending DASHBOARD request to:", backendUrl);
+
+    const identifierType = UserIdentifierEnum.enum.USERID;
+    const identifierValue = String(session.user.userId);
+
+    const result = await bffFetch<BackendHttpResponse<DashboardDataPayload>>({
+        url: backendUrl,
         method: "GET",
-        session,
-        cache: "no-store",
+        identifierType,
+        identifierValue,
     });
 
-    const text = await response.text();
-
-    try {
-        return NextResponse.json(JSON.parse(text), {
-            status: response.status,
-        });
-    } catch {
+    if (!result.ok) {
         return NextResponse.json(
-            { success: false, message: text },
-            { status: response.status }
+            {
+                success: false,
+                message: result.error || "Failed to fetch dashboard content",
+            },
+            { status: result.status }
         );
     }
+
+    return NextResponse.json(result.data, {
+        status: result.status,
+    });
 }
