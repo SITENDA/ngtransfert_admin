@@ -20,27 +20,29 @@ export function buildImageUrl(
     category: ImageCategory = "profile_pictures"
 ): string {
     const baseUrl =
-        process.env.NEXT_PUBLIC_IMAGE_BASE_URL ||
-        (process.env.NODE_ENV === "production"
-            ? "https://back.ngtransfert.com/images"
-            : "http://localhost:8081/images");
+        process.env.NEXT_PUBLIC_IMAGE_BASE_URL || (process.env.NODE_ENV === "production" ? "https://back.ngtransfert.com/images" : "http://localhost:8081/images");
 
-    const safeBase = baseUrl.replace(/\/+$/g, "");
-    const raw = (fileNameOrPath?.trim() || FALLBACKS[category]);
-
-    if (/^https?:\/\//i.test(raw)) {
-        return raw;
+    if (process.env.NODE_ENV === "production") {
+        return fileNameOrPath || ""
     }
+    else {
+        const safeBase = baseUrl.replace(/\/+$/g, "");
+        const raw = (fileNameOrPath?.trim() || FALLBACKS[category]);
 
-    const safeRaw = normalizePart(raw);
+        if (/^https?:\/\//i.test(raw)) {
+            return raw;
+        }
 
-    if (
-        safeRaw.startsWith("profile_pictures/") ||
-        safeRaw.startsWith("proof_pictures/") ||
-        safeRaw.startsWith("receiver_qr_codes/")
-    ) {
-        return `${safeBase}/${safeRaw}`;
+        const safeRaw = normalizePart(raw);
+
+        if (
+            safeRaw.startsWith("profile_pictures/") ||
+            safeRaw.startsWith("proof_pictures/") ||
+            safeRaw.startsWith("receiver_qr_codes/")
+        ) {
+            return `${safeBase}/${safeRaw}`;
+        }
+
+        return `${safeBase}/${normalizePart(category)}/${safeRaw}`;
     }
-
-    return `${safeBase}/${normalizePart(category)}/${safeRaw}`;
 }

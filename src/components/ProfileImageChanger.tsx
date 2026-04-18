@@ -1,13 +1,9 @@
-//  src/components/ProfileImageChanger.tsx
-
 "use client";
 
 import React, { useRef, useState, useTransition } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
-import { buildImageUrl } from "@/util/buildImageUrl";
-import { NgtransfertImagesCategory } from "@/enums/NgtransfertImagesCategory";
 
 interface Props {
     profileImageUrl: string;
@@ -42,12 +38,7 @@ export default function ProfileImageChanger({ profileImageUrl }: Props) {
             const json = await res.json();
 
             if (json.success && json.user?.profileImageUrl) {
-                setImageUrl(
-                    buildImageUrl(
-                        json.user.profileImageUrl,
-                        NgtransfertImagesCategory.PROFILE_PICTURES
-                    )
-                );
+                setImageUrl(json.user.profileImageUrl);
             }
         });
     };
@@ -56,10 +47,10 @@ export default function ProfileImageChanger({ profileImageUrl }: Props) {
         <div className="flex-shrink-0 flex flex-col items-center">
             <Image
                 src={imageUrl}
-                alt="User Profile"
+                alt="Profile"
                 width={120}
                 height={120}
-                className="w-9 h-9 rounded-full object-cover border"
+                className="rounded-full object-cover border"
                 unoptimized
             />
 
