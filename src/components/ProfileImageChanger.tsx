@@ -47,10 +47,10 @@ export default function ProfileImageChanger({ profileImageUrl }: Props) {
         <div className="flex-shrink-0 flex flex-col items-center">
             <Image
                 src={imageUrl}
-                alt="Profile"
+                alt="User Profile"
                 width={120}
                 height={120}
-                className="rounded-full object-cover border"
+                className="w-9 h-9 rounded-full object-cover border"
                 unoptimized
             />
 
