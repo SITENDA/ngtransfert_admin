@@ -9,8 +9,6 @@ import getSession from "@/lib/getSession";
 import {generalPaths, kaasitomaPaths} from "@/util/frontend-paths";
 import ProfileImageChanger from "@/components/ProfileImageChanger";
 import {Metadata} from "next";
-import {buildImageUrl} from "@/util/buildImageUrl";
-import {NgtransfertImagesCategory} from "@/enums/NgtransfertImagesCategory";
 
 export const metadata: Metadata = {
     title: "User Profile",
@@ -51,7 +49,7 @@ export default async function UserProfilePage() {
                 </CardHeader>
 
                 <CardContent className="flex flex-col md:flex-row gap-8 p-6">
-                    <ProfileImageChanger profileImageUrl={buildImageUrl(user.profileImageUrl, NgtransfertImagesCategory.PROFILE_PICTURES)} />
+                    <ProfileImageChanger profileImageUrl={user.profileImageUrl || ""} />
 
                     <div className="flex-grow space-y-4">
                         <div>
