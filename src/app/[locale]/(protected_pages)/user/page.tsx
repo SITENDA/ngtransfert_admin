@@ -9,6 +9,7 @@ import getSession from "@/lib/getSession";
 import {generalPaths, kaasitomaPaths} from "@/util/frontend-paths";
 import ProfileImageChanger from "@/components/ProfileImageChanger";
 import {Metadata} from "next";
+import {buildImageUrl} from "@/util/buildImageUrl";
 
 export const metadata: Metadata = {
     title: "User Profile",
@@ -49,7 +50,7 @@ export default async function UserProfilePage() {
                 </CardHeader>
 
                 <CardContent className="flex flex-col md:flex-row gap-8 p-6">
-                    <ProfileImageChanger profileImageUrl={user.profileImageUrl ?? "/default-avatar.png"} />
+                    <ProfileImageChanger profileImageUrl={buildImageUrl(user.profileImageUrl) ?? "/default-avatar.png"} />
 
                     <div className="flex-grow space-y-4">
                         <div>
