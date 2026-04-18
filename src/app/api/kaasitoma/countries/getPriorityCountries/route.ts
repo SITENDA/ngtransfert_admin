@@ -1,14 +1,17 @@
 // src/app/api/kaasitoma/countries/getPriorityCountries/route.ts
+
 import { NextResponse } from "next/server";
 import getSession from "@/lib/getSession";
 import { bffFetch } from "@/lib/bffFetch";
+import getBackEndApiUrl from "@/lib/getBackEndApiUrl";
+import { UserIdentifierEnum } from "../../../../../../types/UserIdentifier";
 
 export async function GET() {
     console.log("API route: getPriorityCountries GET called");
 
-    // 🔐 Enforce session presence (BFF-level auth)
+    // 🔐 Enforce session
     const session = await getSession();
-    if (!session) {
+    if (!session || !session.user) {
         return NextResponse.json(
             { success: false, message: "Authentication required." },
             { status: 401 }
@@ -17,25 +20,32 @@ export async function GET() {
 
     // 🎯 Backend endpoint
     const backendUrl =
-        `${process.env.BACKEND_URL}/kaasitoma/countries/getPriorityCountries`;
+        `${getBackEndApiUrl()}/kaasitoma/countries/getPriorityCountries`;
 
-    // 🔁 Forward via BFF
-    const response = await bffFetch(backendUrl, {
+    console.log("🚀 BFF sending PRIORITY COUNTRIES request to:", backendUrl);
+
+    // 🔥 Same identity pattern as dashboard
+    const identifierType = UserIdentifierEnum.enum.USERID;
+    const identifierValue = String(session.user.userId);
+
+    const result = await bffFetch<any>({
+        url: backendUrl,
         method: "GET",
-        session, // 🔥 REQUIRED: binds BFF token to Redis session
+        identifierType,
+        identifierValue,
     });
 
-    const text = await response.text();
-
-    // 🧠 Defensive JSON handling (same as other routes)
-    try {
-        return NextResponse.json(JSON.parse(text), {
-            status: response.status,
-        });
-    } catch {
+    if (!result.ok) {
         return NextResponse.json(
-            { success: false, message: text },
-            { status: response.status }
+            {
+                success: false,
+                message: result.error || "Failed to fetch priority countries",
+            },
+            { status: result.status }
         );
     }
+
+    return NextResponse.json(result.data, {
+        status: result.status,
+    });
 }

@@ -3,12 +3,15 @@
 import { NextResponse } from "next/server";
 import getSession from "@/lib/getSession";
 import { bffFetch } from "@/lib/bffFetch";
+import getBackEndApiUrl from "@/lib/getBackEndApiUrl";
+import { UserIdentifierEnum } from "../../../../../../types/UserIdentifier";
 
 export async function GET() {
     console.log("API route: getAllTopUpRequests GET called");
 
     const session = await getSession();
-    if (!session) {
+
+    if (!session || !session.user) {
         return NextResponse.json(
             { success: false, message: "Authentication required." },
             { status: 401 }
@@ -16,24 +19,32 @@ export async function GET() {
     }
 
     const backendUrl =
-        `${process.env.BACKEND_URL}/kaasitoma/topUp/getAllTopUpRequests`;
+        `${getBackEndApiUrl()}/kaasitoma/topUp/getAllTopUpRequests`;
 
-    const response = await bffFetch(backendUrl, {
+    console.log("🚀 BFF sending TOP UP REQUESTS request to:", backendUrl);
+
+    // 🔥 Consistent identity pattern
+    const identifierType = UserIdentifierEnum.enum.USERID;
+    const identifierValue = String(session.user.userId);
+
+    const result = await bffFetch<any>({
+        url: backendUrl,
         method: "GET",
-        session, // 🔐 REQUIRED
-        cache: "no-store",
+        identifierType,
+        identifierValue,
     });
 
-    const text = await response.text();
-
-    try {
-        return NextResponse.json(JSON.parse(text), {
-            status: response.status,
-        });
-    } catch {
+    if (!result.ok) {
         return NextResponse.json(
-            { success: false, message: text },
-            { status: response.status }
+            {
+                success: false,
+                message: result.error || "Failed to fetch top up requests",
+            },
+            { status: result.status }
         );
     }
+
+    return NextResponse.json(result.data, {
+        status: result.status,
+    });
 }

@@ -49,11 +49,18 @@ export async function bffFetch<TResponse, TRequest = unknown>(
         res = await fetch(url, {
             method,
             headers: {
-                "Content-Type": "application/json",
+                ...(body instanceof FormData
+                    ? {}
+                    : { "Content-Type": "application/json" }),
                 "Authorization": `BFF ${bffToken}`,
             },
             ...(body !== undefined && method !== "GET"
-                ? { body: JSON.stringify(body) }
+                ? {
+                    body:
+                        body instanceof FormData
+                            ? body
+                            : JSON.stringify(body),
+                }
                 : {}),
             cache: "no-store",
         });
