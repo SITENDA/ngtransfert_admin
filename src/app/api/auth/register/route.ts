@@ -1,35 +1,95 @@
 // src/app/api/auth/register/route.ts
+
 import { NextResponse } from "next/server";
+import { randomUUID } from "crypto";
+
+import { createBffToken } from "@/lib/createBffToken";
+
+// ✅ DEV ONLY: allow self-signed HTTPS
+if (process.env.NODE_ENV === "development") {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+}
 
 export async function POST(req: Request) {
-    const body = await req.json();
+    try {
+        const body = await req.json();
 
-    // 1️⃣ Forward register request to Spring Boot
-    const springRes = await fetch(
-        `${process.env.BACKEND_URL}/auth/register`,
-        {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body),
+        // ✅ Create temporary internal BFF token
+        const internalSessionId = randomUUID();
+
+        const bffToken = createBffToken({
+            userId: "BFF_INTERNAL",
+            sessionId: internalSessionId,
+        });
+
+        console.log("Generated Register BFF token:", bffToken);
+
+        // ✅ Forward request to Spring Boot WITH BFF token
+        const springRes = await fetch(
+            `${process.env.BACKEND_API_BASE_URL}/auth/register`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+
+                    // ✅ IMPORTANT
+                    Authorization: `BFF ${bffToken}`,
+                },
+                body: JSON.stringify(body),
+            }
+        );
+
+        const text = await springRes.text();
+
+        let json: any = null;
+
+        try {
+            json = JSON.parse(text);
+        } catch {
+            console.error("❌ Backend returned non-JSON:", text);
+
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Server error. Please try again.",
+                },
+                {
+                    status: 500,
+                }
+            );
         }
-    );
 
-    if (!springRes.ok) {
-        const error = await springRes.json().catch(() => ({}));
+        if (!springRes.ok) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: json.message || "Registration failed",
+                },
+                {
+                    status: springRes.status,
+                }
+            );
+        }
+
+        // ✅ Safe response to browser
+        return NextResponse.json({
+            success: true,
+            message:
+                json.message ||
+                "Registration successful. Please verify your email.",
+        });
+
+    } catch (error) {
+        console.error("Register route error:", error);
+
         return NextResponse.json(
             {
                 success: false,
-                message: error.message || "Registration failed",
+                message: "Unexpected server error.",
             },
-            { status: springRes.status }
+            {
+                status: 500,
+            }
         );
     }
-
-    // 2️⃣ Backend may return a message or user — we don’t care
-    await springRes.json().catch(() => null);
-
-    // 3️⃣ SAFE response (no tokens, no cookies)
-    return NextResponse.json({
-        success: true,
-    });
 }
