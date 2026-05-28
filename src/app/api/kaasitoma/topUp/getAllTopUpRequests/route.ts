@@ -16,7 +16,7 @@ export async function GET() {
     }
 
     const backendUrl =
-        `${process.env.BACKEND_URL}/kaasitoma/topUp/getAllTopUpRequests`;
+        `${process.env.BACKEND_API_BASE_URL}/kaasitoma/topUp/getAllTopUpRequests`;
 
     const response = await bffFetch(backendUrl, {
         method: "GET",

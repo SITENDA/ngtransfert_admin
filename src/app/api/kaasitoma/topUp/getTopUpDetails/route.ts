@@ -25,7 +25,7 @@ export async function GET(req: Request) {
     }
 
     const backendUrl =
-        `${process.env.BACKEND_URL}/kaasitoma/topUp/getTopUpDetails` +
+        `${process.env.BACKEND_API_BASE_URL}/kaasitoma/topUp/getTopUpDetails` +
         `?receiverAccountId=${receiverAccountId}&countryId=${countryId}`;
 
     const response = await bffFetch(backendUrl, {

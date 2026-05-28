@@ -19,8 +19,8 @@ export async function GET(req: Request) {
 
     const backendUrl =
         type === "cash"
-            ? `${process.env.BACKEND_URL}/kaasitoma/cashDepositAddresses/getCashDepositAddressesByCountryId?countryId=${countryId}`
-            : `${process.env.BACKEND_URL}/kaasitoma/bankDepositAddresses/getBankDepositAddressesByCountryId?countryId=${countryId}`;
+            ? `${process.env.BACKEND_API_BASE_URL}/kaasitoma/cashDepositAddresses/getCashDepositAddressesByCountryId?countryId=${countryId}`
+            : `${process.env.BACKEND_API_BASE_URL}/kaasitoma/bankDepositAddresses/getBankDepositAddressesByCountryId?countryId=${countryId}`;
 
     const res = await bffFetch(backendUrl, {
         method: "GET",

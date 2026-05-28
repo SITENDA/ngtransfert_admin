@@ -15,6 +15,11 @@ export const metadata = {
     title: "Dashboard", // This could also use t('dashboardTitle') if you want
 };
 
+// ✅ DEV ONLY
+if (process.env.NODE_ENV === "development") {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+}
+
 export default async function KaasitomaDashboardPage() {
     const t = await getTranslations('DashboardPage');
     const session = await getSession();

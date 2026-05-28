@@ -26,7 +26,7 @@ export async function GET(req: Request) {
     }
 
     const backendUrl =
-        `${process.env.BACKEND_URL}/kaasitoma/receiverAccounts/getReceiverAccountByReceiverAccountId`
+        `${process.env.BACKEND_API_BASE_URL}/kaasitoma/receiverAccounts/getReceiverAccountByReceiverAccountId`
         + `?receiverAccountId=${receiverAccountId}`;
 
     const response = await bffFetch(backendUrl, {

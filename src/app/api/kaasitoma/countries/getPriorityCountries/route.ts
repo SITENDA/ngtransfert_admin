@@ -17,7 +17,7 @@ export async function GET() {
 
     // 🎯 Backend endpoint
     const backendUrl =
-        `${process.env.BACKEND_URL}/kaasitoma/countries/getPriorityCountries`;
+        `${process.env.BACKEND_API_BASE_URL}/kaasitoma/countries/getPriorityCountries`;
 
     // 🔁 Forward via BFF
     const response = await bffFetch(backendUrl, {

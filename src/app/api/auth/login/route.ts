@@ -88,6 +88,7 @@ export async function POST(req: Request) {
     const now = Date.now();
 
     await saveSession(sessionId, {
+        //sessionId,
         user: bffUser,
         accessToken,
         refreshToken,

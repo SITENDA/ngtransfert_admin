@@ -15,7 +15,7 @@ export async function GET() {
         );
     }
 
-    const backendUrl = `${process.env.BACKEND_URL}/kaasitoma/receiverAccounts/getAllReceiverAccounts`;
+    const backendUrl = `${process.env.BACKEND_API_BASE_URL}/kaasitoma/receiverAccounts/getAllReceiverAccounts`;
 
     const response = await bffFetch(backendUrl, {
         method: "GET",

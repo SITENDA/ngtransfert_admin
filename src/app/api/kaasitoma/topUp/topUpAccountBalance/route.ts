@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     const formData = await req.formData();
 
     const backendUrl =
-        `${process.env.BACKEND_URL}/kaasitoma/topUp/topUpAccountBalance`;
+        `${process.env.BACKEND_API_BASE_URL}/kaasitoma/topUp/topUpAccountBalance`;
 
     const response = await bffFetch(backendUrl, {
         method: "POST",
