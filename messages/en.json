@@ -340,6 +340,7 @@
     "bank": "Bank Account",
     "sendingFee": "Sending Fee",
     "unknownCategory": "Unknown Account Category",
+    "successTitle": "Successfully topped up account",
     "topUpMethod": {
       "MOBILE_MONEY": "MTN Mobile Money",
       "WAVE": "Wave",

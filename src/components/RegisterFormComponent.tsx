@@ -7,6 +7,7 @@ import {Input} from "@/components/ui/input";
 import {useRouter} from "@/i18n/navigation";
 import {generalPaths, kaasitomaPaths} from "@/util/frontend-paths";
 import {PhoneNumberInput} from "@/components/PhoneNumberInput";
+import TickAnimation from "@/components/TickAnimation";
 
 export default function RegisterFormComponent() {
     const t = useTranslations("RegisterFormComponent");
@@ -19,6 +20,7 @@ export default function RegisterFormComponent() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [formError, setFormError] = useState<string | null>(null); // State for displaying form errors
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     const locale = useLocale();
 
@@ -30,7 +32,7 @@ export default function RegisterFormComponent() {
 
         if (password !== confirmPassword) {
             setFormError(t("passwordMismatch"));
-            phoneInputRef.current?.focus(); // ✅ ref usable
+            phoneInputRef.current?.focus();
             return;
         }
 
@@ -51,12 +53,19 @@ export default function RegisterFormComponent() {
         const data = await res.json();
 
         if (!res.ok) {
-            setFormError(data.message || t("registrationFailed"));
+            setFormError(
+                data.message || t("registrationFailed")
+            );
             return;
         }
 
-        alert(t("registrationSuccess"));
-        router.push(generalPaths.fromRegistrationLoginPath);
+        setSuccessMessage(t("registrationSuccess"));
+
+        setTimeout(() => {
+            router.push(
+                generalPaths.fromRegistrationLoginPath
+            );
+        }, 3000);
     };
 
     const handleOAuth2Registration = (provider: string): void => {
@@ -72,6 +81,11 @@ export default function RegisterFormComponent() {
         setValidPhoneNumber(digitsOnly.length >= 10 && digitsOnly.length <= 13);
     };
 
+    if (successMessage) {
+        return (
+            <TickAnimation successMessage={successMessage} />
+        );
+    }
 
     return (
         // Outer div for the entire page background (can be handled by a layout component)

@@ -2,9 +2,11 @@
 "use server";
 
 import getSession from "@/lib/getSession";
-import {cookies} from "next/headers";
+import { cookies, headers } from "next/headers";
 
-export async function topUpAccountBalanceAction(formData: FormData) {
+export async function topUpAccountBalanceAction(
+    formData: FormData
+) {
     try {
         const session = await getSession();
 
@@ -16,50 +18,76 @@ export async function topUpAccountBalanceAction(formData: FormData) {
             };
         }
 
-        // ✅ Extract cookies from current request
+        // ✅ Dynamically detect protocol + host
+        const headersList = await headers();
+
+        const protocol =
+            headersList.get("x-forwarded-proto") ?? "http";
+
+        const host = headersList.get("host");
+
+        if (!host) {
+            throw new Error("Host header missing");
+        }
+
+        // ✅ Internal BFF URL
+        const apiUrl =
+            `${protocol}://${host}/api/kaasitoma/topUp/topUpAccountBalance`;
+
+        // ✅ Forward cookies
         const cookieHeader = (await cookies())
             .getAll()
-            .map(c => `${c.name}=${c.value}`)
+            .map((c) => `${c.name}=${c.value}`)
             .join("; ");
 
-        const proxyApiUrl =
-            `${process.env.NEXT_PUBLIC_APP_URL}/api/kaasitoma/topUp/topUpAccountBalance`;
-
-        const response = await fetch(proxyApiUrl, {
+        const response = await fetch(apiUrl, {
             method: "POST",
             body: formData,
             headers: {
-                Cookie: cookieHeader, // 🔥 THIS IS THE KEY
+                Cookie: cookieHeader,
             },
+            cache: "no-store",
         });
 
         const text = await response.text();
+
         let data: any = null;
 
         try {
             data = JSON.parse(text);
         } catch {
-            console.error("TopUpAction: Non-JSON response:", text);
+            console.error(
+                "Failed to parse top-up response:",
+                text
+            );
         }
 
         if (!response.ok) {
             return {
                 success: false,
-                message: data?.message ?? "Top-up failed.",
+                message:
+                    data?.message ?? "Top-up failed.",
             };
         }
 
         return {
             success: true,
-            message: "Top-up completed successfully!",
+            message:
+                data?.message ??
+                "Top-up completed successfully!",
             data,
         };
 
     } catch (error) {
-        console.error("TopUpAction: Unexpected error:", error);
+        console.error(
+            "topUpAccountBalanceAction error:",
+            error
+        );
+
         return {
             success: false,
-            message: "An unexpected error occurred.",
+            message:
+                "An unexpected error occurred.",
         };
     }
 }

@@ -2,10 +2,8 @@
 
 cd /ngtransfert/ngtransfert_admin
 
-yarn build
-
-pm2 start "yarn start" \
-  --name ngtransfert-admin \
-  --env production
+pm2 start ngtransfert_admin-ecosystem.config.cjs
 
 pm2 save
+
+pm2 status

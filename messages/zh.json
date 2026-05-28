@@ -315,6 +315,7 @@
     "wechat": "微信账户",
     "bank": "银行账户",
     "unknownCategory": "未知账户类别",
+    "successTitle": "账户充值成功",
     "topUpMethod": {
       "MOBILE_MONEY": "MTN 移动支付",
       "WAVE": "Wave",
