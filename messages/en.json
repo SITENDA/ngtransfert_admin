@@ -10,6 +10,7 @@
     "signUpWithGoogle" : "Sign Up with Google"
   },
   "DashboardPage": {
+    "dashboardTitle": "Dashboard",
     "clientDashboardTitle": "Client Dashboard",
     "addReceiverAccountButton": "Add Receiver Account",
     "welcomeMessage": "Welcome back, {userName}!",

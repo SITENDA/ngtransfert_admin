@@ -1,5 +1,5 @@
 // /home/amos/docure/ngtransfert_admin/src/app/[locale]/(protected_pages)/kaasitoma/page.tsx (kaasitoma home page)
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {getLocale, getTranslations} from "next-intl/server"; // Keep getTranslations for server component
 import getSession from "@/lib/getSession";
 import {ClickableRow} from "@/components/ClickableRow";
@@ -9,6 +9,7 @@ import {Link, redirect} from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { cookies, headers } from "next/headers";
 import {BackendGenericResponse} from "../../../../../types/BackendGenericResponse";
+import {UserCategoryEnum} from "@/enums/UserCategoryEnum";
 
 
 export const metadata = {
@@ -43,7 +44,7 @@ export default async function KaasitomaDashboardPage() {
         throw new Error("Host header missing");
     }
 
-    const apiUrl = `${protocol}://${host}/api/kaasitoma/getDashboardContent`;
+    const apiUrl = `${protocol}://${host}` + `/api/general/getDashboardContent/${UserCategoryEnum.KAASITOMA}`;
 
     const cookieHeader = (await cookies())
         .getAll()
@@ -114,7 +115,9 @@ export default async function KaasitomaDashboardPage() {
             <Card className="w-full flex-grow mx-auto my-8 bg-background/80 backdrop-blur-sm border border-border
                 dark:bg-gray-800/80 dark:border-gray-700 text-gray-900 dark:text-gray-100 flex flex-col h-full max-w-screen-lg rounded-xl shadow-lg">
                 <CardHeader className="flex flex-row justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                    <CardTitle className="text-3xl font-bold text-blue-700 dark:text-blue-300">{t('clientDashboardTitle')}</CardTitle>
+                    <div className="text-xl font-medium text-gray-800 dark:text-gray-200 mb-6">
+                        {t('welcomeMessage', { userName: user?.fullName })}! {/* Use userName placeholder */}
+                    </div>
                     <Link href={kaasitomaPaths.addReceiverAccountPath} passHref>
                         <Button variant="outline"
                                 size="sm"
@@ -125,10 +128,6 @@ export default async function KaasitomaDashboardPage() {
                 </CardHeader>
 
                 <CardContent className="flex-grow p-6 space-y-8">
-                    <div className="text-xl font-medium text-gray-800 dark:text-gray-200 mb-6">
-                        {t('welcomeMessage', { userName: user?.fullName })}! {/* Use userName placeholder */}
-                    </div>
-
                     {displayedContent}
                 </CardContent>
             </Card>

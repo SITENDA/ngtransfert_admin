@@ -76,11 +76,13 @@ export default function LoginFormComponent() {
 
             if (!res.ok || !data.success || !data.user?.ekiddako) {
                 setFormError(t("loginFailed"));
+
+                console.log("Login response : ", res)
                 return;
             }
 
-            // ✅ Redirect based on role (ekiddako)
-            // router.push(`/${data.user.ekiddako}`);
+            //// ✅ Redirect based on role (ekiddako)
+            router.push(`/${data.user.ekiddako}`);
             router.refresh(); // forces server to re-read cookies
             router.replace(`/${data.user.ekiddako}`);
 

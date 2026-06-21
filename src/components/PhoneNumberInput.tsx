@@ -20,7 +20,7 @@ export const PhoneNumberInput = forwardRef<HTMLInputElement, PhoneNumberInputPro
     ({ changeHandler, validPhoneNumber, value }, ref) => {
         // Determine colors based on theme
         const textColor =  "#ffffff";
-        console.log("Ref: ", ref)
+        // console.log("Ref: ", ref)
 
         return (
             <div className="w-full flex flex-col gap-1">

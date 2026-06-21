@@ -1,0 +1,55 @@
+##services: docker-compose.yaml
+
+services:
+
+  redis:
+    image: redis:7-alpine
+
+    container_name: ngtransfert-redis
+
+    restart: unless-stopped
+
+    command:
+      - redis-server
+      - --requirepass
+      - Okuvaayo&Kw'Enjuba#123
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - redis_data:/data
+
+    networks:
+      - ngtransfert-net
+
+
+  ngtransfert-admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: ngtransfert-admin
+
+    restart: unless-stopped
+
+    depends_on:
+      - redis
+
+    ports:
+      - "3000:3000"
+
+    env_file:
+      - .env.development
+
+    networks:
+      - ngtransfert-net
+
+
+volumes:
+  redis_data:
+
+
+networks:
+  ngtransfert-net:
+    external: true
